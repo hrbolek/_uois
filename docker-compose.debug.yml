@@ -1,0 +1,57 @@
+version: '3.4'
+
+services:
+  python_fastapi:
+    image: python_fastapi
+    build:
+      context: ./pyf
+    #command: ["sh", "-c", "pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m uvicorn pyf\app:app --host 0.0.0.0 --port 8000"]
+    command: ["sh", "-c", "pip install debugpy -t /tmp && python /tmp/debugpy --listen 0.0.0.0:5678 -m uvicorn app:app --host 0.0.0.0 --port 8000"]
+    ports:
+      - 50001:8000
+      - 5678:5678
+
+  python_tornado:
+    image: python_tornado
+    build:
+      context: ./pyt
+    command: ["sh", "-c", "pip install debugpy -t /tmp && python /tmp/debugpy --listen 0.0.0.0:5679 /app/app.py"]
+    ports:
+      - 50002:80
+      - 5679:5678
+
+  js:
+     image: js
+     build: 
+       context: ./js
+     environment:
+       NODE_ENV: development
+     ports:
+       - 50003:3000
+       - 9229:9229
+     #command: node --inspect=0.0.0.0:9229 server.js
+     command: node --inspect=0.0.0.0:9229 node_modules/react-scripts/scripts/start.js
+
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=example
+    
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=anoyne@anywhere.com
+      - PGADMIN_DEFAULT_PASSWORD=example
+    ports:
+      - 50011:80
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - 50080:80
+    depends_on:
+      - postgres
+      - js
+      - python_fastapi
+      - python_tornado 

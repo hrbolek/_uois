@@ -1,0 +1,45 @@
+{
+    "configurations": [
+        {
+            "name": "Docker: Python - Fastapi",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "python": {
+                "pathMappings": [
+                    {
+                        "localRoot": "${workspaceFolder}/pyf",
+                        "remoteRoot": "/app"
+                    }
+                ],
+                "projectType": "fastapi"
+            }
+        },
+        {
+            "type": "python",
+            "request": "attach",
+            "name": "Docker: Attach to Python FastAPI",
+            "port": 5678
+        },
+        {
+            "type": "python",
+            "request": "attach",
+            "name": "Docker: Attach to Python Tornado",
+            "port": 5679
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Docker: Attach to JS",
+            "remoteRoot": "/usr/src/app",
+            "port": 9229
+        },
+        {
+            "name": "Docker Node.js Launch",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "platform": "node"
+        }
+    ]
+}
