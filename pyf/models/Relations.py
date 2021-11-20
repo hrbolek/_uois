@@ -1,6 +1,25 @@
 from sqlalchemy import Table, Column, ForeignKey, BigInteger, Sequence
 from sqlalchemy.orm import relationship, backref
 
+def defineRelation11(TableA, TableB):
+    tableAName = TableA.__tablename__
+    tableBName = TableB.__tablename__
+    tableBNameSingular = tableBName
+    if tableBNameSingular[-1] == 's':
+        tableBNameSingular = tableBNameSingular[:-1]
+
+    tableANameSingular = tableAName
+    if tableANameSingular[-1] == 's':
+        tableANameSingular = tableANameSingular[:-1]
+    
+    setattr(TableA, f'{tableBNameSingular}_id', Column(ForeignKey(f'{tableBName}.id')))
+    setattr(TableA, tableBNameSingular, relationship(TableB, back_populates=f'{tableANameSingular}', uselist=False))
+
+    #setattr(TableB, f'{tableANameSingular}_id', Column(ForeignKey(f'{tableAName}.id')))
+    setattr(TableB, tableANameSingular, relationship(TableA, back_populates=f'{tableBNameSingular}', uselist=False))
+
+    return
+
 def defineRelation1N(TableA, TableB):
     tableAName = TableA.__tablename__
     tableBName = TableB.__tablename__
@@ -33,22 +52,3 @@ def defineRelationNM(TableA, TableB, sequence=Sequence('all_id_seq'), tableAItem
 
     return
 
-from . import BaseEntities as BEntities
-from . import BaseEntityTypes as BETypes
-
-from functools import cache
-@cache
-def createRelations():
-
-    UserModel, GroupModel, ClassRoomModel, EventModel = BEntities.GetModels()
-    GroupTypeModel, RoleTypesModel = BETypes.GetModels()
-
-    defineRelationNM(UserModel, GroupModel)
-    defineRelationNM(UserModel, EventModel)
-    defineRelationNM(GroupModel, EventModel)
-    defineRelationNM(ClassRoomModel, EventModel)
-
-    #defineRelationNM(BaseModel, EventModel, UserModel, 'teachers', 'events')
-
-    defineRelation1N(GroupModel, GroupTypeModel)    
-    pass

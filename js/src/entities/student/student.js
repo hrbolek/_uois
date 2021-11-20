@@ -2,13 +2,13 @@ import {
     Link,
     useParams
   } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import CloseButton from 'react-bootstrap/CloseButton';
-
+import Table from 'react-bootstrap/Table';
 
 import { root } from '../index';
 import { CreateExpandable } from '../../helpers/index';
@@ -16,6 +16,7 @@ import { CreateExpandable } from '../../helpers/index';
 import { TeacherSmall } from '../teacher/teacher';
 import { GroupSmall } from '../group/group';
 import { TimeTableMedium } from '../timetable/timetable';
+import { SubjectSmall } from '../subject/subject';
 
 const studentRoot = root + '/students'
 
@@ -32,7 +33,9 @@ export const StudentMedium = (props) => {
         <Card>
             {/*<Card.Img variant="top" src="holder.js/100px180" />*/}
             <Card.Body>
-                <Card.Title>Student ID:{props.id}, {props.name}</Card.Title>
+                <Card.Header className='bg-success bg-gradient text-white'>
+                    <Card.Title>Student ID:{props.id}, {props.name}</Card.Title>
+                </Card.Header>
                 <Card.Text>
                 FVT <br />
                 Katedra <br />
@@ -45,20 +48,55 @@ export const StudentMedium = (props) => {
 }
 
 export const StudentLarge = (props) => {
+    const [state, setState] = useState(
+        {
+            'id': props.id,
+            'name': props.name,
+            'faculty': 'FVT',
+            'department': 'K209',
+            'studyGroups': [
+                {'id': 257, 'name': '23-5AT'}
+            ],
+            'subjects': [
+                {'id': 458, 'name': 'subj1'}
+            ]
+        })
+
+    useEffect(()=>{
+
+    })
+
+    const studyGroups = []
+    for(var index = 0; index < state.studyGroups.length; index++) {
+        const sgItem = state.studyGroups[index]
+        studyGroups.push(<GroupSmall id={sgItem.id} name={sgItem.name}/>);
+        studyGroups.push(<br />);
+    }
+
+    const studySubjects = []
+    for(var index = 0; index < state.subjects.length; index++) {
+        const ssItem = state.subjects[index];
+        studySubjects.push(<SubjectSmall id={ssItem.id} name={ssItem.name}/>)
+    }
+
     return (
         <>
         <Row>
             <Col>
                 <Card>
-                    <Card.Header>
+                    <Card.Header className='bg-success bg-gradient text-white'>
                         <Card.Title>Základní informace o studentovi</Card.Title>
                     </Card.Header>
                     <Card.Body>
-                    Student ID:{props.id}, {props.name} <br />
-                    FVT <br />
-                    Katedra <br />
-                    Skupina <GroupSmall id={257} name='23-5AT' /> <br />
-                    Studijní obor <br />
+                        <Table striped bordered hover>
+                            <tbody>
+                                <tr><td><b>Student ({state.id})</b></td><td>{state.name}</td></tr>
+                                <tr><td><b>Fakulta</b> </td><td>{state.faculty}</td></tr>
+                                <tr><td><b>Katedra</b> </td><td>{state.department}</td></tr>
+                                <tr><td><b>Studijní skupina</b> </td><td>{studyGroups}</td></tr>
+                                <tr><td><b>Studijní obor</b> </td><td></td></tr>
+                            </tbody>
+                        </Table>
                     </Card.Body>
                 </Card>
             </Col>
@@ -72,10 +110,11 @@ export const StudentLarge = (props) => {
         <Row>
             <Col>
                 <Card>
-                    <Card.Header>
+                    <Card.Header className='bg-success bg-gradient text-white'>
                         <Card.Title>Seznam předmětů</Card.Title>
                     </Card.Header>
                     <Card.Body>
+                        {studySubjects}
                     </Card.Body>
                 </Card>
             </Col>
@@ -83,7 +122,7 @@ export const StudentLarge = (props) => {
         <Row>
             <Col>
                 <Card>
-                    <Card.Header>
+                    <Card.Header className='bg-success bg-gradient text-white'>
                         <Card.Title>Seznam učitelů</Card.Title>
                     </Card.Header>
                     <Card.Body>
@@ -100,7 +139,7 @@ export const StudentLarge = (props) => {
 
 export const StudentPage = (props) => {
     const { id } = useParams();
-    const name = 'fetched name'
+    const name = 'Josef Novák'
     return (
         <StudentLarge id={id} name={name} />
     )

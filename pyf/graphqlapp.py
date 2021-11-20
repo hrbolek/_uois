@@ -4,54 +4,16 @@ from graphene import Schema as GSchema
 from starlette.graphql import GraphQLApp
 import graphene
 
-from fastapi import FastAPI, Request
-
-import models.BaseEntities as BEntities
-import models.BaseEntityTypes as BETypes
-import models.Relations as Relations
-
-import sqlengine.sqlengine as SqlEngine
-
-connectionString = 'postgresql+psycopg2://postgres:example@postgres/jupyterII'
-
-UserModel, GroupModel, ClassRoomModel, EventModel = BEntities.GetModels()
-GroupTypeModel, RoleTypesModel = BETypes.GetModels()
-Relations.createRelations()
-
-Session = SqlEngine.init(connectionString)
+import models.BaseEntities as BaseEntities
 
 from contextlib import contextmanager
-@contextmanager
-def session_scope():
-    """Provide a transactional scope around a series of operations."""
-    session = Session()
-    try:
-        yield session
-        session.commit()
-    except:
-        session.rollback()
-        raise
-    finally:
-        session.close()
 
+def attachGraphQL(app, sessionFunc):
+    assert callable(sessionFunc), "sessionFunc must be a function creating a session"
 
-async def prepareSession():
-    session = Session()
-    try:
-        yield session
-        session.commit()
-    except:
-        session.rollback()
-        raise
-    finally:
-        session.close()    
+    session_scope = contextmanager(sessionFunc)
+    UserModel, GroupModel, RoleModel, GroupTypeModel, RoleTypeModel = BaseEntities.GetModels()
 
-
-from fastapi import Depends
-from fastapi import APIRouter
-
-def attachGraphQL(app, sessionFunc=prepareSession):
-    assert callable(sessionFunc), "sessionFunc must be a function creating session"
     print('attaching attachGraphQL')
     def extractSession(info):
         #return info.context['request'].scope['db_session']
@@ -134,21 +96,15 @@ def attachGraphQL(app, sessionFunc=prepareSession):
                 return super().execute(*args, **newkwargs)
 
         async def execute_async(self, *args, **kwargs):
-            return await super().execute_async(*args, **kwargs)
+            with session_scope() as session:
+                if 'context' in kwargs:
+                    newkwargs = {**kwargs, 'context': {**kwargs['context'], 'session': session}}
+                else:
+                    newkwargs = {**kwargs, 'context': {'session': session}}
+                return await super().execute_async(*args, **newkwargs)
 
     #graphql_app = GraphQLApp(schema=graphene.Schema(query=Query))
     #app.add_route("/gql/", graphql_app)
     graphql_app = GraphQLApp(schema=localSchema(query=Query))
     app.add_route("/gql/", graphql_app)
 
-    #app.add_route("/gql/", GraphQLApp(schema=graphene.Schema(query=Query)))
-    
-    #@router.post('/gql/')
-    async def query(request: Request, db: Session = Depends(sessionFunc)):
-        request.scope.setdefault('db_session', db)
-        return await graphql_app.handle_graphql(request=request)
-
-    #@router.get('/gql/')
-    async def query(request: Request, db: Session = Depends(sessionFunc)):
-        request.scope.setdefault('db_session', db)
-        return await graphql_app.handle_graphql(request=request)

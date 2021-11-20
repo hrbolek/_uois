@@ -1,0 +1,3 @@
+{
+    "connectionstring": "postgresql+psycopg2://uois:1584698@192.168.1.6:5433/uois"
+}

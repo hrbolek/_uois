@@ -42,7 +42,7 @@ export const GroupLarge = (props) => {
         <Row>
             <Col>
                 <Card>
-                    <Card.Header>
+                    <Card.Header className='bg-success bg-gradient text-white'>
                         <Card.Title>Základní informace</Card.Title>
                     </Card.Header>
                     <Card.Body>
@@ -55,7 +55,7 @@ export const GroupLarge = (props) => {
         <Row>
             <Col>
                 <Card>
-                    <Card.Header>
+                    <Card.Header className='bg-success bg-gradient text-white'>
                         <Card.Title>Studenti:</Card.Title>
                     </Card.Header>
                     <Card.Body>
@@ -69,7 +69,7 @@ export const GroupLarge = (props) => {
         <Row>
             <Col>
                 <Card>
-                    <Card.Header>
+                    <Card.Header className='bg-success bg-gradient text-white'>
                         <Card.Title>Vyučující:</Card.Title>
                     </Card.Header>
                     <Card.Body>

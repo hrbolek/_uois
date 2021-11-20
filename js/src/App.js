@@ -16,6 +16,7 @@ import Container from 'react-bootstrap/Container';
 import { Students, StudentLarge, StudentPage } from './entities/student/student';
 import { TeacherLarge, TeacherPage } from './entities/teacher/teacher';
 import { GroupPage, GroupLarge } from './entities/group/group';
+import { SubjectPage } from './entities/subject/subject';
 
 import { root } from './entities/index'
 
@@ -26,6 +27,7 @@ const Home = (props) => {
         <Nav.Link as={Link} to={root + "/students/"}>Studenti</Nav.Link>
         <Nav.Link as={Link} to={root + "/teachers/"}>Učitelé</Nav.Link>
         <Nav.Link as={Link} to={root + "/groups/"}>Skupiny</Nav.Link>
+        <Nav.Link as={Link} to={root + "/subjects/"}>Předměty</Nav.Link>
     </Nav>
 
   )
@@ -56,6 +58,9 @@ function App() {
           </Route>
           <Route path={root + "/groups/:id"}>
             <GroupPage />
+          </Route>
+          <Route path={root + "/subjects/:id"}>
+            <SubjectPage />
           </Route>
 
           {/*

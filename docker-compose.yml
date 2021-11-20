@@ -18,14 +18,16 @@ services:
       - 50002:80
 
   js:
-     image: js
-     build: 
-       context: ./js
-     environment:
-       NODE_ENV: development
-     ports:
-       - 50003:3000
-       - 9229:9229
+    image: js
+    build: 
+      context: ./js
+    environment:
+      NODE_ENV: development
+    ports:
+      - 50003:3000
+      - 9229:9229
+    volumes:
+      - ./js:/usr/src/app
 
   postgres:
     image: postgres

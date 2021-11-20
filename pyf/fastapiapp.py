@@ -1,50 +1,19 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Depends
 
-import models.BaseEntities as BEntities
-import models.BaseEntityTypes as BETypes
-import models.Relations as Relations
+import models.BaseEntities as BaseEntities
+import models.FacilityEntities as FacilityEntities
+import models.TimeTableEntities as TimeTableEntities
 
-import sqlengine.sqlengine as SqlEngine
-from sqlalchemy import Sequence
-
-connectionString = 'postgresql+psycopg2://postgres:example@postgres/jupyterII'
-
-UserModel, GroupModel, ClassRoomModel, EventModel = BEntities.GetModels()
-GroupTypeModel, RoleTypesModel = BETypes.GetModels()
-Relations.createRelations()
-
-Session = SqlEngine.init(connectionString)
-
-#from contextlib import contextmanager
-#@contextmanager
-#def session_scope():
-#    """Provide a transactional scope around a series of operations."""
-#    session = Session()
-#    try:
-#        yield session
-#        session.commit()
-#    except:
-#        session.rollback()
-#        raise
-#    finally:
-#        session.close()
-
-async def prepareSession():
-    session = Session()
-    try:
-        yield session
-        session.commit()
-    except:
-        session.rollback()
-        raise
-    finally:
-        session.close()    
-
-
-from fastapi import Depends
-def attachFastApi(app):
-
+def attachFastApi(app, prepareSession=None):
+    assert callable(prepareSession), 'prepareSession must be callable'
     apiapp = FastAPI()
+    print('attaching attachFastApi')
+
+    UserModel, GroupModel, RoleModel, GroupTypeModel, RoleTypeModel = BaseEntities.GetModels()
+    EventModel = TimeTableEntities.GetModels()
+    AreaModel, BuildingModel, RoomModel = FacilityEntities.GetModels()
+
+    print('got models')
 
     @apiapp.get("/items/{item_id}")
     async def apif_read_item(item_id: int):
@@ -83,15 +52,15 @@ def attachFastApi(app):
         result = session.query(GroupModel).get(id)
         return result
 
-    @apiapp.get("/classrooms/")
-    async def classrooms_get_all(skip: int = 0, limit: int = 10, session=Depends(prepareSession)):
+    @apiapp.get("/rooms/")
+    async def rooms_get_all(skip: int = 0, limit: int = 10, session=Depends(prepareSession)):
         result = []
-        result = session.query(ClassRoomModel).offset(skip).limit(limit).all()
+        result = session.query(RoomModel).offset(skip).limit(limit).all()
         return result
 
-    @apiapp.get("/classrooms/{id}")
-    async def classrooms_get_by_id(id: int, session=Depends(prepareSession)):
-        result = session.query(ClassRoomModel).get(id)
+    @apiapp.get("/rooms/{id}")
+    async def rooms_get_by_id(id: int, session=Depends(prepareSession)):
+        result = session.query(RoomModel).get(id)
         return result
 
     @apiapp.get("/events/")
@@ -106,3 +75,4 @@ def attachFastApi(app):
         return result
 
     app.mount('/api', apiapp)
+    print('attaching attachFastApi finished')
