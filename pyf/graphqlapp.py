@@ -1,4 +1,7 @@
-from graphene import ObjectType, String, Field, ID, List, DateTime
+from typing_extensions import Required
+
+#from sqlalchemy.sql.sqltypes import Boolean
+from graphene import ObjectType, String, Field, ID, List, DateTime, Mutation, Boolean
 from graphene import Schema as GSchema
 
 from starlette.graphql import GraphQLApp
@@ -19,11 +22,17 @@ def attachGraphQL(app, sessionFunc):
         #return info.context['request'].scope['db_session']
         return info.context.get('session')
 
+    class GroupType(ObjectType):
+        id = ID()
+        name = String()
+        groups = List(lambda: Group)
+
     class Group(ObjectType):
         name = String()
         id = ID()
         users = List(lambda: User)
         events = List(lambda: Event)
+        grouptype_id = ID()
         
         def resolve_users(parent, info):
             session = extractSession(info)
@@ -42,10 +51,20 @@ def attachGraphQL(app, sessionFunc):
         end = DateTime()
         
     class User(ObjectType):
-        name = String()
         id = ID()
+        name = String()
+        surname = String()
+        email = String()
+        
         groups = List(Group)
+        groups_by_type = Field(List(Group), typeId=ID())
         events = List(Event)
+
+        def resolve_groups_by_type(parent, info, typeId):
+            session = extractSession(info)
+            userRecord = session.query(UserModel).get(parent.id)
+            return filter(lambda item: str(item.grouptype_id) == typeId, userRecord.groups)
+
 
         def resolve_groups(parent, info):
             session = extractSession(info)
@@ -58,6 +77,47 @@ def attachGraphQL(app, sessionFunc):
             userRecord = session.query(UserModel).get(parent.id)
             return userRecord.events
             
+    class CreateUser(Mutation):
+        class Arguments:
+            id = ID(required=False)
+            surname = String(required=False)
+            name = String(required=False)
+            email = String(required=False)
+
+        ok = Boolean()
+        user = Field(User)
+
+        def mutate(root, info, id=None, name=None, surname=None, email=None):
+            session = extractSession(info)
+            dataRecord = UserModel(name=name, surname=surname, email=email)
+            session.add(dataRecord)
+            session.commit()
+            return CreateUser(user=dataRecord, ok=True)
+
+    class UpdateUser(Mutation):
+        class Arguments:
+            id = ID(required=False)
+            surname = String(required=False)
+            name = String(required=False)
+            email = String(required=False)
+
+        ok = Boolean()
+        user = Field(User)
+
+        def mutate(root, info, id=None, name=None, surname=None, email=None):
+            session = extractSession(info)
+
+            dataRecord = session.query(UserModel).get(id)
+            if not(name is None):
+                dataRecord.name = name
+            if not(surname is None):
+                dataRecord.surname = surname
+            if not(email is None):
+                dataRecord.email = email
+            session.commit()
+
+            return CreateUser(user=dataRecord, ok=True)
+
     class Query(ObjectType):
 
         user = Field(User, id=ID(required=True))
@@ -77,6 +137,9 @@ def attachGraphQL(app, sessionFunc):
             else:
                 return session.query(GroupModel).get(id)
 
+    class Mutations(ObjectType):
+        create_user = CreateUser.Field()
+        update_user = UpdateUser.Field()
 
     #router = fastapi.APIRouter()
     #https://github.com/graphql-python/graphene-sqlalchemy/issues/292
@@ -105,6 +168,6 @@ def attachGraphQL(app, sessionFunc):
 
     #graphql_app = GraphQLApp(schema=graphene.Schema(query=Query))
     #app.add_route("/gql/", graphql_app)
-    graphql_app = GraphQLApp(schema=localSchema(query=Query))
+    graphql_app = GraphQLApp(schema=localSchema(query=Query, mutation=Mutations))
     app.add_route("/gql/", graphql_app)
 

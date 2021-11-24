@@ -15,6 +15,8 @@ def GetModels(BaseModel=BaseModel.getBaseModel(), unitedSequence=Sequence('all_i
         
         id = Column(BigInteger, unitedSequence, primary_key=True)
         name = Column(String)
+        surname = Column(String)
+        email = Column(String)
         
         lastchange = Column(DateTime, default=datetime.datetime.now)
         externalId = Column(BigInteger, index=True)

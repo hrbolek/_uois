@@ -40,7 +40,7 @@ def buildApp():
 
     print('Init Session')
     Session = initSession(connectionstring)
-    async def prepareSession():#Session=Session): # default parameters are not allowed here
+    def prepareSession():#Session=Session): # default parameters are not allowed here
         session = Session()
         try:
             yield session
@@ -52,7 +52,8 @@ def buildApp():
             session.close()    
 
     #app = FastAPI(root_path="/apif")
-    initDb(connectionstring, doDropAll=True, doCreateAll=True)
+    #initDb(connectionstring, doDropAll=True, doCreateAll=True)
+    initDb(connectionstring)
 
     app = FastAPI()
     print('init Db')

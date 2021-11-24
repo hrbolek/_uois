@@ -63,6 +63,34 @@ export const StudentLarge = (props) => {
         })
 
     useEffect(()=>{
+        `
+        query {
+            user(id: $id$) {
+                id
+                externalId
+                name
+                surname
+                fullname
+                faculty: groupsByType(type: 0) {
+                    id
+                    name
+                }
+                department: groupsByType(type: 1) {
+                    id
+                    name
+                }
+                studygroup: groupsByType(type: 2) {
+                    id
+                    name
+                }
+                studyprograms {
+                    id
+                    externalId
+                    name
+                }
+            }
+        }
+        `
 
     })
 
