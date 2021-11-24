@@ -1,4 +1,6 @@
 def initModels():
+    """Build relations among entities
+    """
     print('building all relations')
     from . import BaseEntities
     BaseEntities.BuildRelations()

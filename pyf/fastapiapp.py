@@ -4,7 +4,17 @@ import models.BaseEntities as BaseEntities
 import models.FacilityEntities as FacilityEntities
 import models.TimeTableEntities as TimeTableEntities
 
-def attachFastApi(app, prepareSession=None):
+def attachFastApi(app, prepareSession=None, bindPoint='/api'):
+    """Attaches a Swagger endpoint to a FastAPI
+
+    Parameters
+    ----------
+    app: FastAPI
+        app to bind to
+    prepareSession: lambda : session
+        callable which returns a db session
+    """
+
     assert callable(prepareSession), 'prepareSession must be callable'
     apiapp = FastAPI()
     print('attaching attachFastApi')
@@ -74,5 +84,5 @@ def attachFastApi(app, prepareSession=None):
         result = session.query(EventModel).get(id)
         return result
 
-    app.mount('/api', apiapp)
+    app.mount(bindPoint, apiapp)
     print('attaching attachFastApi finished')

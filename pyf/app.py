@@ -13,10 +13,40 @@ import graphqlapp
 
 @cache
 def getConfig(configFileName='config.json'):
+    """Reads config from file
+
+    Parameters
+    ----------
+    configFileName: str
+        name of the file to be readed
+
+    Returns
+    -------
+    json: dict
+        data structure defining parameters describing application and stored externally
+    """
     with open(configFileName, 'r') as config:
         return json.load(config)
 
 def initDb(connectionstring, doDropAll=False, doCreateAll=False):
+    """Initialize database connection
+
+    Parameters
+    ----------
+    connectionstring: str
+        full connection string defining the connection to database
+    doDropAll: boolean=False
+        if True, database is dropped
+    doCreateAll: boolean=False
+        if True, database is redefined, usually used with doDropAll=True
+
+    Returns
+    -------
+    Session: callable
+        used for instatiating a session
+
+    """
+
     print('initDb started')
     BaseModel = getBaseModel()
     print(f'Session with doDropAll={doDropAll} & doCreateAll={doCreateAll}')
@@ -35,12 +65,26 @@ def initDb(connectionstring, doDropAll=False, doCreateAll=False):
     return Session
 
 def buildApp():
+    """builds a FastAPI application object with binded Swagger and GraphQL endpoints
+
+    Returns
+    -------
+    app
+        FastAPI instance with binded endpoints
+    """
     print('Load config')
-    connectionstring=getConfig()['connectionstring']
+    connectionstring = getConfig()['connectionstring']
 
     print('Init Session')
     Session = initSession(connectionstring)
     def prepareSession():#Session=Session): # default parameters are not allowed here
+        """generator for creating db session encapsulated with try/except block and followed session.commit() / session.rollback()
+
+        Returns
+        -------
+        generator
+            contains just one item which is instance of Session (SQLAlchemy)
+        """
         session = Session()
         try:
             yield session

@@ -11,7 +11,16 @@ import models.BaseEntities as BaseEntities
 
 from contextlib import contextmanager
 
-def attachGraphQL(app, sessionFunc):
+def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
+    """Attaches a Swagger endpoint to a FastAPI
+
+    Parameters
+    ----------
+    app: FastAPI
+        app to bind to
+    prepareSession: lambda : session
+        callable which returns a db session
+    """
     assert callable(sessionFunc), "sessionFunc must be a function creating a session"
 
     session_scope = contextmanager(sessionFunc)
@@ -169,5 +178,5 @@ def attachGraphQL(app, sessionFunc):
     #graphql_app = GraphQLApp(schema=graphene.Schema(query=Query))
     #app.add_route("/gql/", graphql_app)
     graphql_app = GraphQLApp(schema=localSchema(query=Query, mutation=Mutations))
-    app.add_route("/gql/", graphql_app)
+    app.add_route(bindPoint, graphql_app)
 

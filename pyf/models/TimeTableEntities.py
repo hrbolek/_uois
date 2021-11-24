@@ -7,6 +7,22 @@ from . import BaseModel
 
 @cache # funny thing, it makes from this function a singleton
 def GetModels(BaseModel=BaseModel.getBaseModel(), unitedSequence=Sequence('all_id_seq')):
+    """create elementary models for information systems
+
+    Parameters
+    ----------
+    BaseModel
+        represents the declarative_base instance from SQLAlchemy
+    unitedSequence : Sequence
+        represents a method for generating keys (usually ids) for database entities
+
+    Returns
+    -------
+    EventModel
+        model of event based on BaseModel, table names are hardcoded
+
+    """
+
     #assert not(unitedSequence is None), "unitedSequence must be defined"
 
     class EventModel(BaseModel):
@@ -23,7 +39,8 @@ def GetModels(BaseModel=BaseModel.getBaseModel(), unitedSequence=Sequence('all_i
 
 @cache
 def BuildRelations():
-
+    """Builds relations to EventModel
+    """
     from . import BaseEntities
     from . import FacilityEntities
 

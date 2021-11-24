@@ -8,6 +8,22 @@ from . import BaseModel
 
 @cache # funny thing, it makes from this function a singleton
 def GetModels(BaseModel=BaseModel.getBaseModel(), unitedSequence=Sequence('all_id_seq')):
+    """create elementary models for information systems
+
+    Parameters
+    ----------
+    BaseModel
+        represents the declarative_base instance from SQLAlchemy
+    unitedSequence : Sequence
+        represents a method for generating keys (usually ids) for database entities
+
+    Returns
+    -------
+    (UserModel, GroupModel, RoleModel, GroupTypeModel, RoleTypeModel)
+        tuple of models based on BaseModel, table names are hardcoded
+
+    """
+
     #assert not(unitedSequence is None), "unitedSequence must be defined"
     print('Base models definition (UserModel, GroupModel, RoleModel, GroupTypeModel, RoleTypeModel)')
     class UserModel(BaseModel):

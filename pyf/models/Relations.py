@@ -2,6 +2,15 @@ from sqlalchemy import Table, Column, ForeignKey, BigInteger, Sequence
 from sqlalchemy.orm import relationship, backref
 
 def defineRelation11(TableA, TableB):
+    """defines relation 1:1 between two tables
+
+    Parameters
+    ----------
+    TableA
+        Model of first table 
+    TableB
+        Model of second table
+    """
     tableAName = TableA.__tablename__
     tableBName = TableB.__tablename__
     tableBNameSingular = tableBName
@@ -21,6 +30,16 @@ def defineRelation11(TableA, TableB):
     return
 
 def defineRelation1N(TableA, TableB):
+    """defines relation 1:N (TableA : TableB) between two tables
+
+    Parameters
+    ----------
+    TableA
+        Model of first table 
+    TableB
+        Model of second table
+    """
+
     tableAName = TableA.__tablename__
     tableBName = TableB.__tablename__
     tableBNameSingular = TableB.__tablename__
@@ -35,6 +54,17 @@ def defineRelation1N(TableA, TableB):
 
 # inspired by and based on https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html
 def defineRelationNM(TableA, TableB, sequence=Sequence('all_id_seq'), tableAItemName=None, tableBItemName=None):
+    """defines relation N:M (TableA : TableB) between two tables
+    intermediated table is automaticaly defined
+
+    Parameters
+    ----------
+    TableA
+        Model of first table 
+    TableB
+        Model of second table
+    """
+
     assert not(sequence is None), "sequence must be defined explicitly"
 
     tableAName = TableA.__tablename__ if tableAItemName is None else tableAItemName
