@@ -79,10 +79,10 @@ def BuildRelations():
     print('building relations between base models')
 
     Relations.defineRelationNM(UserModel, GroupModel)
-    Relations.defineRelation1N(GroupModel, GroupTypeModel)    
-    Relations.defineRelation11(RoleModel, RoleTypeModel)
-    Relations.defineRelation1N(RoleModel, GroupModel)
-    Relations.defineRelation1N(RoleModel, UserModel)
+    Relations.defineRelation1N(GroupTypeModel, GroupModel) 
+    Relations.defineRelation1N(RoleTypeModel, RoleModel)
+    Relations.defineRelation1N(GroupModel, RoleModel)
+    Relations.defineRelation1N(UserModel, RoleModel)
 
     print('building relations between base models finished')
     #defineRelationNM(BaseModel, EventModel, UserModel, 'teachers', 'events')

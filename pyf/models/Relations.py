@@ -31,7 +31,6 @@ def defineRelation11(TableA, TableB):
 
 def defineRelation1N(TableA, TableB):
     """defines relation 1:N (TableA : TableB) between two tables
-
     Parameters
     ----------
     TableA
@@ -42,14 +41,14 @@ def defineRelation1N(TableA, TableB):
 
     tableAName = TableA.__tablename__
     tableBName = TableB.__tablename__
-    tableBNameSingular = TableB.__tablename__
-    if tableBNameSingular[-1] == 's':
-        tableBNameSingular = tableBNameSingular[:-1]
+    tableANameSingular = TableA.__tablename__
+    if tableANameSingular[-1] == 's':
+        tableANameSingular = tableANameSingular[:-1]
     
-    setattr(TableA, f'{tableBNameSingular}_id', Column(ForeignKey(f'{tableBName}.id')))
-    setattr(TableA, tableBNameSingular, relationship(TableB, back_populates=f'{tableAName}'))
+    setattr(TableB, f'{tableANameSingular}_id', Column(ForeignKey(f'{tableAName}.id')))
+    setattr(TableB, tableANameSingular, relationship(TableA, back_populates=f'{tableBName}'))
 
-    setattr(TableB, tableAName, relationship(TableA, back_populates=f'{tableBNameSingular}')) #relationship(lazy='dynamic')
+    setattr(TableA, tableBName, relationship(TableB, back_populates=f'{tableANameSingular}')) #relationship(lazy='dynamic')
     return
 
 # inspired by and based on https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html

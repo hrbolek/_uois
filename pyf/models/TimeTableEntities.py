@@ -52,6 +52,6 @@ def BuildRelations():
 
     Relations.defineRelationNM(UserModel, EventModel)
     Relations.defineRelationNM(GroupModel, EventModel)
-    Relations.defineRelation1N(EventModel, RoomModel)
+    Relations.defineRelation1N(RoomModel, EventModel)
 
     pass
