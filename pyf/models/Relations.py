@@ -29,7 +29,7 @@ def defineRelation11(TableA, TableB):
 
     return
 
-def defineRelation1N(TableA, TableB):
+def defineRelation1N(TableA, TableB, tableAItemName=None, tableBItemName=None):
     """defines relation 1:N (TableA : TableB) between two tables
     Parameters
     ----------
@@ -37,10 +37,14 @@ def defineRelation1N(TableA, TableB):
         Model of first table 
     TableB
         Model of second table
+    tableAItemName: str
+        if specified, it is the name of the new field in TableB, defining relation to TableA (aka mother => new fields are mother + mother_id)
+    tableBItemName: str
+        if specified, it is the name of the new field in TableA, defining set of items from TableB (aka children)
     """
 
-    tableAName = TableA.__tablename__
-    tableBName = TableB.__tablename__
+    tableAName = TableA.__tablename__ if tableAItemName is None else tableAItemName
+    tableBName = TableB.__tablename__ if tableBItemName is None else tableBItemName
     tableANameSingular = TableA.__tablename__
     if tableANameSingular[-1] == 's':
         tableANameSingular = tableANameSingular[:-1]

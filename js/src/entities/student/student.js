@@ -53,7 +53,7 @@ export const StudentLarge = (props) => {
             'id': props.id,
             'name': props.name,
             'faculty': 'FVT',
-            'department': 'K209',
+            'department': [{'id': 124, 'name': 'K209'}],
             'studyGroups': [
                 {'id': 257, 'name': '23-5AT'}
             ],
@@ -79,7 +79,7 @@ export const StudentLarge = (props) => {
                     id
                     name
                 }
-                studygroup: groupsByType(type: 2) {
+                studyGroups: groupsByType(type: 2) {
                     id
                     name
                 }
@@ -92,7 +92,7 @@ export const StudentLarge = (props) => {
         }
         `
 
-    })
+    }, [props.id])
 
     const studyGroups = []
     for(var index = 0; index < state.studyGroups.length; index++) {

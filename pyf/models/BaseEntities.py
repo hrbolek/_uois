@@ -1,3 +1,4 @@
+import types
 from sqlalchemy import Column, String, BigInteger, Integer, DateTime, ForeignKey, Sequence
 import datetime
 from functools import cache
@@ -88,3 +89,147 @@ def BuildRelations():
     #defineRelationNM(BaseModel, EventModel, UserModel, 'teachers', 'events')
 
     pass
+
+from types import MappingProxyType
+
+@cache
+def ensureData(SessionMaker):
+    def ensureDataItem(session, Model, name):
+        itemRecords = session.query(Model).filter(Model.name == name).all()
+        itemRecordsLen = len(itemRecords)
+        if itemRecordsLen == 0:
+            itemRecord = Model(name=name)
+            session.add(itemRecord)
+            session.commit()
+        else:
+            assert itemRecordsLen == 1, f'Database has inconsistencies {Model}, {name}'
+            itemRecord = itemRecords[0]
+        return itemRecord.id
+
+    UserModel, GroupModel, RoleModel, GroupTypeModel, RoleTypeModel = GetModels()
+    session = SessionMaker()
+    try:
+        departmentTypeId = ensureDataItem(session, GroupTypeModel, 'department')
+        facultyTypeId = ensureDataItem(session, GroupTypeModel, 'faculty')
+        studyGroupId =  ensureDataItem(session, GroupTypeModel, 'studygroup')
+
+        departmentHeadRoleTypeId = ensureDataItem(session, RoleTypeModel, 'head of department')
+        deanRoleTypeId = ensureDataItem(session, RoleTypeModel, 'dean')
+        viceDeanRoleTypeId = ensureDataItem(session, RoleTypeModel, 'vice dean')
+        rectorRoleTypeId = ensureDataItem(session, RoleTypeModel, 'rector')
+        viceRectorRoleTypeId = ensureDataItem(session, RoleTypeModel, 'vice rector')
+
+        result = {
+            'departmentTypeId': departmentTypeId,
+            'facultyTypeId': facultyTypeId,
+            'studyGroupId': studyGroupId,
+            'departmentHeadRoleTypeId': departmentHeadRoleTypeId,
+            'deanRoleTypeId': deanRoleTypeId,
+            'viceDeanRoleTypeId': viceDeanRoleTypeId,
+            'rectorRoleTypeId': rectorRoleTypeId,
+            'viceRectorRoleTypeId': viceRectorRoleTypeId
+        }    
+    finally:
+        session.close()
+    return MappingProxyType(result)
+
+
+import random
+def randomUser(mod='main'):
+    surNames = [
+        'Novák', 'Nováková', 'Svobodová', 'Svoboda', 'Novotná',
+        'Novotný', 'Dvořáková', 'Dvořák', 'Černá', 'Černý', 
+        'Procházková', 'Procházka', 'Kučerová', 'Kučera', 'Veselá',
+        'Veselý', 'Horáková', 'Krejčí', 'Horák', 'Němcová', 
+        'Marková', 'Němec', 'Pokorná', 'Pospíšilová','Marek'
+    ]
+
+    names = [
+        'Jiří', 'Jan', 'Petr', 'Jana', 'Marie', 'Josef',
+        'Pavel', 'Martin', 'Tomáš', 'Jaroslav', 'Eva',
+        'Miroslav', 'Hana', 'Anna', 'Zdeněk', 'Václav',
+        'Michal', 'František', 'Lenka', 'Kateřina',
+        'Lucie', 'Jakub', 'Milan', 'Věra', 'Alena'
+    ]
+
+    name1 = random.choice(names)
+    name2 = random.choice(names)
+    name3 = random.choice(surNames)
+    email = f'{name1}.{name2}.{name3}@{mod}.university.world'
+    return {'name': f'{name1} {name2}', 'surname': name3, 'email': email}
+
+def PopulateRandomData(SessionMaker):
+    session = SessionMaker()
+    try:
+        UserModel, GroupModel, RoleModel, GroupTypeModel, RoleTypeModel = GetModels()
+        
+        typeIds = ensureData(SessionMaker)
+        
+        allTeachersGroup = GroupModel(name='teachers')
+        allStudentsGroup = GroupModel(name='students')
+
+        session.add(allTeachersGroup)
+        session.add(allStudentsGroup)
+        session.commit()
+        
+        def RandomizedStudents(faculty, studyGroup, count=10):
+            for _ in range(count):
+                student = randomUser(mod=faculty.name)
+                studentRecord = UserModel(**student)
+                session.add(studentRecord)
+                faculty.users.append(studentRecord)
+                studyGroup.users.append(studentRecord)
+                allStudentsGroup.users.append(studentRecord)
+            session.commit()
+        
+        def RandomizedStudyGroup(faculty):
+            strs = ['KB', 'BSV', 'ASV', 'ZM', 'IT', 'EL', 'ST', 'GEO', 'MET']
+            appendixes = ['', '-K', '-C', '-O', '-V', '-X']
+            name = f"{faculty.name}5-{random.choice([1, 2, 3, 4, 5])}{random.choice(strs)}{random.choice(appendixes)}"
+            studyGroupRecord = GroupModel(name=name, grouptype_id=typeIds['studyGroupId'])
+            session.add(studyGroupRecord)
+            session.commit()
+            RandomizedStudents(faculty, studyGroupRecord, count=random.randint(5, 15))
+            pass
+        
+        def RandomizedTeachers(faculty, department, count=10):
+            for _ in range(count):
+                teacher = randomUser(mod=faculty.name)
+                teacherRecord = UserModel(**teacher)
+                session.add(teacherRecord)
+                faculty.users.append(teacherRecord)
+                department.users.append(teacherRecord)
+                allTeachersGroup.users.append(teacherRecord)
+            session.commit()
+            
+        def RandomizedDepartment(faculty, index):
+            strs = ['KB', 'BSV', 'ASV', 'ZM', 'IT', 'EL', 'ST', 'GEO', 'MET']
+            name = f"{faculty.name}_{index}_{random.choice(strs)}"
+            departmentRecord = GroupModel(name=name, grouptype_id=typeIds['departmentTypeId'])
+            session.add(departmentRecord)
+            session.commit()
+            RandomizedTeachers(faculty, departmentRecord, count=random.randint(5, 20))
+            pass
+        
+        def RandomizedFaculty(index):
+            facultyGroup = GroupModel(name=f'F{index}', grouptype_id=typeIds['facultyTypeId'])
+            session.add(facultyGroup)
+            session.commit()
+            departmentCount = random.randrange(4, 14)
+            for _ in range(departmentCount):
+                RandomizedDepartment(facultyGroup, index=_)
+            studyGroupCount = random.randrange(20, 40)
+            for _ in range(studyGroupCount):
+                RandomizedStudyGroup(facultyGroup)
+            session.commit()
+        
+        def RandomizedUniversity():
+            facultyCount = random.randrange(3, 7)
+            for index in range(facultyCount):
+                RandomizedFaculty(index)
+            session.commit()
+            
+        RandomizedUniversity()
+        session.commit()
+    finally:
+        session.close()

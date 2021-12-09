@@ -64,6 +64,15 @@ def initDb(connectionstring, doDropAll=False, doCreateAll=False):
     print('initDb finished')
     return Session
 
+def preloadData(Session):
+    session = Session()
+    try:
+        session.query(GroupTypeModel)
+        pass
+    finally:
+        session.close()
+    pass
+
 def buildApp():
     """builds a FastAPI application object with binded Swagger and GraphQL endpoints
 
