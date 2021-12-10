@@ -80,8 +80,8 @@ def defineRelationNM(TableA, TableB, sequence=Sequence('all_id_seq'), tableAItem
         Column(f'{tableBName}_id', ForeignKey(f'{tableBName}.id'), primary_key=True)
     )
 
-    setattr(TableA, tableBName, relationship(TableB, secondary=interTable)) #relationship(lazy='dynamic')
-    setattr(TableB, tableAName, relationship(TableA, secondary=interTable))
+    setattr(TableA, tableBName, relationship(TableB, secondary=interTable, back_populates=tableAName)) #relationship(lazy='dynamic')
+    setattr(TableB, tableAName, relationship(TableA, secondary=interTable, back_populates=tableBName))
 
     return
 

@@ -5,6 +5,8 @@ from graphene import ObjectType, String, Field, ID, List, DateTime, Mutation, Bo
 from graphene import Schema as GSchema
 
 from starlette.graphql import GraphQLApp
+#from starlette_graphene import GraphQLApp
+
 import graphene
 
 import models.BaseEntities as BaseEntities
@@ -139,7 +141,6 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
             return session.query(UserModel).get(id)
         
         def resolve_group(root, info, id=None, name=None):
-            
             session = extractSession(info)
             if id is None:
                 return session.query(GroupModel).filter(GroupModel.name == name).first()
@@ -153,6 +154,15 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
     #router = fastapi.APIRouter()
     #https://github.com/graphql-python/graphene-sqlalchemy/issues/292
     #router = APIRouter()
+
+    class SessionMiddleware(object):
+        def resolve(self, next, root, info, **args):
+            print('SessionMiddleware Action')
+            with session_scope() as session:
+                print('info.context', info.context)
+                info.context['session'] = session
+                print('query for', args.keys())
+                return next(root, info, **args)
 
 
     class localSchema(graphene.Schema):
@@ -175,8 +185,11 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
                     newkwargs = {**kwargs, 'context': {'session': session}}
                 return await super().execute_async(*args, **newkwargs)
 
-    #graphql_app = GraphQLApp(schema=graphene.Schema(query=Query))
+
+
+    #graphql_app = GraphQLApp(schema=graphene.Schema(query=Query, mutation=Mutations), context_value={'session': None})#, middleware=[SessionMiddleware()])
     #app.add_route("/gql/", graphql_app)
     graphql_app = GraphQLApp(schema=localSchema(query=Query, mutation=Mutations))
+    
     app.add_route(bindPoint, graphql_app)
 

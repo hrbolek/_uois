@@ -7,6 +7,7 @@ inotify==0.2.10
 psycopg2-binary==2.9.1
 sqlalchemy==1.4.26
 pydantic==1.8.2
-graphene==2.1.9
+graphene==3.0.0
 starlette==0.16.0
 
+starlette-graphene==0.2.0
