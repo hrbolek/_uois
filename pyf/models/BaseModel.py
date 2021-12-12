@@ -14,3 +14,6 @@ def getBaseModel():
     BaseModel = declarative_base()
     print('BaseModel cached')
     return BaseModel
+
+
+BaseModel = getBaseModel()

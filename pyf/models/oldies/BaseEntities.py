@@ -93,7 +93,7 @@ def BuildRelations():
 from types import MappingProxyType
 
 @cache
-def ensureData(SessionMaker):
+def ensureData(SessionMaker=None, session=None):
     def ensureDataItem(session, Model, name):
         itemRecords = session.query(Model).filter(Model.name == name).all()
         itemRecordsLen = len(itemRecords)
@@ -107,7 +107,7 @@ def ensureData(SessionMaker):
         return itemRecord.id
 
     UserModel, GroupModel, RoleModel, GroupTypeModel, RoleTypeModel = GetModels()
-    session = SessionMaker()
+    session = SessionMaker() if session is None else session
     try:
         departmentTypeId = ensureDataItem(session, GroupTypeModel, 'department')
         facultyTypeId = ensureDataItem(session, GroupTypeModel, 'faculty')
@@ -158,8 +158,8 @@ def randomUser(mod='main'):
     email = f'{name1}.{name2}.{name3}@{mod}.university.world'
     return {'name': f'{name1} {name2}', 'surname': name3, 'email': email}
 
-def PopulateRandomData(SessionMaker):
-    session = SessionMaker()
+def PopulateRandomData(SessionMaker=None, session=None):
+    session = SessionMaker() if session is None else session
     try:
         UserModel, GroupModel, RoleModel, GroupTypeModel, RoleTypeModel = GetModels()
         

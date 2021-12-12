@@ -3,8 +3,7 @@ import json
 
 from fastapi import FastAPI, Request
 
-from models.Initialization import initModels
-from models.BaseModel import getBaseModel
+#from models import BaseModel
 
 from sqlengine.sqlengine import initEngine, initSession
 
@@ -48,30 +47,49 @@ def initDb(connectionstring, doDropAll=False, doCreateAll=False):
     """
 
     print('initDb started')
-    BaseModel = getBaseModel()
+    
     print(f'Session with doDropAll={doDropAll} & doCreateAll={doCreateAll}')
     assert not(connectionstring is None), 'Connection string missing'
+    #####################
+    #initModels()
+    #####################
 
-    initModels()
+    from models.BaseModel import BaseModel
+    from models.GroupRelated.GroupModel import GroupModel
+    from models.GroupRelated.UserModel import UserModel
+    from models.GroupRelated.UserGroupModel import UserGroupModel
+    from models.GroupRelated.RoleModel import RoleModel
+    from models.GroupRelated.RoleTypeModel import RoleTypeModel
+    from models.EventsRelated.EventModel import EventModel
+    from models.EventsRelated.EventUserModel import EventUserModel
+    from models.EventsRelated.EventGroupModel import EventGroupModel
+    from models.AcreditationRelated.AcrediationUserRole import AcreditationUserRoleModel
+    from models.GroupRelated.GroupTypeModel import GroupTypeModel
+    from models.AcreditationRelated.ProgramModel import ProgramModel
+    from models.AcreditationRelated.SubjectModel import SubjectModel
+    from models.AcreditationRelated.SubjectSemesterModel import SubjectSemesterModel
+    from models.AcreditationRelated.SubjectTopic import SubjectTopicModel
+
+    #from models import GroupModel, UserModel, UserGroupModel, RoleModel, RoleTypeModel
+    #from models import EventModel, EventUserModel, EventGroupModel
+    #from models import ArealModel, BuildingModel, RoomModel
+    #from models import ProgramModel, SubjectModel, SubjectSemesterModel, SubjectTopicModel, AcreditationUserRoleModel
+
+    #all = [GroupModel, UserModel, UserGroupModel, RoleModel, RoleTypeModel, EventModel, EventUserModel, EventGroupModel]
     engine = initEngine(connectionstring) 
     Session = initSession(connectionstring)
     
     if doDropAll:
         BaseModel.metadata.drop_all(engine)
+        print('DB Drop Done')
     if doCreateAll:
         BaseModel.metadata.create_all(engine)
+        print('DB Create All Done')
 
+    for item in BaseModel.metadata.tables.keys():
+        print(item)
     print('initDb finished')
     return Session
-
-def preloadData(Session):
-    session = Session()
-    try:
-        session.query(GroupTypeModel)
-        pass
-    finally:
-        session.close()
-    pass
 
 def buildApp():
     """builds a FastAPI application object with binded Swagger and GraphQL endpoints
@@ -105,8 +123,8 @@ def buildApp():
             session.close()    
 
     #app = FastAPI(root_path="/apif")
-    #initDb(connectionstring, doDropAll=True, doCreateAll=True)
-    initDb(connectionstring)
+    initDb(connectionstring, doDropAll=True, doCreateAll=True)
+    #initDb(connectionstring)
 
     app = FastAPI()
     print('init Db')
