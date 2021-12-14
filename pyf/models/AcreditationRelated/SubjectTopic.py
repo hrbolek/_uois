@@ -10,3 +10,6 @@ class SubjectTopicModel(BaseModel):
     
     id = Column(BigInteger, Sequence('all_id_seq'), primary_key=True)
     name = Column(String)
+
+    subjectsemester_id = Column(ForeignKey('subjectsemesters.id'))
+    subjectsemester = relationship('SubjectSemesterModel', back_populates='topics')

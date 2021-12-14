@@ -6,7 +6,7 @@ import datetime
 from ..BaseModel import BaseModel
 
 class ArealModel(BaseModel):
-    __tablename__ = 'roles'
+    __tablename__ = 'areals'
 
     id = Column(BigInteger, Sequence('all_id_seq'), primary_key=True)
     name = Column(String)

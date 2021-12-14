@@ -9,14 +9,14 @@ from models.BaseModel import BaseModel
     
 #     id = Column(BigInteger, Sequence('all_id_seq'), primary_key=True)
     
-#     lastchange = Column(DateTime, default=datetime.datetime.now)
 #     user_id = Column(BigInteger, ForeignKey('users.id'), primary_key=True)
 #     group_id = Column(BigInteger, ForeignKey('groups.id'), primary_key=True)
+#     lastchange = Column(DateTime, default=datetime.datetime.now)
 
 
 UserGroupModel = Table('users_groups', BaseModel.metadata,
         Column('id', BigInteger, Sequence('all_id_seq'), primary_key=True),
-        Column('users_id', ForeignKey('users.id'), primary_key=True),
-        Column('groups_id', ForeignKey('groups.id'), primary_key=True)
+        Column('user_id', ForeignKey('users.id'), primary_key=True),
+        Column('group_id', ForeignKey('groups.id'), primary_key=True)
 
 )

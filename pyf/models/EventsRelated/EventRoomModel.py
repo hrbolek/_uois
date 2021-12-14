@@ -3,18 +3,19 @@ from sqlalchemy import Column, String, BigInteger, Integer, DateTime, ForeignKey
 import datetime
 
 from models.BaseModel import BaseModel
-#from models.GroupRelated.UserModel import UserModel
 
-# EventUserModel = Table('events_users', BaseModel.metadata,
+#from models.FacilitiesRelated.RoomModel import RoomModel
+
+# EventRoomModel = Table('events_rooms', BaseModel.metadata,
 #         Column('id', BigInteger, Sequence('all_id_seq'), primary_key=True),
-#         Column('user_id', ForeignKey('users.id'), primary_key=True),
+#         Column('room_id', ForeignKey('rooms.id'), primary_key=True),
 #         Column('event_id', ForeignKey('events.id'), primary_key=True)
 
 # )
 
-class EventUserModel(BaseModel):
-        __tablename__ = 'events_users'
+class EventRoomModel(BaseModel):
+        __tablename__ = 'events_rooms'
 
         id = Column(BigInteger, Sequence('all_id_seq'), primary_key=True)
-        user_id = Column(ForeignKey('users.id'), primary_key=True)
+        room_id = Column(ForeignKey('rooms.id'), primary_key=True)
         event_id = Column(ForeignKey('events.id'), primary_key=True)

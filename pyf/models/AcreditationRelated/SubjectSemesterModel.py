@@ -12,3 +12,8 @@ class SubjectSemesterModel(BaseModel):
     name = Column(String)
     
     lastchange = Column(DateTime, default=datetime.datetime.now)
+
+    subject_id = Column(ForeignKey('subjects.id'))
+    subject = relationship('SubjectModel', back_populates='subjectsemesters')
+
+    topics = relationship('SubjectTopicModel', back_populates='subjectsemester')

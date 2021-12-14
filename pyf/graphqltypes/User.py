@@ -27,13 +27,30 @@ class UserType(ObjectType):
     #groups = List(lambda: GroupType)
     def resolve_groups(parent, info):
         session = extractSession(info)
-        dbRecords = session.query(UserGroupModel).filter(user_id=parent.id)
-        try:
-            result = map(lambda item: item.group, dbRecords)
-        except Exception as e:
-            print(e)
+        dbRecords = session.query(UserModel).filter_by(id=parent.id).first()
+        return dbRecords.groups
+
+
+    groups_by_type = List('graphqltypes.Group.GroupType', type_id=Int(required=True))
+    def resolve_groups_by_type(parent, info, type_id):
+        session = extractSession(info)
+        dbRecords = session.query(UserModel).filter_by(id=parent.id).first()
+        result = filter(lambda item: item.grouptype_id==type_id, dbRecords.groups)
         return result
-        #return [{'id': 2, 'name': 'jfgkdl'}]
+
+    # def resolve_groups(parent, info):
+    #     session = extractSession(info)
+    #     try:
+    #         result = (
+    #             session.query(GroupModel)
+    #             .join(UserGroupModel, GroupModel.id==UserGroupModel.group_id)
+    #             .filter(UserGroupModel.user_id==parent.id)
+    #             .all()
+    #         )
+    #         print(result)
+    #     except Exception as e:
+    #         print('Error', e)
+    #     return result
 
     events = List('graphqltypes.Event.EventType')
     def resolve_events(parent, info):

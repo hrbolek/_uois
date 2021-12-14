@@ -11,6 +11,7 @@ class RoomType(ObjectType):
 
     lastchange = DateTime()
     externalId = String()
+    name = String()
 
     building = Field('graphqltypes.Building.BuildingType')
     events = List('graphqltypes.Event.EventType')

@@ -13,3 +13,5 @@ class ProgramModel(BaseModel):
     
     lastchange = Column(DateTime, default=datetime.datetime.now)
     externalId = Column(BigInteger, index=True)
+
+    subjects = relationship('SubjectModel', back_populates='program')

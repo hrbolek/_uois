@@ -3,6 +3,8 @@ from sqlalchemy import Column, String, BigInteger, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import relationship, backref
 import datetime
 
+from sqlalchemy.sql.expression import column
+
 from models.BaseModel import BaseModel
 
 class SubjectModel(BaseModel):
@@ -13,3 +15,8 @@ class SubjectModel(BaseModel):
     
     lastchange = Column(DateTime, default=datetime.datetime.now)
     externalId = Column(String, index=True)
+
+    program_id = Column(ForeignKey('programs.id'))
+    program = relationship('ProgramModel', back_populates='subjects')
+
+    subjectsemesters = relationship('SubjectSemesterModel', back_populates='subject')

@@ -25,3 +25,8 @@ class EventType(ObjectType):
         dbRecord = session.query(EventModel).get(parent.id)
         return dbRecord.groups
         
+    rooms = List('graphqltypes.Room.RoomType')
+    def resolve_rooms(parent, info):
+        session = extractSession(info)
+        dbRecord = session.query(EventModel).get(parent.id)
+        return dbRecord.rooms

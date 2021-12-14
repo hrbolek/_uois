@@ -55,20 +55,30 @@ def initDb(connectionstring, doDropAll=False, doCreateAll=False):
     #####################
 
     from models.BaseModel import BaseModel
+    
     from models.GroupRelated.GroupModel import GroupModel
     from models.GroupRelated.UserModel import UserModel
     from models.GroupRelated.UserGroupModel import UserGroupModel
     from models.GroupRelated.RoleModel import RoleModel
     from models.GroupRelated.RoleTypeModel import RoleTypeModel
+    from models.GroupRelated.GroupTypeModel import GroupTypeModel
+    
     from models.EventsRelated.EventModel import EventModel
     from models.EventsRelated.EventUserModel import EventUserModel
     from models.EventsRelated.EventGroupModel import EventGroupModel
+    from models.EventsRelated.EventRoomModel import EventRoomModel
+
     from models.AcreditationRelated.AcrediationUserRole import AcreditationUserRoleModel
-    from models.GroupRelated.GroupTypeModel import GroupTypeModel
     from models.AcreditationRelated.ProgramModel import ProgramModel
     from models.AcreditationRelated.SubjectModel import SubjectModel
     from models.AcreditationRelated.SubjectSemesterModel import SubjectSemesterModel
     from models.AcreditationRelated.SubjectTopic import SubjectTopicModel
+    from models.AcreditationRelated.StudyPlan import StudyPlanModel
+    from models.AcreditationRelated.StudyPlanItem import StudyPlanItemModel
+
+    from models.FacilitiesRelated.ArealModel import ArealModel
+    from models.FacilitiesRelated.BuildingModel import BuildingModel
+    from models.FacilitiesRelated.RoomModel import RoomModel
 
     #from models import GroupModel, UserModel, UserGroupModel, RoleModel, RoleTypeModel
     #from models import EventModel, EventUserModel, EventGroupModel
@@ -86,8 +96,9 @@ def initDb(connectionstring, doDropAll=False, doCreateAll=False):
         BaseModel.metadata.create_all(engine)
         print('DB Create All Done')
 
+    print('table list')
     for item in BaseModel.metadata.tables.keys():
-        print(item)
+        print('\t', item)
     print('initDb finished')
     return Session
 
@@ -123,8 +134,9 @@ def buildApp():
             session.close()    
 
     #app = FastAPI(root_path="/apif")
-    initDb(connectionstring, doDropAll=True, doCreateAll=True)
-    #initDb(connectionstring)
+    
+    #initDb(connectionstring, doDropAll=True, doCreateAll=True)
+    initDb(connectionstring)
 
     app = FastAPI()
     print('init Db')

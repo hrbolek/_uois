@@ -14,6 +14,7 @@ class BuildingType(ObjectType):
 
     lastchange = DateTime()
     externalId = String()
+    name = String()
 
     areal = Field('graphqltypes.Areal.ArealType')
     rooms = List('graphqltypes.Room.RoomType')
@@ -25,7 +26,7 @@ class BuildingType(ObjectType):
 
     def resolve_rooms(parent, info):
         session = extractSession(info)
-        dbRecords = session.query(RoomModel).filter_by(id=parent.id)
+        dbRecords = session.query(RoomModel).filter_by(building_id=parent.id).all()
         return dbRecords
         
 

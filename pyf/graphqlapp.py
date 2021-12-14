@@ -1,7 +1,7 @@
 from typing_extensions import Required
 
 #from sqlalchemy.sql.sqltypes import Boolean
-from graphene import ObjectType, Field, ID, String, List, DateTime, Mutation, Boolean
+from graphene import ObjectType, Field, ID, String, List, DateTime, Mutation, Boolean, Int
 from graphene import Schema as GSchema
 
 from starlette.graphql import GraphQLApp
@@ -32,20 +32,40 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
     def createQueryRoot():
 
         from graphqltypes.User import UserType, UserRootResolverById
-        from graphqltypes.Group import GroupType, GroupRootResolverById, GroupRootResolverByName
+        from graphqltypes.Group import GroupType, GroupRootResolverById, GroupRootResolverByName, resolve_groups_by_type
         from graphqltypes.GroupType import GroupTypeType
         from graphqltypes.Role import RoleType
         from graphqltypes.RoleType import RoleTypeType, RoleTypeRootResolverById, RoleTypeRootResolverByName
         from graphqltypes.Event import EventType
+        from graphqltypes.Areal import ArealType, CreateRandomAreal, ArealRootResolverById, ArealRootResolverByName
+        from graphqltypes.Program import ProgramType, ProgramRootResolverById
 
-        class Query(ObjectType):
+        class QueryRoot(ObjectType):
             user = Field(UserType, id=ID(required=True), resolver=UserRootResolverById)
             group = Field(GroupType, id=ID(required=True), resolver=GroupRootResolverById)
             group_by_name = Field(GroupType, name=String(required=True), resolver=GroupRootResolverByName)
+            groups_by_type = Field(List(GroupType), type_id=Int(required=True), resolver=resolve_groups_by_type)
             roletype = Field(RoleTypeType, id=ID(required=True), resolver=RoleTypeRootResolverById)
             roletype_by_name = Field(RoleTypeType, name=String(required=True), resolver=RoleTypeRootResolverByName)
+            areal = Field(ArealType, id=ID(required=True), resolver=ArealRootResolverById)
+            areal_by_name = Field(ArealType, name=String(required=True), resolver=ArealRootResolverByName)
+            program = Field(ProgramType, id=ID(required=True), resolver=ProgramRootResolverById)
 
-        return Query
+
+        return QueryRoot
+
+    def createMutationRoot():
+
+        from graphqltypes.Areal import ArealType, CreateRandomAreal
+        from graphqltypes.Group import CreateRandomUniversity
+        from graphqltypes.Program import CreateRandomProgram
+
+        class MutationRoot(ObjectType):
+            create_random_areal = CreateRandomAreal.Field()
+            create_random_university = CreateRandomUniversity.Field()
+            create_random_program = CreateRandomProgram.Field()
+
+        return MutationRoot
 
     #router = fastapi.APIRouter()
     #https://github.com/graphql-python/graphene-sqlalchemy/issues/292
@@ -90,7 +110,7 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
     
     #graphql_app = GraphQLApp(schema=localSchema(query=Query, mutation=Mutations))
     #graphql_app = GraphQLApp(schema=localSchema(query=createQueryRoot(), mutation=Mutations))
-    graphql_app = GraphQLApp(schema=localSchema(query=createQueryRoot()))
+    graphql_app = GraphQLApp(schema=localSchema(query=createQueryRoot(), mutation=createMutationRoot()))
     
     app.add_route(bindPoint, graphql_app)
 
