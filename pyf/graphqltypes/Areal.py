@@ -25,9 +25,12 @@ class ArealType(ObjectType):
     buildings = List('graphqltypes.Building.BuildingType')
 
     def resolve_buildings(parent, info):
-        session = extractSession(info)
-        dbRecords = session.query(BuildingModel).filter(BuildingModel.areal_id == parent.id).all()
-        return dbRecords
+        if hasattr(parent, 'buildings'):
+            result = parent.buildings
+        else:
+            session = extractSession(info)
+            result = session.query(BuildingModel).filter(BuildingModel.areal_id == parent.id).all()
+        return result
         
 
 class CreateRandomAreal(Mutation):
@@ -70,6 +73,6 @@ class CreateRandomAreal(Mutation):
             session.commit()
         except Exception as e:
             print(e)
-            
+
         return CreateRandomAreal(ok=True, result=result)
     pass

@@ -20,14 +20,21 @@ class BuildingType(ObjectType):
     rooms = List('graphqltypes.Room.RoomType')
 
     def resolve_areal(parent, info):
-        session = extractSession(info)
-        dbRecord = session.query(BuildingModel).get(parent.id)
-        return dbRecord.areal
+        if hasattr(parent, 'areal'):
+            result = parent.areal
+        else:
+            session = extractSession(info)
+            dbRecord = session.query(BuildingModel).get(parent.id)
+            result = dbRecord.areal
+        return result
 
     def resolve_rooms(parent, info):
-        session = extractSession(info)
-        dbRecords = session.query(RoomModel).filter_by(building_id=parent.id).all()
-        return dbRecords
+        if hasattr(parent, 'rooms'):
+            result = parent.rooms
+        else:
+            session = extractSession(info)
+            result = session.query(RoomModel).filter_by(building_id=parent.id).all()
+        return result
         
 
     

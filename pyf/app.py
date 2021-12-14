@@ -135,8 +135,8 @@ def buildApp():
 
     #app = FastAPI(root_path="/apif")
     
-    #initDb(connectionstring, doDropAll=True, doCreateAll=True)
-    initDb(connectionstring)
+    initDb(connectionstring, doDropAll=True, doCreateAll=True)
+    #initDb(connectionstring)
 
     app = FastAPI()
     print('init Db')

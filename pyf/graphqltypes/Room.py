@@ -17,9 +17,13 @@ class RoomType(ObjectType):
     events = List('graphqltypes.Event.EventType')
 
     def resolve_building(parent, info):
-        session = extractSession(info)
-        dbRecord = session.query(RoomModel).get(parent.id)
-        return dbRecord.building
+        if hasattr(parent, 'building'):
+            result = parent.building
+        else:
+            session = extractSession(info)
+            dbRecord = session.query(RoomModel).get(parent.id)
+            result = dbRecord.building
+        return result
 
     def resolve_events(parent, info):
         session = extractSession(info)

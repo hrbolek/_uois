@@ -21,10 +21,13 @@ class SubjectSemesterType(ObjectType):
     def resolve_topics(parent, info):
         session = extractSession(info)
         #groupRecord = session.query(GroupModel).get(parent.id)
-        try:
-            dbRecord = session.query(SubjectSemesterModel).filter_by(id=parent.id).one()
-            result = dbRecord.topics
-        except Exception as e:
-            print('@resolve_topics', e)
+        if hasattr(parent, 'topics'):
+            result = parent.topics
+        else:
+            try:
+                dbRecord = session.query(SubjectSemesterModel).filter_by(id=parent.id).one()
+                result = dbRecord.topics
+            except Exception as e:
+                print('@resolve_topics', e)
         return result
         
