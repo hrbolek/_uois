@@ -37,8 +37,16 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
         from graphqltypes.Role import RoleType
         from graphqltypes.RoleType import RoleTypeType, RoleTypeRootResolverById, RoleTypeRootResolverByName
         from graphqltypes.Event import EventType
-        from graphqltypes.Areal import ArealType, CreateRandomAreal, ArealRootResolverById, ArealRootResolverByName
+
         from graphqltypes.Program import ProgramType, ProgramRootResolverById
+        from graphqltypes.Subject import SubjectType, SubjectRootResolverById, SubjectRootResolverByName
+        from graphqltypes.SubjectSemester import SubjectSemesterType, SubjectSemesterRootResolverById, SubjectSemesterRootResolverByName
+
+
+        from graphqltypes.Areal import ArealType, CreateRandomAreal, ArealRootResolverById, ArealRootResolverByName
+        from graphqltypes.Building import BuildingType, BuildingRootResolverById, BuildingRootResolverByName
+        from graphqltypes.Room import RoomType, RoomRootResolverById, RoomRootResolverByName
+
 
         class QueryRoot(ObjectType):
             user = Field(UserType, id=ID(required=True), resolver=UserRootResolverById)
@@ -47,9 +55,17 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
             groups_by_type = Field(List(GroupType), type_id=Int(required=True), resolver=resolve_groups_by_type)
             roletype = Field(RoleTypeType, id=ID(required=True), resolver=RoleTypeRootResolverById)
             roletype_by_name = Field(RoleTypeType, name=String(required=True), resolver=RoleTypeRootResolverByName)
+            
             areal = Field(ArealType, id=ID(required=True), resolver=ArealRootResolverById)
             areal_by_name = Field(ArealType, name=String(required=True), resolver=ArealRootResolverByName)
+            building = Field(BuildingType, id=ID(required=True), resolver=BuildingRootResolverById)
+            building_by_name = Field(BuildingType, name=String(required=True), resolver=BuildingRootResolverByName)
+            room = Field(RoomType, id=ID(required=True), resolver=RoomRootResolverById)
+            room_by_name = Field(RoomType, name=String(required=True), resolver=RoomRootResolverByName)
+            
             program = Field(ProgramType, id=ID(required=True), resolver=ProgramRootResolverById)
+            subject = Field(SubjectType, id=ID(required=True), resolver=SubjectRootResolverById)
+            subject_semester = Field(SubjectSemesterType, id=ID(required=True), resolver=SubjectSemesterRootResolverById)
 
 
         return QueryRoot

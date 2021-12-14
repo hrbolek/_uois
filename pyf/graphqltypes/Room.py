@@ -6,6 +6,11 @@ from graphene import ObjectType, String, Field, ID, List, DateTime, Mutation, Bo
 from models.FacilitiesRelated.RoomModel import RoomModel
 from graphqltypes.Utils import extractSession
 
+from graphqltypes.Utils import createRootResolverById, createRootResolverByName
+
+RoomRootResolverById = createRootResolverById(RoomModel)
+RoomRootResolverByName = createRootResolverByName(RoomModel)
+
 class RoomType(ObjectType):
     id = ID()
 

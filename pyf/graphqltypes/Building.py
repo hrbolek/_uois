@@ -9,6 +9,11 @@ from models.FacilitiesRelated.RoomModel import RoomModel
 
 from graphqltypes.Utils import extractSession
 
+from graphqltypes.Utils import createRootResolverById, createRootResolverByName
+
+BuildingRootResolverById = createRootResolverById(BuildingModel)
+BuildingRootResolverByName = createRootResolverByName(BuildingModel)
+
 class BuildingType(ObjectType):
     id = ID()
 

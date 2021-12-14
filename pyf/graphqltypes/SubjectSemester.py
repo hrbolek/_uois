@@ -8,6 +8,11 @@ from graphqltypes.Utils import extractSession
 from graphqltypes.Utils import createRootResolverById, createRootResolverByName
 from models.AcreditationRelated.SubjectSemesterModel import SubjectSemesterModel
 
+from graphqltypes.Utils import createRootResolverById, createRootResolverByName
+
+SubjectSemesterRootResolverById = createRootResolverById(SubjectSemesterModel)
+SubjectSemesterRootResolverByName = createRootResolverByName(SubjectSemesterModel)
+
 class SubjectSemesterType(ObjectType):
     id = ID()
     name = String()
