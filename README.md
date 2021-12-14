@@ -41,24 +41,6 @@ The project has several docker containers
 - `pgadmin` is an interface for database server administration
 
 ## Who participated on this project
-- 2021/9 - 2022/2
-    - AS (Teacher)
-    - MB (Student, Redis)
-    - JB (Student, UI, React)
-    - EB (Student, UI, React)
-    - VB (Student, Router, Tornado)
-    - LH (Student, UI, React)
-    - FH (Student, Keycloak, Authentization)
-    - JH (Student, Keycloak, Authentization)
-    - JJ (Student, UI, React, Python)
-    - VM (Student, API, SQLAlchemy, Graphene)
-    - JN (Student, Router, Tornado)
-    - DP (Student, UI, React)
-    - MR (Student, API, SQLAlchemy, Graphene)
-    - MS (Student, Redis)
-    - DS (Student, Datamanagement, Pypeteer)
-    - PV (Student, Datamanagement, Pypeteer)
-    - JW (Student, UI, React, Python)
 
     | Person | Role | Project Job | Period |
     |:------:|:----:|:-----------:|:------:|
