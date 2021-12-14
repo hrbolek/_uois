@@ -36,7 +36,9 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
         from graphqltypes.GroupType import GroupTypeType
         from graphqltypes.Role import RoleType
         from graphqltypes.RoleType import RoleTypeType, RoleTypeRootResolverById, RoleTypeRootResolverByName
+        
         from graphqltypes.Event import EventType
+        from graphqltypes.StudyPlan import StudyPlanType, StudyPlanRootResolverById
 
         from graphqltypes.Program import ProgramType, ProgramRootResolverById
         from graphqltypes.Subject import SubjectType, SubjectRootResolverById, SubjectRootResolverByName
@@ -66,6 +68,7 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
             program = Field(ProgramType, id=ID(required=True), resolver=ProgramRootResolverById)
             subject = Field(SubjectType, id=ID(required=True), resolver=SubjectRootResolverById)
             subject_semester = Field(SubjectSemesterType, id=ID(required=True), resolver=SubjectSemesterRootResolverById)
+            study_plan = Field(StudyPlanType, id=ID(required=True), resolver=StudyPlanRootResolverById)
 
 
         return QueryRoot
@@ -75,11 +78,14 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
         from graphqltypes.Areal import ArealType, CreateRandomAreal
         from graphqltypes.Group import CreateRandomUniversity
         from graphqltypes.Program import CreateRandomProgram
+        from graphqltypes.StudyPlan import CreateStudyPlan
 
         class MutationRoot(ObjectType):
             create_random_areal = CreateRandomAreal.Field()
             create_random_university = CreateRandomUniversity.Field()
             create_random_program = CreateRandomProgram.Field()
+
+            create_study_plan = CreateStudyPlan.Field()
 
         return MutationRoot
 

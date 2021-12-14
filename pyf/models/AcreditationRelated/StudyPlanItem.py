@@ -20,17 +20,17 @@ class StudyPlanItemModel(BaseModel):
     studyplan = relationship('StudyPlanModel', back_populates='studyplanitems')
 
     #groups = relationship('StudyPlanItemGroupModel', back_populates='studyplanitem') #relationship(lazy='dynamic')
-    #events = relationship('StudyPlanItemEventModel', back_populates='studyplanitem')
+    events = relationship('StudyPlanItemEventModel', back_populates='studyplanitem')
     #teachers = relationship('StudyPlanItemTeacherModel', back_populates='studyplanitem')
 
 
-# class StudyPlanItemEventModel(BaseModel):
-#     __tablename__ = 'studyplanitemevents'
-#     id = Column(BigInteger, Sequence('all_id_seq'), primary_key=True)
-#     studyplanitem_id = Column(ForeignKey('studyplanitems.id'))
-#     event_id = Column(ForeignKey('events.id'))
+class StudyPlanItemEventModel(BaseModel):
+    __tablename__ = 'studyplanitemevents'
+    id = Column(BigInteger, Sequence('all_id_seq'), primary_key=True)
+    studyplanitem_id = Column(ForeignKey('studyplanitems.id'))
+    event_id = Column(ForeignKey('events.id'))
 
-#     #studyplanitem = relationship('StudyPlanItemModel', back_populates='events')
+    studyplanitem = relationship('StudyPlanItemModel', back_populates='events')
 
 # class StudyPlanItemTeacherModel(BaseModel):
 #     __tablename__ = 'studyplanitemteachers'

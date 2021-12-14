@@ -4,6 +4,9 @@ from typing_extensions import Required
 from graphene import ObjectType, String, Field, ID, List, DateTime, Mutation, Boolean, Int, NonNull
 
 from models.GroupRelated.GroupModel import GroupModel
+from models.GroupRelated.UserModel import UserModel
+from models.GroupRelated.RoleModel import RoleModel
+
 from graphqltypes.Utils import extractSession
 
 from graphqltypes.Utils import createRootResolverById, createRootResolverByName
@@ -11,7 +14,146 @@ from graphqltypes.Utils import createRootResolverById, createRootResolverByName
 GroupRootResolverById = createRootResolverById(GroupModel)
 GroupRootResolverByName = createRootResolverByName(GroupModel)
 
+
+class AddUser(Mutation):
+    """Adds a user to this group"""
+    class Arguments():
+        userid = ID()
+
+    ok = Boolean()
+    result = Field('graphqltypes.User.UserType')
+    msg = String()
+
+    def mutate(parent, info, userid):
+        session = extractSession(info)
+        groupRecord = session.query(GroupModel).filter_by(id=parent.id).one()
+        userIsIn = False
+        for item in groupRecord.users:
+            if item.id == userIsIn:
+                userIsIn = True
+                break
+        
+        if userIsIn:
+            return AddUser(ok=False, result=item, msg=f'User {userid} is already in this group')
+        
+        userRecord = session.query(UserModel).filter_by(id=userid).one()
+        groupRecord.users.append(userRecord)
+        session.commit()
+        result = userRecord
+        return AddUser(ok=True, result=result, msg='')
+
+class RemoveUser(Mutation):
+    """Removes a user from this group
+    
+    Parameters
+    ----------
+    userid: ID()
+        identification of user which have to be removed from group
+    """
+    class Arguments():
+        userid = ID()
+
+    ok = Boolean()
+    result = Field('graphqltypes.User.UserType')
+    msg = String()
+
+    def mutate(parent, info, userid):
+        session = extractSession(info)
+        groupRecord = session.query(GroupModel).filter_by(id=parent.id).one()
+        userIsIn = False
+        for item in groupRecord.users:
+            if item.id == userIsIn:
+                userIsIn = True
+                break
+        
+        if userIsIn:
+            groupRecord.users.remove(item)
+            session.commit()
+            return AddUser(ok=True, result=item, msg=f'User {userid} has been successfuly removed from this group {parent.id}')
+
+        userRecord = session.query(UserModel).filter_by(id=userid).one()
+        return AddUser(ok=False, result=userRecord, msg=f'User {userid} is not member of this group {parent.id}')
+
+class PromoteUser(Mutation):
+    """Gives a user a role in this group"""
+    class Arguments():
+        userid = ID()
+        roletypeid = ID()
+
+    ok = Boolean()
+    result = Field('graphqltypes.User.UserType')
+    msg = String()
+
+    def mutate(parent, info, userid, roletypeid):
+        session = extractSession(info)
+        groupRecord = session.query(GroupModel).filter_by(id=parent.id).one()
+        userIsIn = False
+        for item in groupRecord.users:
+            if item.id == userIsIn:
+                userIsIn = True
+                break
+        
+        if not userIsIn:
+            return PromoteUser(ok=False, result=item, msg='User is not in group')
+
+        userHasRole = False
+        for role in groupRecord.roles:
+            if not item.user_id == userid:
+                continue
+            if role.roletype_id == roletypeid:
+                userHasRole = True
+                break
+        
+        if userHasRole:
+            return PromoteUser(ok=False, result=item, msg='User has already this role')
+
+        newRole = RoleModel(group=groupRecord, user=item, roletypeid=roletypeid)
+        session.add(newRole)
+        session.commit()
+
+        return PromoteUser(ok=False, result=item, msg='')
+
+class DemoteUser(Mutation):
+    """Removes a role of user in the group"""
+    class Arguments():
+        userid = ID()
+        roletypeid = ID()
+
+    ok = Boolean()
+    msg = String()
+    result = Field('graphqltypes.User.UserType')
+
+    def mutate(parent, info, userid, roletypeid):
+        session = extractSession(info)
+        groupRecord = session.query(GroupModel).filter_by(id=parent.id).one()
+        userIsIn = False
+        for item in groupRecord.users:
+            if item.id == userIsIn:
+                userIsIn = True
+                break
+        
+        if not userIsIn:
+            return DemoteUser(ok=False, result=item, msg=f'User {userid} is not in group {parent.id}')
+
+        userHasRole = False
+        for role in groupRecord.roles:
+            if not role.user_id == userid:
+                continue
+            if role.roletype_id == roletypeid:
+                userHasRole = True
+                break
+        
+        if not userHasRole:
+            return DemoteUser(ok=False, result=item, msg=f'User {userid} has not role {roletypeid}')
+
+        session.delete(role)
+        session.commit()
+
+        return DemoteUser(ok=False, result=item, msg='')
+
 class GroupType(ObjectType):
+    """Represent a group of users"""
+
     id = ID()
     name = String()
 
@@ -19,6 +161,11 @@ class GroupType(ObjectType):
     externalId = String()
 
     grouptype_id = Int()
+
+    add_user = AddUser.Field()
+    remove_user = RemoveUser.Field()
+    promote_user = PromoteUser.Field()
+    demote_user = DemoteUser.Field()
     
     #users = List(Field('graphqltypes.User.UserType').type)
     users = List('graphqltypes.User.UserType')
