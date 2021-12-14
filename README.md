@@ -60,5 +60,26 @@ The project has several docker containers
     - PV (Student, Datamanagement, Pypeteer)
     - JW (Student, UI, React, Python)
 
+    | Person | Role | Project Job | Period |
+    |:------:|:----:|:-----------:|:------:|
+    | AS     |Teacher|                          | 2021/9 - 2022/2 |
+    | MB     |Student| Redis                    | 2021/9 - 2022/2 |
+    | JB     |Student| UI, React                | 2021/9 - 2022/2 |
+    | EB     |Student| UI, React                | 2021/9 - 2022/2 |
+    | VB     |Student| Router, Tornado          | 2021/9 - 2022/2 |
+    | LH     |Student| UI, React                | 2021/9 - 2022/2 |
+    | FH     |Student| Keycloak, Authentization | 2021/9 - 2022/2 |
+    | JH     |Student| Keycloak, Authentization | 2021/9 - 2022/2 |
+    | JJ     |Student| UI, React, Python        | 2021/9 - 2022/2 |
+    | VM     |Student| API, SQLAlchemy, Graphene| 2021/9 - 2022/2 |
+    | JN     |Student| Router, Tornado          | 2021/9 - 2022/2 |
+    | DP     |Student| UI, React                | 2021/9 - 2022/2 |
+    | MR     |Student| API, SQLAlchemy, Graphene| 2021/9 - 2022/2 |
+    | MS     |Student| Redis                    | 2021/9 - 2022/2 |
+    | DS     |Student| Datamanagement, Pypeteer | 2021/9 - 2022/2 |
+    | PV     |Student| Datamanagement, Pypeteer | 2021/9 - 2022/2 |
+    | JW     |Student| UI, React, Python        | 2021/9 - 2022/2 |
+
+
 ## Current Notes
 To run this docker stack in some alpha mode you can run the docker-compose.yml. Be careful as it uses host volumes.
