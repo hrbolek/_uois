@@ -48,62 +48,18 @@ export const StudentMedium = (props) => {
 }
 
 export const StudentLarge = (props) => {
-    const [state, setState] = useState(
-        {
-            'id': props.id,
-            'name': props.name,
-            'faculty': 'FVT',
-            'department': [{'id': 124, 'name': 'K209'}],
-            'studyGroups': [
-                {'id': 257, 'name': '23-5AT'}
-            ],
-            'subjects': [
-                {'id': 458, 'name': 'subj1'}
-            ]
-        })
 
-    useEffect(()=>{
-        `
-        query {
-            user(id: $id$) {
-                id
-                externalId
-                name
-                surname
-                fullname
-                faculty: groupsByType(type: 0) {
-                    id
-                    name
-                }
-                department: groupsByType(type: 1) {
-                    id
-                    name
-                }
-                studyGroups: groupsByType(type: 2) {
-                    id
-                    name
-                }
-                studyprograms {
-                    id
-                    externalId
-                    name
-                }
-            }
-        }
-        `
-
-    }, [props.id])
 
     const studyGroups = []
-    for(var index = 0; index < state.studyGroups.length; index++) {
-        const sgItem = state.studyGroups[index]
+    for(var index = 0; index < props.studyGroups.length; index++) {
+        const sgItem = props.studyGroups[index]
         studyGroups.push(<GroupSmall id={sgItem.id} name={sgItem.name}/>);
         studyGroups.push(<br />);
     }
 
     const studySubjects = []
-    for(var index = 0; index < state.subjects.length; index++) {
-        const ssItem = state.subjects[index];
+    for(var index = 0; index < props.subjects.length; index++) {
+        const ssItem = props.subjects[index];
         studySubjects.push(<SubjectSmall id={ssItem.id} name={ssItem.name}/>)
     }
 
@@ -114,13 +70,14 @@ export const StudentLarge = (props) => {
                 <Card>
                     <Card.Header className='bg-success bg-gradient text-white'>
                         <Card.Title>Základní informace o studentovi</Card.Title>
+                        <StudentSmall {...props} />
                     </Card.Header>
                     <Card.Body>
                         <Table striped bordered hover>
                             <tbody>
-                                <tr><td><b>Student ({state.id})</b></td><td>{state.name}</td></tr>
-                                <tr><td><b>Fakulta</b> </td><td>{state.faculty}</td></tr>
-                                <tr><td><b>Katedra</b> </td><td>{state.department}</td></tr>
+                                <tr><td><b>Student ({state.id})</b></td><td>{props.name}</td></tr>
+                                <tr><td><b>Fakulta</b> </td><td>{props.faculty}</td></tr>
+                                <tr><td><b>Katedra</b> </td><td>{props.department}</td></tr>
                                 <tr><td><b>Studijní skupina</b> </td><td>{studyGroups}</td></tr>
                                 <tr><td><b>Studijní obor</b> </td><td></td></tr>
                             </tbody>
@@ -168,8 +125,56 @@ export const StudentLarge = (props) => {
 export const StudentPage = (props) => {
     const { id } = useParams();
     const name = 'Josef Novák'
+
+    const [state, setState] = useState(
+        {
+            'id': props.id,
+            'name': props.name,
+            'faculty': 'FVT',
+            'department': [{'id': 124, 'name': 'K209'}],
+            'studyGroups': [
+                {'id': 257, 'name': '23-5AT'}
+            ],
+            'subjects': [
+                {'id': 458, 'name': 'subj1'}
+            ]
+        })
+
+    useEffect(()=>{
+        `
+        query {
+            user(id: $id$) {
+                id
+                externalId
+                name
+                surname
+                fullname
+                faculty: groupsByType(type: 0) {
+                    id
+                    name
+                }
+                department: groupsByType(type: 1) {
+                    id
+                    name
+                }
+                studyGroups: groupsByType(type: 2) {
+                    id
+                    name
+                }
+                studyprograms {
+                    id
+                    externalId
+                    name
+                }
+            }
+        }
+        `
+
+    }, [props.id])
+
+
     return (
-        <StudentLarge id={id} name={name} />
+        <StudentLarge {...state} />
     )
 }
 

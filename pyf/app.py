@@ -1,5 +1,6 @@
 from functools import cache
 import json
+import os
 
 from fastapi import FastAPI, Request
 
@@ -18,14 +19,27 @@ def getConfig(configFileName='config.json'):
     ----------
     configFileName: str
         name of the file to be readed
+        the expected structure is:
+        {
+            "connectionstring": "driver://user:password@host/databasename"
+            
+        }
+        driver should be "postgresql+psycopg2"
+
 
     Returns
     -------
     json: dict
         data structure defining parameters describing application and stored externally
     """
-    with open(configFileName, 'r') as config:
-        return json.load(config)
+
+    result = { 'connectionstring': 'postgresql+psycopg2://postgres:postgres@postgres:5432/uois' }
+    if os.path.isfile(configFileName):
+        with open(configFileName, 'r') as config:
+            result = json.load(config)
+    return result
+
+from sqlalchemy_utils.functions import database_exists, create_database
 
 def initDb(connectionstring, doDropAll=False, doCreateAll=False):
     """Initialize database connection
@@ -46,10 +60,19 @@ def initDb(connectionstring, doDropAll=False, doCreateAll=False):
 
     """
 
+    assert not(connectionstring is None), 'Connection string missing'
     print('initDb started')
     
+    if not database_exists(connectionstring):  #=> False
+        try:
+            create_database(connectionstring)
+            doCreateAll = True
+            print('Database created')
+        except Exception as e:
+            print('Database does not exists and cannot be created')
+            raise
+
     print(f'Session with doDropAll={doDropAll} & doCreateAll={doCreateAll}')
-    assert not(connectionstring is None), 'Connection string missing'
     #####################
     #initModels()
     #####################
