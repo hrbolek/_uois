@@ -75,7 +75,7 @@ export const StudentLarge = (props) => {
                     <Card.Body>
                         <Table striped bordered hover>
                             <tbody>
-                                <tr><td><b>Student ({state.id})</b></td><td>{props.name}</td></tr>
+                                <tr><td><b>Student ({props.id})</b></td><td>{props.name}</td></tr>
                                 <tr><td><b>Fakulta</b> </td><td>{props.faculty}</td></tr>
                                 <tr><td><b>Katedra</b> </td><td>{props.department}</td></tr>
                                 <tr><td><b>Studijní skupina</b> </td><td>{studyGroups}</td></tr>
@@ -141,7 +141,7 @@ export const StudentPage = (props) => {
         })
 
     useEffect(()=>{
-        `
+        const q = `
         query {
             user(id: $id$) {
                 id

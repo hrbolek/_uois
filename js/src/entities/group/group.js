@@ -2,6 +2,7 @@ import {
     Link,
     useParams
   } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -10,16 +11,78 @@ import Button from 'react-bootstrap/Button';
 
 import { TeacherSmall } from '../teacher/teacher';
 import { StudentSmall } from '../student/student';
+import { UserSmall } from "../user/user";
 
-import { root } from '../index'
+import { root, rootGQL } from '../index'
+import { useQueryGQL } from "../index";
+import { Loading, LoadingError } from "../index";
 
 const groupRoot = root + '/groups'
+
+export const QueryGroupByIdLarge = (id) => 
+    fetch(rootGQL, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        redirect: 'follow', // manual, *follow, error
+        body: JSON.stringify({"query": 
+            `
+            query {
+                group(id: ${id}) {
+                  id
+                  name
+                  grouptypeId
+                  users {
+                    id
+                    name
+                    surname
+                    email
+                  }
+                }
+              }
+            `        
+        }) // body data type must match "Content-Type" header
+});
+
+export const QueryGroupByIdMedium = (id) => 
+    fetch(rootGQL, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        redirect: 'follow', // manual, *follow, error
+        body: JSON.stringify({"query": 
+            `
+            query {
+                group(id: ${id}) {
+                  id
+                  name
+                  grouptypeId
+                }
+              }
+            `        
+        }) // body data type must match "Content-Type" header
+});
 
 export const GroupSmall = (props) => {
     //embeded Student
     return (
         <Link to={groupRoot + `/${props.id}`}>{props.name}</Link>
     )
+}
+    
+export const GroupSmallWithFetching = (props) => {
+    const [state, error] = useQueryGQL(props.id, QueryGroupByIdMedium, (response) => response.data.group, [props.id])
+    if (state !== null) {
+        return <GroupSmall {...state} />
+    } else if (error !== null) {
+        return <LoadingError error={error} />
+    } else {
+        return <Loading>Skupina {props.id}</Loading>
+    }
 }
 
 export const GroupMedium = (props) => {
@@ -30,13 +93,25 @@ export const GroupMedium = (props) => {
                 <Card.Title>Skupina ID:{props.id}, {props.name}</Card.Title>
                 <Card.Text>
                 </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
             </Card.Body>
         </Card>            
     )
 }
 
+export const GroupMediumWithFetching = (props) => {
+    const [state, error] = useQueryGQL(props.id, QueryGroupByIdMedium, (response) => response.data.group, [props.id])
+    if (state !== null) {
+        return <GroupMedium {...state} />
+    } else if (error !== null) {
+        return <LoadingError error={error} />
+    } else {
+        return <Loading>Skupina {props.id}</Loading>
+    }
+}
+
 export const GroupLarge = (props) => {
+    let users = props.users.map((item, index) => (<><UserSmall key={index} {...item} /><br key={'k' + index} /></>))
+
     return (
         <>
         <Row>
@@ -47,7 +122,8 @@ export const GroupLarge = (props) => {
                     </Card.Header>
                     <Card.Body>
                         Skupina ID:{props.id}, {props.name}<br />
-                        <a href={'mailto:student1@unob.cz?cc=student2@unob.cz;student3@unob.cz&subject=Email z IS'}>@</a>
+                        <a href={'mailto:student1@unob.cz?cc=student2@unob.cz;student3@unob.cz&subject=Email z IS'}>@</a> <br />
+                        Typ : {props.grouptypeId}
                     </Card.Body>
                 </Card>
             </Col>
@@ -56,11 +132,10 @@ export const GroupLarge = (props) => {
             <Col>
                 <Card>
                     <Card.Header className='bg-success bg-gradient text-white'>
-                        <Card.Title>Studenti:</Card.Title>
+                        <Card.Title>Příslušníci:</Card.Title>
                     </Card.Header>
                     <Card.Body>
-                        <StudentSmall id='1587' name='Novák' /><br />
-                        <StudentSmall id='1774' name='Rozbilová' /><br />
+                        {users}
                     </Card.Body>
                 </Card>
             </Col>
@@ -84,11 +159,22 @@ export const GroupLarge = (props) => {
     )
 }
 
+export const GroupLargeWithFetching = (props) => {
+    const [state, error] = useQueryGQL(props.id, QueryGroupByIdLarge, (response) => response.data.group, [props.id])
+    if (state !== null) {
+        return <GroupLarge {...state} />
+    } else if (error !== null) {
+        return <LoadingError error={error} />
+    } else {
+        return <Loading>Skupina {props.id}</Loading>
+    }
+}
+
 export const GroupPage = (props) => {
     const { id } = useParams();
-    const name = 'fetched name'
+
     return (
-        <GroupLarge id={id} name={name} />
+        <GroupLargeWithFetching id={id} />
     )
 }
 
