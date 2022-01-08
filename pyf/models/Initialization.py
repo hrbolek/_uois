@@ -174,7 +174,7 @@ from models.AcreditationRelated.ProgramModel import ProgramModel
 from models.AcreditationRelated.SubjectModel import SubjectModel
 from models.AcreditationRelated.SubjectSemesterModel import SubjectSemesterModel
 from models.AcreditationRelated.SubjectTopic import  SubjectTopicModel
-from models.AcreditationRelated.AcrediationUserRole import AcreditationUserRoleModel
+from models.AcreditationRelated.AcrediationUserRole import AcreaditationUserRoleTypeModel
 
 def CreateRandomStudyProgram(SessionMaker=None, session=None):
     if session is None:

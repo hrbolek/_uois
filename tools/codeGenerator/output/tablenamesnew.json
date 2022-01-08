@@ -1,0 +1,1204 @@
+{
+    "studyplanitem_teachers": {
+        "Model": "StudyPlanItemTeacherModel",
+        "SQLTableName": "studyplanitem_teachers",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "teacher_id": {
+                "name": "teacher_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "teacher_id",
+                "isPrimaryKey": false
+            },
+            "studyplanitem_id": {
+                "name": "studyplanitem_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "studyplanitem_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "events": {
+        "Model": "EventModel",
+        "SQLTableName": "events",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "start": {
+                "name": "start",
+                "type": "sqlalchemy.sql.sqltypes.DateTime",
+                "column": "start",
+                "isPrimaryKey": false
+            },
+            "end": {
+                "name": "end",
+                "type": "sqlalchemy.sql.sqltypes.DateTime",
+                "column": "end",
+                "isPrimaryKey": false
+            },
+            "label": {
+                "name": "label",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "label",
+                "isPrimaryKey": false
+            },
+            "externalId": {
+                "name": "externalId",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "externalId",
+                "isPrimaryKey": false
+            },
+            "lastchange": {
+                "name": "lastchange",
+                "type": "sqlalchemy.sql.sqltypes.DateTime",
+                "column": "lastchange",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "acreditationuserroletypes": {
+        "Model": "AcreditationUserRoleTypeModel",
+        "SQLTableName": "acreditationuserroletypes",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "grouptypes": {
+        "Model": "GroupTypeModel",
+        "SQLTableName": "grouptypes",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "roles": {
+        "Model": "RoleModel",
+        "SQLTableName": "roles",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            },
+            "lastchange": {
+                "name": "lastchange",
+                "type": "sqlalchemy.sql.sqltypes.DateTime",
+                "column": "lastchange",
+                "isPrimaryKey": false
+            },
+            "roletype_id": {
+                "name": "roletype_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "roletype_id",
+                "isPrimaryKey": false
+            },
+            "user_id": {
+                "name": "user_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "user_id",
+                "isPrimaryKey": false
+            },
+            "group_id": {
+                "name": "group_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "group_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "subjecttopics": {
+        "Model": "SubjectTopicModel",
+        "SQLTableName": "subjecttopics",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            },
+            "externalId": {
+                "name": "externalId",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "externalId",
+                "isPrimaryKey": false
+            },
+            "subjectsemester_id": {
+                "name": "subjectsemester_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "subjectsemester_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "studyplans": {
+        "Model": "StudyPlanModel",
+        "SQLTableName": "studyplans",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            },
+            "externalId": {
+                "name": "externalId",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "externalId",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "events_groups": {
+        "Model": "EventGroupModel",
+        "SQLTableName": "events_groups",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "group_id": {
+                "name": "group_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "group_id",
+                "isPrimaryKey": false
+            },
+            "event_id": {
+                "name": "event_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "event_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "studyplanitem_events": {
+        "Model": "StudyPlanItemEventModel",
+        "SQLTableName": "studyplanitem_events",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "studyplanitem_id": {
+                "name": "studyplanitem_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "studyplanitem_id",
+                "isPrimaryKey": false
+            },
+            "event_id": {
+                "name": "event_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "event_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "grouproletypes": {
+        "Model": "RoleTypeModel",
+        "SQLTableName": "grouproletypes",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "users_groups": {
+        "Model": "UserGroupModel",
+        "SQLTableName": "users_groups",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "user_id": {
+                "name": "user_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "user_id",
+                "isPrimaryKey": false
+            },
+            "group_id": {
+                "name": "group_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "group_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "areals": {
+        "Model": "ArealModel",
+        "SQLTableName": "areals",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            },
+            "externalId": {
+                "name": "externalId",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "externalId",
+                "isPrimaryKey": false
+            },
+            "lastchange": {
+                "name": "lastchange",
+                "type": "sqlalchemy.sql.sqltypes.DateTime",
+                "column": "lastchange",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "subjects_users": {
+        "Model": "SubjectUserModel",
+        "SQLTableName": "subjects_users",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "subject_id": {
+                "name": "subject_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "subject_id",
+                "isPrimaryKey": false
+            },
+            "user_id": {
+                "name": "user_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "user_id",
+                "isPrimaryKey": false
+            },
+            "roletype_id": {
+                "name": "roletype_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "roletype_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "studyplanitem_groups": {
+        "Model": "StudyPlanItemGroupModel",
+        "SQLTableName": "studyplanitem_groups",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "group_id": {
+                "name": "group_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "group_id",
+                "isPrimaryKey": false
+            },
+            "studyplanitem_id": {
+                "name": "studyplanitem_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "studyplanitem_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "subjectsemesters": {
+        "Model": "SubjectSemesterModel",
+        "SQLTableName": "subjectsemesters",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            },
+            "lastchange": {
+                "name": "lastchange",
+                "type": "sqlalchemy.sql.sqltypes.DateTime",
+                "column": "lastchange",
+                "isPrimaryKey": false
+            },
+            "subject_id": {
+                "name": "subject_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "subject_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "groups": {
+        "Model": "GroupModel",
+        "SQLTableName": "groups",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            },
+            "abbreviation": {
+                "name": "abbreviation",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "abbreviation",
+                "isPrimaryKey": false
+            },
+            "lastchange": {
+                "name": "lastchange",
+                "type": "sqlalchemy.sql.sqltypes.DateTime",
+                "column": "lastchange",
+                "isPrimaryKey": false
+            },
+            "entryYearId": {
+                "name": "entryYearId",
+                "type": "sqlalchemy.sql.sqltypes.BigInteger",
+                "column": "entryYearId",
+                "isPrimaryKey": false
+            },
+            "externalId": {
+                "name": "externalId",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "externalId",
+                "isPrimaryKey": false
+            },
+            "UIC": {
+                "name": "UIC",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "UIC",
+                "isPrimaryKey": false
+            },
+            "grouptype_id": {
+                "name": "grouptype_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "grouptype_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "users": {
+        "Model": "UserModel",
+        "SQLTableName": "users",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            },
+            "surname": {
+                "name": "surname",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "surname",
+                "isPrimaryKey": false
+            },
+            "email": {
+                "name": "email",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "email",
+                "isPrimaryKey": false
+            },
+            "lastchange": {
+                "name": "lastchange",
+                "type": "sqlalchemy.sql.sqltypes.DateTime",
+                "column": "lastchange",
+                "isPrimaryKey": false
+            },
+            "externalId": {
+                "name": "externalId",
+                "type": "sqlalchemy.sql.sqltypes.BigInteger",
+                "column": "externalId",
+                "isPrimaryKey": false
+            },
+            "UCO": {
+                "name": "UCO",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "UCO",
+                "isPrimaryKey": false
+            },
+            "VaVId": {
+                "name": "VaVId",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "VaVId",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "programs_users": {
+        "Model": "ProgramUserModel",
+        "SQLTableName": "programs_users",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "program_id": {
+                "name": "program_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "program_id",
+                "isPrimaryKey": false
+            },
+            "user_id": {
+                "name": "user_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "user_id",
+                "isPrimaryKey": false
+            },
+            "roletype_id": {
+                "name": "roletype_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "roletype_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "events_rooms": {
+        "Model": "EventRoomModel",
+        "SQLTableName": "events_rooms",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "room_id": {
+                "name": "room_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "room_id",
+                "isPrimaryKey": false
+            },
+            "event_id": {
+                "name": "event_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "event_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "buildings": {
+        "Model": "BuildingModel",
+        "SQLTableName": "buildings",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            },
+            "lastchange": {
+                "name": "lastchange",
+                "type": "sqlalchemy.sql.sqltypes.DateTime",
+                "column": "lastchange",
+                "isPrimaryKey": false
+            },
+            "externalId": {
+                "name": "externalId",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "externalId",
+                "isPrimaryKey": false
+            },
+            "areal_id": {
+                "name": "areal_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "areal_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "events_users": {
+        "Model": "EventUserModel",
+        "SQLTableName": "events_users",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "user_id": {
+                "name": "user_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "user_id",
+                "isPrimaryKey": false
+            },
+            "event_id": {
+                "name": "event_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "event_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "subjects": {
+        "Model": "SubjectModel",
+        "SQLTableName": "subjects",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            },
+            "lastchange": {
+                "name": "lastchange",
+                "type": "sqlalchemy.sql.sqltypes.DateTime",
+                "column": "lastchange",
+                "isPrimaryKey": false
+            },
+            "externalId": {
+                "name": "externalId",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "externalId",
+                "isPrimaryKey": false
+            },
+            "program_id": {
+                "name": "program_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "program_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "subjecttopics_users": {
+        "Model": "SubjectTopicUserModel",
+        "SQLTableName": "subjecttopics_users",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "subjecttopic_id": {
+                "name": "subjecttopic_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "subjecttopic_id",
+                "isPrimaryKey": false
+            },
+            "user_id": {
+                "name": "user_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "user_id",
+                "isPrimaryKey": false
+            },
+            "roletype_id": {
+                "name": "roletype_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "roletype_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "programs": {
+        "Model": "ProgramModel",
+        "SQLTableName": "programs",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            },
+            "lastchange": {
+                "name": "lastchange",
+                "type": "sqlalchemy.sql.sqltypes.DateTime",
+                "column": "lastchange",
+                "isPrimaryKey": false
+            },
+            "externalId": {
+                "name": "externalId",
+                "type": "sqlalchemy.sql.sqltypes.BigInteger",
+                "column": "externalId",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "groups_groups": {
+        "Model": "GroupConnectionModel",
+        "SQLTableName": "groups_groups",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "child_id": {
+                "name": "child_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "child_id",
+                "isPrimaryKey": false
+            },
+            "parent_id": {
+                "name": "parent_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "parent_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "studyplans_groups": {
+        "Model": "StudyPlanGroupsModel",
+        "SQLTableName": "studyplans_groups",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "studyplan_id": {
+                "name": "studyplan_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "studyplan_id",
+                "isPrimaryKey": false
+            },
+            "group_id": {
+                "name": "group_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "group_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "studyplanitems": {
+        "Model": "StudyPlanItemModel",
+        "SQLTableName": "studyplanitems",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            },
+            "priority": {
+                "name": "priority",
+                "type": "sqlalchemy.sql.sqltypes.BigInteger",
+                "column": "priority",
+                "isPrimaryKey": false
+            },
+            "subjectSemesterTopic": {
+                "name": "subjectSemesterTopic",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "subjectSemesterTopic",
+                "isPrimaryKey": false
+            },
+            "externalId": {
+                "name": "externalId",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "externalId",
+                "isPrimaryKey": false
+            },
+            "studyplan_id": {
+                "name": "studyplan_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "studyplan_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "rooms": {
+        "Model": "RoomModel",
+        "SQLTableName": "rooms",
+        "locals": {
+            "id": {
+                "name": "id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "id",
+                "isPrimaryKey": true
+            },
+            "name": {
+                "name": "name",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "name",
+                "isPrimaryKey": false
+            },
+            "lastchange": {
+                "name": "lastchange",
+                "type": "sqlalchemy.sql.sqltypes.DateTime",
+                "column": "lastchange",
+                "isPrimaryKey": false
+            },
+            "externalId": {
+                "name": "externalId",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "externalId",
+                "isPrimaryKey": false
+            },
+            "building_id": {
+                "name": "building_id",
+                "type": "sqlalchemy.sql.sqltypes.String",
+                "column": "building_id",
+                "isPrimaryKey": false
+            }
+        },
+        "relations": {}
+    },
+    "GroupModel": {
+        "relations": {
+            "GroupTypeModel": {
+                "name": "grouptypemodel"
+            },
+            "UserGroupModel": {
+                "name": "usergroupmodel_collection"
+            },
+            "GroupConnectionModel": {
+                "name": "groupconnectionmodel_collection"
+            },
+            "RoleModel": {
+                "name": "rolemodel_collection"
+            },
+            "EventGroupModel": {
+                "name": "eventgroupmodel_collection"
+            },
+            "StudyPlanGroupsModel": {
+                "name": "studyplangroupsmodel_collection"
+            },
+            "StudyPlanItemGroupModel": {
+                "name": "studyplanitemgroupmodel_collection"
+            }
+        }
+    },
+    "GroupTypeModel": {
+        "relations": {
+            "GroupModel": {
+                "name": "groupmodel_collection"
+            }
+        }
+    },
+    "BuildingModel": {
+        "relations": {
+            "ArealModel": {
+                "name": "arealmodel"
+            },
+            "RoomModel": {
+                "name": "roommodel_collection"
+            }
+        }
+    },
+    "ArealModel": {
+        "relations": {
+            "BuildingModel": {
+                "name": "buildingmodel_collection"
+            }
+        }
+    },
+    "EventUserModel": {
+        "relations": {
+            "UserModel": {
+                "name": "usermodel"
+            },
+            "EventModel": {
+                "name": "eventmodel"
+            }
+        }
+    },
+    "UserModel": {
+        "relations": {
+            "EventUserModel": {
+                "name": "eventusermodel_collection"
+            },
+            "ProgramUserModel": {
+                "name": "programusermodel_collection"
+            },
+            "UserGroupModel": {
+                "name": "usergroupmodel_collection"
+            },
+            "RoleModel": {
+                "name": "rolemodel_collection"
+            },
+            "SubjectUserModel": {
+                "name": "subjectusermodel_collection"
+            },
+            "StudyPlanItemTeacherModel": {
+                "name": "studyplanitemteachermodel_collection"
+            },
+            "SubjectTopicUserModel": {
+                "name": "subjecttopicusermodel_collection"
+            }
+        }
+    },
+    "EventModel": {
+        "relations": {
+            "EventUserModel": {
+                "name": "eventusermodel_collection"
+            },
+            "EventGroupModel": {
+                "name": "eventgroupmodel_collection"
+            },
+            "StudyPlanItemEventModel": {
+                "name": "studyplanitemeventmodel_collection"
+            },
+            "EventRoomModel": {
+                "name": "eventroommodel_collection"
+            }
+        }
+    },
+    "ProgramUserModel": {
+        "relations": {
+            "AcreditationUserRoleTypeModel": {
+                "name": "acreditationuserroletypemodel"
+            },
+            "ProgramModel": {
+                "name": "programmodel"
+            },
+            "UserModel": {
+                "name": "usermodel"
+            }
+        }
+    },
+    "AcreditationUserRoleTypeModel": {
+        "relations": {
+            "ProgramUserModel": {
+                "name": "programusermodel_collection"
+            },
+            "SubjectUserModel": {
+                "name": "subjectusermodel_collection"
+            },
+            "SubjectTopicUserModel": {
+                "name": "subjecttopicusermodel_collection"
+            }
+        }
+    },
+    "ProgramModel": {
+        "relations": {
+            "ProgramUserModel": {
+                "name": "programusermodel_collection"
+            },
+            "SubjectModel": {
+                "name": "subjectmodel_collection"
+            }
+        }
+    },
+    "SubjectModel": {
+        "relations": {
+            "ProgramModel": {
+                "name": "programmodel"
+            },
+            "SubjectUserModel": {
+                "name": "subjectusermodel_collection"
+            },
+            "SubjectSemesterModel": {
+                "name": "subjectsemestermodel_collection"
+            }
+        }
+    },
+    "StudyPlanItemModel": {
+        "relations": {
+            "StudyPlanModel": {
+                "name": "studyplanmodel"
+            },
+            "StudyPlanItemEventModel": {
+                "name": "studyplanitemeventmodel_collection"
+            },
+            "StudyPlanItemTeacherModel": {
+                "name": "studyplanitemteachermodel_collection"
+            },
+            "StudyPlanItemGroupModel": {
+                "name": "studyplanitemgroupmodel_collection"
+            }
+        }
+    },
+    "StudyPlanModel": {
+        "relations": {
+            "StudyPlanItemModel": {
+                "name": "studyplanitemmodel_collection"
+            },
+            "StudyPlanGroupsModel": {
+                "name": "studyplangroupsmodel_collection"
+            }
+        }
+    },
+    "UserGroupModel": {
+        "relations": {
+            "UserModel": {
+                "name": "usermodel"
+            },
+            "GroupModel": {
+                "name": "groupmodel"
+            }
+        }
+    },
+    "GroupConnectionModel": {
+        "relations": {
+            "GroupModel": {
+                "name": "groupmodel"
+            }
+        }
+    },
+    "RoleModel": {
+        "relations": {
+            "UserModel": {
+                "name": "usermodel"
+            },
+            "RoleTypeModel": {
+                "name": "roletypemodel"
+            },
+            "GroupModel": {
+                "name": "groupmodel"
+            }
+        }
+    },
+    "RoleTypeModel": {
+        "relations": {
+            "RoleModel": {
+                "name": "rolemodel_collection"
+            }
+        }
+    },
+    "RoomModel": {
+        "relations": {
+            "BuildingModel": {
+                "name": "buildingmodel"
+            },
+            "EventRoomModel": {
+                "name": "eventroommodel_collection"
+            }
+        }
+    },
+    "EventGroupModel": {
+        "relations": {
+            "EventModel": {
+                "name": "eventmodel"
+            },
+            "GroupModel": {
+                "name": "groupmodel"
+            }
+        }
+    },
+    "SubjectUserModel": {
+        "relations": {
+            "UserModel": {
+                "name": "usermodel"
+            },
+            "SubjectModel": {
+                "name": "subjectmodel"
+            },
+            "AcreditationUserRoleTypeModel": {
+                "name": "acreditationuserroletypemodel"
+            }
+        }
+    },
+    "SubjectSemesterModel": {
+        "relations": {
+            "SubjectModel": {
+                "name": "subjectmodel"
+            },
+            "SubjectTopicModel": {
+                "name": "subjecttopicmodel_collection"
+            }
+        }
+    },
+    "StudyPlanGroupsModel": {
+        "relations": {
+            "GroupModel": {
+                "name": "groupmodel"
+            },
+            "StudyPlanModel": {
+                "name": "studyplanmodel"
+            }
+        }
+    },
+    "StudyPlanItemEventModel": {
+        "relations": {
+            "EventModel": {
+                "name": "eventmodel"
+            },
+            "StudyPlanItemModel": {
+                "name": "studyplanitemmodel"
+            }
+        }
+    },
+    "StudyPlanItemTeacherModel": {
+        "relations": {
+            "StudyPlanItemModel": {
+                "name": "studyplanitemmodel"
+            },
+            "UserModel": {
+                "name": "usermodel"
+            }
+        }
+    },
+    "StudyPlanItemGroupModel": {
+        "relations": {
+            "StudyPlanItemModel": {
+                "name": "studyplanitemmodel"
+            },
+            "GroupModel": {
+                "name": "groupmodel"
+            }
+        }
+    },
+    "EventRoomModel": {
+        "relations": {
+            "RoomModel": {
+                "name": "roommodel"
+            },
+            "EventModel": {
+                "name": "eventmodel"
+            }
+        }
+    },
+    "SubjectTopicModel": {
+        "relations": {
+            "SubjectSemesterModel": {
+                "name": "subjectsemestermodel"
+            },
+            "SubjectTopicUserModel": {
+                "name": "subjecttopicusermodel_collection"
+            }
+        }
+    },
+    "SubjectTopicUserModel": {
+        "relations": {
+            "SubjectTopicModel": {
+                "name": "subjecttopicmodel"
+            },
+            "UserModel": {
+                "name": "usermodel"
+            },
+            "AcreditationUserRoleTypeModel": {
+                "name": "acreditationuserroletypemodel"
+            }
+        }
+    }
+}

@@ -91,7 +91,7 @@ def initDb(connectionstring, doDropAll=False, doCreateAll=False):
     from models.EventsRelated.EventGroupModel import EventGroupModel
     from models.EventsRelated.EventRoomModel import EventRoomModel
 
-    from models.AcreditationRelated.AcrediationUserRole import AcreditationUserRoleModel
+    from models.AcreditationRelated.AcrediationUserRole import AcreaditationUserRoleTypeModel, ProgramUserRoleModel, SubjectUserRoleModel, StudyPlanUserRoleModel
     from models.AcreditationRelated.ProgramModel import ProgramModel
     from models.AcreditationRelated.SubjectModel import SubjectModel
     from models.AcreditationRelated.SubjectSemesterModel import SubjectSemesterModel

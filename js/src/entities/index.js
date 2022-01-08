@@ -11,7 +11,7 @@ export const rootGQL = '/gql'
 
 /*
  * @param id holds value for unique entity identification
- * @param queryFunc returns future of response (API) queryFunc = (id) => fetch('api/entity)
+ * @param queryFunc returns future of response (API) queryFunc = (id) => fetch('api/entity')
  * @param responseToJson is function mapping json retrieved from api to requested data responseToJson = (responseJson) => responseJson.data.data.user
  * @param depends is array of values if a change is detected in array, fetch is rerun
  */

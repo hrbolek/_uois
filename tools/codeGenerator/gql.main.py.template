@@ -1,0 +1,71 @@
+import graphene
+from contextlib import contextmanager
+
+{% for tablename, tableDescriptor in dbDescriptor.items() %}
+import gql_{{tablename}}
+{%- endfor %}
+
+class query(graphene.ObjectType):
+{% for tablename, tableDescriptor in dbDescriptor.items() %}
+    #{{tableDescriptor}}
+    {%- for name, item in tableDescriptor['locals'].items() %}
+        {%- if item['isPrimaryKey']: %}
+    #{{item}}
+    {{tableDescriptor['SQLTableName']}}_by_{{item['name']}} =  graphene.Field(
+        'gql_{{tablename}}.get_{{tablename}}', 
+        {{item['name']}}=graphene.String(required=True),
+        resolver=gql_{{tablename}}.resolve_{{tablename}}_by_{{item['name']}}
+    )
+        {%- endif %}
+        {%- if not item['isPrimaryKey']: %}
+    #{{item}}
+    {{tableDescriptor['SQLTableName']}}_{{item['name']}}_starts_with =  graphene.Field(
+        'gql_{{tablename}}.get_{{tablename}}', 
+        {{item['name']}}=graphene.String(required=True),
+        resolver=gql_{{tablename}}.resolve_{{tablename}}_by_{{item['name']}}
+    )
+        {%- endif %}
+    {%- endfor %}
+{%- endfor %}
+
+def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
+
+    """Attaches a Swagger endpoint to a FastAPI
+
+    Parameters
+    ----------
+    app: FastAPI
+        app to bind to
+    prepareSession: lambda : session
+        callable which returns a db session
+    """
+    assert callable(sessionFunc), "sessionFunc must be a function creating a session"
+
+    session_scope = contextmanager(sessionFunc)
+
+    class localSchema(graphene.Schema):
+        def __init__(self, *args, **kwargs) -> None:
+            super().__init__(*args, **kwargs)
+
+        def execute(self, *args, **kwargs):
+            with session_scope() as session:
+                if 'context' in kwargs:
+                    newkwargs = {**kwargs, 'context': {**kwargs['context'], 'session': session}}
+                else:
+                    newkwargs = {**kwargs, 'context': {'session': session}}
+                return super().execute(*args, **newkwargs)
+
+        async def execute_async(self, *args, **kwargs):
+            with session_scope() as session:
+                if 'context' in kwargs:
+                    newkwargs = {**kwargs, 'context': {**kwargs['context'], 'session': session}}
+                else:
+                    newkwargs = {**kwargs, 'context': {'session': session}}
+                return await super().execute_async(*args, **newkwargs)
+
+    from starlette.graphql import GraphQLApp
+    
+    #graphql_app = GraphQLApp(schema=localSchema(query=query, mutation=createMutationRoot()))
+    graphql_app = GraphQLApp(schema=localSchema(query=query))
+    
+    app.add_route(bindPoint, graphql_app)

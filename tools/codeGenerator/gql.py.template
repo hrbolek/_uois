@@ -1,0 +1,91 @@
+import graphene
+from sqlalchemy.orm import relationship
+from BaseModel import BaseModel
+
+def extractSession(info):
+    #return info.context['request'].scope['db_session']
+    assert not info.context is None, 'Got Bad Context'
+    return info.context.get('session')
+
+class {{tableName}}(BaseModel):
+    __tablename__ = '{{tableDescriptor['SQLTableName']}}'
+    __table_args__ = {'extend_existing': True} 
+    {% for name, item in tableDescriptor['relations'].items() %}
+    {{name}} = relationship('{{item['type']}}')
+    # {{name}} = association_proxy('{{name}}', 'keyword')
+    {%- endfor %}
+
+
+class get_{{tableName}}(graphene.ObjectType):
+    {% for name, item in tableDescriptor['locals'].items() %}
+    {{name}} = {{item["type"]}}()
+    {%- endfor %}
+    {% for name, item in tableDescriptor['relations'].items() %}
+        {% if item['useList'] %}
+    {{name}} = graphene.List('gql_{{item["type"]}}.get_{{item["type"]}}')
+        {% else %}
+    {{name}} = graphene.Field('gql_{{item["type"]}}.get_{{item["type"]}}')
+        {%- endif %}
+    def resolver_{{name}}(parent, info):
+        return parent.{{name}}
+    {%- endfor %}
+
+
+class create_{{tableName}}(graphene.Mutation):
+    class Arguments:
+    {%- for name, item in tableDescriptor['locals'].items() %}
+        {{name}} = {{item['type']}}(required=True)
+    {%- endfor %}
+
+    ok = graphene.Boolean()
+    result = graphene.Field('get_{{tableName}}')
+    
+    def mutate(parent, info, **paramList):
+        session = extractSession(info)
+        result = {{tableName}}(**paramList)
+        session.add(result)
+        session.commit()
+        return create_{{tableName}}(ok=True, result=result)
+    pass
+
+class update_{{tableName}}(graphene.Mutation):
+    class Arguments:
+    {%- for name, item in tableDescriptor['locals'].items() %}
+        {%- if item['isPrimaryKey']: %}
+        {{name}} = {{item['type']}}(required=True)
+        {%- else %}    
+        {{name}} = {{item['type']}}(required=False)
+        {%- endif %}
+    {%- endfor %}
+
+    ok = graphene.Boolean()
+    result = graphene.Field('get_{{tableName}}')
+    
+    def mutate(parent, info, **paramList):
+        session = extractSession(info)
+        dbRecord = session.query({{tableName}}).filter_by({{pkName}}=paramList['{{pkName}}']).one()
+        for key, item in paramList.items():
+            if key=='{{pkName}}':
+                continue
+            setattr(dbRecord, key, item)
+        session.commit()
+        return update_{{tableName}}(ok=True, result=dbRecord)
+    pass
+
+{% for name, item in tableDescriptor['locals'].items() %}
+        {%- if item['isPrimaryKey']: %}
+def resolve_{{tableDescriptor['SQLTableName']}}_by_{{item['name']}}(root, info, {{item['name']}}):
+    session = extractSession(info)
+    dbRecord = session.query({{tableName}}).filter_by({{item['name']}}={{item['name']}}).one()
+    return dbRecord
+        {%- endif %}
+{%- endfor %}
+
+{%- for name, item in tableDescriptor['locals'].items() %}
+        {%- if not item['isPrimaryKey']: %}
+def resolve_{{tableDescriptor['SQLTableName']}}_{{item['name']}}_starts_with(root, info, {{item['name']}}):
+    session = extractSession(info)
+    dbRecords = session.query({{tableName}}).filter({{tableName}}.{{item['name']}}.startswith({{item['name']}})).all()
+    return dbRecords
+        {%- endif %}
+{%- endfor %}

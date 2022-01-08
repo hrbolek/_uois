@@ -14,3 +14,12 @@ class StudyPlanModel(BaseModel):
     name = Column(String)
 
     studyplanitems = relationship('StudyPlanItemModel', back_populates='studyplan')
+
+
+class StudyPlanGroupsModel(BaseModel):
+    __tablename__ = 'studyplans_groups'
+    
+    id = Column(BigInteger, Sequence('all_id_seq'), primary_key=True)
+    
+    studyplan_id = Column(ForeignKey('studyplans.id'))
+    group_id = Column(ForeignKey('groups.id'))

@@ -1,0 +1,173 @@
+{
+    "acreditationuserrole": {
+        "acreditationuserrole": "acreditationUserRoleModel"
+    },
+    "grouptypes": {
+        "grouptypes": "groupTypeModel",
+        "groups": "groups_collection"
+    },
+    "groups": {
+        "groups": "groupModel",
+        "grouptypes": "grouptypes",
+        "users_groups": "users_groups_collection",
+        "roles": "roles_collection",
+        "events_groups": "events_groups_collection"
+    },
+    "users": {
+        "users": "users",
+        "events_users": "events_users_collection",
+        "programuserroles": "programuserroles_collection",
+        "studyplanuserroles": "studyplanuserroles_collection",
+        "users_groups": "users_groups_collection",
+        "roles": "roles_collection",
+        "subjectuserroles": "subjectuserroles_collection",
+        "studyplanitemteachers": "studyplanitemteachers_collection"
+    },
+    "events_users": {
+        "events_users": "events_users",
+        "users": "users",
+        "events": "events"
+    },
+    "events": {
+        "events": "events",
+        "events_users": "events_users_collection",
+        "events_groups": "events_groups_collection",
+        "studyplanitemevents": "studyplanitemevents_collection",
+        "events_rooms": "events_rooms_collection"
+    },
+    "acreditationuserroletypes": {
+        "acreditationuserroletypes": "acreditationuserroletypes",
+        "programuserroles": "programuserroles_collection",
+        "studyplanuserroles": "studyplanuserroles_collection",
+        "subjectuserroles": "subjectuserroles_collection"
+    },
+    "programuserroles": {
+        "programuserroles": "programuserroles",
+        "acreditationuserroletypes": "acreditationuserroletypes",
+        "users": "users",
+        "programs": "programs"
+    },
+    "programs": {
+        "programs": "programs",
+        "programuserroles": "programuserroles_collection",
+        "subjects": "subjects_collection"
+    },
+    "studyplanuserroles": {
+        "studyplanuserroles": "studyplanuserroles",
+        "studyplans": "studyplans",
+        "users": "users",
+        "acreditationuserroletypes": "acreditationuserroletypes"
+    },
+    "studyplans": {
+        "studyplans": "studyplans",
+        "studyplanuserroles": "studyplanuserroles_collection",
+        "studyplanitems": "studyplanitems_collection",
+        "studyplans_groups": "studyplans_groups_collection"
+    },
+    "subjects": {
+        "subjects": "subjects",
+        "programs": "programs",
+        "subjectuserroles": "subjectuserroles_collection",
+        "subjectsemesters": "subjectsemesters_collection"
+    },
+    "studyplanitems": {
+        "studyplanitems": "studyplanitems",
+        "studyplans": "studyplans",
+        "studyplanitemevents": "studyplanitemevents_collection",
+        "studyplanitemteachers": "studyplanitemteachers_collection",
+        "studyplanitemgroups": "studyplanitemgroups_collection"
+    },
+    "areals": {
+        "areals": "areals",
+        "buildings": "buildings_collection"
+    },
+    "buildings": {
+        "buildings": "buildings",
+        "areals": "areals",
+        "rooms": "rooms_collection"
+    },
+    "users_groups": {
+        "users_groups": "users_groups",
+        "groups": "groups",
+        "users": "users",
+        "groupModel": "groupmodel"
+    },
+    "roletypes": {
+        "roletypes": "roletypes",
+        "roles": "roles_collection"
+    },
+    "roles": {
+        "roles": "roles",
+        "roletypes": "roletypes",
+        "groups": "groups",
+        "users": "users",
+        "groupModel": "groupmodel"
+    },
+    "events_groups": {
+        "events_groups": "events_groups",
+        "groups": "groups",
+        "events": "events",
+        "groupModel": "groupmodel"
+    },
+    "subjectuserroles": {
+        "subjectuserroles": "subjectuserroles",
+        "subjects": "subjects",
+        "users": "users",
+        "acreditationuserroletypes": "acreditationuserroletypes"
+    },
+    "subjectsemesters": {
+        "subjectsemesters": "subjectsemesters",
+        "subjects": "subjects",
+        "subjecttopics": "subjecttopics_collection"
+    },
+    "studyplanitemevents": {
+        "studyplanitemevents": "studyplanitemevents",
+        "events": "events",
+        "studyplanitems": "studyplanitems"
+    },
+    "rooms": {
+        "rooms": "rooms",
+        "buildings": "buildings",
+        "events_rooms": "events_rooms_collection"
+    },
+    "events_rooms": {
+        "events_rooms": "events_rooms",
+        "events": "events",
+        "rooms": "rooms"
+    },
+    "subjecttopics": {
+        "subjecttopics": "subjecttopics",
+        "subjectsemesters": "subjectsemesters"
+    },
+    "groups2groups": {
+        "groups2groups": "groups2groups",
+        "groupModel": "groupmodel"
+    },
+    "studyplans_groups": {
+        "studyplans_groups": "studyplans_groups",
+        "studyplans": "studyplans",
+        "groupModel": "groupmodel"
+    },
+    "studyplanitemteachers": {
+        "studyplanitemteachers": "studyplanitemteachers",
+        "users": "users",
+        "studyplanitems": "studyplanitems"
+    },
+    "studyplanitemgroups": {
+        "studyplanitemgroups": "studyplanitemgroups",
+        "studyplanitems": "studyplanitems",
+        "groupModel": "groupmodel"
+    },
+    "groupModel": {
+        "groupTypeModel": "grouptypemodel",
+        "users_groups": "users_groups_collection",
+        "groups2groups": "groups2groups_collection",
+        "roles": "roles_collection",
+        "events_groups": "events_groups_collection",
+        "studyplans_groups": "studyplans_groups_collection",
+        "studyplanitemgroups": "studyplanitemgroups_collection"
+    },
+    "groupTypeModel": {
+        "groupModel": "groupmodel_collection"
+    }
+}

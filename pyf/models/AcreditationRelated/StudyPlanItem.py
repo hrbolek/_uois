@@ -32,25 +32,25 @@ class StudyPlanItemEventModel(BaseModel):
 
     studyplanitem = relationship('StudyPlanItemModel', back_populates='events')
 
-# class StudyPlanItemTeacherModel(BaseModel):
-#     __tablename__ = 'studyplanitemteachers'
+class StudyPlanItemTeacherModel(BaseModel):
+    __tablename__ = 'studyplanitemteachers'
     
-#     id = Column(BigInteger, Sequence('all_id_seq'), primary_key=True)
+    id = Column(BigInteger, Sequence('all_id_seq'), primary_key=True)
 
-#     teacher_id = Column(ForeignKey('users.id'))
-#     #teacher = relationship('UserModel')
+    teacher_id = Column(ForeignKey('users.id'))
+    #teacher = relationship('UserModel')
 
-#     studyplanitem_id = Column(ForeignKey('studyplanitems.id'))
-#     #studyplanitem = relationship('StudyPlanItemModel', back_populates='teachers')
+    studyplanitem_id = Column(ForeignKey('studyplanitems.id'))
+    #studyplanitem = relationship('StudyPlanItemModel', back_populates='teachers')
 
-# class StudyPlanItemGroupModel(BaseModel):
-#     __tablename__ = 'studyplanitemgroups'
+class StudyPlanItemGroupModel(BaseModel):
+    __tablename__ = 'studyplanitemgroups'
     
-#     id = Column(BigInteger, Sequence('all_id_seq'), primary_key=True)
+    id = Column(BigInteger, Sequence('all_id_seq'), primary_key=True)
 
-#     group_id = Column(ForeignKey('groups.id'))
-#     #group = relationship('GroupModel')
+    group_id = Column(ForeignKey('groups.id'))
+    #group = relationship('GroupModel')
 
-#     studyplanitem_id = Column(ForeignKey('studyplanitems.id'))
-#     #studyplanitem = relationship('StudyPlanItemModel', back_populates='groups')
+    studyplanitem_id = Column(ForeignKey('studyplanitems.id'))
+    #studyplanitem = relationship('StudyPlanItemModel', back_populates='groups')
 

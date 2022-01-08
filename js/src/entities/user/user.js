@@ -2,7 +2,6 @@ import {
     Link,
     useParams
   } from "react-router-dom";
-import { useEffect, useState } from "react";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
@@ -160,9 +159,9 @@ export const UserLarge = (props) =>  {
 export const UserLargeFetching = (props) => {
     const [state, error] = useQueryGQL(props.id, QueryUserByIdLarge, (response) => response.data.user, [props.id])
 
-    if (state != null) {
+    if (state !== null) {
         return <UserLarge {...state} />
-    } else if (error != null) {
+    } else if (error !== null) {
         return <LoadingError error={error} />
     } else {
         return <Loading>Uživatel {props.id}</Loading>
