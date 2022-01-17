@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 
 import { Card } from "react-bootstrap";
 import { DepartmentSmall } from "./department";
-import { PersonSmall } from "../persons/person";
+//import { PersonSmall } from "../person/person";
+import { PersonSmall } from "../person/person";
 
 import { root } from '../index';
 import { useQueryGQL, Loading, LoadingError } from "../index";

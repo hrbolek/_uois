@@ -4,8 +4,10 @@ from graphene import ObjectType, String, Field, ID, List, DateTime, Mutation, Bo
 
 #from models.GroupRelated.GroupModel import GroupModel
 from graphqltypes.Utils import extractSession
-
+from models.AcreditationRelated.SubjectTopic import SubjectTopicModel
 from graphqltypes.Utils import createRootResolverById, createRootResolverByName
+
+SubjectSemesterTopicRootResolverById = createRootResolverById(SubjectTopicModel)
 
 class SubjectSemesterTopicType(ObjectType):
     id = ID()

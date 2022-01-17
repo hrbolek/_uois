@@ -4,6 +4,7 @@ from typing_extensions import Required
 from graphene import ObjectType, Field, ID, String, List, DateTime, Mutation, Boolean, Int
 from graphene import Schema as GSchema
 
+
 from starlette.graphql import GraphQLApp
 #from starlette_graphene import GraphQLApp
 
@@ -43,12 +44,12 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
         from graphqltypes.Program import ProgramType, ProgramRootResolverById
         from graphqltypes.Subject import SubjectType, SubjectRootResolverById, SubjectRootResolverByName
         from graphqltypes.SubjectSemester import SubjectSemesterType, SubjectSemesterRootResolverById, SubjectSemesterRootResolverByName
-
+        from graphqltypes.SubjectSemesterTopic import SubjectSemesterTopicType, SubjectSemesterTopicRootResolverById
 
         from graphqltypes.Areal import ArealType, CreateRandomAreal, ArealRootResolverById, ArealRootResolverByName
         from graphqltypes.Building import BuildingType, BuildingRootResolverById, BuildingRootResolverByName
         from graphqltypes.Room import RoomType, RoomRootResolverById, RoomRootResolverByName
-
+        
 
         class QueryRoot(ObjectType):
             user = Field(UserType, id=ID(required=True), resolver=UserRootResolverById)
@@ -68,8 +69,9 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
             program = Field(ProgramType, id=ID(required=True), resolver=ProgramRootResolverById)
             subject = Field(SubjectType, id=ID(required=True), resolver=SubjectRootResolverById)
             subject_semester = Field(SubjectSemesterType, id=ID(required=True), resolver=SubjectSemesterRootResolverById)
-            study_plan = Field(StudyPlanType, id=ID(required=True), resolver=StudyPlanRootResolverById)
+            subject_semester_topic = Field(SubjectSemesterTopicType, id=ID(required=True), resolver=SubjectSemesterTopicRootResolverById)
 
+            study_plan = Field(StudyPlanType, id=ID(required=True), resolver=StudyPlanRootResolverById)
 
         return QueryRoot
 

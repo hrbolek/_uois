@@ -1,0 +1,365 @@
+import {root} from "../index";
+
+//import {SubjectSmall} from "../subject/subject";
+//import {LessonSmall} from "../lesson/lesson";
+import { Link } from "react-router-dom";
+
+import Card  from "react-bootstrap/Card";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Table from "react-bootstrap/Table";
+import Accordion from "react-bootstrap/Accordion";
+import Button from "react-bootstrap/Button";
+
+import {useParams } from "react-router-dom";
+
+import React, { useState, useEffect } from "react";
+//import {LessonSmall} from "../lesson/lesson";
+
+import { TeacherSmall } from "../person/teacher";
+import { DepartmentSmall } from "../group/department";
+import { FacultySmall } from "../group/faculty";
+
+import { SubjectMedium, SubjectLarge } from "./subject";
+import { useQueryGQL, Loading, LoadingError } from "../index";
+
+export const progRoot = root + "/studyprogram";
+
+
+export const ProgramSmall = (props) => {
+    return(
+        <Link to={progRoot + `/${props.id}`}>{props.name}{props.children}</Link>
+    )
+}
+
+// export const ProgLargeAPI = (props) => {
+//     const [state, setState] = useState(
+//         {
+//             'programy':[{'id':'id',
+//             'name':'name',
+//             'subjects':[{'id':'id','name':'name','semesters':[{'id':'id','name':'name'}]}]
+//         }]}
+//     );
+//     useEffect(() => {
+//         fetch('http://localhost:50001/gql', {
+//             method: 'POST',
+//             headers: {
+//               'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify({
+//               query: `
+//               # Write your query or mutation here
+//               query{
+//                 program(id:1){
+//                   id
+//                   name
+//                   subjects{
+//                     id
+//                     name
+//                     semesters{
+//                       name
+//                       id
+//                     }
+//                   }
+//                 }
+//               }       
+//                 `,
+//               variables: {
+//                 now: new Date().toISOString(),
+//               },
+//             }),
+//           })
+//             .then((res) => res.json())
+//             .then((result) => setState(result.data));
+            
+//     }, [] )
+    
+//     //POTOM BUDE: [props.id] - závislost kdy se udělá fetch (vždy když změníme id)!
+//     //console.log("po fetchi:", state)
+//     return(
+//         <div>
+//             <ProgLarge json={state}/>
+//         </div>
+//     )
+// }
+
+export const ProgramLarge = (props) => {
+    return (
+        <ProgramMedium {...props} >
+            <Card>
+                <Card.Header>
+                    Předměty
+                </Card.Header>
+                <Card.Body>
+                    <ProgramSubjectList {...props} />
+                </Card.Body>
+            </Card>
+            
+            {JSON.stringify(props)}
+        </ProgramMedium>
+    )
+}
+
+export const ProgramLarge_ = (props) => {
+    const json=props.json
+
+
+    //setState(props)
+    console.log("----obsah props:--- ", json)
+
+    /*
+    const programy = []
+    for(var index = 0; index < json.program.length; index++) {
+        const sgItem = json.program[index]
+        programy.push(<ProgMedium name={sgItem.name} id={sgItem.id}/>);
+    }
+*/
+try{ 
+    if(json.program.length>1){
+        const programy = []
+        for(var index = 0; index < json.program.length; index++) {
+            const sgItem = json.program[index]
+            programy.push(<ProgramMedium name={sgItem.name} id={sgItem.id}/>);
+        }
+        return (<div>
+            <Table striped bordered hover>
+                <thead>
+                    <h3>Seznam studijních programů:</h3>
+                </thead>
+              {programy}                  
+            </Table>
+            
+            {/*<p><b>fetchnuty JSON soubor z GraphQL:</b> {JSON.stringify(json)}</p>*/}
+
+        </div>)
+    
+        }
+        else{
+            return(<div>
+                <Table striped bordered hover>
+                    <thead>
+                        <h3>Studijní program:</h3>
+                    </thead>
+                        
+                  <Card><ProgramMedium name={json.program.name} id={json.program.id}/></Card>             
+                </Table>
+                
+                {/*<p><b>fetchnuty JSON soubor z GraphQL:</b> {JSON.stringify(json)}</p>*/}
+
+            </div>)
+        }
+
+} catch(e) { 
+    console.error(e); 
+    return(<div>
+        <Table striped bordered hover>
+            <thead>
+                <h3>Studijní program:</h3>
+            </thead>
+              
+          <Card><ProgramMedium name={json.programy.name} id={json.programy.id}/></Card>             
+        </Table>
+        
+        {/*<p><b>fetchnuty JSON soubor z GraphQL:</b> {JSON.stringify(json)}</p>*/}
+
+    </div>)
+    
+}
+
+
+//console.log("obsah program: ",programy)
+    
+}
+
+const tdStyle = {
+    'colspan': "2",
+    'align': "right",
+    
+    
+    //'background-color': '#CCCCCC',
+    };
+
+const tableStyle = {
+    color: '#333333',
+    width: '110%',
+    border: '1px solid black',
+    'border-collapse': 'collapse',
+        
+    //'background-color': '#CCCCCC',
+    };
+
+export const ProgramSubjectList_ = (props) => {
+    return (
+        <Table >
+            <thead>
+                <tr><td>Předměty</td></tr>
+            </thead>
+            <tbody>
+                <tr><td>{JSON.stringify(props)}</td></tr>
+            </tbody>
+        </Table>
+    )
+}
+
+export const ProgramSubjectList = (props) => {
+    // see https://codesandbox.io/s/react-bootstrap-multiple-accordion-tabs-oboks
+    // see https://react-bootstrap.github.io/components/accordion/
+    if (!props.subjects) {
+        return (
+            <>
+            NO subjects
+            </>
+        )
+    }
+
+    // const subjects = props.subjects.map((subject, index) => (      
+    //     <Accordion.Item eventKey={index + ""}>
+    //         <Accordion.Header>{subject.name}</Accordion.Header>
+    //         <Accordion.Body>
+    //             <SubjectMedium {...subject}/>
+    //         </Accordion.Body>
+    //     </Accordion.Item>
+    //   ));
+    const subjects = props.subjects.map((subject, index) => (
+        <Accordion key={subject.id} >
+        <Card>
+            <Card.Header>
+                <Accordion.Toggle as={Button} variant="link" eventKey={subject.id}>
+                    {subject.name} ({subject.id})
+                </Accordion.Toggle>
+            </Card.Header>
+            
+            <Accordion.Collapse eventKey={subject.id}>
+                <Card.Body>
+                    <SubjectLarge {...subject}/>
+                </Card.Body>
+            </Accordion.Collapse>
+            
+        </Card>
+        </Accordion>
+    ))
+
+
+    return (
+        <>
+            {subjects}
+        </>
+    )
+}
+  
+
+
+export const ProgramMedium = (props) => {
+    return (
+        <Card>
+            <Card.Header>
+                Program {props.name}, typ {'P'} / {'Prezenční'}
+            </Card.Header>
+            <Card.Body>
+                <Row>
+                    <Col>
+                        Fakulta:
+                        <br />
+                        <FacultySmall id={13} name={'FVT'} />
+                    </Col>
+                    <Col>
+                        Garant:
+                        <br />
+                        <TeacherSmall id={15} name={'Petr'} surname={'Novak'} />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        {props.children}
+                    </Col>
+                </Row>
+            </Card.Body>
+        </Card>
+    )
+}
+export const ProgramMedium_ = (props) => {
+
+    //VYŘEŠENO zmizení [0]teho prvku ----> ale je to správně ? ---> NENÍ TO NEJLEPŠÍ, NĚKDE SE OBJEVÍ CHYBA !!!
+    // const state ={
+    //     'name': props.name,
+    //     'id': props.id
+    // };
+    //console.log("ProgMedium state: ", state)
+    //useEffect(()=>{})
+    return (
+            <Table striped bordered hover style={tableStyle}>
+            <tbody>
+                    <tr>
+                        <td>Název: </td>
+                        <td><b>{props.name}</b></td>
+                        <td>Typ programu: <b>P</b></td>
+                        <td>Forma studia: <b>prenzenční</b></td>
+                    </tr>
+                    <tr>
+                        <td>Fakulta: </td>
+                        <td><b><DepartmentSmall id={props.id} name={"*FAKULTA*"}/></b></td>
+                        <td colSpan="2" align="left">Garant: <b><TeacherSmall id={props.id} name={"ppl. Ing. Luděk Jedlička, Ph.D"}/></b></td>
+                    </tr>
+                    <tr>
+                        <td>id: </td>
+                        <td><b>{props.id}</b></td>
+                        <td colSpan="2" align="left"> <b><ProgramSmall name="předměty" id={props.id}/></b></td>
+                    </tr>
+            </tbody>
+            </Table>
+    )
+}
+
+export const ProgramLargeStoryBook = (props) => {
+    const extraProps = {}
+    return <ProgramLarge {...extraProps} {...props} />
+}
+
+export const StudyProgramLargeQuery = (id) =>
+    fetch('/gql', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            query: `
+            # Write your query or mutation here
+            query {
+                program(id: ${id}) {
+                    id
+                    name
+                    subjects {
+                      id
+                      name
+                      semesters {
+                        id
+                        name
+                        topics {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+            }       
+            `}),
+    })
+
+export const StudyProgramLargeFetching = (props) => {
+    const [state, error] = useQueryGQL(props.id, StudyProgramLargeQuery, (response) => response.data.program, [props.id])
+    
+    if (state != null) {
+        return <ProgramLargeStoryBook {...state} />
+    } else if (error != null) {
+        return <LoadingError error={error} />
+    } else {
+        return <Loading>program {props.id}</Loading>
+    }
+ 
+}
+
+export const StudyProgramPage = (props) => {
+    const { id }  = useParams();
+
+    return <StudyProgramLargeFetching {...props} id={id} />
+}

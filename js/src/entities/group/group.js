@@ -4,9 +4,9 @@ import Card from 'react-bootstrap/Card';
 import { useEffect, useState } from "react";
 
 import image from '../rozvrhSnimek.png';
-import { StudentSmall } from "../persons/student";
+import { StudentSmall } from "../person/student";
 import { DepartmentSmall } from "../group/department";
-import { TeacherSmall } from "../persons/teacher";
+import { TeacherSmall } from "../person/teacher";
 
 import { root } from '../index';
 import { useQueryGQL, Loading, LoadingError } from "../index";

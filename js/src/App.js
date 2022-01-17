@@ -17,11 +17,16 @@ import { UserPage } from './entities/user/user';
 //import { GroupPage, GroupLarge } from './entities/group/group';
 import { SubjectPage } from './entities/subject/subject';
 
-import { TeacherPage } from './entities/persons/teacher';
-import { StudentPage } from './entities/persons/student';
+import { TeacherPage } from './entities/person/teacher';
+import { StudentPage } from './entities/person/student';
 import { DepartmentPage } from './entities/group/department';
 import { FacultyPage } from './entities/group/faculty';
 import { GroupPage } from './entities/group/group';
+
+import { ArealPage } from './entities/areal/areal';
+
+import { SubjectSemesterTopicPage } from './entities/studyprogram/lesson';
+import { StudyProgramPage } from './entities/studyprogram/studyprogram';
 
 import { root } from './entities/index'
 
@@ -64,6 +69,17 @@ function App() {
           </Route>
           <Route path={root + "/groups/group/:id"}>
             <GroupPage />
+          </Route>
+
+          <Route path={root + "/areals/areal/:id"}>
+            <ArealPage />
+          </Route>
+
+          <Route path={root + "/studyprograms/program/:id"}>
+            <StudyProgramPage />
+          </Route>
+          <Route path={root + "/studyprograms/lesson/:id"}>
+            <SubjectSemesterTopicPage />
           </Route>
           
 

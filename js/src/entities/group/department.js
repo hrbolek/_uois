@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { Card } from "react-bootstrap";
-import { TeacherSmall } from "../persons/teacher";
+import { TeacherSmall } from "../person/teacher";
 import { FacultySmall } from "./faculty";
 
 import { root } from '../index';
