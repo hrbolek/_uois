@@ -13,11 +13,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 
-import { Students, StudentLarge, StudentPage } from './entities/student/student';
-import { UserPage } from './entities/user/user';
-import { TeacherLarge, TeacherPage } from './entities/teacher/teacher';
-import { GroupPage, GroupLarge } from './entities/group/group';
+import { UserModelPage } from './entities/user/user';
+import { GroupModelPage } from './entities/group/group';
 import { SubjectPage } from './entities/subject/subject';
+import { StudyPlanModelPage } from './entities/studyplan/studyplan'
 
 import { root } from './entities/index'
 
@@ -26,10 +25,9 @@ const Home = (props) => {
     <Nav>
         <Nav.Link as={Link} to={root + "/"}>Home</Nav.Link>
         <Nav.Link as={Link} to={root + "/users/"}>Uživatelé</Nav.Link>
-        <Nav.Link as={Link} to={root + "/students/"}>Studenti</Nav.Link>
-        <Nav.Link as={Link} to={root + "/teachers/"}>Učitelé</Nav.Link>
         <Nav.Link as={Link} to={root + "/groups/"}>Skupiny</Nav.Link>
         <Nav.Link as={Link} to={root + "/subjects/"}>Předměty</Nav.Link>
+        <Nav.Link as={Link} to={root + "/studyplans/"}>PSP</Nav.Link>
     </Nav>
 
   )
@@ -46,27 +44,23 @@ function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
+          <Route path={root + "/users/rozvrh/:id"}>
+            <UserModelPage rozvrh />
+          </Route>
+
           <Route path={root + "/users/:id"}>
-            <UserPage />
-          </Route>
-          <Route path={root + "/teachers/:id"}>
-            <TeacherPage />
-          </Route>
-          <Route path={root + "/teachers/"}>
-            <TeacherLarge />
-          </Route>
-          <Route path={root + "/students/:id"}>
-            <StudentPage />
-          </Route> 
-          <Route path={root + "/students/"}>
-            <Students />
+            <UserModelPage />
           </Route>
           <Route path={root + "/groups/:id"}>
-            <GroupPage />
+            <GroupModelPage />
           </Route>
           <Route path={root + "/subjects/:id"}>
             <SubjectPage />
           </Route>
+          <Route path={root + "/studyplans/:id"}>
+            <StudyPlanModelPage />
+          </Route>
+          
 
           {/*
           <Route path="/">

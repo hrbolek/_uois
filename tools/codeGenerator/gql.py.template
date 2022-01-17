@@ -7,24 +7,24 @@ def extractSession(info):
     assert not info.context is None, 'Got Bad Context'
     return info.context.get('session')
 
-class {{tableName}}(BaseModel):
+class {{tableName}}Ex(BaseModel):
     __tablename__ = '{{tableDescriptor['SQLTableName']}}'
     __table_args__ = {'extend_existing': True} 
     {% for name, item in tableDescriptor['relations'].items() %}
-    {{name}} = relationship('{{item['type']}}')
+    {{name}} = relationship('{{item['type']}}Ex')
     # {{name}} = association_proxy('{{name}}', 'keyword')
     {%- endfor %}
 
 
-class get_{{tableName}}(graphene.ObjectType):
+class {{tableName}}(graphene.ObjectType):
     {% for name, item in tableDescriptor['locals'].items() %}
     {{name}} = {{item["type"]}}()
     {%- endfor %}
     {% for name, item in tableDescriptor['relations'].items() %}
         {% if item['useList'] %}
-    {{name}} = graphene.List('gql_{{item["type"]}}.get_{{item["type"]}}')
+    {{name}} = graphene.List('graphqltypes.gql_{{item["type"]}}.{{item["type"]}}')
         {% else %}
-    {{name}} = graphene.Field('gql_{{item["type"]}}.get_{{item["type"]}}')
+    {{name}} = graphene.Field('graphqltypes.gql_{{item["type"]}}.{{item["type"]}}')
         {%- endif %}
     def resolver_{{name}}(parent, info):
         return parent.{{name}}
@@ -38,11 +38,11 @@ class create_{{tableName}}(graphene.Mutation):
     {%- endfor %}
 
     ok = graphene.Boolean()
-    result = graphene.Field('get_{{tableName}}')
+    result = graphene.Field('graphqltypes.gql_{{tableName}}.{{tableName}}')
     
     def mutate(parent, info, **paramList):
         session = extractSession(info)
-        result = {{tableName}}(**paramList)
+        result = {{tableName}}Ex(**paramList)
         session.add(result)
         session.commit()
         return create_{{tableName}}(ok=True, result=result)
@@ -59,11 +59,11 @@ class update_{{tableName}}(graphene.Mutation):
     {%- endfor %}
 
     ok = graphene.Boolean()
-    result = graphene.Field('get_{{tableName}}')
+    result = graphene.Field('graphqltypes.gql_{{tableName}}.{{tableName}}')
     
     def mutate(parent, info, **paramList):
         session = extractSession(info)
-        dbRecord = session.query({{tableName}}).filter_by({{pkName}}=paramList['{{pkName}}']).one()
+        dbRecord = session.query({{tableName}}Ex).filter_by({{pkName}}=paramList['{{pkName}}']).one()
         for key, item in paramList.items():
             if key=='{{pkName}}':
                 continue
@@ -72,11 +72,19 @@ class update_{{tableName}}(graphene.Mutation):
         return update_{{tableName}}(ok=True, result=dbRecord)
     pass
 
+def to_dict(row):
+    return {column.name: getattr(row, row.__mapper__.get_property_by_column(column).key) for column in row.__table__.columns}
+
 {% for name, item in tableDescriptor['locals'].items() %}
         {%- if item['isPrimaryKey']: %}
 def resolve_{{tableDescriptor['SQLTableName']}}_by_{{item['name']}}(root, info, {{item['name']}}):
-    session = extractSession(info)
-    dbRecord = session.query({{tableName}}).filter_by({{item['name']}}={{item['name']}}).one()
+    try:
+        session = extractSession(info)
+        dbRecord = session.query({{tableName}}Ex).filter_by({{item['name']}}={{item['name']}}).one()
+    except Exception as e:
+        print('An error occured (by_{{item['name']}})')
+        print(e)
+    print(f'to_dict(dbRecord)')
     return dbRecord
         {%- endif %}
 {%- endfor %}
@@ -84,8 +92,12 @@ def resolve_{{tableDescriptor['SQLTableName']}}_by_{{item['name']}}(root, info, 
 {%- for name, item in tableDescriptor['locals'].items() %}
         {%- if not item['isPrimaryKey']: %}
 def resolve_{{tableDescriptor['SQLTableName']}}_{{item['name']}}_starts_with(root, info, {{item['name']}}):
-    session = extractSession(info)
-    dbRecords = session.query({{tableName}}).filter({{tableName}}.{{item['name']}}.startswith({{item['name']}})).all()
+    try:
+        session = extractSession(info)
+        dbRecords = session.query({{tableName}}Ex).filter({{tableName}}.{{item['name']}}.startswith({{item['name']}})).all()
+    except Exception as e:
+        print('An error occured (startswith)')
+        print(e)
     return dbRecords
         {%- endif %}
 {%- endfor %}

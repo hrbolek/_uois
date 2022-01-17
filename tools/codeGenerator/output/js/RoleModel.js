@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QueryRoleModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                RoleModel(id: ${id}) {
+                rolesById(id: ${id}) {
 
                     id
                     name
@@ -83,7 +83,7 @@ export const QueryRoleModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                RoleModel(id: ${id}) {
+                rolesById(id: ${id}) {
                     id
                     name
                     lastchange
@@ -96,7 +96,7 @@ export const QueryRoleModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/RoleModel';
+const entityRoot = root + '/roles';
 
 /*
  * @param props.id unique identification
@@ -173,7 +173,7 @@ export const RoleModelTableRow = (props) =>  {
 export const RoleModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><RoleModelSmall {...props} /></th>
             <th>name</th>
             <th>lastchange</th>
             <th>roletype_id</th>

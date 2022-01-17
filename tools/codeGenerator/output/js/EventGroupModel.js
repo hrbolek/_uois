@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QueryEventGroupModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                EventGroupModel(id: ${id}) {
+                events_groupsById(id: ${id}) {
 
                     id
                     group_id
@@ -73,7 +73,7 @@ export const QueryEventGroupModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                EventGroupModel(id: ${id}) {
+                events_groupsById(id: ${id}) {
                     id
                     group_id
                     event_id
@@ -83,7 +83,7 @@ export const QueryEventGroupModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/EventGroupModel';
+const entityRoot = root + '/events_groups';
 
 /*
  * @param props.id unique identification
@@ -151,7 +151,7 @@ export const EventGroupModelTableRow = (props) =>  {
 export const EventGroupModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><EventGroupModelSmall {...props} /></th>
             <th>group_id</th>
             <th>event_id</th>
         </tr>

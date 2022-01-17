@@ -31,7 +31,7 @@ def fromTableToModelName(base, tablename, table):
     return result
 
 def fromTableToRelationNName(base, local_cls, referred_cls, constraint):
-    appendix = "_collection"
+    appendix = "s"
     tablename = local_cls.__name__
     tabledesc = tablenamesNew.get(tablename, None)
     if tabledesc is None:

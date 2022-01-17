@@ -4,7 +4,7 @@ import os
 
 from fastapi import FastAPI, Request
 
-#from models import BaseModel
+from BaseModel import BaseModel
 
 from sqlengine.sqlengine import initEngine, initSession
 
@@ -77,38 +77,8 @@ def initDb(connectionstring, doDropAll=False, doCreateAll=False):
     #initModels()
     #####################
 
-    from models.BaseModel import BaseModel
-    
-    from models.GroupRelated.GroupModel import GroupModel
-    from models.GroupRelated.UserModel import UserModel
-    from models.GroupRelated.UserGroupModel import UserGroupModel
-    from models.GroupRelated.RoleModel import RoleModel
-    from models.GroupRelated.RoleTypeModel import RoleTypeModel
-    from models.GroupRelated.GroupTypeModel import GroupTypeModel
-    
-    from models.EventsRelated.EventModel import EventModel
-    from models.EventsRelated.EventUserModel import EventUserModel
-    from models.EventsRelated.EventGroupModel import EventGroupModel
-    from models.EventsRelated.EventRoomModel import EventRoomModel
+    from models import BaseModel
 
-    from models.AcreditationRelated.AcrediationUserRole import AcreaditationUserRoleTypeModel, ProgramUserRoleModel, SubjectUserRoleModel, StudyPlanUserRoleModel
-    from models.AcreditationRelated.ProgramModel import ProgramModel
-    from models.AcreditationRelated.SubjectModel import SubjectModel
-    from models.AcreditationRelated.SubjectSemesterModel import SubjectSemesterModel
-    from models.AcreditationRelated.SubjectTopic import SubjectTopicModel
-    from models.AcreditationRelated.StudyPlan import StudyPlanModel
-    from models.AcreditationRelated.StudyPlanItem import StudyPlanItemModel
-
-    from models.FacilitiesRelated.ArealModel import ArealModel
-    from models.FacilitiesRelated.BuildingModel import BuildingModel
-    from models.FacilitiesRelated.RoomModel import RoomModel
-
-    #from models import GroupModel, UserModel, UserGroupModel, RoleModel, RoleTypeModel
-    #from models import EventModel, EventUserModel, EventGroupModel
-    #from models import ArealModel, BuildingModel, RoomModel
-    #from models import ProgramModel, SubjectModel, SubjectSemesterModel, SubjectTopicModel, AcreditationUserRoleModel
-
-    #all = [GroupModel, UserModel, UserGroupModel, RoleModel, RoleTypeModel, EventModel, EventUserModel, EventGroupModel]
     engine = initEngine(connectionstring) 
     Session = initSession(connectionstring)
     
@@ -158,12 +128,12 @@ def buildApp():
 
     #app = FastAPI(root_path="/apif")
     
-    initDb(connectionstring, doDropAll=True, doCreateAll=True)
-    #initDb(connectionstring)
+    #initDb(connectionstring, doDropAll=True, doCreateAll=True)
+    initDb(connectionstring)
 
     app = FastAPI()
     print('init Db')
-    fastapiapp.attachFastApi(app, prepareSession)
+    #fastapiapp.attachFastApi(app, prepareSession)
     graphqlapp.attachGraphQL(app, prepareSession)
     return app
 

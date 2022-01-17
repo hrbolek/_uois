@@ -28,8 +28,7 @@ export const useQueryGQL = (id, queryFunc, responseToJson, depends) => {
     return [state, error];
 }
 
-export const LoadingError = (props) =>
-    (
+export const LoadingError = (props) => (
         <Card>
             <Card.Header bg='danger' text='white'>{props.error}</Card.Header>
         </Card>

@@ -591,7 +591,7 @@
 <polygon fill="none" stroke="black" points="12,-94 12,-158 118,-158 118,-94 12,-94"/>
 </g>
 <!-- subjecttopics_users&#45;&gt;users -->
-<g id="edge37" class="edge">
+<g id="edge35" class="edge">
 <title>subjecttopics_users&#45;&gt;users</title>
 <path fill="none" stroke="black" d="M123.15,-162.27C125.66,-165.03 127.97,-167.94 130,-171 171.74,-233.91 129.14,-271.12 166,-337 169.03,-342.42 172.63,-347.67 176.57,-352.7"/>
 <ellipse fill="none" stroke="black" cx="179.18" cy="-355.86" rx="4" ry="4"/>
@@ -599,7 +599,7 @@
 <text text-anchor="middle" x="105.65" y="-164.67" font-family="Bitstream-Vera Sans" font-size="7.00">+ user_id</text>
 </g>
 <!-- subjecttopics_users&#45;&gt;acreditationuserroletypes -->
-<g id="edge35" class="edge">
+<g id="edge37" class="edge">
 <title>subjecttopics_users&#45;&gt;acreditationuserroletypes</title>
 <path fill="none" stroke="black" d="M126.16,-107.81C141.17,-103.27 157.34,-98.38 172.6,-93.77"/>
 <ellipse fill="none" stroke="black" cx="176.65" cy="-92.55" rx="4" ry="4"/>

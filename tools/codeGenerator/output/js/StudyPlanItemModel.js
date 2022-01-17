@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QueryStudyPlanItemModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                StudyPlanItemModel(id: ${id}) {
+                studyplanitemsById(id: ${id}) {
 
                     id
                     name
@@ -41,19 +41,19 @@ export const QueryStudyPlanItemModelByidLarge = (id) =>
                         name
                         externalId
                     }
-                    studyplanitemeventmodel_collection {
+                    studyplanitemeventmodels {
     
                         id
                         studyplanitem_id
                         event_id
                     }
-                    studyplanitemteachermodel_collection {
+                    studyplanitemteachermodels {
     
                         id
                         teacher_id
                         studyplanitem_id
                     }
-                    studyplanitemgroupmodel_collection {
+                    studyplanitemgroupmodels {
     
                         id
                         group_id
@@ -80,7 +80,7 @@ export const QueryStudyPlanItemModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                StudyPlanItemModel(id: ${id}) {
+                studyplanitemsById(id: ${id}) {
                     id
                     name
                     priority
@@ -93,7 +93,7 @@ export const QueryStudyPlanItemModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/StudyPlanItemModel';
+const entityRoot = root + '/studyplanitems';
 
 /*
  * @param props.id unique identification
@@ -170,7 +170,7 @@ export const StudyPlanItemModelTableRow = (props) =>  {
 export const StudyPlanItemModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><StudyPlanItemModelSmall {...props} /></th>
             <th>name</th>
             <th>priority</th>
             <th>subjectSemesterTopic</th>

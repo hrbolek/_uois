@@ -9,13 +9,15 @@ import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
 import { useQueryGQL, LoadingError, Loading } from '../index';
-import { root, rootGQL } from '../setup';
+import { root, rootGQL } from '../config';
+import { UserModelSmall } from "../user/user";
+
 
 /*
  * @param id holds value for unique entity identification
  * @return Future with response from gQL server
  */
-export const QueryEventUserModelByidLarge = (id) => 
+export const QueryStudyPlanItemModelByidLarge = (id) => 
     fetch(rootGQL, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
@@ -26,31 +28,38 @@ export const QueryEventUserModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                events_usersById(id: ${id}) {
+                studyplanitemsById(id: ${id}) {
 
                     id
-                    user_id
-                    event_id
+                    name
+                    priority
+                    subjectSemesterTopic
+                    externalId
+                    studyplan_id
 
-                    usermodel {
+                    studyplanmodel {
     
                         id
                         name
-                        surname
-                        email
-                        lastchange
                         externalId
-                        UCO
-                        VaVId
                     }
-                    eventmodel {
+                    studyplanitemeventmodels {
     
                         id
-                        start
-                        end
-                        label
-                        externalId
-                        lastchange
+                        studyplanitem_id
+                        event_id
+                    }
+                    studyplanitemteachermodels {
+    
+                        id
+                        teacher_id
+                        studyplanitem_id
+                    }
+                    studyplanitemgroupmodels {
+    
+                        id
+                        group_id
+                        studyplanitem_id
                     }
                 }
             }
@@ -62,7 +71,7 @@ export const QueryEventUserModelByidLarge = (id) =>
  * @param id holds value for unique entity identification
  * @return Future with response from gQL server
  */
-export const QueryEventUserModelByidMedium = (id) => 
+export const QueryStudyPlanItemModelByidMedium = (id) => 
     fetch(rootGQL, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
@@ -73,17 +82,20 @@ export const QueryEventUserModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                events_usersById(id: ${id}) {
+                studyplanitemsById(id: ${id}) {
                     id
-                    user_id
-                    event_id
+                    name
+                    priority
+                    subjectSemesterTopic
+                    externalId
+                    studyplan_id
                 }
             }
             `        
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/events_users';
+const entityRoot = root + '/studyplanitems';
 
 /*
  * @param props.id unique identification
@@ -92,7 +104,7 @@ const entityRoot = root + '/events_users';
  * @param props.children embeded items
  * @return 
  */
-export const EventUserModelSmall = (props) =>  {
+export const StudyPlanItemModelSmall = (props) =>  {
     if (props.name) {
         return (
             <Link to={entityRoot + `/${props.id}`}>{props.name}{props.children}</Link>
@@ -112,17 +124,20 @@ export const EventUserModelSmall = (props) =>  {
  * @param props holds all data needed for proper rendering
  * @return 
  */
-export const EventUserModelMedium = (props) =>  {
+export const StudyPlanItemModelMedium = (props) =>  {
     return (
         <Card>
             <Card.Header className='bg-success bg-gradient text-white'>
-                <Card.Title>Title of EventUserModel</Card.Title>
+                <Card.Title>Title of StudyPlanItemModel</Card.Title>
             </Card.Header>
             <Card.Body>
                 <ul class="list-group">
                     <li class="list-group-item">id : { props.id }</li>
-                    <li class="list-group-item">user_id : { props.user_id }</li>
-                    <li class="list-group-item">event_id : { props.event_id }</li>
+                    <li class="list-group-item">name : { props.name }</li>
+                    <li class="list-group-item">priority : { props.priority }</li>
+                    <li class="list-group-item">subjectSemesterTopic : { props.subjectSemesterTopic }</li>
+                    <li class="list-group-item">externalId : { props.externalId }</li>
+                    <li class="list-group-item">studyplan_id : { props.studyplan_id }</li>
                 </ul>
             </Card.Body>
         </Card>
@@ -131,16 +146,31 @@ export const EventUserModelMedium = (props) =>  {
 
 /*
  * @param props.id
- * @param props.user_id
- * @param props.event_id
+ * @param props.name
+ * @param props.priority
+ * @param props.subjectSemesterTopic
+ * @param props.externalId
+ * @param props.studyplan_id
  * @return 
  */
-export const EventUserModelTableRow = (props) =>  {
+export const StudyPlanItemModelTableRow = (props) =>  {
+    let Teachers = []
+    if (props.studyplanitemteachermodels) {
+        let teachersids = [];
+        let index = 0;
+        for(let item of props.studyplanitemteachermodels) {
+            let user = item.usermodel
+            if (!teachersids.includes(user.id)) {
+                teachersids.push(user.id)
+                Teachers.push(<UserModelSmall key={index} {...user}/>)
+                //Teachers.push(<br key={'b' + index} />)
+            }
+        }
+    }
     return (
         <tr>
-            <td>{ props.id }</td>
-            <td>{ props.user_id }</td>
-            <td>{ props.event_id }</td>
+            <td>{ props.name }</td>
+            <td>{ Teachers }</td>
         </tr>
     ) 
 }
@@ -148,29 +178,28 @@ export const EventUserModelTableRow = (props) =>  {
 /*
  * @return 
  */
-export const EventUserModelTableHeadRow = (props) =>  {
+export const StudyPlanItemModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th><EventUserModelSmall {...props} /></th>
-            <th>user_id</th>
-            <th>event_id</th>
+            <th><StudyPlanItemModelSmall {...props} /></th>
+            <th>Vyučující</th>
         </tr>
     ) 
 }
 
 /*
- * @param props.data is array of EventUserModel
+ * @param props.data is array of StudyPlanItemModel
  * @return 
  */
-export const EventUserModelTable = (props) =>  {
+export const StudyPlanItemModelTable = (props) =>  {
     const rows = props.data.map(
-        (item, index) => <EventUserModelTableRow key={'k' + index} {...item}/>
+        (item, index) => <StudyPlanItemModelTableRow key={'k' + index} {...item}/>
         );
 
     return (
-        <Table>
+        <Table size="sm">
             <thead>
-                <EventUserModelTableHeadRow />
+                <StudyPlanItemModelTableHeadRow />
             </thead>
             <tbody>
                 {rows}
@@ -183,13 +212,13 @@ export const EventUserModelTable = (props) =>  {
  * @param props holds all data needed for proper rendering
  * @return 
  */
-export const EventUserModelLarge = (props) =>  {
+export const StudyPlanItemModelLarge = (props) =>  {
     return (
         <>
         <Row>
             <Col>
-                <EventUserModelMedium {...props}> 
-                </EventUserModelMedium> 
+                <StudyPlanItemModelMedium {...props}> 
+                </StudyPlanItemModelMedium> 
             </Col>
         </Row>
         </>
@@ -200,11 +229,11 @@ export const EventUserModelLarge = (props) =>  {
  * @param props holds all data needed for proper rendering
  * @return 
  */
-export const EventUserModelLargeFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, QueryEventUserModelByidLarge, (response) => response.data.EventUserModel, [props.id])
+export const StudyPlanItemModelLargeFetching = (props) => {
+    const [state, error] = useQueryGQL(props.id, QueryStudyPlanItemModelByidLarge, (response) => response.data.StudyPlanItemModel, [props.id])
 
     if (state !== null) {
-        return <EventUserModelLarge {...state} />
+        return <StudyPlanItemModelLarge {...state} />
     } else if (error !== null) {
         return <LoadingError error={error} />
     } else {
@@ -216,11 +245,11 @@ export const EventUserModelLargeFetching = (props) => {
  * @param props holds extra properties
  * @return 
  */
-export const EventUserModelPage = (props) => {
+export const StudyPlanItemModelPage = (props) => {
     const { id } = useParams();
 
     return (
-        <EventUserModelLargeFetching {...props} id={id} />
+        <StudyPlanItemModelLargeFetching {...props} id={id} />
     )    
 
 }  

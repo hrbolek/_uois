@@ -451,7 +451,7 @@ def generatePythonGQLFull(SQLAlchemyBase, destinationDir='/output/gql/'):
                 pkName = name
                 break
 
-        outputText = template.render(tableName=tableName, tableDescriptor=tableDescriptor, pkName=pkName)  # this is where to put args to the template renderer
+        outputText = template.render(dbDescriptor=dbDescriptor, tableName=tableName, tableDescriptor=tableDescriptor, pkName=pkName)  # this is where to put args to the template renderer
 
         for index in range(99):
             if index == 0:

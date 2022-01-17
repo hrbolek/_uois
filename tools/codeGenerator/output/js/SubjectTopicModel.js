@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QuerySubjectTopicModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                SubjectTopicModel(id: ${id}) {
+                subjecttopicsById(id: ${id}) {
 
                     id
                     name
@@ -40,7 +40,7 @@ export const QuerySubjectTopicModelByidLarge = (id) =>
                         lastchange
                         subject_id
                     }
-                    subjecttopicusermodel_collection {
+                    subjecttopicusermodels {
     
                         id
                         subjecttopic_id
@@ -68,7 +68,7 @@ export const QuerySubjectTopicModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                SubjectTopicModel(id: ${id}) {
+                subjecttopicsById(id: ${id}) {
                     id
                     name
                     externalId
@@ -79,7 +79,7 @@ export const QuerySubjectTopicModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/SubjectTopicModel';
+const entityRoot = root + '/subjecttopics';
 
 /*
  * @param props.id unique identification
@@ -150,7 +150,7 @@ export const SubjectTopicModelTableRow = (props) =>  {
 export const SubjectTopicModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><SubjectTopicModelSmall {...props} /></th>
             <th>name</th>
             <th>externalId</th>
             <th>subjectsemester_id</th>

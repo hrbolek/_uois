@@ -13,7 +13,9 @@ class GroupModelEx(BaseModel):
     
     grouptypemodel = relationship('GroupTypeModelEx')
     # grouptypemodel = association_proxy('grouptypemodel', 'keyword')
-    groupconnectionmodels = relationship('GroupConnectionModelEx')
+    
+    #groupconnectionmodels = relationship('GroupConnectionModelEx', foreign_keys='[GroupConnectionModelEx.child_id]')
+    
     # groupconnectionmodels = association_proxy('groupconnectionmodels', 'keyword')
     usergroupmodels = relationship('UserGroupModelEx')
     # usergroupmodels = association_proxy('usergroupmodels', 'keyword')

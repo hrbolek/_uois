@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QueryProgramUserModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                ProgramUserModel(id: ${id}) {
+                programs_usersById(id: ${id}) {
 
                     id
                     program_id
@@ -77,7 +77,7 @@ export const QueryProgramUserModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                ProgramUserModel(id: ${id}) {
+                programs_usersById(id: ${id}) {
                     id
                     program_id
                     user_id
@@ -88,7 +88,7 @@ export const QueryProgramUserModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/ProgramUserModel';
+const entityRoot = root + '/programs_users';
 
 /*
  * @param props.id unique identification
@@ -159,7 +159,7 @@ export const ProgramUserModelTableRow = (props) =>  {
 export const ProgramUserModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><ProgramUserModelSmall {...props} /></th>
             <th>program_id</th>
             <th>user_id</th>
             <th>roletype_id</th>

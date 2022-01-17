@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,12 +26,12 @@ export const QueryGroupTypeModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                GroupTypeModel(id: ${id}) {
+                grouptypesById(id: ${id}) {
 
                     id
                     name
 
-                    groupmodel_collection {
+                    groupmodels {
     
                         id
                         name
@@ -63,7 +63,7 @@ export const QueryGroupTypeModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                GroupTypeModel(id: ${id}) {
+                grouptypesById(id: ${id}) {
                     id
                     name
                 }
@@ -72,7 +72,7 @@ export const QueryGroupTypeModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/GroupTypeModel';
+const entityRoot = root + '/grouptypes';
 
 /*
  * @param props.id unique identification
@@ -137,7 +137,7 @@ export const GroupTypeModelTableRow = (props) =>  {
 export const GroupTypeModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><GroupTypeModelSmall {...props} /></th>
             <th>name</th>
         </tr>
     ) 

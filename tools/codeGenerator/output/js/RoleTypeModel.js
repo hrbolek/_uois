@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,12 +26,12 @@ export const QueryRoleTypeModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                RoleTypeModel(id: ${id}) {
+                grouproletypesById(id: ${id}) {
 
                     id
                     name
 
-                    rolemodel_collection {
+                    rolemodels {
     
                         id
                         name
@@ -61,7 +61,7 @@ export const QueryRoleTypeModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                RoleTypeModel(id: ${id}) {
+                grouproletypesById(id: ${id}) {
                     id
                     name
                 }
@@ -70,7 +70,7 @@ export const QueryRoleTypeModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/RoleTypeModel';
+const entityRoot = root + '/grouproletypes';
 
 /*
  * @param props.id unique identification
@@ -135,7 +135,7 @@ export const RoleTypeModelTableRow = (props) =>  {
 export const RoleTypeModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><RoleTypeModelSmall {...props} /></th>
             <th>name</th>
         </tr>
     ) 

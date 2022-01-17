@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QueryStudyPlanGroupsModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                StudyPlanGroupsModel(id: ${id}) {
+                studyplans_groupsById(id: ${id}) {
 
                     id
                     studyplan_id
@@ -70,7 +70,7 @@ export const QueryStudyPlanGroupsModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                StudyPlanGroupsModel(id: ${id}) {
+                studyplans_groupsById(id: ${id}) {
                     id
                     studyplan_id
                     group_id
@@ -80,7 +80,7 @@ export const QueryStudyPlanGroupsModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/StudyPlanGroupsModel';
+const entityRoot = root + '/studyplans_groups';
 
 /*
  * @param props.id unique identification
@@ -148,7 +148,7 @@ export const StudyPlanGroupsModelTableRow = (props) =>  {
 export const StudyPlanGroupsModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><StudyPlanGroupsModelSmall {...props} /></th>
             <th>studyplan_id</th>
             <th>group_id</th>
         </tr>

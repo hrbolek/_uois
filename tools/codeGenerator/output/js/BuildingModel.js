@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QueryBuildingModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                BuildingModel(id: ${id}) {
+                buildingsById(id: ${id}) {
 
                     id
                     name
@@ -41,7 +41,7 @@ export const QueryBuildingModelByidLarge = (id) =>
                         externalId
                         lastchange
                     }
-                    roommodel_collection {
+                    roommodels {
     
                         id
                         name
@@ -70,7 +70,7 @@ export const QueryBuildingModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                BuildingModel(id: ${id}) {
+                buildingsById(id: ${id}) {
                     id
                     name
                     lastchange
@@ -82,7 +82,7 @@ export const QueryBuildingModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/BuildingModel';
+const entityRoot = root + '/buildings';
 
 /*
  * @param props.id unique identification
@@ -156,7 +156,7 @@ export const BuildingModelTableRow = (props) =>  {
 export const BuildingModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><BuildingModelSmall {...props} /></th>
             <th>name</th>
             <th>lastchange</th>
             <th>externalId</th>

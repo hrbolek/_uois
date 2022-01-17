@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,14 +26,14 @@ export const QueryArealModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                ArealModel(id: ${id}) {
+                arealsById(id: ${id}) {
 
                     id
                     name
                     externalId
                     lastchange
 
-                    buildingmodel_collection {
+                    buildingmodels {
     
                         id
                         name
@@ -62,7 +62,7 @@ export const QueryArealModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                ArealModel(id: ${id}) {
+                arealsById(id: ${id}) {
                     id
                     name
                     externalId
@@ -73,7 +73,7 @@ export const QueryArealModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/ArealModel';
+const entityRoot = root + '/areals';
 
 /*
  * @param props.id unique identification
@@ -144,7 +144,7 @@ export const ArealModelTableRow = (props) =>  {
 export const ArealModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><ArealModelSmall {...props} /></th>
             <th>name</th>
             <th>externalId</th>
             <th>lastchange</th>

@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,21 +26,21 @@ export const QueryProgramModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                ProgramModel(id: ${id}) {
+                programsById(id: ${id}) {
 
                     id
                     name
                     lastchange
                     externalId
 
-                    programusermodel_collection {
+                    programusermodels {
     
                         id
                         program_id
                         user_id
                         roletype_id
                     }
-                    subjectmodel_collection {
+                    subjectmodels {
     
                         id
                         name
@@ -69,7 +69,7 @@ export const QueryProgramModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                ProgramModel(id: ${id}) {
+                programsById(id: ${id}) {
                     id
                     name
                     lastchange
@@ -80,7 +80,7 @@ export const QueryProgramModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/ProgramModel';
+const entityRoot = root + '/programs';
 
 /*
  * @param props.id unique identification
@@ -151,7 +151,7 @@ export const ProgramModelTableRow = (props) =>  {
 export const ProgramModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><ProgramModelSmall {...props} /></th>
             <th>name</th>
             <th>lastchange</th>
             <th>externalId</th>

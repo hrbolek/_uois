@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QueryEventModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                EventModel(id: ${id}) {
+                eventsById(id: ${id}) {
 
                     id
                     start
@@ -35,25 +35,25 @@ export const QueryEventModelByidLarge = (id) =>
                     externalId
                     lastchange
 
-                    eventusermodel_collection {
+                    eventusermodels {
     
                         id
                         user_id
                         event_id
                     }
-                    eventgroupmodel_collection {
+                    eventgroupmodels {
     
                         id
                         group_id
                         event_id
                     }
-                    studyplanitemeventmodel_collection {
+                    studyplanitemeventmodels {
     
                         id
                         studyplanitem_id
                         event_id
                     }
-                    eventroommodel_collection {
+                    eventroommodels {
     
                         id
                         room_id
@@ -80,7 +80,7 @@ export const QueryEventModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                EventModel(id: ${id}) {
+                eventsById(id: ${id}) {
                     id
                     start
                     end
@@ -93,7 +93,7 @@ export const QueryEventModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/EventModel';
+const entityRoot = root + '/events';
 
 /*
  * @param props.id unique identification
@@ -170,7 +170,7 @@ export const EventModelTableRow = (props) =>  {
 export const EventModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><EventModelSmall {...props} /></th>
             <th>start</th>
             <th>end</th>
             <th>label</th>

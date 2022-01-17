@@ -13,7 +13,7 @@ import Table from 'react-bootstrap/Table';
 
 import { root } from '../index'
 
-import { GroupSmall } from '../group/group';
+import { GroupModelSmall } from '../group/group';
 
 const teacherRoot = root + '/teachers'
 
@@ -98,8 +98,8 @@ export const TeacherLarge = (props) => {
                             <Card.Title>Vyučované skupiny</Card.Title>
                         </Card.Header>
                         <Card.Body>
-                            <GroupSmall id={758} name={'23-5KB'} /> <br />
-                            <GroupSmall id={862} name={'22-5ASV'} />
+                            <GroupModelSmall id={758} name={'23-5KB'} /> <br />
+                            <GroupModelSmall id={862} name={'22-5ASV'} />
                         </Card.Body>
                     </Card>
                 </Col>

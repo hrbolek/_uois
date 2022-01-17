@@ -127,14 +127,16 @@ def to_dict(row):
 
 
 def resolve_users_by_id(root, info, id):
+    print('resolve_users_by_id')
     try:
         session = extractSession(info)
         dbRecord = session.query(UserModelEx).filter_by(id=id).one()
     except Exception as e:
         print('An error occured (by_id)')
         print(e)
-    print(f'to_dict(dbRecord)')
+    print(f'{to_dict(dbRecord)}')
     return dbRecord
+
 def resolve_users_name_starts_with(root, info, name):
     try:
         session = extractSession(info)

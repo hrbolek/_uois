@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QuerySubjectModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                SubjectModel(id: ${id}) {
+                subjectsById(id: ${id}) {
 
                     id
                     name
@@ -41,14 +41,14 @@ export const QuerySubjectModelByidLarge = (id) =>
                         lastchange
                         externalId
                     }
-                    subjectusermodel_collection {
+                    subjectusermodels {
     
                         id
                         subject_id
                         user_id
                         roletype_id
                     }
-                    subjectsemestermodel_collection {
+                    subjectsemestermodels {
     
                         id
                         name
@@ -76,7 +76,7 @@ export const QuerySubjectModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                SubjectModel(id: ${id}) {
+                subjectsById(id: ${id}) {
                     id
                     name
                     lastchange
@@ -88,7 +88,7 @@ export const QuerySubjectModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/SubjectModel';
+const entityRoot = root + '/subjects';
 
 /*
  * @param props.id unique identification
@@ -162,7 +162,7 @@ export const SubjectModelTableRow = (props) =>  {
 export const SubjectModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><SubjectModelSmall {...props} /></th>
             <th>name</th>
             <th>lastchange</th>
             <th>externalId</th>

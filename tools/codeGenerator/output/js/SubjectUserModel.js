@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QuerySubjectUserModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                SubjectUserModel(id: ${id}) {
+                subjects_usersById(id: ${id}) {
 
                     id
                     subject_id
@@ -78,7 +78,7 @@ export const QuerySubjectUserModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                SubjectUserModel(id: ${id}) {
+                subjects_usersById(id: ${id}) {
                     id
                     subject_id
                     user_id
@@ -89,7 +89,7 @@ export const QuerySubjectUserModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/SubjectUserModel';
+const entityRoot = root + '/subjects_users';
 
 /*
  * @param props.id unique identification
@@ -160,7 +160,7 @@ export const SubjectUserModelTableRow = (props) =>  {
 export const SubjectUserModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><SubjectUserModelSmall {...props} /></th>
             <th>subject_id</th>
             <th>user_id</th>
             <th>roletype_id</th>

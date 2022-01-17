@@ -2,7 +2,7 @@ import graphene
 from contextlib import contextmanager
 
 {% for tablename, tableDescriptor in dbDescriptor.items() %}
-import gql_{{tablename}}
+from . import gql_{{tablename}}
 {%- endfor %}
 
 class query(graphene.ObjectType):
@@ -12,17 +12,17 @@ class query(graphene.ObjectType):
         {%- if item['isPrimaryKey']: %}
     #{{item}}
     {{tableDescriptor['SQLTableName']}}_by_{{item['name']}} =  graphene.Field(
-        'gql_{{tablename}}.get_{{tablename}}', 
+        'graphqltypes.gql_{{tablename}}.{{tablename}}', 
         {{item['name']}}=graphene.String(required=True),
-        resolver=gql_{{tablename}}.resolve_{{tablename}}_by_{{item['name']}}
+        resolver=gql_{{tablename}}.resolve_{{tableDescriptor['SQLTableName']}}_by_{{item['name']}}
     )
         {%- endif %}
         {%- if not item['isPrimaryKey']: %}
     #{{item}}
     {{tableDescriptor['SQLTableName']}}_{{item['name']}}_starts_with =  graphene.Field(
-        'gql_{{tablename}}.get_{{tablename}}', 
+        'graphqltypes.gql_{{tablename}}.{{tablename}}', 
         {{item['name']}}=graphene.String(required=True),
-        resolver=gql_{{tablename}}.resolve_{{tablename}}_by_{{item['name']}}
+        resolver=gql_{{tablename}}.resolve_{{tableDescriptor['SQLTableName']}}_{{item['name']}}_starts_with
     )
         {%- endif %}
     {%- endfor %}

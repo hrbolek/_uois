@@ -9,7 +9,9 @@ import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
 import { useQueryGQL, LoadingError, Loading } from '../index';
-import { root, rootGQL } from '../setup';
+import { root, rootGQL } from '../config';
+import { StudyPlanItemModelLarge, StudyPlanItemModelTable } from './studyplanitem';
+import { GroupModelMedium, GroupModelSmall } from "../group/group";
 
 /*
  * @param id holds value for unique entity identification
@@ -26,29 +28,31 @@ export const QueryStudyPlanModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                studyplansById(id: ${id}) {
-
+                studyplansById(id: "${id}") {
                     id
-                    name
                     externalId
-
+                    name
                     studyplanitemmodels {
-    
+                      id
+                      priority
+                      name
+                      studyplanitemteachermodels {
+                        usermodel {
+                          id
+                          name
+                          surname
+                        }
+                      }
+                                    }
+                    studyplangroupsmodels {
+                      id
+                      groupmodel {
                         id
                         name
-                        priority
-                        subjectSemesterTopic
-                        externalId
-                        studyplan_id
+                      }
                     }
-                    studyplangroupsmodels {
-    
-                        id
-                        studyplan_id
-                        group_id
-                    }
+                  }
                 }
-            }
             `        
         }) // body data type must match "Content-Type" header
     });    
@@ -90,37 +94,88 @@ const entityRoot = root + '/studyplans';
 export const StudyPlanModelSmall = (props) =>  {
     if (props.name) {
         return (
-            <Link to={entityRoot + `/${props.id}`}>{props.name}{props.children}</Link>
+            <Link to={entityRoot + `/${props.id}`}>📜 {props.name}{props.children}</Link>
         )
     } else if (props.label) {
         return (
-            <Link to={entityRoot + `/${props.id}`}>{props.label}{props.children}</Link>
+            <Link to={entityRoot + `/${props.id}`}>📜 {props.label}{props.children}</Link>
         )
     } else {
         return (
-            <Link to={entityRoot + `/${props.id}`}>{props.id}{props.children}</Link>
+            <Link to={entityRoot + `/${props.id}`}>📜 {props.id}{props.children}</Link>
         )
     } 
+}
+
+
+
+const StudyPlanItems = (props) => {
+
+    if (props.studyplanitemmodels) {
+        const items = props.studyplanitemmodels.map((item, index) => item.studyplanitem);
+        return (
+            <StudyPlanItemModelTable data={props.studyplanitemmodels} />
+        )
+    } else {
+        return null
+    }
 }
 
 /*
  * @param props holds all data needed for proper rendering
  * @return 
  */
-export const StudyPlanModelMedium = (props) =>  {
+export const StudyPlanModelMediumForGroup = (props) =>  {
     return (
         <Card>
-            <Card.Header className='bg-success bg-gradient text-white'>
-                <Card.Title>Title of StudyPlanModel</Card.Title>
+            <Card.Header className='bg-success bg-light bg-gradient text-white'>
+                <Card.Title><StudyPlanModelSmall {...props} /> ({ props.externalId })</Card.Title>
             </Card.Header>
             <Card.Body>
-                <ul class="list-group">
-                    <li class="list-group-item">id : { props.id }</li>
-                    <li class="list-group-item">name : { props.name }</li>
-                    <li class="list-group-item">externalId : { props.externalId }</li>
-                </ul>
+                <StudyPlanItems {...props}/>
             </Card.Body>
         </Card>
+    ) 
+}
+
+
+const StudyPlanGroups = (props) => {
+    if (props.studyplangroupsmodels) {
+        return (
+            <Row>
+                {props.studyplangroupsmodels.map((item, index) => (
+                    <Col xs={6} md={4}>
+                        <GroupModelSmall {...item.groupmodel}/>
+                    </Col>
+                ))}
+            </Row>
+        )
+    } else {
+        return null
+    }
+}
+
+/*
+ * @param props holds all data needed for proper rendering
+ * @return 
+ */
+export const StudyPlanModelMediumForUser = (props) =>  {
+    return (
+        <Card>
+            <Card.Header className='bg-success bg-light bg-gradient text-white'>
+                <Card.Title><StudyPlanModelSmall {...props} /> ({ props.externalId })</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <StudyPlanGroups {...props}/>
+            </Card.Body>
+        </Card>
+    ) 
+}
+
+export const StudyPlanModelMedium = (props) =>  {
+    const Component = props.as
+    return (
+        <Component {...props} />
     ) 
 }
 
@@ -174,17 +229,34 @@ export const StudyPlanModelTable = (props) =>  {
     ) 
 }
 
+//studyplangroupsmodels
+
 /*
  * @param props holds all data needed for proper rendering
  * @return 
  */
 export const StudyPlanModelLarge = (props) =>  {
+    let StudyPlanItemModelTableData = []
+    if (props.studyplanitemmodels) {
+        //StudyPlanItemModelTableData = props.studyplanitemmodels.map(item => )
+    }
     return (
         <>
         <Row>
             <Col>
-                <StudyPlanModelMedium {...props}> 
-                </StudyPlanModelMedium> 
+                <Card>
+                    <Card.Header className='bg-success bg-gradient text-white'>
+                        <Card.Title>📜 { props.name } ({ props. externalId })</Card.Title>
+                    </Card.Header>
+
+                    
+                    <Card.Body>
+                        <StudyPlanGroups {...props}/>
+                    </Card.Body>
+                    <Card.Body>
+                        <StudyPlanItemModelTable data={props.studyplanitemmodels}/>
+                    </Card.Body>
+                </Card>
             </Col>
         </Row>
         </>
@@ -195,11 +267,11 @@ export const StudyPlanModelLarge = (props) =>  {
  * @param props holds all data needed for proper rendering
  * @return 
  */
-export const StudyPlanModelLargeFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, QueryStudyPlanModelByidLarge, (response) => response.data.StudyPlanModel, [props.id])
-
+export const StudyPlanModelFetching = (props) => {
+    const [state, error] = useQueryGQL(props.id, QueryStudyPlanModelByidLarge, (response) => response.data.studyplansById, [props.id])
+    const Component = props.as;
     if (state !== null) {
-        return <StudyPlanModelLarge {...state} />
+        return <Component {...state} />
     } else if (error !== null) {
         return <LoadingError error={error} />
     } else {
@@ -215,7 +287,7 @@ export const StudyPlanModelPage = (props) => {
     const { id } = useParams();
 
     return (
-        <StudyPlanModelLargeFetching {...props} id={id} />
+        <StudyPlanModelFetching {...props} id={id} as={StudyPlanModelLarge}/>
     )    
 
 }  

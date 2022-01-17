@@ -9,6 +9,7 @@ from starlette.graphql import GraphQLApp
 
 import graphene
 
+from graphqltypes.gql_app import query as MainQuery
 #import models.BaseEntities as BaseEntities
 
 from contextlib import contextmanager
@@ -25,69 +26,6 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
     """
     assert callable(sessionFunc), "sessionFunc must be a function creating a session"
 
-    # class Mutations(ObjectType):
-    #     create_user = CreateUser.Field()
-    #     update_user = UpdateUser.Field()
-
-    def createQueryRoot():
-
-        from graphqltypes.User import UserType, UserRootResolverById
-        from graphqltypes.Group import GroupType, GroupRootResolverById, GroupRootResolverByName, resolve_groups_by_type
-        from graphqltypes.GroupType import GroupTypeType
-        from graphqltypes.Role import RoleType
-        from graphqltypes.RoleType import RoleTypeType, RoleTypeRootResolverById, RoleTypeRootResolverByName
-        
-        from graphqltypes.Event import EventType
-        from graphqltypes.StudyPlan import StudyPlanType, StudyPlanRootResolverById
-
-        from graphqltypes.Program import ProgramType, ProgramRootResolverById
-        from graphqltypes.Subject import SubjectType, SubjectRootResolverById, SubjectRootResolverByName
-        from graphqltypes.SubjectSemester import SubjectSemesterType, SubjectSemesterRootResolverById, SubjectSemesterRootResolverByName
-
-
-        from graphqltypes.Areal import ArealType, CreateRandomAreal, ArealRootResolverById, ArealRootResolverByName
-        from graphqltypes.Building import BuildingType, BuildingRootResolverById, BuildingRootResolverByName
-        from graphqltypes.Room import RoomType, RoomRootResolverById, RoomRootResolverByName
-
-
-        class QueryRoot(ObjectType):
-            user = Field(UserType, id=ID(required=True), resolver=UserRootResolverById)
-            group = Field(GroupType, id=ID(required=True), resolver=GroupRootResolverById)
-            group_by_name = Field(GroupType, name=String(required=True), resolver=GroupRootResolverByName)
-            groups_by_type = Field(List(GroupType), type_id=Int(required=True), resolver=resolve_groups_by_type)
-            roletype = Field(RoleTypeType, id=ID(required=True), resolver=RoleTypeRootResolverById)
-            roletype_by_name = Field(RoleTypeType, name=String(required=True), resolver=RoleTypeRootResolverByName)
-            
-            areal = Field(ArealType, id=ID(required=True), resolver=ArealRootResolverById)
-            areal_by_name = Field(ArealType, name=String(required=True), resolver=ArealRootResolverByName)
-            building = Field(BuildingType, id=ID(required=True), resolver=BuildingRootResolverById)
-            building_by_name = Field(BuildingType, name=String(required=True), resolver=BuildingRootResolverByName)
-            room = Field(RoomType, id=ID(required=True), resolver=RoomRootResolverById)
-            room_by_name = Field(RoomType, name=String(required=True), resolver=RoomRootResolverByName)
-            
-            program = Field(ProgramType, id=ID(required=True), resolver=ProgramRootResolverById)
-            subject = Field(SubjectType, id=ID(required=True), resolver=SubjectRootResolverById)
-            subject_semester = Field(SubjectSemesterType, id=ID(required=True), resolver=SubjectSemesterRootResolverById)
-            study_plan = Field(StudyPlanType, id=ID(required=True), resolver=StudyPlanRootResolverById)
-
-
-        return QueryRoot
-
-    def createMutationRoot():
-
-        from graphqltypes.Areal import ArealType, CreateRandomAreal
-        from graphqltypes.Group import CreateRandomUniversity
-        from graphqltypes.Program import CreateRandomProgram
-        from graphqltypes.StudyPlan import CreateStudyPlan
-
-        class MutationRoot(ObjectType):
-            create_random_areal = CreateRandomAreal.Field()
-            create_random_university = CreateRandomUniversity.Field()
-            create_random_program = CreateRandomProgram.Field()
-
-            create_study_plan = CreateStudyPlan.Field()
-
-        return MutationRoot
 
     #router = fastapi.APIRouter()
     #https://github.com/graphql-python/graphene-sqlalchemy/issues/292
@@ -132,7 +70,7 @@ def attachGraphQL(app, sessionFunc, bindPoint='/gql'):
     
     #graphql_app = GraphQLApp(schema=localSchema(query=Query, mutation=Mutations))
     #graphql_app = GraphQLApp(schema=localSchema(query=createQueryRoot(), mutation=Mutations))
-    graphql_app = GraphQLApp(schema=localSchema(query=createQueryRoot(), mutation=createMutationRoot()))
+    graphql_app = GraphQLApp(schema=localSchema(query=MainQuery))
     
     app.add_route(bindPoint, graphql_app)
 

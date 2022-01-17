@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QueryGroupModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                GroupModel(id: ${id}) {
+                groupsById(id: ${id}) {
 
                     id
                     name
@@ -42,19 +42,19 @@ export const QueryGroupModelByidLarge = (id) =>
                         id
                         name
                     }
-                    groupconnectionmodel_collection {
+                    groupconnectionmodels {
     
                         id
                         child_id
                         parent_id
                     }
-                    usergroupmodel_collection {
+                    usergroupmodels {
     
                         id
                         user_id
                         group_id
                     }
-                    rolemodel_collection {
+                    rolemodels {
     
                         id
                         name
@@ -63,19 +63,19 @@ export const QueryGroupModelByidLarge = (id) =>
                         user_id
                         group_id
                     }
-                    eventgroupmodel_collection {
+                    eventgroupmodels {
     
                         id
                         group_id
                         event_id
                     }
-                    studyplangroupsmodel_collection {
+                    studyplangroupsmodels {
     
                         id
                         studyplan_id
                         group_id
                     }
-                    studyplanitemgroupmodel_collection {
+                    studyplanitemgroupmodels {
     
                         id
                         group_id
@@ -102,7 +102,7 @@ export const QueryGroupModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                GroupModel(id: ${id}) {
+                groupsById(id: ${id}) {
                     id
                     name
                     abbreviation
@@ -117,7 +117,7 @@ export const QueryGroupModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/GroupModel';
+const entityRoot = root + '/groups';
 
 /*
  * @param props.id unique identification
@@ -200,7 +200,7 @@ export const GroupModelTableRow = (props) =>  {
 export const GroupModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><GroupModelSmall {...props} /></th>
             <th>name</th>
             <th>abbreviation</th>
             <th>lastchange</th>

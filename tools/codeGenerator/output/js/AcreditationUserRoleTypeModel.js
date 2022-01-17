@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,26 +26,26 @@ export const QueryAcreditationUserRoleTypeModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                AcreditationUserRoleTypeModel(id: ${id}) {
+                acreditationuserroletypesById(id: ${id}) {
 
                     id
                     name
 
-                    programusermodel_collection {
+                    programusermodels {
     
                         id
                         program_id
                         user_id
                         roletype_id
                     }
-                    subjectusermodel_collection {
+                    subjectusermodels {
     
                         id
                         subject_id
                         user_id
                         roletype_id
                     }
-                    subjecttopicusermodel_collection {
+                    subjecttopicusermodels {
     
                         id
                         subjecttopic_id
@@ -73,7 +73,7 @@ export const QueryAcreditationUserRoleTypeModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                AcreditationUserRoleTypeModel(id: ${id}) {
+                acreditationuserroletypesById(id: ${id}) {
                     id
                     name
                 }
@@ -82,7 +82,7 @@ export const QueryAcreditationUserRoleTypeModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/AcreditationUserRoleTypeModel';
+const entityRoot = root + '/acreditationuserroletypes';
 
 /*
  * @param props.id unique identification
@@ -147,7 +147,7 @@ export const AcreditationUserRoleTypeModelTableRow = (props) =>  {
 export const AcreditationUserRoleTypeModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><AcreditationUserRoleTypeModelSmall {...props} /></th>
             <th>name</th>
         </tr>
     ) 

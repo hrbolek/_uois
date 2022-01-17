@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QueryEventRoomModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                EventRoomModel(id: ${id}) {
+                events_roomsById(id: ${id}) {
 
                     id
                     room_id
@@ -70,7 +70,7 @@ export const QueryEventRoomModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                EventRoomModel(id: ${id}) {
+                events_roomsById(id: ${id}) {
                     id
                     room_id
                     event_id
@@ -80,7 +80,7 @@ export const QueryEventRoomModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/EventRoomModel';
+const entityRoot = root + '/events_rooms';
 
 /*
  * @param props.id unique identification
@@ -148,7 +148,7 @@ export const EventRoomModelTableRow = (props) =>  {
 export const EventRoomModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><EventRoomModelSmall {...props} /></th>
             <th>room_id</th>
             <th>event_id</th>
         </tr>

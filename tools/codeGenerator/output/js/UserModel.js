@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QueryUserModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                UserModel(id: ${id}) {
+                usersById(id: ${id}) {
 
                     id
                     name
@@ -37,26 +37,26 @@ export const QueryUserModelByidLarge = (id) =>
                     UCO
                     VaVId
 
-                    eventusermodel_collection {
+                    eventusermodels {
     
                         id
                         user_id
                         event_id
                     }
-                    programusermodel_collection {
+                    programusermodels {
     
                         id
                         program_id
                         user_id
                         roletype_id
                     }
-                    usergroupmodel_collection {
+                    usergroupmodels {
     
                         id
                         user_id
                         group_id
                     }
-                    rolemodel_collection {
+                    rolemodels {
     
                         id
                         name
@@ -65,20 +65,20 @@ export const QueryUserModelByidLarge = (id) =>
                         user_id
                         group_id
                     }
-                    subjectusermodel_collection {
+                    subjectusermodels {
     
                         id
                         subject_id
                         user_id
                         roletype_id
                     }
-                    studyplanitemteachermodel_collection {
+                    studyplanitemteachermodels {
     
                         id
                         teacher_id
                         studyplanitem_id
                     }
-                    subjecttopicusermodel_collection {
+                    subjecttopicusermodels {
     
                         id
                         subjecttopic_id
@@ -106,7 +106,7 @@ export const QueryUserModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                UserModel(id: ${id}) {
+                usersById(id: ${id}) {
                     id
                     name
                     surname
@@ -121,7 +121,7 @@ export const QueryUserModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/UserModel';
+const entityRoot = root + '/users';
 
 /*
  * @param props.id unique identification
@@ -204,7 +204,7 @@ export const UserModelTableRow = (props) =>  {
 export const UserModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><UserModelSmall {...props} /></th>
             <th>name</th>
             <th>surname</th>
             <th>email</th>

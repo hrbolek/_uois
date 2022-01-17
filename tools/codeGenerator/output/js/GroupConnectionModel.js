@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 
-import { useQueryGQL, LoadingError, Loading } from './utils';
-import { root } from './setup';
+import { useQueryGQL, LoadingError, Loading } from '../index';
+import { root, rootGQL } from '../setup';
 
 /*
  * @param id holds value for unique entity identification
@@ -26,7 +26,7 @@ export const QueryGroupConnectionModelByidLarge = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                GroupConnectionModel(id: ${id}) {
+                groups_groupsById(id: ${id}) {
 
                     id
                     child_id
@@ -64,7 +64,7 @@ export const QueryGroupConnectionModelByidMedium = (id) =>
         body: JSON.stringify({"query": 
             `
             query {
-                GroupConnectionModel(id: ${id}) {
+                groups_groupsById(id: ${id}) {
                     id
                     child_id
                     parent_id
@@ -74,7 +74,7 @@ export const QueryGroupConnectionModelByidMedium = (id) =>
         }) // body data type must match "Content-Type" header
     });    
 
-const entityRoot = root + '/GroupConnectionModel';
+const entityRoot = root + '/groups_groups';
 
 /*
  * @param props.id unique identification
@@ -142,7 +142,7 @@ export const GroupConnectionModelTableRow = (props) =>  {
 export const GroupConnectionModelTableHeadRow = (props) =>  {
     return (
         <tr>
-            <th>id</th>
+            <th><GroupConnectionModelSmall {...props} /></th>
             <th>child_id</th>
             <th>parent_id</th>
         </tr>
