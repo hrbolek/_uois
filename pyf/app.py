@@ -12,7 +12,7 @@ import fastapiapp
 import graphqlapp
 
 @cache
-def getConfig(configFileName='config.json'):
+def getConfig(configFileName='./config.json'):
     """Reads config from file
 
     Parameters
@@ -33,10 +33,13 @@ def getConfig(configFileName='config.json'):
         data structure defining parameters describing application and stored externally
     """
 
-    result = { 'connectionstring': 'postgresql+psycopg2://postgres:postgres@postgres:5432/uois' }
+    result = { 'connectionstring': 'postgresql+psycopg2://postgres:example@postgres:5432/uois' }
     if os.path.isfile(configFileName):
+        print('got config.js')
         with open(configFileName, 'r') as config:
             result = json.load(config)
+    else:
+        print('using default connectionstring')
     return result
 
 from sqlalchemy_utils.functions import database_exists, create_database
@@ -135,7 +138,7 @@ def buildApp():
     """
     print('Load config')
     connectionstring = getConfig()['connectionstring']
-
+    
     print('Init Session')
     Session = initSession(connectionstring)
     def prepareSession():#Session=Session): # default parameters are not allowed here
@@ -158,8 +161,8 @@ def buildApp():
 
     #app = FastAPI(root_path="/apif")
     
-    initDb(connectionstring, doDropAll=True, doCreateAll=True)
-    #initDb(connectionstring)
+    #initDb(connectionstring, doDropAll=True, doCreateAll=True)
+    initDb(connectionstring)
 
     app = FastAPI()
     print('init Db')

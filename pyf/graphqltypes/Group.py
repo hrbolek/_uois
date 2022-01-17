@@ -175,6 +175,10 @@ class GroupType(ObjectType):
         groupRecord = session.query(GroupModel).get(parent.id)
         return groupRecord.users
         
+    roles = List('graphqltypes.Role.RoleType')
+    def resolve_roles(parent, info):
+        return parent.roles
+
 def resolve_groups_by_type(root, info, type_id):
     print('@resolve_groups_by_type', type_id)
     session = extractSession(info)

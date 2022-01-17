@@ -14,6 +14,10 @@ class RoleType(ObjectType):
 
     user = Field('graphqltypes.User.UserType')
     group = Field('graphqltypes.Group.GroupType')
+    roletype_id = ID()
+
+    roletype = Field('graphqltypes.RoleType.RoleTypeType')
+
     def resolve_user(parent, info):
         session = extractSession(info)
         dbRecord = session.query(RoleModel).get(parent.id)
@@ -23,3 +27,6 @@ class RoleType(ObjectType):
         session = extractSession(info)
         dbRecord = session.query(RoleModel).get(parent.id)
         return dbRecord.group
+
+    def resolve_roletype(parent, info):
+        return parent.roletype

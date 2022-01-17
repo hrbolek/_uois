@@ -1,169 +1,167 @@
-import {
-    Link,
-    useParams
-  } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+
+import Card from 'react-bootstrap/Card';
 import { useEffect, useState } from "react";
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
+import image from '../rozvrhSnimek.png';
+import { StudentSmall } from "../persons/student";
+import { DepartmentSmall } from "../group/department";
+import { TeacherSmall } from "../persons/teacher";
 
-import { TeacherSmall } from '../teacher/teacher';
-import { StudentSmall } from '../student/student';
-import { UserSmall } from "../user/user";
+import { root } from '../index';
+import { useQueryGQL, Loading, LoadingError } from "../index";
 
-import { root, rootGQL } from '../index'
-import { useQueryGQL } from "../index";
-import { Loading, LoadingError } from "../index";
+export function GroupSmall(props) {
+    return (
+        <Link to={root + "groups/group/" + props.id}>{props.name}</Link>
+    )
+}
 
-const groupRoot = root + '/groups'
+export function GroupMedium(props) {
+    return (
+        <Card className='mb-3'>
+            <Card.Header>
+                <Card.Title>Skupina <b><GroupSmall {...props} /></b></Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <b>Fakulta:</b> {props.faculties} <br />
+                <b>Ročník:</b> {props.grade} <br />
+                <b>Obor:</b> {props.specialization}<br />
+                <hr />
+                <b><Link to={props.appRoot + "/MediumNULL"}>Harmonogram studia</Link></b> <br />
+            </Card.Body>
+        </Card>
+    )
+}
 
-export const QueryGroupByIdLarge = (id) => 
-    fetch(rootGQL, {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+export function GroupLarge(props) {
+    let subjects = props.subjects.map((item) => (<li key={item.id}><Link key={item.id} to={'404'}>{item.name}</Link></li>))
+    let students = props.students.map((item) => (<li key={item.id}><StudentSmall key={item.id} {...item} appRoot={props.appRoot} /></li>))
+
+    const faculties = []
+    for (var index = 0; index < props.faculty.length; index++) {
+        if (index > 0) faculties.push(', ')
+        const sgItem = props.faculty[index]
+        faculties.push(<DepartmentSmall {...props} id={sgItem.id} name={sgItem.name} key={sgItem.id} />);
+    }
+
+
+    return (
+        <div className="card">
+            <div className="card-header mb-3">
+                <h4>Karta učební skupiny</h4>
+            </div>
+            <div className="col">
+                <div className='row'>
+                    <div className="col-3">
+                        <GroupMedium {...props} faculties={faculties} />
+                        <ContactInfo appRoot={props.appRoot} />
+
+                    </div>
+                    <div className="col-2">
+                        <SeznamStudentu students={students} />
+                    </div>
+                    <div className="col-5">
+                        <RozvrhMedium />
+                    </div>
+                    <div className="col-2">
+                        <SeznamPredmetu subjects={subjects} />
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export const GroupLargeStoryBook = (props) => {
+    const extraProps = {
+        'id': props.id,
+        'name': props.name,
+        'grade': '3',
+        'specialization': 'Kybernetická bezpečnost',
+        'VR': 'def',
+        'VC': 'def',
+        'VK': 'def',
+        'faculty': [
+            { 'id': 23, 'name': 'FVT' }
+        ],
+        'subjects': [
+            { 'id': 25, 'name': 'Informatika' },
+            { 'id': 1, 'name': 'Analýza informačních zdrojů' },
+            { 'id': 3, 'name': 'Anglický jazyk' },
+            { 'id': 2, 'name': 'Tělesná výchova' },
+            { 'id': 4, 'name': 'Kybernetická bezpečnost' },
+            { 'id': 5, 'name': 'Počítačové sítě a jejich bezpečnost' }
+        ],
+        'students': [
+            { 'id': 1, 'name': 'Honza Bernard' },
+            { 'id': 2, 'name': 'Pavel Motol' },
+            { 'id': 3, 'name': 'Dominik Vaněk' },
+            { 'id': 4, 'name': 'Andrea Svobodova' },
+            { 'id': 5, 'name': 'Michal Mrkev' },
+            { 'id': 6, 'name': 'Patrik Němý' },
+            { 'id': 7, 'name': 'Jiřina Stará' },
+            { 'id': 8, 'name': 'Petr Filip' },
+            { 'id': 9, 'name': 'Jiří Grau' },
+            { 'id': 10, 'name': 'Teodor Velký' },
+            { 'id': 11, 'name': 'Alexandr Veliký' },
+            { 'id': 22, 'name': 'Aleš Máchal' }
+        ]
+    }
+
+
+    return <GroupLarge {...extraProps} {...props} />
+}
+
+export const GroupLargeQuery = (id) => 
+    fetch('/gql', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         redirect: 'follow', // manual, *follow, error
-        body: JSON.stringify({"query": 
-            `
+        body: JSON.stringify({
+            "query":
+                `
             query {
                 group(id: ${id}) {
-                  id
-                  name
-                  grouptypeId
-                  users {
                     id
                     name
-                    surname
-                    email
+                    grouptypeId
+                    roles {
+                      user {
+                        id
+                        name
+                        surname
+                        email
+                      }
+                      
+                      roletype {
+                        id
+                        name
+                      }
+                    }
+                    students: users {
+                      id
+                      name
+                      surname
+                      email
+                      
+                    }
+                    
                   }
-                }
-              }
-            `        
-        }) // body data type must match "Content-Type" header
-});
-
-export const QueryGroupByIdMedium = (id) => 
-    fetch(rootGQL, {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        redirect: 'follow', // manual, *follow, error
-        body: JSON.stringify({"query": 
+            }
             `
-            query {
-                group(id: ${id}) {
-                  id
-                  name
-                  grouptypeId
-                }
-              }
-            `        
-        }) // body data type must match "Content-Type" header
-});
+        }),
+    })
 
-export const GroupSmall = (props) => {
-    //embeded Student
-    return (
-        <Link to={groupRoot + `/${props.id}`}>{props.name}</Link>
-    )
-}
+export const GroupLargeFetching = (props) => {
+    const [state, error] = useQueryGQL(props.id, GroupLargeQuery, (response) => response.data.group, [props.id])
     
-export const GroupSmallWithFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, QueryGroupByIdMedium, (response) => response.data.group, [props.id])
-    if (state !== null) {
-        return <GroupSmall {...state} />
-    } else if (error !== null) {
-        return <LoadingError error={error} />
-    } else {
-        return <Loading>Skupina {props.id}</Loading>
-    }
-}
-
-export const GroupMedium = (props) => {
-    return (
-        <Card>
-            {/*<Card.Img variant="top" src="holder.js/100px180" />*/}
-            <Card.Body>
-                <Card.Title>Skupina ID:{props.id}, {props.name}</Card.Title>
-                <Card.Text>
-                </Card.Text>
-            </Card.Body>
-        </Card>            
-    )
-}
-
-export const GroupMediumWithFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, QueryGroupByIdMedium, (response) => response.data.group, [props.id])
-    if (state !== null) {
-        return <GroupMedium {...state} />
-    } else if (error !== null) {
-        return <LoadingError error={error} />
-    } else {
-        return <Loading>Skupina {props.id}</Loading>
-    }
-}
-
-export const GroupLarge = (props) => {
-    let users = props.users.map((item, index) => (<><UserSmall key={index} {...item} /><br key={'k' + index} /></>))
-
-    return (
-        <>
-        <Row>
-            <Col>
-                <Card>
-                    <Card.Header className='bg-success bg-gradient text-white'>
-                        <Card.Title>Základní informace</Card.Title>
-                    </Card.Header>
-                    <Card.Body>
-                        Skupina ID:{props.id}, {props.name}<br />
-                        <a href={'mailto:student1@unob.cz?cc=student2@unob.cz;student3@unob.cz&subject=Email z IS'}>@</a> <br />
-                        Typ : {props.grouptypeId}
-                    </Card.Body>
-                </Card>
-            </Col>
-        </Row>
-        <Row>
-            <Col>
-                <Card>
-                    <Card.Header className='bg-success bg-gradient text-white'>
-                        <Card.Title>Příslušníci:</Card.Title>
-                    </Card.Header>
-                    <Card.Body>
-                        {users}
-                    </Card.Body>
-                </Card>
-            </Col>
-            
-        </Row>
-        <Row>
-            <Col>
-                <Card>
-                    <Card.Header className='bg-success bg-gradient text-white'>
-                        <Card.Title>Vyučující:</Card.Title>
-                    </Card.Header>
-                    <Card.Body>
-                        <TeacherSmall id='633' name='Štefek' /><br />
-                        <TeacherSmall id='633' name='Štefek' /><br />
-                    </Card.Body>
-                </Card>
-            </Col>
-            
-        </Row>
-        </>
-    )
-}
-
-export const GroupLargeWithFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, QueryGroupByIdLarge, (response) => response.data.group, [props.id])
-    if (state !== null) {
-        return <GroupLarge {...state} />
-    } else if (error !== null) {
+    if (state != null) {
+        return <GroupLargeStoryBook {...state} />
+    } else if (error != null) {
         return <LoadingError error={error} />
     } else {
         return <Loading>Skupina {props.id}</Loading>
@@ -174,12 +172,153 @@ export const GroupPage = (props) => {
     const { id } = useParams();
 
     return (
-        <GroupLargeWithFetching id={id} />
+        <GroupLargeFetching {...props} id={id} />
+    )       
+}
+/*
+export function GroupPage(props) {
+    const [state, setState] = useState(
+        {
+            'id': props.id,
+            'name': props.name,
+            'grade': '3',
+            'specialization': 'Kybernetická bezpečnost',
+            'VR': 'def',
+            'VC': 'def',
+            'VK': 'def',
+            'faculty': [
+                { 'id': 23, 'name': 'FVT' }
+            ],
+            'subjects': [
+                { 'id': 25, 'name': 'Informatika' },
+                { 'id': 1, 'name': 'Analýza informačních zdrojů' },
+                { 'id': 3, 'name': 'Anglický jazyk' },
+                { 'id': 2, 'name': 'Tělesná výchova' },
+                { 'id': 4, 'name': 'Kybernetická bezpečnost' },
+                { 'id': 5, 'name': 'Počítačové sítě a jejich bezpečnost' }
+            ],
+            'students': [
+                { 'id': 1, 'name': 'Honza Bernard' },
+                { 'id': 2, 'name': 'Pavel Motol' },
+                { 'id': 3, 'name': 'Dominik Vaněk' },
+                { 'id': 4, 'name': 'Andrea Svobodova' },
+                { 'id': 5, 'name': 'Michal Mrkev' },
+                { 'id': 6, 'name': 'Patrik Němý' },
+                { 'id': 7, 'name': 'Jiřina Stará' },
+                { 'id': 8, 'name': 'Petr Filip' },
+                { 'id': 9, 'name': 'Jiří Grau' },
+                { 'id': 10, 'name': 'Teodor Velký' },
+                { 'id': 11, 'name': 'Alexandr Veliký' },
+                { 'id': 22, 'name': 'Aleš Máchal' }
+            ]
+        }
+    )
+
+    useEffect(() => {
+        fetch('/gql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            redirect: 'follow', // manual, *follow, error
+            body: JSON.stringify({
+                "query":
+                    `
+                query {
+                    user(id: ${props.id}) {
+                        id
+                        name
+                        VR
+                        VC
+                        faculty: groupsByType(type: 0) {
+                            id
+                            name
+                        }
+                        groups: groupsByType(type: 1) {
+                            id
+                            name
+                        }
+                        subjects: groupsByType(type: 2) {
+                            id
+                            name
+                        }
+                        students: groupsByType(type: 3) {
+                            id
+                            name
+                        }
+                    }
+                }
+                `
+            }),
+        })
+            .then(response => response.json())
+            .then(data => setState(data.data))
+            .then(() => console.log('data logged'))
+            .catch(error => console.log('error nacteni'))
+    }, [props.id])
+
+
+    return (
+        <GroupLarge {...state} {...props} />
+    )
+}
+*/
+
+function RozvrhMedium() {
+    return (
+        <Card>
+            <Card.Header>
+                <Card.Title>Týdenní rozrvh</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <img src={image} alt="Rozvrh" width={'100%'} />
+            </Card.Body>
+        </Card>
     )
 }
 
-export const GroupList = (props) => {
+function SeznamPredmetu(props) {
     return (
-        <div>Toto je seznam skupin</div>
+        <div className="card mb-3">
+            <Card.Header>
+                <Card.Title>Předměty</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <ul>
+                    {props.subjects}
+                </ul>
+            </Card.Body>
+        </div>
+    )
+}
+
+function SeznamStudentu(props) {
+    return (
+        <div className="card mb-3">
+            <Card.Header>
+                <Card.Title>Studenti</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <ul>
+                    {props.students}
+                </ul>
+            </Card.Body>
+        </div>
+    )
+}
+
+function ContactInfo(props) {
+    return (
+        <div className="card mb-3">
+            <Card.Header>
+                <Card.Title>Nadřízení</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <b>Velitel roty:</b> <TeacherSmall id={23} name='Stanislav' lastname='Dobrušák' appRoot={props.appRoot} /><br />
+                <b>Velitel čety:</b> <StudentSmall id={28} name='Pavel' lastname='Rajská' appRoot={props.appRoot} /><br />
+                <b>Vedoucí katedry:</b> <TeacherSmall id={21} name='František' lastname='Petr' appRoot={props.appRoot} /><br />
+            </Card.Body>
+        </div>
     )
 }

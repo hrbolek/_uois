@@ -13,11 +13,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 
-import { Students, StudentLarge, StudentPage } from './entities/student/student';
 import { UserPage } from './entities/user/user';
-import { TeacherLarge, TeacherPage } from './entities/teacher/teacher';
-import { GroupPage, GroupLarge } from './entities/group/group';
+//import { GroupPage, GroupLarge } from './entities/group/group';
 import { SubjectPage } from './entities/subject/subject';
+
+import { TeacherPage } from './entities/persons/teacher';
+import { StudentPage } from './entities/persons/student';
+import { DepartmentPage } from './entities/group/department';
+import { FacultyPage } from './entities/group/faculty';
+import { GroupPage } from './entities/group/group';
 
 import { root } from './entities/index'
 
@@ -46,26 +50,25 @@ function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-        <Route path={root + "/users/:id"}>
-            <UserPage />
-          </Route>
-          <Route path={root + "/teachers/:id"}>
+          <Route path={root + "/users/teacher/:id"}>
             <TeacherPage />
           </Route>
-          <Route path={root + "/teachers/"}>
-            <TeacherLarge />
-          </Route>
-          <Route path={root + "/students/:id"}>
+          <Route path={root + "/users/student/:id"}>
             <StudentPage />
-          </Route> 
-          <Route path={root + "/students/"}>
-            <Students />
           </Route>
-          <Route path={root + "/groups/:id"}>
+          <Route path={root + "/groups/department/:id"}>
+            <DepartmentPage />
+          </Route>
+          <Route path={root + "/groups/faculty/:id"}>
+            <FacultyPage />
+          </Route>
+          <Route path={root + "/groups/group/:id"}>
             <GroupPage />
           </Route>
-          <Route path={root + "/subjects/:id"}>
-            <SubjectPage />
+          
+
+          <Route path={root + "/users/:id"}>
+            <UserPage />
           </Route>
 
           {/*
