@@ -42,9 +42,9 @@ export function StudentLarge(props) {
     let subjects = props.subjects.map((item) => (<li key={item.id}><Link key={item.id} to={'404'}>{item.name}</Link></li>))
 
     return (
-        <div className="card w-75">
+        <div className="card">
             <div className="card-header mb-3">
-                <h4>Karta uživatele</h4>
+                <h4>Karta studenta</h4>
             </div>
 
             <div className="col">
@@ -68,13 +68,13 @@ export function StudentLarge(props) {
 export const StudentLargeStoryBook = (props) => {
     const extendedProps = {
         'id': props.id,
-        'name': 'props.name',
-        'lastname': 'props.lastname',
+        'name': 'Name',
+        'lastname': 'Lastname',
         'degreeRank': 'ing. por.',
         'grade': '3',
-        "email": 'props.name.toLowerCase()' + '.' + 'props.lastname.toLowerCase()' + '@unob.cz',
-        'phone': '720 525 980',
-        'areal': 'Kasárny Černá Pole',
+        "email": 'name.lastname@unob.cz',
+        'phone': '799 999 999',
+        'areal': 'Kasárna Černá Pole',
         'building': '3',
         'room': '422',
         'VR': 'def',
@@ -110,27 +110,25 @@ export const StudentLargeQuery = (id) =>
         body: JSON.stringify({
             "query":
                 `
-            query {
-                user(id: ${id}) {
-                    id
-                    name
-                    surname
-                    email
-
-                    faculty: groupsByType(typeId: 0) {
+                query {
+                    user: student(id: ${id}) {
+                      id
+                      person {
                         id
                         name
-                    }
-                    departments: groupsByType(typeId: 1) {
+                        surname
+                        email
+                      }
+                      program {
                         id
                         name
+                        subjects {
+                          id
+                          name
+                        }
+                      }
                     }
-                    studygroups: groupsByType(typeId: 2) {
-                        id
-                        name
-                    }
-                }
-            }
+                  }
             `
         }),
     })
@@ -138,10 +136,10 @@ export const StudentLargeQuery = (id) =>
 export const StudentLargeFetching = (props) => {
     const [state, error] = useQueryGQL(props.id, StudentLargeQuery, (response) => response.data.user, [props.id])
     
-    if (state != null) {
-        return <StudentLargeStoryBook {...state} />
-    } else if (error != null) {
+    if (error != null) {
         return <LoadingError error={error} />
+    } else if (state != null) {
+        return <StudentLargeStoryBook {...state} />
     } else {
         return <Loading>Uživatel {props.id}</Loading>
     }

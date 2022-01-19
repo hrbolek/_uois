@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Card from 'react-bootstrap/Card';
+import Accordion from "react-bootstrap/Accordion";
+import Button from "react-bootstrap/Button";
 
 
 export const root = '/ui'
@@ -20,8 +22,28 @@ export const useQueryGQL = (id, queryFunc, responseToJson, depends) => {
     const [error, setError] = useState(null);
     useEffect(() =>
         queryFunc(id)
-        .then(response => response.json())
-        .then(data => responseToJson(data))
+        .then(response => {
+            let result = response;
+            if (response.status === 200) {
+                try {
+                    result = response.json()
+                } catch (err) {
+                    setError('Server response is not json');
+                }
+            } else {
+                result = response.text()
+            }
+            return result;
+        })
+        .then(data => {
+            let result = data;
+            try {
+                result = responseToJson(data)
+            } catch (err) {
+                setError('Unable to map data, got "' + JSON.stringify(data) + '" from server. Bad query?')
+            }
+            return result
+        })
         .then(data => setState(data))
         .catch(e => setError(e)), depends
     )
@@ -30,8 +52,8 @@ export const useQueryGQL = (id, queryFunc, responseToJson, depends) => {
 
 export const LoadingError = (props) =>
     (
-        <Card>
-            <Card.Header bg='danger' text='white'>{props.error}</Card.Header>
+        <Card bg='danger' text='white'>
+            <Card.Header >{props.error}</Card.Header>
         </Card>
 )
 
@@ -41,6 +63,52 @@ export const Loading = (props) => (
         <Card.Body>{props.children}</Card.Body>
     </Card>
 )
+
+/*
+ * @param props.id identification of data entity to be fetched and visualised
+ * @param props.query query (async) fetching data from API
+ * @param props.responseToJson func for transformation of API response (json) into state data
+ * @param props.Visualiser ReactJS component capable to receive selected data and visualise them
+ * 
+ * if loading is in process, the Loading is displayed
+ * if an error occured the LoadingError is displayed
+*/
+export const Fetching = (props) => {
+    const { id, query, Visualiser, responseToJson } = props;
+    const [state, error] = useQueryGQL(id, query, responseToJson, [id])
+    if (!query || !Visualiser || !responseToJson) {
+        <LoadingError error={"Bad use of component Fetching. Missing parameters query and/or Visualiser and/or jsonMapper"} />
+    } else {
+        if (error != null) {
+            return <LoadingError error={error} />
+        } else if (state != null) {
+            return <Visualiser {...state} />
+        } else {
+            return <Loading>DataEntity {id}</Loading>
+        }
+    }
+}
+
+export const ExpandableCard = (props) => {
+    const { title, children } = props;
+    return (
+        <Accordion key={0}>
+            <Card>
+                <Card.Header>
+                    <Accordion.Toggle as={Button} variant="link" eventKey={0}>
+                        {title}
+                    </Accordion.Toggle>
+                </Card.Header>
+                <Accordion.Collapse eventKey={0}>
+                    <Card.Body>
+                        {children}
+                    </Card.Body>
+                </Accordion.Collapse>
+            </Card>
+        </Accordion>
+    )
+}
+
 /*
 export const UpgradeComponentToFetching = (QueryByIdFunc, entityName, Component) =>
     (props) => {

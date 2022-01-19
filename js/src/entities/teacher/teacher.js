@@ -19,7 +19,7 @@ const teacherRoot = root + '/teachers'
 
 export const TeacherSmall = (props) => {
     return (
-        <Link to={teacherRoot + `/${props.id}`}>{props.name}</Link>
+        <Link to={teacherRoot + `/${props.id}`}>{props.name} {props.surname}</Link>
     )
 }
 

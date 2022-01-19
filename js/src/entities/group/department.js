@@ -29,11 +29,41 @@ export function DepartmentMedium(props) {
     )
 }
 
+
+function SeznamUcitelu(props) {
+    return (
+        <div className="card mb-3">
+            <Card.Header>
+                <Card.Title>Vyučující</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <ul>
+                    {props.children}
+                </ul>
+            </Card.Body>
+        </div>
+    )
+}
+
+function ContactInfo(props) {
+    return (
+        <div className="card mb-3">
+            <Card.Header>
+                <Card.Title>Adresa</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <b>Areál: </b> {props.areal}<br />
+                <b>Budova: </b>{props.building} <br />
+            </Card.Body>
+        </div>
+    )
+}
+
 export function DepartmentLarge(props) {
-    let teachers = props.teachers.map((item) => (<li key={item.id}><TeacherSmall key={item.id} {...item} /></li>))
+    let teachers = props.members.map((item) => (<li key={item.id}><TeacherSmall key={item.id} {...item} /></li>))
 
     return (
-        <div className="card w-50">
+        <div className="card">
             <div className="card-header mb-3">
                 <h4>Karta katedry</h4>
             </div>
@@ -44,7 +74,7 @@ export function DepartmentLarge(props) {
                         <ContactInfo {...props} />
                     </div>
                     <div className='col'>
-                        <SeznamUcitelu teachers={teachers} />
+                        <SeznamUcitelu >{ teachers }</SeznamUcitelu>
                     </div>
                 </div>
             </div>
@@ -96,28 +126,13 @@ export const DepartmentLargeQuery = (id) =>
                 group(id: ${id}) {
                     id
                     name
-                    grouptypeId
-                    roles {
-                      user {
-                        id
-                        name
-                        surname
-                        email
-                      }
-                      
-                      roletype {
-                        id
-                        name
-                      }
-                    }
-                    teachers: users {
+                    members {
                       id
                       name
                       surname
+                      address
                       email
-                      
                     }
-                    
                   }
             }
             `
@@ -127,12 +142,12 @@ export const DepartmentLargeQuery = (id) =>
 export const DepartmentLargeFetching = (props) => {
     const [state, error] = useQueryGQL(props.id, DepartmentLargeQuery, (response) => response.data.group, [props.id])
     
-    if (state != null) {
-        return <DepartmentLargeStoryBook {...state} />
-    } else if (error != null) {
+    if (error != null) {
         return <LoadingError error={error} />
+    } else if (state != null) {
+        return <DepartmentLargeStoryBook {...state} />
     } else {
-        return <Loading>Uživatel {props.id}</Loading>
+        return <Loading>Katedra {props.id}</Loading>
     }
 }
 
@@ -215,31 +230,3 @@ export function DepartmentPage(props) {
     )
 }
 */
-function SeznamUcitelu(props) {
-    return (
-        <div className="card mb-3">
-            <Card.Header>
-                <Card.Title>Vyučující</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <ul>
-                    {props.teachers}
-                </ul>
-            </Card.Body>
-        </div>
-    )
-}
-
-function ContactInfo(props) {
-    return (
-        <div className="card mb-3">
-            <Card.Header>
-                <Card.Title>Adresa</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <b>Areál: </b> {props.areal}<br />
-                <b>Budova: </b>{props.building} <br />
-            </Card.Body>
-        </div>
-    )
-}

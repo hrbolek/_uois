@@ -14,10 +14,12 @@ import React, {Component, useState, useEffect } from "react";
 import { PersonSmall } from "../person/person";
 import { SubjectSemesterSmall, SubjectSemesterTopicMedium } from "./lesson";
 import { useQueryGQL, Loading, LoadingError } from "../index";
+import { ProgramSmall } from "./studyprogram";
+import { TeacherSmall } from "../person/teacher";
 
 //import { LessonSmall } from "../lesson/lesson";
 
-export const subjectsRoot = root + "studyprograms/subject"
+export const subjectsRoot = root + "/studyprograms/subject"
 
 export const SubjectSmall = (props) => {
     //const ProgID=props.ProgID
@@ -139,11 +141,70 @@ export const SemesterList = (props) => {
     )
 }
   
+export const SubjectTopicList = (props) => {
+    return (
+        <Card>
+            <Card.Header>
+                Seznam témat
+            </Card.Header>
+            <Card.Body>
+                {props.lessons.map((lesson, index) => (
+                    <>
+                    {lesson.topic}, {lesson.id} <br/>
+                    </>
+                ))}
+            </Card.Body>
+        </Card>
+    )
+}
+
+export const SubjectProgram = (props) => {
+    return (
+        <Card>
+            <Card.Header>
+                Program <ProgramSmall {...props.program} />
+            </Card.Header>
+            <Card.Body>
+            {JSON.stringify(props.program)}
+            </Card.Body>
+        </Card>
+    )
+}
+
+export const SubjectGrants = (props) => {
+    return (
+        <Card>
+            <Card.Header>
+                Garanti
+            </Card.Header>
+            <Card.Body>
+                <TeacherSmall id={1} name={'Alexandr'} surname={'Štefek'}/>
+            </Card.Body>
+        </Card>
+    )
+}
+
 export const SubjectLarge = (props) => {
     return (
-        <SubjectMedium {...props}>
-            <SemesterList {...props} />
-        </SubjectMedium>
+        <Card>
+            <Card.Header>
+                Předmět {props.name} ({props.id})
+            </Card.Header>
+            <Card.Body>
+                <Row>
+                    <Col md={3}>
+                        <SubjectProgram {...props} /> <br/>
+                        <SubjectGrants {...props} />
+                    </Col>
+                    <Col md={6}>
+                        <SubjectTopicList {...props} />
+                    </Col>
+                    <Col md={3}>
+                        <SubjectProgram {...props} />
+                    </Col>
+                </Row>
+            </Card.Body>
+        </Card>
     )
 }
 
@@ -259,21 +320,18 @@ export const SubjectLargeQuery = (id) =>
         body: JSON.stringify({
         query: `
         query{
-            program(id: ${id}){
-            name
-            subjects{
+            subject(id: ${id}) {
                 id
                 name
-                semesters{
-                name
-                id
-                topics{
-                    name
-                    id
+                lessons {
+                  id
+                  topic
                 }
+                program {
+                  id
+                  name
                 }
-            }
-            }
+              }
         }              
             `,
         variables: {
@@ -285,10 +343,10 @@ export const SubjectLargeQuery = (id) =>
 export const SubjectPageFetching = (props) => {
     const [state, error] = useQueryGQL(props.id, SubjectLargeQuery, (response) => response.data.subject, [props.id])
     
-    if (state != null) {
-        return <SubjectLargeStoryBook {...state} />
-    } else if (error != null) {
+    if (error != null) {
         return <LoadingError error={error} />
+    } else if (state != null) {
+        return <SubjectLargeStoryBook {...state} />
     } else {
         return <Loading>Předmět {props.id}</Loading>
     }

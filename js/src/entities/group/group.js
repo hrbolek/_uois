@@ -128,28 +128,13 @@ export const GroupLargeQuery = (id) =>
                 group(id: ${id}) {
                     id
                     name
-                    grouptypeId
-                    roles {
-                      user {
-                        id
-                        name
-                        surname
-                        email
-                      }
-                      
-                      roletype {
-                        id
-                        name
-                      }
-                    }
-                    students: users {
+                    members {
                       id
                       name
                       surname
+                      address
                       email
-                      
                     }
-                    
                   }
             }
             `
@@ -159,10 +144,10 @@ export const GroupLargeQuery = (id) =>
 export const GroupLargeFetching = (props) => {
     const [state, error] = useQueryGQL(props.id, GroupLargeQuery, (response) => response.data.group, [props.id])
     
-    if (state != null) {
-        return <GroupLargeStoryBook {...state} />
-    } else if (error != null) {
+    if (error != null) {
         return <LoadingError error={error} />
+    } else if (state != null) {
+        return <GroupLargeStoryBook {...state} />
     } else {
         return <Loading>Skupina {props.id}</Loading>
     }

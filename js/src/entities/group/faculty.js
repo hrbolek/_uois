@@ -5,7 +5,7 @@ import { Card } from "react-bootstrap";
 import { DepartmentSmall } from "./department";
 //import { PersonSmall } from "../person/person";
 import { PersonSmall } from "../person/person";
-
+import { TeacherSmall } from '../person/teacher';
 import { root } from '../index';
 import { useQueryGQL, Loading, LoadingError } from "../index";
 
@@ -29,11 +29,28 @@ export function FacultyMedium(props) {
     )
 }
 
+function SeznamUcitelu(props) {
+    let teachers = props.teachers.map((item, index) => {
+        (<li key={item.id}><TeacherSmall key={item.id} {...item} /></li>)
+    })
+    return (
+        <div className="card mb-3">
+            <Card.Header>
+                <Card.Title>Vyučující</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <ul>
+                    {teachers}
+                </ul>
+            </Card.Body>
+        </div>
+    )
+}
+
 export function FacultyLarge(props) {
     let departments = props.departments.map((item) => (<li key={item.id}><DepartmentSmall key={item.id} {...item} appRoot={props.appRoot} /></li>))
-
     return (
-        <div className="card w-50">
+        <div className="card">
             <div className="card-header mb-3">
                 <h4>Karta fakulty</h4>
             </div>
@@ -45,6 +62,9 @@ export function FacultyLarge(props) {
                     </div>
                     <div className='col'>
                         <SeznamKateder departments={departments} />
+                    </div>
+                    <div className='col'>
+                        <SeznamUcitelu teachers={props.members} />
                     </div>
                 </div>
             </div>
@@ -58,16 +78,15 @@ export const FacultyLargeStoryBook = (props) => {
         'name': props.name,
         'fullname': 'Fakulta vojenských technologií',
         'dean': 'Vladimír Brzobohatý',
-        'areal': 'Kasárny Šumavská',
+        'areal': 'Kasárna Šumavská',
         'building': '3',
         'departments': [
-            { 'id': 1, 'name': 'K-201' },
-            { 'id': 2, 'name': 'K-202' },
-            { 'id': 3, 'name': 'K-205' },
-            { 'id': 4, 'name': 'K-208' },
-            { 'id': 5, 'name': 'K-209' },
-            { 'id': 6, 'name': 'K-220' },
-            { 'id': 7, 'name': 'K-221' },
+            { 'id': 4, 'name': 'K-201' },
+            { 'id': 5, 'name': 'K-202' },
+            { 'id': 6, 'name': 'K-205' },
+            { 'id': 7, 'name': 'K-208' },
+            { 'id': 8, 'name': 'K-209' },
+            { 'id': 9, 'name': 'K-220' }
         ]
     }
 
@@ -89,28 +108,13 @@ export const FacultyLargeQuery = (id) =>
                 group(id: ${id}){
                     id
                     name
-                    grouptypeId
-                    roles {
-                      user {
-                        id
-                        name
-                        surname
-                        email
-                      }
-                      
-                      roletype {
-                        id
-                        name
-                      }
-                    }
-                    users {
+                    members {
                       id
                       name
                       surname
+                      address
                       email
-                      
                     }
-                    
                   }
             }
             `

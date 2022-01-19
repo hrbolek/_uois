@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "/ui",
-  "proxy": "http://localhost:50001/",  
+  "proxy": "http://localhost:82/",  
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.6",

@@ -323,12 +323,20 @@ export const SubjectSemesterTopicLargeQuery = (id) =>
                 },
                 body: JSON.stringify({
                 query: `
-                query{
-                    subjectSemesterTopic(id: ${id}) {
+                query {
+                    subjectSemesterTopic(id:${id}) {
                         id
                         name
-                      }
-                    }              
+                        subjectsemester {
+                          id
+                          name
+                          subject {
+                            id
+                            name
+                          }
+                        }
+                      }     
+                    }               
                     `,
                 variables: {
                     now: new Date().toISOString(),

@@ -10,6 +10,9 @@ import { DepartmentSmall } from "../group/department";
 
 import { root } from '../index';
 import { useQueryGQL, Loading, LoadingError } from "../index";
+import { FacultySmall } from "../group/faculty";
+import { GroupSmall } from "../group/group";
+import { SubjectSmall } from "../studyprogram/subject";
 
 export function TeacherSmall(props) {
     return (
@@ -35,8 +38,55 @@ export function TeacherMedium(props) {
     )
 }
 
+function ContactInfo(props) {
+    //data=props.datas;
+    return (
+        <div className="card mb-3">
+            <Card.Header>
+                <Card.Title>Kontaktní údaje</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <b>E-mail:</b> {props.email}<br />
+                <b>Telefon:</b> {props.phone ? props.phone : 'Neuvedeno'}<br />
+                <b>Areál: </b> {props.areal}<br />
+                <b>Budova: </b>{props.building} <b>Místnost:</b> {props.room}<br />
+            </Card.Body>
+        </div>
+    )
+}
+
+const groupTypeComponent = {
+    'fakulta': FacultySmall,
+    'katedra': DepartmentSmall
+}
+export const GroupInfo = (props) => {
+    const GroupLink = groupTypeComponent[props.grouptype.name] || GroupSmall
+    return (
+        <>
+        <b>{props.grouptype.name}: </b>
+        <GroupLink {...props} />
+        <br />
+        </>
+    )
+}
+
+export const Membership = (props) => {
+    return (
+        <div className="card mb-3">
+            <Card.Header>
+                <Card.Title>Členství</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                {props.groups.map((group, index) => (
+                    <GroupInfo {...group} />
+                ))}
+            </Card.Body>
+        </div>
+    )
+}
+
 export function TeacherLarge(props) {
-    let subjects = props.subjects.map((item) => (<li key={item.id}><Link key={item.id} to={'404'}>{item.name}</Link></li>))
+    
 
     const departments = []
     for (var index = 0; index < props.departments.length; index++) {
@@ -48,21 +98,22 @@ export function TeacherLarge(props) {
     }
 
     return (
-        <div className="card w-75">
+        <div className="card">
             <div className="card-header mb-3">
-                <h4>Karta uživatele</h4>
+                <h4>Karta učitele</h4>
             </div>
             <div className="col">
                 <Row>
                     <div className="col-3">
                         <TeacherMedium {...props} departments={departments} />
                         <ContactInfo {...props} />
+                        <Membership {...props} />
                     </div>
                     <div className="col-6">
                         <RozvrhMedium />
                     </div>
                     <div className="col-3">
-                        <SeznamPredmetu subjects={subjects} />
+                        <SeznamPredmetu {...props} />
                     </div>
                 </Row>
             </div>
@@ -164,25 +215,28 @@ export const TeacherLargeQuery = (id) =>
             "query":
                 `
             query {
-                user(id: ${id}) {
+                user: person(id: ${id}) {
                     id
                     name
                     surname
                     email
-    
-                    faculty: groupsByType(typeId: 0) {
+                    groups {
+                      id
+                      name
+                      grouptype {
                         id
                         name
+                      }
                     }
-                    departments: groupsByType(typeId: 1) {
+                    students {
+                      person {
                         id
                         name
+                        surname
+                        email
+                      }
                     }
-                    subjects: groupsByType(typeId: 2) {
-                        id
-                        name
-                    }
-                }
+                  }
             }
             `
         }),
@@ -203,8 +257,8 @@ export const TeacherLargeStoryBook = (props) => {
             { 'id': 23, 'name': 'FVT' }
         ],
         'departments': [
-            { 'id': 1, 'name': 'K-209' },
-            { 'id': 2, 'name': 'K-207' }
+            { 'id': 5, 'name': 'K-209' },
+            { 'id': 6, 'name': 'K-207' }
         ],
         'subjects': [
             { 'id': 25, 'name': 'Informatika' },
@@ -219,10 +273,10 @@ export const TeacherLargeStoryBook = (props) => {
 export const TeacherLargeFetching = (props) => {
     const [state, error] = useQueryGQL(props.id, TeacherLargeQuery, (response) => response.data.user, [props.id])
     
-    if (state != null) {
-        return <TeacherLargeStoryBook {...state} />
-    } else if (error != null) {
+    if (error != null) {
         return <LoadingError error={error} />
+    } else if (state != null) {
+        return <TeacherLargeStoryBook {...state} />
     } else {
         return <Loading>Uživatel {props.id}</Loading>
     }
@@ -251,24 +305,9 @@ function RozvrhMedium() {
     )
 }
 
-function ContactInfo(props) {
-    //data=props.datas;
-    return (
-        <div className="card mb-3">
-            <Card.Header>
-                <Card.Title>Kontaktní údaje</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <b>E-mail:</b> {props.email}<br />
-                <b>Telefon:</b> {props.phone ? props.phone : 'Neuvedeno'}<br />
-                <b>Areál: </b> {props.areal}<br />
-                <b>Budova: </b>{props.building} <b>Místnost:</b> {props.room}<br />
-            </Card.Body>
-        </div>
-    )
-}
 
 function SeznamPredmetu(props) {
+    let subjects = props.subjects.map((subject) => (<li><SubjectSmall {...subject} /></li>))
     return (
         <div className="card mb-3">
             <Card.Header>
@@ -276,7 +315,7 @@ function SeznamPredmetu(props) {
             </Card.Header>
             <Card.Body>
                 <ul>
-                    {props.subjects}
+                    {subjects}
                 </ul>
             </Card.Body>
         </div>

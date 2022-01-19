@@ -523,13 +523,13 @@ export const ArealLargeQuery = (id) =>
         }),
     })
 
-export const ArealPageFetching = (props) => {
+export const ArealFetching = (props) => {
     const [state, error] = useQueryGQL(props.id, ArealLargeQuery, (response) => response.data.areal, [props.id])
     
-    if (state != null) {
-        return <ArealLargeStoryBook {...state} />
-    } else if (error != null) {
+    if (error != null) {
         return <LoadingError error={error} />
+    } else if (state != null) {
+        return <ArealLargeStoryBook {...state} />
     } else {
         return <Loading>Areál {props.id}</Loading>
     }
@@ -538,6 +538,6 @@ export const ArealPageFetching = (props) => {
 export const ArealPage = (props) => {
     const { id } = useParams();
 
-    return <ArealPageFetching {...props} id={id} />;
+    return <ArealFetching {...props} id={id} />;
 
 }

@@ -11,7 +11,7 @@ import { TeacherSmall } from '../teacher/teacher';
 import { TimeTableMedium } from '../timetable/timetable';
 
 import { root } from '../index';
-const subjectRoot = root + '/subjects';
+const subjectRoot = root + '/studyprograms/subject';
 
 export const SubjectSmall = (props) => {
     return (

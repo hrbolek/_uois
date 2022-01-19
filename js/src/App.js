@@ -15,7 +15,7 @@ import Container from 'react-bootstrap/Container';
 
 import { UserPage } from './entities/user/user';
 //import { GroupPage, GroupLarge } from './entities/group/group';
-import { SubjectPage } from './entities/subject/subject';
+import { SubjectPage } from './entities/studyprogram/subject';
 
 import { TeacherPage } from './entities/person/teacher';
 import { StudentPage } from './entities/person/student';
@@ -77,6 +77,9 @@ function App() {
 
           <Route path={root + "/studyprograms/program/:id"}>
             <StudyProgramPage />
+          </Route>
+          <Route path={root + "/studyprograms/subject/:id"}>
+            <SubjectPage />
           </Route>
           <Route path={root + "/studyprograms/lesson/:id"}>
             <SubjectSemesterTopicPage />

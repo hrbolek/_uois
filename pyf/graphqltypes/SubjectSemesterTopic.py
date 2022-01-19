@@ -16,3 +16,4 @@ class SubjectSemesterTopicType(ObjectType):
     lastchange = DateTime()
     externalId = String()
         
+    subjectsemester = Field('graphqltypes.SubjectSemester.SubjectSemesterType')

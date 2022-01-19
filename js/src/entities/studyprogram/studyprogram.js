@@ -22,13 +22,15 @@ import { FacultySmall } from "../group/faculty";
 
 import { SubjectMedium, SubjectLarge } from "./subject";
 import { useQueryGQL, Loading, LoadingError } from "../index";
+import { SubjectSmall } from "./subject";
+import { StudentSmall } from "../person/student";
 
-export const progRoot = root + "/studyprogram";
+export const progRoot = root + "/studyprograms";
 
 
 export const ProgramSmall = (props) => {
     return(
-        <Link to={progRoot + `/${props.id}`}>{props.name}{props.children}</Link>
+        <Link to={progRoot + `/program/${props.id}`}>{props.name}{props.children}</Link>
     )
 }
 
@@ -83,20 +85,58 @@ export const ProgramSmall = (props) => {
 //     )
 // }
 
-export const ProgramLarge = (props) => {
+
+
+export const ProgramGrants = (props) => {
     return (
-        <ProgramMedium {...props} >
+        <Card>
+            <Card.Header>
+                Garanti
+            </Card.Header>
+            <Card.Body>
+            </Card.Body>
+        </Card>
+    )
+}
+
+export const ProgramStudents = (props) => {
+    return (
+        <Card>
+            <Card.Header>
+                Studenti
+            </Card.Header>
+            <Card.Body>
+                {props.students.map((student, index) => <><StudentSmall {...student.person}/><br/></>)}
+            </Card.Body>
+        </Card>
+    )
+}
+
+export const ProgramLarge = (props) => {
+    return (        
             <Card>
                 <Card.Header>
-                    Předměty
+                    Program {props.name} ({props.id})
                 </Card.Header>
                 <Card.Body>
-                    <ProgramSubjectList {...props} />
+                    <Row>
+                        <Col md={3}>
+                            <ProgramGrants {...props} />
+                        </Col>
+                        <Col md={6}>
+                            <ProgramSubjectList {...props} />        
+                        </Col>
+                        <Col md={3}>
+                            <ProgramStudents {...props} />        
+                        </Col>          
+                    </Row>
                 </Card.Body>
+                <Card.Body>
+                    {JSON.stringify(props)}
+                </Card.Body>
+
             </Card>
             
-            {JSON.stringify(props)}
-        </ProgramMedium>
     )
 }
 
@@ -220,30 +260,41 @@ export const ProgramSubjectList = (props) => {
     //         </Accordion.Body>
     //     </Accordion.Item>
     //   ));
-    const subjects = props.subjects.map((subject, index) => (
-        <Accordion key={subject.id} >
-        <Card>
-            <Card.Header>
-                <Accordion.Toggle as={Button} variant="link" eventKey={subject.id}>
-                    {subject.name} ({subject.id})
-                </Accordion.Toggle>
-            </Card.Header>
+    // const subjects = props.subjects.map((subject, index) => (
+    //     <Accordion key={subject.id} >
+    //     <Card>
+    //         <Card.Header>
+    //             <Accordion.Toggle as={Button} variant="link" eventKey={subject.id}>
+    //                 {subject.name} ({subject.id})
+    //             </Accordion.Toggle>
+    //         </Card.Header>
             
-            <Accordion.Collapse eventKey={subject.id}>
-                <Card.Body>
-                    <SubjectLarge {...subject}/>
-                </Card.Body>
-            </Accordion.Collapse>
+    //         <Accordion.Collapse eventKey={subject.id}>
+    //             <Card.Body>
+    //                 <SubjectLarge {...subject}/>
+    //             </Card.Body>
+    //         </Accordion.Collapse>
             
-        </Card>
-        </Accordion>
-    ))
+    //     </Card>
+    //     </Accordion>
+    // ))
 
 
     return (
-        <>
-            {subjects}
-        </>
+        <Card>
+            <Card.Header>
+                Předměty
+            </Card.Header>
+            <Card.Body>
+                {props.subjects.map((subject, index) => (
+                    <>
+                        <SubjectSmall {...subject} />
+                        <br/>
+                    </>
+                )
+                )}
+            </Card.Body>
+        </Card>
     )
 }
   
@@ -326,32 +377,34 @@ export const StudyProgramLargeQuery = (id) =>
             # Write your query or mutation here
             query {
                 program(id: ${id}) {
+                  id
+                  name
+                    subjects {
                     id
                     name
-                    subjects {
+                    
+                  }
+                  
+                  students {
+                    person {
                       id
                       name
-                      semesters {
-                        id
-                        name
-                        topics {
-                          id
-                          name
-                        }
-                      }
+                      surname
+                      email
                     }
                   }
-            }       
+                }
+              }
             `}),
     })
 
 export const StudyProgramLargeFetching = (props) => {
     const [state, error] = useQueryGQL(props.id, StudyProgramLargeQuery, (response) => response.data.program, [props.id])
     
-    if (state != null) {
-        return <ProgramLargeStoryBook {...state} />
-    } else if (error != null) {
+    if (error != null) {
         return <LoadingError error={error} />
+    } else if (state != null) {
+        return <ProgramLargeStoryBook {...state} />
     } else {
         return <Loading>program {props.id}</Loading>
     }
