@@ -35,7 +35,7 @@ export const TimeTableMedium = (props) => {
             </Card.Header>
             <Card.Body>
                 <div>
-                <SVG src={`/svg/${props.type}/633/?start=2021-11-08`} width={'100%'} height={'100%'} viewBox='10 20 1400 550' />
+                <SVG src={`/svg/${props.type}/${props.id}/?start=2021-11-08`} width={'100%'} height={'100%'} viewBox='10 20 1400 550' />
                 </div>
             </Card.Body>
         </Card>

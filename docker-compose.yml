@@ -1,14 +1,14 @@
-version: '3.4'
+version: "3.9"
 
 services:
   python_fastapi:
     image: python_fastapi
     build:
       context: ./pyf
-    ports:
-      - 50001:8000
-    volumes:
-      - ./pyf:/app
+    environment: 
+      - POSTGRES_USER=gql
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
 
   python_tornado:
     image: python_tornado
@@ -23,25 +23,14 @@ services:
       context: ./js
     environment:
       NODE_ENV: development
-    ports:
-      - 50003:3000
-      - 9229:9229
-    volumes:
-      - ./js:/usr/src/app
 
   postgres:
     image: postgres
     environment:
+      - POSTGRES_USER=gql
       - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
     
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=anoyne@anywhere.com
-      - PGADMIN_DEFAULT_PASSWORD=example
-    ports:
-      - 50011:80
-
   nginx:
     build:
       context: ./nginx

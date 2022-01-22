@@ -11,7 +11,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 
-import { UserPage } from './entities/user/user';
 //import { GroupPage, GroupLarge } from './entities/group/group';
 import { SubjectPage } from './entities/studyprogram/subject';
 
