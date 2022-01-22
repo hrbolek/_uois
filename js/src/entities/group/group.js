@@ -7,6 +7,7 @@ import image from '../rozvrhSnimek.png';
 import { StudentSmall } from "../person/student";
 import { DepartmentSmall } from "../group/department";
 import { TeacherSmall } from "../person/teacher";
+import { TimeTableMedium } from '../timetable/timetable';
 
 import { root } from '../index';
 import { useQueryGQL, Loading, LoadingError } from "../index";
@@ -62,7 +63,7 @@ export function GroupLarge(props) {
                         <SeznamStudentu students={students} />
                     </div>
                     <div className="col-5">
-                        <RozvrhMedium />
+                        <RozvrhMedium {...props}/>
                     </div>
                     <div className="col-2">
                         <SeznamPredmetu subjects={subjects} />
@@ -250,16 +251,23 @@ export function GroupPage(props) {
 }
 */
 
-function RozvrhMedium() {
+// function RozvrhMedium() {
+//     return (
+//         <Card>
+//             <Card.Header>
+//                 <Card.Title>Týdenní rozrvh</Card.Title>
+//             </Card.Header>
+//             <Card.Body>
+//                 <img src={image} alt="Rozvrh" width={'100%'} />
+//             </Card.Body>
+//         </Card>
+//     )
+// }
+
+
+function RozvrhMedium(props) {
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>Týdenní rozrvh</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <img src={image} alt="Rozvrh" width={'100%'} />
-            </Card.Body>
-        </Card>
+        <TimeTableMedium link={`/svg/student/${props.id}/`} />
     )
 }
 

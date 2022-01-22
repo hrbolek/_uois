@@ -1,8 +1,12 @@
 import { useQueryGQL, Loading, LoadingError } from "../index";
 import Card from "react-bootstrap/Card";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import { Link, useParams } from "react-router-dom";
 
 import { root } from "../index";
+import { ArealSmall } from "./areal";
+import { TeacherMedium } from "../person/teacher";
 
 const buildingRoot = root + '/areals/building';
 export const BuildingSmall = (props) => {
@@ -22,14 +26,48 @@ export const BuildingMedium = (props) => {
     )
 }
 
+
+export const BuildingRoomList = (props) => {
+    return (
+        <Card>
+        <Card.Header>
+            Místnosti
+        </Card.Header>
+        <Card.Body>
+            {JSON.stringify(props)}
+        </Card.Body>
+    </Card>
+    )
+}
+
+export const BuildingSpravce = (props) => {
+    const spravceProps = {
+        'id': 1,
+        'name': 'Petr Jana',
+        'surname': 'Novak',
+        'email': 'petr.jana.novak@uni.world'
+    }
+    return (
+        <TeacherMedium label='Správce' {...spravceProps}/>
+    )
+}
+
 export const BuildingLarge = (props) => {
     return (
         <Card>
             <Card.Header>
-                Budova
+                {props.name} (<ArealSmall {...props.areal}/>)
             </Card.Header>
             <Card.Body>
-                {JSON.stringify(props)}
+                <Row>
+                    <Col md={3}>
+                        <BuildingSpravce {...props}/>
+                    </Col>
+                    <Col>
+                        <BuildingRoomList {...props}/>
+                    </Col>
+                </Row>
+                
             </Card.Body>
         </Card>
     )
@@ -37,13 +75,13 @@ export const BuildingLarge = (props) => {
 
 export const BuildingLargeStoryBook = (props) => {
     const extraProps = {
-        'id' : 789,
+        'id' : 1,
         'name' : 'KŠ/9A',
         'rooms' : [
-            {'id': 789, 'name': 'KŠ/9A/586'}
+            {'id': 1, 'name': 'KŠ/9A/586'}
         ],
-        'areal' : {'id' : 789, 'name': 'KŠ'},
-        'user' : {'id' : 789, 'name': 'John', 'surname': 'Nowick'}
+        'areal' : {'id' : 1, 'name': 'KŠ'},
+        'user' : {'id' : 1, 'name': 'John', 'surname': 'Nowick'}
     }
     return <BuildingLarge {...extraProps} {...props} />
 }
@@ -60,16 +98,18 @@ export const BuildingLargeQuery = (id) =>
             "query":
                 `
                 query {
-                    areal(id: ${id}) {
+                    building(id:${id}) {
                       id
                       name
-                      buildings {
+                      
+                      rooms {
                         id
                         name
-                        rooms {
-                          id
-                          name
-                        }
+                      }
+                      
+                      areal: area {
+                        id
+                        name
                       }
                     }
                   }
@@ -78,7 +118,7 @@ export const BuildingLargeQuery = (id) =>
     })
 
 export const BuildingFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, ArealLargeQuery, (response) => response.data.areal, [props.id])
+    const [state, error] = useQueryGQL(props.id, BuildingLargeQuery, (response) => response.data.building, [props.id])
     
     if (error != null) {
         return <LoadingError error={error} />
@@ -89,14 +129,14 @@ export const BuildingFetching = (props) => {
     }
 }
 
-export const _BuildingPage = (props) => {
+export const BuildingPage = (props) => {
     const { id } = useParams();
 
     return <BuildingFetching {...props} id={id} />;
 
 }
 
-export const BuildingPage = (props) => {
+export const BuildingPage_ = (props) => {
     const { id } = useParams();
 
     return <BuildingLargeStoryBook {...props} id={id} />;

@@ -19,27 +19,46 @@ export function StudentSmall(props) {
 }
 
 export function StudentMedium(props) {
+    let faculties = props.faculty.map((item) => (<FacultySmall key={item.id} {...item} />))
+    let groups = props.groups.map((item) => (<GroupSmall key={item.id} {...item} />))
+
     return (
         <div className="card mb-3">
             <Card.Header>
                 <Card.Title>Student - <StudentSmall {...props} /></Card.Title>
             </Card.Header>
             <Card.Body>
+    
                 <Card.Text>
                     <b>Jméno  příjmení:</b> {props.name} {props.surname}<br />
                     <b>Titul:</b> {props.degreeRank} <b>Ročník:</b> {props.grade} <br />
-                    <b>Skupina:</b> {props.groups}<br />
-                    <b>Fakulta:</b> {props.faculties}
+                    <b>Skupina:</b> {groups}<br />
+                    <b>Fakulta:</b> {faculties}
                 </Card.Text>
             </Card.Body>
         </div>
     )
 }
 
-export function StudentLarge(props) {
-    let faculties = props.faculty.map((item) => (<FacultySmall key={item.id} {...item} />))
-    let groups = props.groups.map((item) => (<GroupSmall key={item.id} {...item} />))
+
+function SeznamPredmetuUStudenta(props) {
     let subjects = props.subjects.map((item) => (<li key={item.id}><Link key={item.id} to={'404'}>{item.name}</Link></li>))
+
+    return (
+        <div className="card mb-3">
+            <Card.Header>
+                <Card.Title>Předměty</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <ul>
+                    {subjects}
+                </ul>
+            </Card.Body>
+        </div>
+    )
+}
+
+export function StudentLarge(props) {
 
     return (
         <div className="card">
@@ -50,14 +69,14 @@ export function StudentLarge(props) {
             <div className="col">
                 <Row>
                     <div className="col-3">
-                        <StudentMedium {...props} faculties={faculties} groups={groups} />
+                        <StudentMedium {...props} />
                         <ContactInfo {...props} />
                     </div>
                     <div className="col-6">
                         <RozvrhMedium />
                     </div>
                     <div className="col-3">
-                        <SeznamPredmetu subjects={subjects} />
+                        <SeznamPredmetuUStudenta {...props} />
                     </div>
                 </Row>
             </div>
@@ -99,6 +118,7 @@ export const StudentLargeStoryBook = (props) => {
 
     return <StudentLarge {...extendedProps} {...props} />;
 }
+
 export const StudentLargeQuery = (id) => 
     fetch('/gql', {
         method: 'POST',
@@ -130,16 +150,46 @@ export const StudentLargeQuery = (id) =>
                     }
                   }
             `
+
+        }),
+    })
+
+export const StudentMediumQuery = (id) => 
+    fetch('/gql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        redirect: 'follow', // manual, *follow, error
+        body: JSON.stringify({
+            "query":
+                `
+                query {
+                    user: student(id: ${id}) {
+                        id
+                        person {
+                        id
+                        name
+                        surname
+                        email
+                        }
+                    }
+                }
+            `
         }),
     })
 
 export const StudentLargeFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, StudentLargeQuery, (response) => response.data.user, [props.id])
+
+    const Visualizer = props.as || StudentLargeStoryBook;
+    const queryFunc = props.with || StudentLargeQuery;
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.user, [props.id])
     
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
-        return <StudentLargeStoryBook {...state} />
+        return <Visualizer {...state} />
     } else {
         return <Loading>Uživatel {props.id}</Loading>
     }
@@ -149,7 +199,7 @@ export const StudentPage = (props) => {
     const { id } = useParams();
 
     return (
-        <StudentLargeFetching {...props} id={id} />
+        <StudentLargeFetching {...props} id={id} as={ContactInfo}/>
     )    
 }
 /*
@@ -276,17 +326,3 @@ function ContactInfo(props) {
 
 }
 
-function SeznamPredmetu(props) {
-    return (
-        <div className="card mb-3">
-            <Card.Header>
-                <Card.Title>Předměty</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <ul>
-                    {props.subjects}
-                </ul>
-            </Card.Body>
-        </div>
-    )
-}

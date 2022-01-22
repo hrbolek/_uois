@@ -69,7 +69,7 @@ export const ArealLargeSUM = () => {
                     <area shape="rect" coords="359,160,419,287" href={arealRoot+"/šumák9"} target="_self" alt="Š9"/>
                     <area shape="rect" coords="359,288,419,404" href={arealRoot+"/šumák9A"} target="_self" alt="Š9A"/>
                 </map>
-                <img usemap="#sumavska" src={MapaSumavska} alt="mapa Sumavska" />              
+                <img useMap="#sumavska" src={MapaSumavska} alt="mapa Sumavska" />              
 
             </div>
 
@@ -273,7 +273,7 @@ export const ArealLarge = (props) => {
         return (
             <Card>
                 <Card.Header>
-                    <ArealSmall {...props}>Aka Šumavská</ArealSmall>
+                    <ArealSmall {...props}></ArealSmall>
                 </Card.Header>
                 <Card.Body>
                     <Row>
@@ -348,7 +348,7 @@ export const BuildingMedium = (props) => {
         <Card>
                 <Card.Header><Row><h3>Třídy:</h3></Row><Row>budova id: {props.id}</Row></Card.Header>
                 <Card.Body>
-                        {props.rooms.map((room, index) => <RoomSmall {...room} />)}
+                        {props.rooms.map((room, index) => <><RoomSmall {...room} /><br/></>)}
                 </Card.Body>
                 
         </Card>
@@ -489,8 +489,9 @@ export const ArealBuildingsLarge = (props) => {
 }
 
 export const ArealLargeStoryBook = (props) => {
+    const extraProps = {}
     return (
-        <ArealLarge {...props} />
+        <ArealLarge {...extraProps} {...props} />
     )
 }
 
@@ -506,7 +507,7 @@ export const ArealLargeQuery = (id) =>
             "query":
                 `
                 query {
-                    areal(id: ${id}) {
+                    areal: area(id: ${id}) {
                       id
                       name
                       buildings {

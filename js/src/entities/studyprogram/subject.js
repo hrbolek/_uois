@@ -16,6 +16,7 @@ import { SubjectSemesterSmall, SubjectSemesterTopicMedium } from "./lesson";
 import { useQueryGQL, Loading, LoadingError } from "../index";
 import { ProgramSmall } from "./studyprogram";
 import { TeacherSmall } from "../person/teacher";
+import { TimeTableMedium } from "../timetable/timetable";
 
 //import { LessonSmall } from "../lesson/lesson";
 
@@ -184,6 +185,10 @@ export const SubjectGrants = (props) => {
     )
 }
 
+export const SubjectTimeTable = (props) => {
+    return <TimeTableMedium link={`/svg/teacher/${props.id}/`}/>
+}
+
 export const SubjectLarge = (props) => {
     return (
         <Card>
@@ -201,6 +206,11 @@ export const SubjectLarge = (props) => {
                     </Col>
                     <Col md={3}>
                         <SubjectProgram {...props} />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <SubjectTimeTable {...props} />
                     </Col>
                 </Row>
             </Card.Body>

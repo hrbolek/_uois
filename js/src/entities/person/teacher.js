@@ -13,6 +13,10 @@ import { useQueryGQL, Loading, LoadingError } from "../index";
 import { FacultySmall } from "../group/faculty";
 import { GroupSmall } from "../group/group";
 import { SubjectSmall } from "../studyprogram/subject";
+import { TimeTableMedium } from '../timetable/timetable';
+import { ArealSmall } from "../areal/areal";
+import { BuildingSmall } from "../areal/building";
+import { RoomSmall } from "../areal/room";
 
 export function TeacherSmall(props) {
     return (
@@ -21,22 +25,33 @@ export function TeacherSmall(props) {
 }
 
 export function TeacherMedium(props) {
+    
+    const departmentsList = props.departments.map((department, index) => {
+        let element = <DepartmentSmall key={index} {...department} />
+        if (index > 0) {
+            return (<>, {element}</>)
+        } else {
+            return (element)
+        }
+    })
+
     return (
         <div className="card mb-3">
             <Card.Header>
-                <Card.Title>Vyučující - <TeacherSmall {...props} /></Card.Title>
+                <Card.Title>{props.label} - <TeacherSmall {...props} /></Card.Title>
             </Card.Header>
             <Card.Body>
                 <Card.Text>
                     <b>Jméno příjmení:</b> {props.name} {props.surname}<br />
                     <b>Titul:</b> {props.degreeRank}<br />
-                    <b>Katedra:</b> {props.departments}<br />
+                    <b>Katedra:</b> {departmentsList}<br />
                     {/*<b>Fakulta:</b> {props.faculty}*/}
                 </Card.Text>
             </Card.Body>
         </div>
     )
 }
+
 
 function ContactInfo(props) {
     //data=props.datas;
@@ -48,8 +63,8 @@ function ContactInfo(props) {
             <Card.Body>
                 <b>E-mail:</b> {props.email}<br />
                 <b>Telefon:</b> {props.phone ? props.phone : 'Neuvedeno'}<br />
-                <b>Areál: </b> {props.areal}<br />
-                <b>Budova: </b>{props.building} <b>Místnost:</b> {props.room}<br />
+                <b>Areál: </b> <ArealSmall {...props.areal} /><br />
+                <b>Budova: </b> <BuildingSmall {...props.building} /> <b>Místnost:</b> <RoomSmall {...props.room} /><br />
             </Card.Body>
         </div>
     )
@@ -78,25 +93,27 @@ export const Membership = (props) => {
             </Card.Header>
             <Card.Body>
                 {props.groups.map((group, index) => (
-                    <GroupInfo {...group} />
+                    <GroupInfo key={index} {...group} />
                 ))}
             </Card.Body>
         </div>
     )
 }
 
+export const TeacherSeznamSkupin = (props) => {
+    return (
+        <Card>
+            <Card.Header>
+                <Card.Title>Seznam vyučovaných skupin</Card.Title>
+            </Card.Header>
+            <Card.Body>
+
+            </Card.Body>
+        </Card>
+    )
+}
 export function TeacherLarge(props) {
     
-
-    const departments = []
-    for (var index = 0; index < props.departments.length; index++) {
-        if (index > 0) {
-            departments.push(', ');
-        }
-        const sgItem = props.departments[index]
-        departments.push(<DepartmentSmall {...props} id={sgItem.id} name={sgItem.name} key={sgItem.id} />);
-    }
-
     return (
         <div className="card">
             <div className="card-header mb-3">
@@ -105,15 +122,16 @@ export function TeacherLarge(props) {
             <div className="col">
                 <Row>
                     <div className="col-3">
-                        <TeacherMedium {...props} departments={departments} />
+                        <TeacherMedium label={'Učitel'} {...props}  />
                         <ContactInfo {...props} />
                         <Membership {...props} />
                     </div>
                     <div className="col-6">
-                        <RozvrhMedium />
+                        <RozvrhMedium {...props}/>
                     </div>
                     <div className="col-3">
                         <SeznamPredmetu {...props} />
+                        <TeacherSeznamSkupin {...props} />
                     </div>
                 </Row>
             </div>
@@ -250,9 +268,9 @@ export const TeacherLargeStoryBook = (props) => {
         'degreeRank': 'ing. plk.',
         "email": 'props.name.toLowerCase()' + '.' + 'props.lastname.toLowerCase()' + '1@unob.cz',
         'phone': '973 274 160',
-        'areal': 'Kasárny Šumavská',
-        'building': '5',
-        'room': '104',
+        'areal': {'name': 'Kasárny Šumavská', 'id': 1},
+        'building': {'name': '5', 'id': 1},
+        'room': {'name': '104', 'id': 1},
         'faculty': [
             { 'id': 23, 'name': 'FVT' }
         ],
@@ -292,22 +310,27 @@ export const TeacherPage = (props) => {
 
 
 
-function RozvrhMedium() {
+// function RozvrhMedium() {
+//     return (
+//         <Card>
+//             <Card.Header>
+//                 <Card.Title>Rozvrh tento týden</Card.Title>
+//             </Card.Header>
+//             <Card.Body>
+//                 <img src={image} alt="Rozvrh" width={'100%'} />
+//             </Card.Body>
+//         </Card>
+//     )
+// }
+
+function RozvrhMedium(props) {
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>Rozvrh tento týden</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <img src={image} alt="Rozvrh" width={'100%'} />
-            </Card.Body>
-        </Card>
+        <TimeTableMedium type={'teacher'} id={props.id} />
     )
 }
 
-
 function SeznamPredmetu(props) {
-    let subjects = props.subjects.map((subject) => (<li><SubjectSmall {...subject} /></li>))
+    let subjects = props.subjects.map((subject, index) => (<li key={index}><SubjectSmall {...subject} /></li>))
     return (
         <div className="card mb-3">
             <Card.Header>

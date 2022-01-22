@@ -39,6 +39,9 @@ export const useQueryGQL = (id, queryFunc, responseToJson, depends) => {
             let result = data;
             try {
                 result = responseToJson(data)
+                if (!result) {
+                    setError(`Got no data (${result}), check mapping function`)
+                }
             } catch (err) {
                 setError('Unable to map data, got "' + JSON.stringify(data) + '" from server. Bad query?')
             }
