@@ -11,6 +11,9 @@ import { TeacherSmall } from "./teacher";
 
 import { root } from '../index';
 import { useQueryGQL, Loading, LoadingError } from "../index";
+import { TimeTableMedium } from "../timetable/timetable";
+import { SubjectSmall } from "../studyprogram/subject";
+import { ProgramSmall } from '../studyprogram/studyprogram';
 
 export function StudentSmall(props) {
     return (
@@ -25,12 +28,12 @@ export function StudentMedium(props) {
     return (
         <div className="card mb-3">
             <Card.Header>
-                <Card.Title>Student - <StudentSmall {...props} /></Card.Title>
+                <Card.Title>Student - <StudentSmall {...props.person} /></Card.Title>
             </Card.Header>
             <Card.Body>
     
                 <Card.Text>
-                    <b>Jméno  příjmení:</b> {props.name} {props.surname}<br />
+                    <b>Jméno  příjmení:</b> {props.person.name} {props.person.surname}<br />
                     <b>Titul:</b> {props.degreeRank} <b>Ročník:</b> {props.grade} <br />
                     <b>Skupina:</b> {groups}<br />
                     <b>Fakulta:</b> {faculties}
@@ -40,9 +43,22 @@ export function StudentMedium(props) {
     )
 }
 
+export const StudentProgram = (props) => {
+    return (
+        <Card>
+            <Card.Header>
+                <Card.Title>Program</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <ProgramSmall {...props.program} />
+            </Card.Body>
+        </Card>
+        
+    )
+}
 
 function SeznamPredmetuUStudenta(props) {
-    let subjects = props.subjects.map((item) => (<li key={item.id}><Link key={item.id} to={'404'}>{item.name}</Link></li>))
+    let subjects = props.subjects.map((subject, index) => (<li><SubjectSmall {...subject} /> </li>))
 
     return (
         <div className="card mb-3">
@@ -76,7 +92,9 @@ export function StudentLarge(props) {
                         <RozvrhMedium />
                     </div>
                     <div className="col-3">
+                        <StudentProgram {...props} /> <br />
                         <SeznamPredmetuUStudenta {...props} />
+                        
                     </div>
                 </Row>
             </div>
@@ -86,12 +104,15 @@ export function StudentLarge(props) {
 
 export const StudentLargeStoryBook = (props) => {
     const extendedProps = {
-        'id': props.id,
-        'name': 'Name',
-        'lastname': 'Lastname',
+        'id': 1,
+        'person': {
+            'id': 1,
+            'name': 'Name',
+            'surname': 'Lastname',
+            "email": 'name.lastname@unob.cz',   
+        },
         'degreeRank': 'ing. por.',
         'grade': '3',
-        "email": 'name.lastname@unob.cz',
         'phone': '799 999 999',
         'areal': 'Kasárna Černá Pole',
         'building': '3',
@@ -169,10 +190,10 @@ export const StudentMediumQuery = (id) =>
                     user: student(id: ${id}) {
                         id
                         person {
-                        id
-                        name
-                        surname
-                        email
+                            id
+                            name
+                            surname
+                            email
                         }
                     }
                 }
@@ -199,7 +220,7 @@ export const StudentPage = (props) => {
     const { id } = useParams();
 
     return (
-        <StudentLargeFetching {...props} id={id} as={ContactInfo}/>
+        <StudentLargeFetching {...props} id={id} as={StudentLargeStoryBook}/>
     )    
 }
 /*
@@ -290,15 +311,8 @@ export function StudentPage(props) {
 }
 */
 function RozvrhMedium() {
-    return (
-        <Card>
-            <Card.Header>
-                <Card.Title>Týdenní rozvrh</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <img src={image} alt="Rozvrh" width={'100%'} />
-            </Card.Body>
-        </Card>
+    return ( 
+        <TimeTableMedium type={'student'} id={1} />
     )
 }
 

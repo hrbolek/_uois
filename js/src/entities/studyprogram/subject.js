@@ -186,6 +186,36 @@ export const SubjectGrants = (props) => {
     )
 }
 
+export const SubjectMasters = (props) => {
+    if (props.master) {
+        return (
+            <Card>
+                <Card.Header>
+                    Správci
+                </Card.Header>
+                <Card.Body>
+                    <TeacherSmall {...props.master}/>
+                </Card.Body>
+            </Card>
+        )
+    } else {
+        return null
+    }
+}
+
+export const SubjectTerms = (props) => {
+    return (
+        <Card>
+            <Card.Header>
+                Vypsané termíny
+            </Card.Header>
+            <Card.Body>
+                <Button variant="outline-primary">Vypsat termín</Button>
+            </Card.Body>
+        </Card>
+    )
+}
+
 export const SubjectTimeTable = (props) => {
     return <TimeTableMedium type={'student'} id={props.id} />
 }
@@ -213,18 +243,20 @@ export const SubjectLarge = (props) => {
                 <Row>
                     <Col md={3}>
                         <SubjectProgram {...props} /> <br/>
-                        <SubjectGrants {...props} />
+                        <SubjectGrants {...props} /> <br/>
+                        <SubjectMasters {...props} />
                     </Col>
                     <Col md={6}>
                         <SubjectTopicList {...props} />
                     </Col>
                     <Col md={3}>
-                        <SubjectGroupList {...props} />
+                        <SubjectGroupList {...props} /> <br/>
+                        <SubjectTerms {...props} />
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <SubjectTimeTable {...props} />
+                        <SubjectTimeTable {...props} /> 
                     </Col>
                 </Row>
             </Card.Body>
@@ -277,17 +309,12 @@ export const SubjectLarge = (props) => {
       <Card>
             <Table>
             <Card.Body>
-                
                     <td>Garant pro studijní program "{programName}" : </td>
                     <td><h3>*<PersonSmall id={props.id} name={"*garant*"}/>*</h3></td>
-                
             </Card.Body>
             <Card.Body>
-                
                     <td>Semestry: </td>
                     <td><b>{semesters}  (filtr podle semestru)</b></td>
-                    
-                
                 <br/>
           </Card.Body>    
             </Table>
@@ -348,7 +375,8 @@ export const SubjectLargeStoryBook = (props) => {
         "program": { "id": "1", "name": "Kyberneticka bezpecnost" },
         "groups": [
             {"id": 5, 'name': '23-5KB'}
-        ]
+        ],
+        "master": {'id': 1, 'name': 'Josef Petr', 'surname': 'Kovář', 'email': 'josef.petr.kovar@university.world'}
       }
     return <SubjectLarge {...extraProps} {...props} />
 }

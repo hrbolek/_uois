@@ -5,7 +5,7 @@ import { App, AppDemo } from './App';
 import reportWebVitals from './reportWebVitals';
 
 const demo = false;
-if (demo == false) {
+if (demo === false) {
   ReactDOM.render(
     <React.StrictMode>
       <App />
