@@ -17,6 +17,7 @@ import { useQueryGQL, Loading, LoadingError } from "../index";
 import { ProgramSmall } from "./studyprogram";
 import { TeacherSmall } from "../person/teacher";
 import { TimeTableMedium } from "../timetable/timetable";
+import { GroupSmall } from "../group/group";
 
 //import { LessonSmall } from "../lesson/lesson";
 
@@ -186,7 +187,20 @@ export const SubjectGrants = (props) => {
 }
 
 export const SubjectTimeTable = (props) => {
-    return <TimeTableMedium link={`/svg/teacher/${props.id}/`}/>
+    return <TimeTableMedium type={'student'} id={props.id} />
+}
+
+export const SubjectGroupList = (props) => {
+    return (
+        <Card>
+            <Card.Header>Učební skupiny</Card.Header>
+            <Card.Body>
+                {props.groups.map((group, index) => (<>
+                    <GroupSmall {...group} key={`g${index}`}/> <br key={`b${index}`}/>
+                </>))}
+            </Card.Body>
+        </Card>
+    )
 }
 
 export const SubjectLarge = (props) => {
@@ -205,7 +219,7 @@ export const SubjectLarge = (props) => {
                         <SubjectTopicList {...props} />
                     </Col>
                     <Col md={3}>
-                        <SubjectProgram {...props} />
+                        <SubjectGroupList {...props} />
                     </Col>
                 </Row>
                 <Row>
@@ -317,7 +331,25 @@ export const SubjectLarge = (props) => {
   }
 
 export const SubjectLargeStoryBook = (props) => {
-    const extraProps = {}
+    const extraProps = {
+        "id": "1",
+        "name": "Kyberneticka bezpecnost / Předmět 1",
+        "lessons": [
+          { "id": "1", "topic": "Téma 1" },
+          { "id": "2", "topic": "Téma 2" },
+          { "id": "3", "topic": "Téma 3" },
+          { "id": "4", "topic": "Téma 4" },
+          { "id": "5", "topic": "Téma 5" },
+          { "id": "6", "topic": "Téma 6" },
+          { "id": "7", "topic": "Téma 7" },
+          { "id": "8", "topic": "Téma 8" },
+          { "id": "9", "topic": "Téma 9" },
+        ],
+        "program": { "id": "1", "name": "Kyberneticka bezpecnost" },
+        "groups": [
+            {"id": 5, 'name': '23-5KB'}
+        ]
+      }
     return <SubjectLarge {...extraProps} {...props} />
 }
 

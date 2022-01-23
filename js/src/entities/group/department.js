@@ -92,7 +92,7 @@ export const DepartmentLargeStoryBook = (props) => {
         'faculty': [
             { 'id': 23, 'name': 'FVT' }
         ],
-        'teachers': [
+        'members': [
             { 'id': 1, 'name': 'Honza Bernard' },
             { 'id': 2, 'name': 'Pavel Motol' },
             { 'id': 3, 'name': 'Dominik Vaněk' },

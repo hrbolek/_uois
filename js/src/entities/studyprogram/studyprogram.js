@@ -362,7 +362,26 @@ export const ProgramMedium_ = (props) => {
 }
 
 export const ProgramLargeStoryBook = (props) => {
-    const extraProps = {}
+    const extraProps = {
+        "id": "1",
+        "name": "Kyberneticka bezpecnost",
+        "subjects": [
+          { "id": "1", "name": "Kyberneticka bezpecnost / Předmět 1" },
+          { "id": "2", "name": "Kyberneticka bezpecnost / Předmět 2" },
+          { "id": "3", "name": "Kyberneticka bezpecnost / Předmět 3" },
+          { "id": "4", "name": "Kyberneticka bezpecnost / Předmět 4" },
+          { "id": "5", "name": "Kyberneticka bezpecnost / Předmět 5" },
+        ],
+        "students": [
+          { "person": { "id": "85", "name": "Petr Alena", "surname": "Novotná", "email": "Petr.Alena.Novotná@F1.university.world" }          },
+          { "person": { "id": "88", "name": "Jaroslav Miroslav", "surname": "Pospíšilová", "email": "Jaroslav.Miroslav.Pospíšilová@F1.university.world" } },
+          { "person": { "id": "108", "name": "Zdeněk Věra", "surname": "Marek", "email": "Zdeněk.Věra.Marek@F1.university.world" }          },
+          { "person": { "id": "109", "name": "Eva Jiří", "surname": "Novotná", "email": "Eva.Jiří.Novotná@F1.university.world" }           },
+          { "person": { "id": "144", "name": "Lenka Hana", "surname": "Horáková", "email": "Lenka.Hana.Horáková@F1.university.world" }          },
+          { "person": { "id": "146", "name": "Lucie Jan", "surname": "Dvořák", "email": "Lucie.Jan.Dvořák@F1.university.world" }          },
+          { "person": { "id": "151", "name": "Lenka Jakub", "surname": "Kučera", "email": "Lenka.Jakub.Kučera@F1.university.world" }},
+        ]
+      }
     return <ProgramLarge {...extraProps} {...props} />
 }
 

@@ -489,7 +489,43 @@ export const ArealBuildingsLarge = (props) => {
 }
 
 export const ArealLargeStoryBook = (props) => {
-    const extraProps = {}
+    const extraProps = {
+        "id": "1",
+        "name": "Kasárna Šumavská",
+        "buildings": [
+          { "id": "1", "name": "Jídelna",
+            "rooms": [
+              { "id": "1", "name": "Jídelna / 1" },
+              { "id": "2", "name": "Jídelna / 2" },
+              { "id": "3", "name": "Jídelna / 3" },
+              { "id": "4", "name": "Jídelna / 4" },
+              { "id": "5", "name": "Jídelna / 5" },
+              { "id": "6", "name": "Jídelna / 6" },
+              { "id": "7", "name": "Jídelna / 7" },
+            ]
+          },
+          { "id": "2", "name": "Katedra Informatiky",
+            "rooms": [
+              { "id": "13", "name": "Katedra Informatiky / 1" },
+              { "id": "14", "name": "Katedra Informatiky / 2" },
+              { "id": "15", "name": "Katedra Informatiky / 3" },
+              { "id": "16", "name": "Katedra Informatiky / 4" },
+              { "id": "17", "name": "Katedra Informatiky / 5" },
+              { "id": "18", "name": "Katedra Informatiky / 6" },
+            ]
+          },
+          { "id": "3", "name": "Katedra matematiky",
+            "rooms": [
+              { "id": "37", "name": "Katedra matematiky / 1" },
+              { "id": "38", "name": "Katedra matematiky / 2" },
+              { "id": "39", "name": "Katedra matematiky / 3" },
+              { "id": "40", "name": "Katedra matematiky / 4" },
+              { "id": "41", "name": "Katedra matematiky / 5" },
+
+            ]
+          }
+        ]
+      }
     return (
         <ArealLarge {...extraProps} {...props} />
     )

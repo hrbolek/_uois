@@ -221,6 +221,44 @@ export function TeacherPage(props) {
 }
 */
 
+
+
+// function RozvrhMedium() {
+//     return (
+//         <Card>
+//             <Card.Header>
+//                 <Card.Title>Rozvrh tento týden</Card.Title>
+//             </Card.Header>
+//             <Card.Body>
+//                 <img src={image} alt="Rozvrh" width={'100%'} />
+//             </Card.Body>
+//         </Card>
+//     )
+// }
+
+function RozvrhMedium(props) {
+    return (
+        <TimeTableMedium type={'teacher'} id={props.id} />
+    )
+}
+
+function SeznamPredmetu(props) {
+    let subjects = props.subjects.map((subject, index) => (<li key={index}><SubjectSmall {...subject} /></li>))
+    return (
+        <div className="card mb-3">
+            <Card.Header>
+                <Card.Title>Předměty</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <ul>
+                    {subjects}
+                </ul>
+            </Card.Body>
+        </div>
+    )
+}
+
+
 export const TeacherLargeQuery = (id) => 
     fetch('/gql', {
         method: 'POST',
@@ -262,22 +300,23 @@ export const TeacherLargeQuery = (id) =>
 
 export const TeacherLargeStoryBook = (props) => {
     const extendedProps = {
-        'id': props.id,
-        'name': 'props.name',
-        'lastname': 'props.lastname',
+        'id': props.id || 1,
+        'name': 'Alena Josef',
+        'surname': 'Krejčí',
         'degreeRank': 'ing. plk.',
-        "email": 'props.name.toLowerCase()' + '.' + 'props.lastname.toLowerCase()' + '1@unob.cz',
+        "email": 'alena.josef.krejci@university.world',
         'phone': '973 274 160',
-        'areal': {'name': 'Kasárny Šumavská', 'id': 1},
+        'areal': {'name': 'Kasárna Šumavská', 'id': 1},
         'building': {'name': '5', 'id': 1},
         'room': {'name': '104', 'id': 1},
         'faculty': [
             { 'id': 23, 'name': 'FVT' }
         ],
         'departments': [
-            { 'id': 5, 'name': 'K-209' },
-            { 'id': 6, 'name': 'K-207' }
+            { 'id': 5, 'name': 'K-209', 'grouptype': { 'name': 'katedra' } },
+            { 'id': 6, 'name': 'K-207', 'grouptype': { 'name': 'katedra' } }
         ],
+        'groups': [],
         'subjects': [
             { 'id': 25, 'name': 'Informatika' },
             { 'id': 1, 'name': 'Analýza informačních zdrojů' },
@@ -306,41 +345,4 @@ export const TeacherPage = (props) => {
     return (
         <TeacherLargeFetching {...props} id={id} />
     )    
-}
-
-
-
-// function RozvrhMedium() {
-//     return (
-//         <Card>
-//             <Card.Header>
-//                 <Card.Title>Rozvrh tento týden</Card.Title>
-//             </Card.Header>
-//             <Card.Body>
-//                 <img src={image} alt="Rozvrh" width={'100%'} />
-//             </Card.Body>
-//         </Card>
-//     )
-// }
-
-function RozvrhMedium(props) {
-    return (
-        <TimeTableMedium type={'teacher'} id={props.id} />
-    )
-}
-
-function SeznamPredmetu(props) {
-    let subjects = props.subjects.map((subject, index) => (<li key={index}><SubjectSmall {...subject} /></li>))
-    return (
-        <div className="card mb-3">
-            <Card.Header>
-                <Card.Title>Předměty</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <ul>
-                    {subjects}
-                </ul>
-            </Card.Body>
-        </div>
-    )
 }

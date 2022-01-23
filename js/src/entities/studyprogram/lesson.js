@@ -309,7 +309,14 @@ export const SubjectSemesterTopicLarge = (props) => {
 }
 
 export const SubjectSemesterTopicLargeStoryBook = (props) => {
-    const extraProps = {}
+    const extraProps = {
+        "id": "1",
+        "topic": "Téma 1",
+        'subject': {
+            'id': 1, 'name': 'Předmět',
+            'program': {'id': 1, 'name': 'Kybernetická bezpečnost'}
+        }
+      }
     return (
         <SubjectSemesterTopicLarge {...extraProps} {...props}/>
     )
@@ -324,19 +331,11 @@ export const SubjectSemesterTopicLargeQuery = (id) =>
                 body: JSON.stringify({
                 query: `
                 query {
-                    subjectSemesterTopic(id:${id}) {
-                        id
-                        name
-                        subjectsemester {
-                          id
-                          name
-                          subject {
-                            id
-                            name
-                          }
-                        }
-                      }     
-                    }               
+                    lesson(id: ${id}) {
+                      id
+                      topic
+                    }
+                  }              
                     `,
                 variables: {
                     now: new Date().toISOString(),

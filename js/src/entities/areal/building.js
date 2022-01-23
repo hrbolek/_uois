@@ -78,11 +78,17 @@ export const BuildingLargeStoryBook = (props) => {
         'id' : 1,
         'name' : 'KŠ/9A',
         'rooms' : [
-            {'id': 1, 'name': 'KŠ/9A/586'}
+            {'id': 1, 'name': 'KŠ/9A/586'},
+            {'id': 2, 'name': 'KŠ/9A/584'},
+            {'id': 3, 'name': 'KŠ/9A/583'},
+            {'id': 4, 'name': 'KŠ/9A/588'},
+            {'id': 5, 'name': 'KŠ/9A/589'},
         ],
         'areal' : {'id' : 1, 'name': 'KŠ'},
         'user' : {'id' : 1, 'name': 'John', 'surname': 'Nowick'}
     }
+
+   
     return <BuildingLarge {...extraProps} {...props} />
 }
 

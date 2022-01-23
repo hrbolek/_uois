@@ -12,17 +12,17 @@ import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 
 //import { GroupPage, GroupLarge } from './entities/group/group';
-import { SubjectPage } from './entities/studyprogram/subject';
+import { SubjectPage, SubjectLargeStoryBook } from './entities/studyprogram/subject';
 
-import { TeacherPage } from './entities/person/teacher';
-import { StudentPage } from './entities/person/student';
-import { DepartmentPage } from './entities/group/department';
-import { FacultyPage } from './entities/group/faculty';
-import { GroupPage } from './entities/group/group';
+import { TeacherPage, TeacherLargeStoryBook } from './entities/person/teacher';
+import { StudentPage, StudentLargeStoryBook } from './entities/person/student';
+import { DepartmentPage, DepartmentLargeStoryBook } from './entities/group/department';
+import { FacultyPage, FacultyLargeStoryBook } from './entities/group/faculty';
+import { GroupPage, GroupLargeStoryBook } from './entities/group/group';
 
-import { ArealPage } from './entities/areal/areal';
-import { BuildingPage } from './entities/areal/building';
-import { RoomPage } from './entities/areal/room';
+import { ArealPage, ArealLargeStoryBook } from './entities/areal/areal';
+import { BuildingPage, BuildingLargeStoryBook } from './entities/areal/building';
+import { RoomPage, RoomLargeStoryBook } from './entities/areal/room';
 
 import { SubjectSemesterTopicPage } from './entities/studyprogram/lesson';
 import { StudyProgramPage } from './entities/studyprogram/studyprogram';
@@ -47,7 +47,7 @@ const AppLayout = (props) => {
 }
 
 
-function App() {
+export function App() {
 /*
 */
   return (
@@ -93,4 +93,49 @@ function App() {
      );
 }
 
-export default App;
+export function AppDemo() {
+  /*
+  */
+    return (
+        <Router>
+          <Routes>
+            <Route path={root + "/users/"} element={<AppLayout />}>
+              <Route index element={<AppLayout />} />
+              <Route path={`teacher/:id`} element={<TeacherLargeStoryBook />} />
+              <Route path={`student/:id`} element= {<StudentLargeStoryBook />} />
+            </Route>
+            <Route path={root + "/groups/"} element={<AppLayout />}>
+              <Route index element={<AppLayout />} />
+              <Route path={`faculty/:id`} element={<FacultyLargeStoryBook />} />
+              <Route path={`department/:id`} element={<DepartmentLargeStoryBook />} />
+              <Route path={`group/:id`} element={<GroupLargeStoryBook />} />
+            </Route>
+  
+            <Route path={root + "/areals/"} element={<AppLayout />}>
+              <Route index element={<AppLayout />} />
+              <Route path={`areal/:id`} element={<ArealLargeStoryBook />} />
+              <Route path={`building/:id`} element={<BuildingLargeStoryBook />} />
+              <Route path={`room/:id`} element={<RoomLargeStoryBook />} />
+            </Route>
+  
+            <Route path={root + "/studyprograms/"} element={<AppLayout />}>
+              <Route index element={<AppLayout />} />
+              <Route path={`program/:id`} element={<StudyProgramPage />} />
+              <Route path={`subject/:id`} element={<SubjectPage />} />
+              <Route path={`lesson/:id`} element={<SubjectSemesterTopicPage />} />
+            </Route>
+  
+            <Route path={root + '/A4/:entity/:id/'} >
+              <Route index element={<TimeTableA4Page />} />
+            </Route>
+  
+            <Route path={root + '/svg/:entity/:id/'} >
+              <Route index element={<TimeTablePage />} />
+            </Route>
+  
+          </Routes>
+      
+      </Router>
+       );
+  }
+
