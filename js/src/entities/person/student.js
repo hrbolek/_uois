@@ -201,10 +201,12 @@ export const StudentMediumQuery = (id) =>
         }),
     })
 
+  
 export const StudentLargeFetching = (props) => {
 
     const Visualizer = props.as || StudentLargeStoryBook;
     const queryFunc = props.with || StudentLargeQuery;
+
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.user, [props.id])
     
     if (error != null) {
@@ -223,6 +225,7 @@ export const StudentPage = (props) => {
         <StudentLargeFetching {...props} id={id} as={StudentLargeStoryBook}/>
     )    
 }
+//ContactInfo
 /*
 export function StudentPage(props) {
     const [state, setState] = useState(

@@ -1,7 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 
 import Card from 'react-bootstrap/Card';
-import { Row } from "react-bootstrap";
+import Col from 'react-bootstrap/Col';
+import Row from "react-bootstrap/Row";
 import { useEffect, useState } from "react";
 
 import image from '../rozvrhSnimek.png'
@@ -17,6 +18,7 @@ import { TimeTableMedium } from '../timetable/timetable';
 import { ArealSmall } from "../areal/areal";
 import { BuildingSmall } from "../areal/building";
 import { RoomSmall } from "../areal/room";
+import { ProgramSmall } from "../studyprogram/studyprogram";
 
 export function TeacherSmall(props) {
     return (
@@ -25,30 +27,34 @@ export function TeacherSmall(props) {
 }
 
 export function TeacherMedium(props) {
-    
-    const departmentsList = props.departments.map((department, index) => {
-        let element = <DepartmentSmall key={index} {...department} />
-        if (index > 0) {
-            return (<>, {element}</>)
-        } else {
-            return (element)
-        }
-    })
-
     return (
-        <div className="card mb-3">
+        <Card>
             <Card.Header>
                 <Card.Title>{props.label} - <TeacherSmall {...props} /></Card.Title>
             </Card.Header>
             <Card.Body>
                 <Card.Text>
                     <b>Jméno příjmení:</b> {props.name} {props.surname}<br />
-                    <b>Titul:</b> {props.degreeRank}<br />
-                    <b>Katedra:</b> {departmentsList}<br />
+                    <b>Email:</b> {props.email}<br />
+                    { props.degreeRank ? (<><b>Titul:</b> { props.degreeRank }<br /></>) : ('')}
+                    { props.departments ? (
+                        <>
+                            <b>Katedra:</b> {
+                                props.departments.map((department, index) => {
+                                    let element = <DepartmentSmall key={index} {...department} />
+                                    if (index > 0) {
+                                        return (<>, {element}</>)
+                                    } else {
+                                        return (element)
+                                    }
+                            })}<br />
+                        </>
+
+                    ) : ('')}
                     {/*<b>Fakulta:</b> {props.faculty}*/}
                 </Card.Text>
             </Card.Body>
-        </div>
+        </Card>
     )
 }
 
@@ -107,37 +113,54 @@ export const TeacherSeznamSkupin = (props) => {
                 <Card.Title>Seznam vyučovaných skupin</Card.Title>
             </Card.Header>
             <Card.Body>
-
+                <GroupSmall name={'23-5KB'} id={1} />
             </Card.Body>
         </Card>
     )
 }
-export function TeacherLarge(props) {
-    
+
+export const TeacherGrants = (props) => {
     return (
-        <div className="card">
-            <div className="card-header mb-3">
-                <h4>Karta učitele</h4>
-            </div>
-            <div className="col">
+        <Card>
+            <Card.Header>
+                <Card.Title>Seznam garancí</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <ProgramSmall name={'Kybernetická bezpečnost'} id={1} />
+            </Card.Body>
+        </Card>
+    )
+}
+
+export function TeacherLarge(props) {
+    return (
+        <Card>
+            <Card.Header>
+                <Card.Title>
+                    Karta učitele
+                </Card.Title>
+            </Card.Header>
+            <Card.Body>
                 <Row>
-                    <div className="col-3">
+                    <Col md={3}>
                         <TeacherMedium label={'Učitel'} {...props}  />
                         <ContactInfo {...props} />
                         <Membership {...props} />
-                    </div>
-                    <div className="col-6">
+                    </Col>
+                    <Col md={6}>
                         <RozvrhMedium {...props}/>
-                    </div>
-                    <div className="col-3">
+                    </Col>
+                    <Col md={3}>
+                        <TeacherGrants {...props} />
                         <SeznamPredmetu {...props} />
                         <TeacherSeznamSkupin {...props} />
-                    </div>
+                    </Col>
                 </Row>
-            </div>
-        </div>
+            </Card.Body>
+        </Card>
     )
 }
+
 /*
 export function TeacherPage(props) {
     const [state, setState] = useState(

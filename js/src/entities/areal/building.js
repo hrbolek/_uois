@@ -10,7 +10,7 @@ import { TeacherMedium } from "../person/teacher";
 
 const buildingRoot = root + '/areals/building';
 export const BuildingSmall = (props) => {
-    return <Link to={buildingRoot + `${props.id}`}>{props.name}{props.children}</Link>
+    return <Link to={buildingRoot + `/${props.id}`}>{props.name}{props.children}</Link>
 }
 
 export const BuildingMedium = (props) => {

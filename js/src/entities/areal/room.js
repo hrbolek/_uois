@@ -1,11 +1,16 @@
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
 import { Link, useParams } from "react-router-dom";
 
 import { root } from "../index";
 
 import { useQueryGQL, Loading, LoadingError } from ".."
+import { TeacherSmall } from "../person/teacher";
+import { ArealSmall } from "./areal";
+import { BuildingSmall } from "./building";
+import { TimeTableMedium } from "../timetable/timetable";
 
 const roomRoot = root + '/areals/room';
 export const RoomSmall = (props) => {
@@ -26,18 +31,55 @@ export const RoomMedium = (props) => {
     )
 }
 
+export const RoomSpravce = (props) => {
+    const spravce = props.spravce
+    return (
+        <Card>
+            <Card.Header>
+                <Card.Title>Správce <TeacherSmall {...props.spravce}/> </Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <b>E-mail:</b> {spravce.email}<br />
+                <b>Telefon:</b> {spravce.phone ? props.phone : 'Neuvedeno'}<br />
+            </Card.Body>
+        </Card>
+    )
+}
+
+export const RoomParameters = (props) => {
+    return (
+        <Card>
+            <Card.Header>
+                <Card.Title>Vybavení</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                {JSON.stringify(props)}
+            </Card.Body>
+            <Card.Body>
+                <Button variant='outline-primary'>Nahlásit poškození</Button>
+            </Card.Body>
+        </Card>
+    )
+}
+
 export const RoomLarge = (props) => {
     return (
         <Card>
-            <Card.Header>Místnost {props.name} ({props.id})</Card.Header>
+            <Card.Header>
+                <Card.Title>
+                Místnost {props.name} ({props.id}) <BuildingSmall {...props.building}/>
+                </Card.Title>
+            </Card.Header>
             <Card.Body>
                 <Row>
                     <Col md={3}>
+                        <RoomSpravce {...props} />
                     </Col>
                     <Col md={6}>
-                        {JSON.stringify(props)}
+                        <TimeTableMedium type={'student'} id={1} />
                     </Col>
                     <Col md={3}>
+                        <RoomParameters {...props}/>
                     </Col>
                 </Row>
             </Card.Body>

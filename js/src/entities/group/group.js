@@ -12,6 +12,7 @@ import { TimeTableMedium } from '../timetable/timetable';
 import { root } from '../index';
 import { useQueryGQL, Loading, LoadingError } from "../index";
 import { SubjectSmall } from "../studyprogram/subject";
+import { ProgramSmall } from "../studyprogram/studyprogram";
 
 export function GroupSmall(props) {
     return (
@@ -35,9 +36,7 @@ export function GroupMedium(props) {
             <Card.Body>
                 <b>Fakulta:</b> {faculties} <br />
                 <b>Ročník:</b> {props.grade} <br />
-                <b>Obor:</b> {props.specialization}<br />
-                <hr />
-                <b><Link to={props.appRoot + "/MediumNULL"}>Harmonogram studia</Link></b> <br />
+                <b>Program:</b> <ProgramSmall id={1} name={'Kybernetická bezpečnost'} />
             </Card.Body>
         </Card>
     )

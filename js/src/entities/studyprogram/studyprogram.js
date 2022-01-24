@@ -24,13 +24,14 @@ import { SubjectMedium, SubjectLarge } from "./subject";
 import { useQueryGQL, Loading, LoadingError } from "../index";
 import { SubjectSmall } from "./subject";
 import { StudentSmall } from "../person/student";
+import { GroupSmall } from "../group/group";
 
 export const progRoot = root + "/studyprograms";
 
 
 export const ProgramSmall = (props) => {
     return(
-        <Link to={progRoot + `/program/${props.id}`}>{props.name}{props.children}</Link>
+        <Link to={progRoot + `/program/${props.id}`}>{props.children} {props.name}</Link>
     )
 }
 
@@ -91,22 +92,24 @@ export const ProgramGrants = (props) => {
     return (
         <Card>
             <Card.Header>
-                Garanti
+                <Card.Title> Garanti </Card.Title>
+                
             </Card.Header>
             <Card.Body>
+                <TeacherSmall id={1} name={'Josef Marie'} surname={'Krejčí'} />
             </Card.Body>
         </Card>
     )
 }
 
-export const ProgramStudents = (props) => {
+export const ProgramGroups = (props) => {
     return (
         <Card>
             <Card.Header>
-                Studenti
+                <Card.Title> Skupiny </Card.Title>
             </Card.Header>
             <Card.Body>
-                {props.students.map((student, index) => <><StudentSmall {...student.person}/><br/></>)}
+                {props.groups.map((group, index) => <><GroupSmall {...group}/><br/></>)}
             </Card.Body>
         </Card>
     )
@@ -116,7 +119,9 @@ export const ProgramLarge = (props) => {
     return (        
             <Card>
                 <Card.Header>
+                    <Card.Title>
                     Program {props.name} ({props.id})
+                    </Card.Title>
                 </Card.Header>
                 <Card.Body>
                     <Row>
@@ -127,12 +132,12 @@ export const ProgramLarge = (props) => {
                             <ProgramSubjectList {...props} />        
                         </Col>
                         <Col md={3}>
-                            <ProgramStudents {...props} />        
+                            <ProgramGroups {...props} />        
                         </Col>          
                     </Row>
                 </Card.Body>
                 <Card.Body>
-                    {JSON.stringify(props)}
+                    
                 </Card.Body>
 
             </Card>
@@ -283,7 +288,8 @@ export const ProgramSubjectList = (props) => {
     return (
         <Card>
             <Card.Header>
-                Předměty
+                <Card.Title> Předměty </Card.Title>
+                
             </Card.Header>
             <Card.Body>
                 {props.subjects.map((subject, index) => (
@@ -372,14 +378,10 @@ export const ProgramLargeStoryBook = (props) => {
           { "id": "4", "name": "Kyberneticka bezpecnost / Předmět 4" },
           { "id": "5", "name": "Kyberneticka bezpecnost / Předmět 5" },
         ],
-        "students": [
-          { "person": { "id": "85", "name": "Petr Alena", "surname": "Novotná", "email": "Petr.Alena.Novotná@F1.university.world" }          },
-          { "person": { "id": "88", "name": "Jaroslav Miroslav", "surname": "Pospíšilová", "email": "Jaroslav.Miroslav.Pospíšilová@F1.university.world" } },
-          { "person": { "id": "108", "name": "Zdeněk Věra", "surname": "Marek", "email": "Zdeněk.Věra.Marek@F1.university.world" }          },
-          { "person": { "id": "109", "name": "Eva Jiří", "surname": "Novotná", "email": "Eva.Jiří.Novotná@F1.university.world" }           },
-          { "person": { "id": "144", "name": "Lenka Hana", "surname": "Horáková", "email": "Lenka.Hana.Horáková@F1.university.world" }          },
-          { "person": { "id": "146", "name": "Lucie Jan", "surname": "Dvořák", "email": "Lucie.Jan.Dvořák@F1.university.world" }          },
-          { "person": { "id": "151", "name": "Lenka Jakub", "surname": "Kučera", "email": "Lenka.Jakub.Kučera@F1.university.world" }},
+        "groups": [
+          { "id": "7", "name": "23-5KB" },
+          { "id": "8", "name": "24-5KB" },
+          { "id": "9", "name": "25-5KB" }
         ]
       }
     return <ProgramLarge {...extraProps} {...props} />
