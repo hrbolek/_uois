@@ -120,7 +120,7 @@ export const TimeTableA4Page = (props) => {
 
      return (
         <>
-            <object id="svg1" data={`/svg/A4`} type="image/svg+xml"></object>
+            <object id="svg1" data={`/svg/A4/`} type="image/svg+xml"></object>
         </>
     )
 

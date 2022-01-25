@@ -28,7 +28,7 @@ services:
     environment:
       NODE_ENV: development
     ports:
-      - 50003:3000
+      - 50003:8000
     volumes:
       - ./js:/usr/src/app
 
@@ -46,6 +46,11 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=example
     ports:
       - 50011:80
+
+  whoami:
+    image: containous/whoami
+    ports:
+      - 50088:80
 
   nginx:
     build:
