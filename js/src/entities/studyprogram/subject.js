@@ -241,18 +241,18 @@ export const SubjectLarge = (props) => {
             </Card.Header>
             <Card.Body>
                 <Row>
-                    <Col md={3}>
+                    <Col md={3} xs={12}>
                         <SubjectProgram {...props} /> <br/>
                         <SubjectGrants {...props} /> <br/>
-                        <SubjectMasters {...props} />
-                    </Col>
-                    <Col md={6}>
+                    </Col> 
+                    <Col md={6} xs={12}>
                         <SubjectTopicList {...props} />
-                    </Col>
-                    <Col md={3}>
+                    </Col> 
+                    <Col md={3} xs={12}>
+                        <SubjectMasters {...props} /> <br/>
                         <SubjectGroupList {...props} /> <br/>
                         <SubjectTerms {...props} />
-                    </Col>
+                    </Col> 
                 </Row>
                 <Row>
                     <Col>
@@ -360,7 +360,7 @@ export const SubjectLarge = (props) => {
 export const SubjectLargeStoryBook = (props) => {
     const extraProps = {
         "id": "1",
-        "name": "Kyberneticka bezpecnost / Předmět 1",
+        "name": "Kybernetická bezpečnost / Předmět 1",
         "lessons": [
           { "id": "1", "topic": "Téma 1" },
           { "id": "2", "topic": "Téma 2" },
@@ -411,12 +411,16 @@ export const SubjectLargeQuery = (id) =>
     })
     
 export const SubjectPageFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, SubjectLargeQuery, (response) => response.data.subject, [props.id])
+
+    const Visualizer = props.as || SubjectLargeStoryBook;
+    const queryFunc = props.with || SubjectLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.subject, [props.id])
     
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
-        return <SubjectLargeStoryBook {...state} />
+        return <Visualizer {...props} {...state} />
     } else {
         return <Loading>Předmět {props.id}</Loading>
     }

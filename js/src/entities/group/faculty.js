@@ -1,13 +1,19 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import { Card } from "react-bootstrap";
+import Card from "react-bootstrap/Card";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+
 import { DepartmentSmall } from "./department";
 //import { PersonSmall } from "../person/person";
 import { PersonSmall } from "../person/person";
 import { TeacherSmall } from '../person/teacher';
 import { root } from '../index';
 import { useQueryGQL, Loading, LoadingError } from "../index";
+import { ArealSmall } from "../areal/areal";
+import { BuildingSmall } from "../areal/building";
+import { ProgramSmall } from "../studyprogram/studyprogram";
 
 export function FacultySmall(props) {
     return (
@@ -17,129 +23,70 @@ export function FacultySmall(props) {
 
 export function FacultyMedium(props) {
     return (
-        <Card className='mb-3'>
+        <Card>
             <Card.Header>
                 <Card.Title>Fakulta <b><FacultySmall {...props} /></b></Card.Title>
             </Card.Header>
             <Card.Body>
-                <b>Název:</b> {props.fullname}<br />
-                <b>Děkan:</b> <PersonSmall {...props} name={props.dean} /><br />
+                <b>Název:</b> {props.name}<br />
+                <b>Děkan:</b> <PersonSmall {...props.dean} /><br />
             </Card.Body>
         </Card>
     )
 }
 
-function SeznamUcitelu(props) {
-    let teachers = props.teachers.map((item, index) => {
-        (<li key={item.id}><TeacherSmall key={item.id} {...item} /></li>)
-    })
+function SeznamProgramu(props) {
     return (
-        <div className="card mb-3">
+        <Card>
             <Card.Header>
-                <Card.Title>Vyučující</Card.Title>
+                <Card.Title>Seznam uskutečňovaných programů</Card.Title>
             </Card.Header>
             <Card.Body>
-                <ul>
-                    {teachers}
-                </ul>
+                <ProgramSmall name={'Kybernetická bezpečnost'} id={1} />                
             </Card.Body>
-        </div>
+        </Card>
     )
 }
 
-export function FacultyLarge(props) {
-    let departments = props.departments.map((item) => (<li key={item.id}><DepartmentSmall key={item.id} {...item} appRoot={props.appRoot} /></li>))
-    return (
-        <div className="card">
-            <div className="card-header mb-3">
-                <h4>Karta fakulty</h4>
-            </div>
-            <div className='col'>
-                <div className='row'>
-                    <div className='col'>
+/*
+                    <Col md={3}>
                         <FacultyMedium {...props} />
                         <ContactInfo {...props} />
-                    </div>
-                    <div className='col'>
+                    </Col>
+                    <Col md={6}>
                         <SeznamKateder departments={departments} />
-                    </div>
-                    <div className='col'>
+                    </Col>
+                    <Col md={3}>
                         <SeznamUcitelu teachers={props.members} />
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </Col>
+*/
+
+export function FacultyLarge(props) {
+    
+    return (
+        <Card>
+            <Card.Header>
+                <h4>Karta fakulty</h4>
+            </Card.Header>
+            <Card.Body>
+                <Row>
+                    <Col md={3}>
+                        <FacultyMedium {...props} /> <br/>
+                        <ContactInfo {...props} />
+                    </Col>
+                    <Col md={6}>
+                        <SeznamKateder {...props} />
+                    </Col>
+                    <Col md={3}>
+                        <SeznamProgramu {...props} />
+                    </Col>
+                </Row>
+            </Card.Body> 
+        </Card>
     )
 }
 
-export const FacultyLargeStoryBook = (props) => {
-    const extendedProps = {
-        'id': props.id,
-        'name': props.name,
-        'fullname': 'Fakulta vojenských technologií',
-        'dean': 'Vladimír Brzobohatý',
-        'areal': 'Kasárna Šumavská',
-        'building': '3',
-        'departments': [
-            { 'id': 4, 'name': 'K-201' },
-            { 'id': 5, 'name': 'K-202' },
-            { 'id': 6, 'name': 'K-205' },
-            { 'id': 7, 'name': 'K-208' },
-            { 'id': 8, 'name': 'K-209' },
-            { 'id': 9, 'name': 'K-220' }
-        ]
-    }
 
-    return <FacultyLarge {...extendedProps} {...props} />;
-}
-
-export const FacultyLargeQuery = (id) => 
-    fetch('/gql', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        redirect: 'follow', // manual, *follow, error
-        body: JSON.stringify({
-            "query":
-                `
-            query {
-                group(id: ${id}){
-                    id
-                    name
-                    members {
-                      id
-                      name
-                      surname
-                      address
-                      email
-                    }
-                  }
-            }
-            `
-        }),
-    })
-
-export const FacultyLargeFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, FacultyLargeQuery, (response) => response.data.group, [props.id])
-    
-    if (state != null) {
-        return <FacultyLargeStoryBook {...state} />
-    } else if (error != null) {
-        return <LoadingError error={error} />
-    } else {
-        return <Loading>Uživatel {props.id}</Loading>
-    }
-}
-
-export const FacultyPage = (props) => {
-    const { id } = useParams();
-
-    return (
-        <FacultyLargeFetching {...props} id={id} />
-    )       
-}
 
 /*
 export function FacultyPage(props) {
@@ -209,29 +156,105 @@ export function FacultyPage(props) {
 
 function ContactInfo(props) {
     return (
-        <div className="card mb-3">
+        <Card>
             <Card.Header>
                 <Card.Title>Adresa</Card.Title>
             </Card.Header>
             <Card.Body>
-                <b>Areál: </b> {props.areal}<br />
-                <b>Budova: </b>{props.building} <br />
+                <b>Areál: </b> <ArealSmall {...props.areal} /> <br />
+                <b>Budova: </b> <BuildingSmall {...props.building} /> <br />
             </Card.Body>
-        </div>
+        </Card>
     )
 }
 
 function SeznamKateder(props) {
     return (
-        <div className="card mb-3">
+        <Card>
             <Card.Header>
                 <Card.Title>Katedry</Card.Title>
             </Card.Header>
             <Card.Body>
                 <ul>
-                    {props.departments}
+                    {props.departments.map((item) => 
+                        (<li key={item.id}><DepartmentSmall key={item.id} {...item} appRoot={props.appRoot} /></li>)
+                    )}
                 </ul>
             </Card.Body>
-        </div>
+        </Card>
     )
+}
+
+export const FacultyLargeStoryBook = (props) => {
+    const extendedProps = {
+        'id': 1,
+        'name': 'FVT',
+        'fullname': 'Fakulta vojenských technologií',
+        'dean': {'name': 'Vladimír Brzobohatý', 'id': 1 },
+        'areal': {'name': 'Kasárna Šumavská', 'id': 1 },
+        'building': { 'name': '3', 'id': 1 },
+        'departments': [
+            { 'id': 4, 'name': 'K-201' },
+            { 'id': 5, 'name': 'K-202' },
+            { 'id': 6, 'name': 'K-205' },
+            { 'id': 7, 'name': 'K-208' },
+            { 'id': 8, 'name': 'K-209' },
+            { 'id': 9, 'name': 'K-220' }
+        ]
+    }
+
+    return <FacultyLarge {...extendedProps} {...props} />;
+}
+
+export const FacultyLargeQuery = (id) => 
+    fetch('/gql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        redirect: 'follow', // manual, *follow, error
+        body: JSON.stringify({
+            "query":
+                `
+            query {
+                group(id: ${id}){
+                    id
+                    name
+                    members {
+                      id
+                      name
+                      surname
+                      address
+                      email
+                    }
+                  }
+            }
+            `
+        }),
+    })
+
+export const FacultyLargeFetching = (props) => {
+
+    const Visualizer = props.as || FacultyLargeStoryBook;
+    const queryFunc = props.with || FacultyLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.group, [props.id])
+    
+    if (error != null) {
+        return <LoadingError error={error} />
+    } else if (state != null) {
+        return <Visualizer {...props} {...state} />
+    } else {
+        return <Loading>Fakulta {props.id}</Loading>
+    }
+
+}
+
+export const FacultyPage = (props) => {
+    const { id } = useParams();
+
+    return (
+        <FacultyLargeFetching {...props} id={id} />
+    )       
 }

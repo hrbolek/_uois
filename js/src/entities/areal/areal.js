@@ -10,6 +10,7 @@ import MapaBAB from "./media/babak_svg.svg";
 
 
 import  Card  from "react-bootstrap/Card";
+import  Accordion  from "react-bootstrap/Accordion";
 import { Row,Table,Button, Col } from "react-bootstrap";
 //import ArealData from "../../media/classrooms2.js";
 import ArealData from "./classrooms2";
@@ -20,7 +21,8 @@ import React, { useState, useEffect } from "react";
 
 import { root } from "../index";
 import { useQueryGQL, Loading, LoadingError } from "../index";
-
+import { BuildingSmall } from "./building";
+import { RoomSmall } from "./room";
 
 //import {ClassroomsListAPI, ClassroomsList} from "../classroom/classroom";
 
@@ -36,44 +38,31 @@ export const ArealSmall = (props) => {
     )
 }
 
-export const buildingRoot=arealRoot + "/areals/building"
-
-export const BuildingSmall = (props) => {
-    return(
-               <Link to={buildingRoot + `/${props.arealid},${props.id}`}> {props.name}{props.children}</Link> 
-        )
-}
-
-export const roomRoot = root + "/areals/room"
-const RoomSmall = (props) => {
-    return (
-        <Link to={roomRoot + `/${props.arealid},${props.id}`}> {props.name}{props.children}</Link> 
-        )
-}
-
 export const ArealLargeSUM = () => {
     const arealRoot = root + "areals/5"
         return(
-            <div>
-            
-            <div>
-                <map name="sumavska">
-                    <area shape="rect" coords="276,613,400,649" href={arealRoot+"/šumák1"} target="_self" alt="Š1"/>
-                    <area shape="rect" coords="265,442,329,483" href={arealRoot+"/šumák3"} target="_self" alt="Š3"/>
-                    <area shape="rect" coords="193,437,250,487" href={arealRoot+"/šumák4"} target="_self" alt="Š4"/>
-                    <area shape="poly" coords="102,422,102,488,185,488,185,445,162,445,162,465,129,465,129,423,103,423" href={arealRoot+"/asiŠ5-zakroucenabudova"} target="_self" alt="zakroucenaBudovaAsiŠ5" />
-                    <area shape="rect" coords="97,378,141,415" href={arealRoot+"/šumák5A"} target="_self" alt="Š5A"/>
-                    <area shape="rect" coords="97,169,143,253" href={arealRoot+"/šumák5B"} target="_self" alt="Š5B"/>
-                    <area shape="rect" coords="97,88,220,143" href={arealRoot+"/šumák6"} target="_self" alt="Š6"/>
-                    <area shape="rect" coords="284,88,419,141" href={arealRoot+"/šumák8"} target="_self" alt="Š8"/>
-                    <area shape="rect" coords="359,160,419,287" href={arealRoot+"/šumák9"} target="_self" alt="Š9"/>
-                    <area shape="rect" coords="359,288,419,404" href={arealRoot+"/šumák9A"} target="_self" alt="Š9A"/>
-                </map>
-                <img useMap="#sumavska" src={MapaSumavska} alt="mapa Sumavska" />              
-
-            </div>
-
-            </div>
+            <Card>
+                <Card.Header>
+                    <Card.Title>
+                        Areál Šumavská - Mapa
+                    </Card.Title>
+                </Card.Header>
+                <Card.Body>
+                    <map name="sumavska">
+                        <area shape="rect" coords="276,613,400,649" href={arealRoot+"/šumák1"} target="_self" alt="Š1"/>
+                        <area shape="rect" coords="265,442,329,483" href={arealRoot+"/šumák3"} target="_self" alt="Š3"/>
+                        <area shape="rect" coords="193,437,250,487" href={arealRoot+"/šumák4"} target="_self" alt="Š4"/>
+                        <area shape="poly" coords="102,422,102,488,185,488,185,445,162,445,162,465,129,465,129,423,103,423" href={arealRoot+"/asiŠ5-zakroucenabudova"} target="_self" alt="zakroucenaBudovaAsiŠ5" />
+                        <area shape="rect" coords="97,378,141,415" href={arealRoot+"/šumák5A"} target="_self" alt="Š5A"/>
+                        <area shape="rect" coords="97,169,143,253" href={arealRoot+"/šumák5B"} target="_self" alt="Š5B"/>
+                        <area shape="rect" coords="97,88,220,143" href={arealRoot+"/šumák6"} target="_self" alt="Š6"/>
+                        <area shape="rect" coords="284,88,419,141" href={arealRoot+"/šumák8"} target="_self" alt="Š8"/>
+                        <area shape="rect" coords="359,160,419,287" href={arealRoot+"/šumák9"} target="_self" alt="Š9"/>
+                        <area shape="rect" coords="359,288,419,404" href={arealRoot+"/šumák9A"} target="_self" alt="Š9A"/>
+                    </map>
+                    <img useMap="#sumavska" src={MapaSumavska} alt="mapa Sumavska" />              
+                </Card.Body>           
+            </Card>
         )
 
 }
@@ -153,137 +142,23 @@ const tableStyle = {
 
 
 
-export const ArealLargeAPI = (props) => {
-    const [state, setState] = useState(
-        {
-        'arealy':[{'id':'id',
-        'name':'name',
-        'buildings':[{'areal':{'id':'id'},'id':'id','name':'name','rooms':[{'id':'id','name':'name'}]}]
-    }]}
-    );
-    useEffect(() => {
-        fetch('http://localhost:50001/gql', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              query: `
-              # Write your query or mutation here
-              query {
-                areal(id:587){
-                    id
-                    name
-                  buildings{
-                    areal{
-                      id
-                    }
-                        id
-                    name
-                    rooms{
-                      id
-                      name
-                    }
-                  }
-                    }
-                }             
-                `,
-              variables: {
-                now: new Date().toISOString(),
-              },
-            }),
-          })
-            .then((res) => res.json())
-            .then((result) => setState(result.data));
-            
-    }, [] );
-    
-    //POTOM BUDE: [props.id] - závislost kdy se udělá fetch (vždy když změníme id)!
-    //console.log("po fetchi:", state)
-    return(
-        <div>
-            <ArealLarge json={state}/>
-        </div>
-    )
-}
-
 
 export const ArealLarge = (props) => {
-    const json=props.json
 
-/*
-    const [state, setState] = useState(
-        {
-            'continents': //areals
-            [{
-                'name': "name", //jmeno arealu
-                'code': "code", //id arealu
-            }]
-            
-        });
-*/
-
-    // //setState(props)
-    // console.log("----obsah props:--- ", json)
-    
-    // try{ 
-    //     if(json.areal.length>1){
-    //         const arealy = []
-    //         for(var index = 0; index < json.areal.length; index++) {
-    //             const sgItem = json.areal[index]
-    //             arealy.push(<ArealMedium name={sgItem.name} id={sgItem.id}/>);
-    //         }
-    //         return (<div>
-    //             <Table striped bordered hover style={tableStyle}>
-    //                 <thead>
-    //                     <Card>           
-    //                         <Card.Header><h1>Seznam více areálů: </h1></Card.Header>
-    //                     </Card>
-    //                 </thead>
-                    
-    //                    {arealy} 
-    //                 {/*<p><b>fetchnuty JSON soubor z GraphQL:</b> {JSON.stringify(json)}</p>*/}
-    //             </Table>
-    //                 </div>)
-        
-    //         }
-    //         else{
-    //             return(<div>
-    //                 <Table striped bordered hover style={tableStyle}>
-    //                 <thead>
-    //                     <Card>           
-    //                         <Card.Header><h1>Seznam areálů: </h1></Card.Header>
-    //                     </Card>
-    //                 </thead>
-                        
-    //                 <ArealMedium name={json.areal.name} id={json.areal.id}/>                
-    //                     {/*<p><b>fetchnuty JSON soubor z GraphQL:</b> {JSON.stringify(json)}</p>*/}
-    //                 </Table>
-    //                     </div>)
-    //         }
-
-    // } catch(e) { 
-    //     console.error(e); 
-    //     return(<div><b>LOADING - future load:</b> <ArealMedium name={props.json.name} id={props.json.id}/>                
-    //         {/*<p><b>fetchnuty JSON soubor z GraphQL:</b> {JSON.stringify(json)}</p>*/}
-    //         </div>)
-        
-    // }
-    //<ArealMedium {...props}/>
         return (
             <Card>
                 <Card.Header>
+                    <Card.Title>
                     <ArealSmall {...props}></ArealSmall>
+                    </Card.Title>
                 </Card.Header>
                 <Card.Body>
                     <Row>
-                        <Col>
+                        <Col md={8} xs={12}>
                             <ArealLargeSUM />
                         </Col>
-                    </Row><Row>
-                        <Col>
-                        
-                        <ArealBuildingsLarge {...props} />
+                        <Col md={4} xs={12}>
+                            <BuildingsCondition {...props} />
                         </Col>
                     </Row>
                     
@@ -357,136 +232,32 @@ export const BuildingMedium = (props) => {
     )
 }
 
-export const BuildingsCondition = (props) => {
-    const [expanded, setExpanded] = useState(false);
-    const arealid=props.arealid
-    var result = <>Error</>
-    if (expanded) {
-        result = (
-            <Card>
-                <Card.Header>budova: <BuildingSmall {...props}/></Card.Header>                                       
-                <Card.Body>
-                    <Card.Text>                     
-                        <BuildingMedium {...props}/>
-                    </Card.Text>
-                 
-                </Card.Body>
-                <Button variant="secondary" size="md" onClick={() => setExpanded(false)} style={{ color: 'red' }}>hide rooms</Button>   
-            </Card>
-        )
-    } else {
-        result = (
-            <Card>      
-                <Card.Header>budova: <BuildingSmall {...props}/></Card.Header>         
-                <Card.Body>
-                    <Card.Text>
 
-                    </Card.Text>
-                </Card.Body>
-                <Button variant="secondary" size="md" onClick={() => setExpanded(true)} style={{ color: 'blue' }}>show rooms</Button>                                                   
-            </Card>
-        )
-    }
-    return result
-}
-
-/*
-export const BuildingsLargeAPI = (props) => {
-    const { id } = useParams();
-    console.log("id v ClassroomTest je : ", id)
-
-    const [state, setState] = useState(
-        {'id':'id',
-        'name':'name',
-        'buildings':[{'areal':{'id':'id'},'id':'id','name':'name','rooms':[{'id':'id','name':'name'}]}]
-    }
-    );
-    useEffect(() => {
-        fetch('http://localhost:50001/gql', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              query: `
-              query {
-                areal(id:`+id+`){
-                    id
-                    name
-                    buildings{
-                        areal{
-                            id
-                            }
-                        id
-                        name
-                        rooms{
-                            id
-                            name
-                            }
-                        }
-                    }
-                }           
-                `,
-              variables: {
-                now: new Date().toISOString(),
-              },
-            }),
-          })
-            .then((res) => res.json())
-            .then((result) => setState(result.data.areal));
-    }, [id] );
-    
-    //console.log("State je : ", state)
-    console.log("STATE je : ", state)
-    return(                                                        //předání testing-->vrácení se zpět na seznam arealů
-    <div>   
-        <ArealBuildingsLarge json={state} arealid={id}/>
-    </div>)
-}
-*/
-
-export const ArealBuildingsLarge = (props) => {
-    //console.log("id v ClassroomTest je : ", id)
-    // console.log("PROPS:  ", props)
-    // const json=props.json
-    // const arealName=props.json.name
-    // const arealid=props.arealid
-    
-    /*
-    const [state, setState] = useState(
-        {
-            'arealname' : 'props.json.name',
-            'countries' : [{'name':'budova', 'code': 'id'}]
-        });
-    */
-    
-        const buildings = props.buildings.map((building, index) => <BuildingsCondition key={index} {...building}/>)
-        // for(let sgItem of props.buildings) {
-        //     // const rooms = []
-        //     // for(var index2 = 0; index2 < props.buildings[index].rooms.length; index2++) {
-        //     //     const sgItem2 = props.buildings[index].rooms[index2]
-        //     //     rooms.push("<ClassroomsList name={sgItem2.name} id={sgItem2.id} buildingid={json.buildings[index].id} arealid={props.arealid} />");
-        //     // }
-        //     const sgItem = props.buildings[index]
-        //     buildings.push(<BuildingsCondition {...sgItem}/>);
-            
-        //     //console.log("Jen buidlings for: ",buildings)
-            
-        // }
-    //console.log("buldings = ", state)
-    return(                                                        //předání testing-->vrácení se zpět na seznam arealů
-    <Card>   
-        
-        <Card.Header><h1>Seznam budov v areálu <i>{props.name} - (id:{props.id})</i>: </h1></Card.Header>
+//Accordion
+export const BuildingsCondition = (props) => { 
+    return (
+        <Card>
+            <Card.Header>
+                <Card.Title>Budovy</Card.Title>
+            </Card.Header>
             <Card.Body>
-            <CardGroup>
-                {buildings}
-            </CardGroup>
-        </Card.Body>
-            
-            {/*<p><b>fetchnuty JSON soubor z GraphQL:</b> {JSON.stringify(json)}</p>*/}
-    </Card>)
+                <Accordion>
+                    {props.buildings.map((building, index) => (
+                        <Accordion.Item eventKey={index}>
+                            <Accordion.Header>
+                                <BuildingSmall {...building} />
+                            </Accordion.Header>
+                            <Accordion.Body>
+                                {JSON.stringify(building)}
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    ))}
+                </Accordion>
+            </Card.Body>
+        </Card>
+    )
 }
+
 
 export const ArealLargeStoryBook = (props) => {
     const extraProps = {
@@ -561,12 +332,16 @@ export const ArealLargeQuery = (id) =>
     })
 
 export const ArealFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, ArealLargeQuery, (response) => response.data.areal, [props.id])
+
+    const Visualizer = props.as || ArealLargeStoryBook;
+    const queryFunc = props.with || ArealLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.areal, [props.id])
     
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
-        return <ArealLargeStoryBook {...state} />
+        return <Visualizer {...props} {...state} />
     } else {
         return <Loading>Areál {props.id}</Loading>
     }

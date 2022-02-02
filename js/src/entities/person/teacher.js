@@ -62,7 +62,7 @@ export function TeacherMedium(props) {
 function ContactInfo(props) {
     //data=props.datas;
     return (
-        <div className="card mb-3">
+        <Card>
             <Card.Header>
                 <Card.Title>Kontaktní údaje</Card.Title>
             </Card.Header>
@@ -72,7 +72,7 @@ function ContactInfo(props) {
                 <b>Areál: </b> <ArealSmall {...props.areal} /><br />
                 <b>Budova: </b> <BuildingSmall {...props.building} /> <b>Místnost:</b> <RoomSmall {...props.room} /><br />
             </Card.Body>
-        </div>
+        </Card>
     )
 }
 
@@ -93,7 +93,7 @@ export const GroupInfo = (props) => {
 
 export const Membership = (props) => {
     return (
-        <div className="card mb-3">
+        <Card>
             <Card.Header>
                 <Card.Title>Členství</Card.Title>
             </Card.Header>
@@ -102,7 +102,7 @@ export const Membership = (props) => {
                     <GroupInfo key={index} {...group} />
                 ))}
             </Card.Body>
-        </div>
+        </Card>
     )
 }
 
@@ -132,6 +132,21 @@ export const TeacherGrants = (props) => {
     )
 }
 
+export const TeacherVaV = (props) => {
+    return (
+        <Card>
+            <Card.Header>
+                <Card.Title>VaV link</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <a href={'https://vav.unob.cz/person/index/536479'} >VaV</a><br/>
+                <a href={'https://vav.unob.cz/results/person/536479'} >VaV výsledky</a><br/>
+                <a href={'https://vav.unob.cz/person/projects/536479'} >VaV projekty</a><br/>
+            </Card.Body>
+        </Card>
+    )
+}
+
 export function TeacherLarge(props) {
     return (
         <Card>
@@ -143,17 +158,17 @@ export function TeacherLarge(props) {
             <Card.Body>
                 <Row>
                     <Col md={3}>
-                        <TeacherMedium label={'Učitel'} {...props}  />
-                        <ContactInfo {...props} />
-                        <Membership {...props} />
+                        <TeacherMedium label={'Učitel'} {...props}  /> <br/>
+                        <ContactInfo {...props} /> <br/>
+                        <Membership {...props} /> <br/>
                     </Col>
                     <Col md={6}>
-                        <RozvrhMedium {...props}/>
+                        <RozvrhMedium {...props}/> <br/>
                     </Col>
                     <Col md={3}>
-                        <TeacherGrants {...props} />
-                        <SeznamPredmetu {...props} />
-                        <TeacherSeznamSkupin {...props} />
+                        <TeacherGrants {...props} /> <br/>
+                        <SeznamPredmetu {...props} /> <br/>
+                        <TeacherSeznamSkupin {...props} /> <br/>
                     </Col>
                 </Row>
             </Card.Body>
@@ -268,7 +283,7 @@ function RozvrhMedium(props) {
 function SeznamPredmetu(props) {
     let subjects = props.subjects.map((subject, index) => (<li key={index}><SubjectSmall {...subject} /></li>))
     return (
-        <div className="card mb-3">
+        <Card>
             <Card.Header>
                 <Card.Title>Předměty</Card.Title>
             </Card.Header>
@@ -277,7 +292,7 @@ function SeznamPredmetu(props) {
                     {subjects}
                 </ul>
             </Card.Body>
-        </div>
+        </Card>
     )
 }
 
@@ -351,12 +366,16 @@ export const TeacherLargeStoryBook = (props) => {
 }
 
 export const TeacherLargeFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, TeacherLargeQuery, (response) => response.data.user, [props.id])
+
+    const Visualizer = props.as || TeacherLargeStoryBook;
+    const queryFunc = props.with || TeacherLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.user, [props.id])
     
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
-        return <TeacherLargeStoryBook {...state} />
+        return <Visualizer {...props} {...state} />
     } else {
         return <Loading>Uživatel {props.id}</Loading>
     }

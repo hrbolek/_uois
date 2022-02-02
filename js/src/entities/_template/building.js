@@ -101,12 +101,16 @@ export const BuildingLargeQuery = (id) =>
     })
 
 export const BuildingFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, BuildingLargeQuery, (response) => response.data.building, [props.id])
+
+    const Visualizer = props.as || BuildingLargeStoryBook;
+    const queryFunc = props.with || BuildingLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.building, [props.id])
     
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
-        return <BuildingLargeStoryBook {...state} />
+        return <Visualizer {...props} {...state} />
     } else {
         return <Loading>Nahrávám informace o budově {props.id}</Loading>
     }

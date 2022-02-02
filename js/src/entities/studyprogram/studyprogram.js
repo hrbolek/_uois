@@ -115,6 +115,19 @@ export const ProgramGroups = (props) => {
     )
 }
 
+export const ProgramAppLink = (props) => {
+    return (
+        <Card>
+            <Card.Header>
+                <Card.Title> Link na akreditace </Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <a href={'https://apl.unob.cz/Akreditace2017/StudijniProgram/9'} >aplikace akreditace </a>
+            </Card.Body>
+        </Card>
+    )
+}
+
 export const ProgramLarge = (props) => {
     return (        
             <Card>
@@ -126,13 +139,14 @@ export const ProgramLarge = (props) => {
                 <Card.Body>
                     <Row>
                         <Col md={3}>
-                            <ProgramGrants {...props} />
+                            <ProgramGrants {...props} /> <br/>
+                            <ProgramAppLink {...props} />   
                         </Col>
                         <Col md={6}>
                             <ProgramSubjectList {...props} />        
                         </Col>
                         <Col md={3}>
-                            <ProgramGroups {...props} />        
+                            <ProgramGroups {...props} />   <br/>
                         </Col>          
                     </Row>
                 </Card.Body>
@@ -370,13 +384,13 @@ export const ProgramMedium_ = (props) => {
 export const ProgramLargeStoryBook = (props) => {
     const extraProps = {
         "id": "1",
-        "name": "Kyberneticka bezpecnost",
+        "name": "Kybernetická bezpečnost",
         "subjects": [
-          { "id": "1", "name": "Kyberneticka bezpecnost / Předmět 1" },
-          { "id": "2", "name": "Kyberneticka bezpecnost / Předmět 2" },
-          { "id": "3", "name": "Kyberneticka bezpecnost / Předmět 3" },
-          { "id": "4", "name": "Kyberneticka bezpecnost / Předmět 4" },
-          { "id": "5", "name": "Kyberneticka bezpecnost / Předmět 5" },
+          { "id": "1", "name": "Programování" },
+          { "id": "2", "name": "Datová analýza" },
+          { "id": "3", "name": "Informační bezpečnost" },
+          { "id": "4", "name": "Distribované technologie" },
+          { "id": "5", "name": "Právní rámec" },
         ],
         "groups": [
           { "id": "7", "name": "23-5KB" },
@@ -420,12 +434,16 @@ export const StudyProgramLargeQuery = (id) =>
     })
 
 export const StudyProgramLargeFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, StudyProgramLargeQuery, (response) => response.data.program, [props.id])
+   
+    const Visualizer = props.as || ProgramLargeStoryBook;
+    const queryFunc = props.with || StudyProgramLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.program, [props.id])
     
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
-        return <ProgramLargeStoryBook {...state} />
+        return <Visualizer {...props} {...state} />
     } else {
         return <Loading>program {props.id}</Loading>
     }

@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 
 import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import { useEffect, useState } from "react";
 
 import image from '../rozvrhSnimek.png';
@@ -29,7 +31,7 @@ export function GroupMedium(props) {
     }
 
     return (
-        <Card className='mb-3'>
+        <Card>
             <Card.Header>
                 <Card.Title>Skupina <b><GroupSmall {...props} /></b></Card.Title>
             </Card.Header>
@@ -204,29 +206,31 @@ function ContactInfo(props) {
 export function GroupLarge(props) {
 
     return (
-        <div className="card">
-            <div className="card-header mb-3">
-                <h4>Karta učební skupiny</h4>
-            </div>
-            <div className="col">
-                <div className='row'>
-                    <div className="col-3">
-                        <GroupMedium {...props} />
+        <Card>
+            <Card.Header>
+                <Card.Title>
+                    Karta učební skupiny
+                </Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <Row>
+                    <Col md={3}>
+                        <GroupMedium {...props} /> <br/>
                         <ContactInfo {...props} />
 
-                    </div>
-                    <div className="col-2">
+                    </Col>
+                    <Col md={2}>
                         <SeznamStudentu {...props} />
-                    </div>
-                    <div className="col-5">
+                    </Col>
+                    <Col md={5}>
                         <RozvrhMedium {...props}/>
-                    </div>
-                    <div className="col-2">
+                    </Col>
+                    <Col md={2}>
                         <SeznamPredmetu {...props} />
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </Col>
+                </Row>
+            </Card.Body>
+        </Card>
     )
 }
 
@@ -299,12 +303,16 @@ export const GroupLargeQuery = (id) =>
     })
 
 export const GroupLargeFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, GroupLargeQuery, (response) => response.data.group, [props.id])
+
+    const Visualizer = props.as || GroupLargeStoryBook;
+    const queryFunc = props.with || GroupLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.group, [props.id])
     
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
-        return <GroupLargeStoryBook {...state} />
+        return <Visualizer {...props} {...state} />
     } else {
         return <Loading>Skupina {props.id}</Loading>
     }

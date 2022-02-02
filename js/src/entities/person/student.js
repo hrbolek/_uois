@@ -1,7 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 
 import Card from 'react-bootstrap/Card';
-import { Row } from "react-bootstrap";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import { useEffect, useState } from "react";
 
 import image from '../rozvrhSnimek.png'
@@ -22,11 +23,11 @@ export function StudentSmall(props) {
 }
 
 export function StudentMedium(props) {
-    let faculties = props.faculty.map((item) => (<FacultySmall key={item.id} {...item} />))
-    let groups = props.groups.map((item) => (<GroupSmall key={item.id} {...item} />))
+    let faculties = props.faculty.map((item, index) => index === 0 ? (<FacultySmall key={item.id} {...item} />) : (<>, <FacultySmall key={item.id} {...item} /></>))
+    let groups = props.groups.map((item, index) => index === 0? (<GroupSmall key={item.id} {...item} />) : (<>, <GroupSmall key={item.id} {...item} /></>))
 
     return (
-        <div className="card mb-3">
+        <Card>
             <Card.Header>
                 <Card.Title>Student - <StudentSmall {...props.person} /></Card.Title>
             </Card.Header>
@@ -39,7 +40,7 @@ export function StudentMedium(props) {
                     <b>Fakulta:</b> {faculties}
                 </Card.Text>
             </Card.Body>
-        </div>
+        </Card>
     )
 }
 
@@ -61,7 +62,7 @@ function SeznamPredmetuUStudenta(props) {
     let subjects = props.subjects.map((subject, index) => (<li><SubjectSmall {...subject} /> </li>))
 
     return (
-        <div className="card mb-3">
+        <Card>
             <Card.Header>
                 <Card.Title>Předměty</Card.Title>
             </Card.Header>
@@ -70,161 +71,11 @@ function SeznamPredmetuUStudenta(props) {
                     {subjects}
                 </ul>
             </Card.Body>
-        </div>
+        </Card>
     )
 }
 
-export function StudentLarge(props) {
 
-    return (
-        <div className="card">
-            <div className="card-header mb-3">
-                <h4>Karta studenta</h4>
-            </div>
-
-            <div className="col">
-                <Row>
-                    <div className="col-3">
-                        <StudentMedium {...props} />
-                        <ContactInfo {...props} />
-                    </div>
-                    <div className="col-6">
-                        <RozvrhMedium />
-                    </div>
-                    <div className="col-3">
-                        <StudentProgram {...props} /> <br />
-                        <SeznamPredmetuUStudenta {...props} />
-                        
-                    </div>
-                </Row>
-            </div>
-        </div>
-    )
-}
-
-export const StudentLargeStoryBook = (props) => {
-    const extendedProps = {
-        'id': 1,
-        'person': {
-            'id': 1,
-            'name': 'Name',
-            'surname': 'Lastname',
-            "email": 'name.lastname@unob.cz',   
-        },
-        'degreeRank': 'ing. por.',
-        'grade': '3',
-        'phone': '799 999 999',
-        'areal': 'Kasárna Černá Pole',
-        'building': '3',
-        'room': '422',
-        'VR': 'def',
-        'VC': 'def',
-        'VK': 'def',
-        'faculty': [
-            { 'id': 23, 'name': 'FVT' }
-        ],
-        'groups': [
-            { 'id': 21, 'name': '23-5KB' },
-            { 'id': 22, 'name': '24-5KB' }
-        ],
-        'subjects': [
-            { 'id': 25, 'name': 'Informatika' },
-            { 'id': 1, 'name': 'Analýza informačních zdrojů' },
-            { 'id': 3, 'name': 'Anglický jazyk' },
-            { 'id': 2, 'name': 'Tělesná výchova' },
-            { 'id': 4, 'name': 'Kybernetická bezpečnost' },
-            { 'id': 5, 'name': 'Počítačové sítě a jejich bezpečnost' }
-        ]
-    }
-
-    return <StudentLarge {...extendedProps} {...props} />;
-}
-
-export const StudentLargeQuery = (id) => 
-    fetch('/gql', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        redirect: 'follow', // manual, *follow, error
-        body: JSON.stringify({
-            "query":
-                `
-                query {
-                    user: student(id: ${id}) {
-                      id
-                      person {
-                        id
-                        name
-                        surname
-                        email
-                      }
-                      program {
-                        id
-                        name
-                        subjects {
-                          id
-                          name
-                        }
-                      }
-                    }
-                  }
-            `
-
-        }),
-    })
-
-export const StudentMediumQuery = (id) => 
-    fetch('/gql', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        redirect: 'follow', // manual, *follow, error
-        body: JSON.stringify({
-            "query":
-                `
-                query {
-                    user: student(id: ${id}) {
-                        id
-                        person {
-                            id
-                            name
-                            surname
-                            email
-                        }
-                    }
-                }
-            `
-        }),
-    })
-
-  
-export const StudentLargeFetching = (props) => {
-
-    const Visualizer = props.as || StudentLargeStoryBook;
-    const queryFunc = props.with || StudentLargeQuery;
-
-    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.user, [props.id])
-    
-    if (error != null) {
-        return <LoadingError error={error} />
-    } else if (state != null) {
-        return <Visualizer {...state} />
-    } else {
-        return <Loading>Uživatel {props.id}</Loading>
-    }
-}
-
-export const StudentPage = (props) => {
-    const { id } = useParams();
-
-    return (
-        <StudentLargeFetching {...props} id={id} as={StudentLargeStoryBook}/>
-    )    
-}
 //ContactInfo
 /*
 export function StudentPage(props) {
@@ -343,3 +194,153 @@ function ContactInfo(props) {
 
 }
 
+export function StudentLarge(props) {
+    return (
+        <Card>
+            <Card.Header>
+                <Card.Title>
+                    Karta studenta
+                </Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <Row>
+                    <Col md={3}>
+                        <StudentMedium {...props} /><br />
+                        <ContactInfo {...props} />
+                    </Col>
+                    <Col md={6}>
+                        <RozvrhMedium />
+                    </Col>
+                    <Col md={3}>
+                        <StudentProgram {...props} /> <br />
+                        <SeznamPredmetuUStudenta {...props} />
+                    </Col>
+                </Row>
+            </Card.Body>
+        </Card>
+    )
+}
+
+export const StudentLargeStoryBook = (props) => {
+    const extendedProps = {
+        'id': 1,
+        'person': {
+            'id': 1,
+            'name': 'Name',
+            'surname': 'Lastname',
+            "email": 'name.lastname@unob.cz',   
+        },
+        'degreeRank': 'ing. por.',
+        'grade': '3',
+        'phone': '799 999 999',
+        'areal': 'Kasárna Černá Pole',
+        'building': '3',
+        'room': '422',
+        'VR': 'def',
+        'VC': 'def',
+        'VK': 'def',
+        'faculty': [
+            { 'id': 23, 'name': 'FVT' }
+        ],
+        'groups': [
+            { 'id': 21, 'name': '23-5KB' },
+            { 'id': 22, 'name': '24-5KB' }
+        ],
+        'subjects': [
+            { 'id': 25, 'name': 'Informatika' },
+            { 'id': 1, 'name': 'Analýza informačních zdrojů' },
+            { 'id': 3, 'name': 'Anglický jazyk' },
+            { 'id': 2, 'name': 'Tělesná výchova' },
+            { 'id': 4, 'name': 'Kybernetická bezpečnost' },
+            { 'id': 5, 'name': 'Počítačové sítě a jejich bezpečnost' }
+        ]
+    }
+
+    return <StudentLarge {...extendedProps} {...props} />;
+}
+
+export const StudentLargeQuery = (id) => 
+    fetch('/gql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        redirect: 'follow', // manual, *follow, error
+        body: JSON.stringify({
+            "query":
+                `
+                query {
+                    user: student(id: ${id}) {
+                      id
+                      person {
+                        id
+                        name
+                        surname
+                        email
+                      }
+                      program {
+                        id
+                        name
+                        subjects {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+            `
+
+        }),
+    })
+
+export const StudentMediumQuery = (id) => 
+    fetch('/gql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        redirect: 'follow', // manual, *follow, error
+        body: JSON.stringify({
+            "query":
+                `
+                query {
+                    user: student(id: ${id}) {
+                        id
+                        person {
+                            id
+                            name
+                            surname
+                            email
+                        }
+                    }
+                }
+            `
+        }),
+    })
+
+  
+export const StudentLargeFetching = (props) => {
+
+    const Visualizer = props.as || StudentLargeStoryBook;
+    const queryFunc = props.with || StudentLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.user, [props.id])
+    
+    if (error != null) {
+        return <LoadingError error={error} />
+    } else if (state != null) {
+        return <Visualizer {...props} {...state} />
+    } else {
+        return <Loading>Uživatel {props.id}</Loading>
+    }
+}
+
+export const StudentPage = (props) => {
+    const { id } = useParams();
+
+    return (
+        <StudentLargeFetching {...props} id={id} as={StudentLargeStoryBook}/>
+    )    
+}

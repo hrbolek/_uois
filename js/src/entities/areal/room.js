@@ -150,12 +150,16 @@ export const RoomLargeQuery = (id) =>
     })
 
 export const RoomFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, RoomLargeQuery, (response) => response.data.room, [props.id])
+
+    const Visualizer = props.as || RoomLargeStoryBook;
+    const queryFunc = props.with || RoomLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.room, [props.id])
     
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
-        return <RoomLargeStoryBook {...state} />
+        return <Visualizer {...state} />
     } else {
         return <Loading>Budova {props.id}</Loading>
     }

@@ -9,6 +9,7 @@ import { ArealSmall } from "./areal";
 import { TeacherMedium } from "../person/teacher";
 
 const buildingRoot = root + '/areals/building';
+
 export const BuildingSmall = (props) => {
     return <Link to={buildingRoot + `/${props.id}`}>{props.name}{props.children}</Link>
 }
@@ -30,13 +31,15 @@ export const BuildingMedium = (props) => {
 export const BuildingRoomList = (props) => {
     return (
         <Card>
-        <Card.Header>
-            Místnosti
-        </Card.Header>
-        <Card.Body>
-            {JSON.stringify(props)}
-        </Card.Body>
-    </Card>
+            <Card.Header>
+                <Card.Title>
+                Místnosti
+                </Card.Title>
+            </Card.Header>
+            <Card.Body>
+                {JSON.stringify(props)}
+            </Card.Body>
+        </Card>
     )
 }
 
@@ -56,7 +59,9 @@ export const BuildingLarge = (props) => {
     return (
         <Card>
             <Card.Header>
+                <Card.Title>
                 {props.name} (<ArealSmall {...props.areal}/>)
+                </Card.Title>
             </Card.Header>
             <Card.Body>
                 <Row>
@@ -124,12 +129,16 @@ export const BuildingLargeQuery = (id) =>
     })
 
 export const BuildingFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, BuildingLargeQuery, (response) => response.data.building, [props.id])
+
+    const Visualizer = props.as || BuildingLargeStoryBook;
+    const queryFunc = props.with || BuildingLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.building, [props.id])
     
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
-        return <BuildingLargeStoryBook {...state} />
+        return <Visualizer {...props} {...state} />
     } else {
         return <Loading>Budova {props.id}</Loading>
     }
@@ -139,12 +148,5 @@ export const BuildingPage = (props) => {
     const { id } = useParams();
 
     return <BuildingFetching {...props} id={id} />;
-
-}
-
-export const BuildingPage_ = (props) => {
-    const { id } = useParams();
-
-    return <BuildingLargeStoryBook {...props} id={id} />;
 
 }

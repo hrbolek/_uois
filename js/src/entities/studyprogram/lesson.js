@@ -324,32 +324,36 @@ export const SubjectSemesterTopicLargeStoryBook = (props) => {
 
 export const SubjectSemesterTopicLargeQuery = (id) => 
     fetch('/gql', {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                query: `
-                query {
-                    lesson(id: ${id}) {
-                      id
-                      topic
-                    }
-                  }              
-                    `,
-                variables: {
-                    now: new Date().toISOString(),
-                },
-                }),
-            })
+      method: 'POST',
+      headers: {
+      'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+      query: `
+      query {
+          lesson(id: ${id}) {
+            id
+            topic
+          }
+        }              
+          `,
+      variables: {
+          now: new Date().toISOString(),
+      },
+      }),
+  })
 
 export const SubjectSemesterTopicLargeFetching = (props) => {
-    const [state, error] = useQueryGQL(props.id, SubjectSemesterTopicLargeQuery, (response) => response.data.subject, [props.id])
+
+    const Visualizer = props.as || SubjectSemesterTopicLargeStoryBook;
+    const queryFunc = props.with || SubjectSemesterTopicLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.subject, [props.id])
     
-    if (state != null) {
-        return <SubjectSemesterTopicLargeStoryBook {...state} />
-    } else if (error != null) {
+    if (error != null) {
         return <LoadingError error={error} />
+    } else if (state != null) {
+      return <Visualizer {...props} {...state} />
     } else {
         return <Loading>Předmět {props.id}</Loading>
     }
