@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  jsdoc:
+    image: jsdoc/latest
+    build:
+      context: ./js
+      dockerfile: DockerfileJsDoc
+    volumes:
+      - ./js/docs:/usr/src/app/docs
+

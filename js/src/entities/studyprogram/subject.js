@@ -21,6 +21,8 @@ import { GroupSmall } from "../group/group";
 
 //import { LessonSmall } from "../lesson/lesson";
 
+/** @module Subject */
+
 export const subjectsRoot = root + "/studyprograms/subject"
 
 export const SubjectSmall = (props) => {
@@ -330,8 +332,7 @@ export const SubjectLarge = (props) => {
   }
   
   export const SubjectSelectedMed = (props) => {
-  
-      return(
+        return(
         <Card>
                   <Table striped bordered hover style={tableStyle}>
                   <thead>
@@ -357,6 +358,13 @@ export const SubjectLarge = (props) => {
       )
   }
 
+/**
+ * Renders a page with data representing a subject, contains predefined data which can are overrided by props
+ * @param {*} props 
+ * @param {*} props.id - identification
+ * @param {string} props.name - name
+ * @function
+ */
 export const SubjectLargeStoryBook = (props) => {
     const extraProps = {
         "id": "1",
@@ -381,6 +389,11 @@ export const SubjectLargeStoryBook = (props) => {
     return <SubjectLarge {...extraProps} {...props} />
 }
 
+/**
+ * Retrieves the data from GraphQL API endpoint
+ * @param {*} id - identificator
+ * @function
+ */
 export const SubjectLargeQuery = (id) => 
     fetch('/gql', {
         method: 'POST',
@@ -410,6 +423,13 @@ export const SubjectLargeQuery = (id) =>
         }),
     })
     
+/**
+ * Fetch the data from API endpoint and renders a page representing a subject
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @param {*} [props.as = SubjectLargeStoryBook] - ReactJS component (function) which is responsible for rendering
+ * @param {*} [props.with = SubjectLargeQuery] - function fetching the data and returning promise with the data from API endpoint
+ * @function
+ */
 export const SubjectPageFetching = (props) => {
 
     const Visualizer = props.as || SubjectLargeStoryBook;
@@ -426,6 +446,11 @@ export const SubjectPageFetching = (props) => {
     }
 }
 
+/**
+ * Renders a page representing a subject, designed as a component for a ReactJS router
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @function
+ */
 export const SubjectPage = (props) => {
     const { id } = useParams()
 

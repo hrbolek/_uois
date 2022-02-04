@@ -12,6 +12,8 @@ import { ArealSmall } from "./areal";
 import { BuildingSmall } from "./building";
 import { TimeTableMedium } from "../timetable/timetable";
 
+/** @module Room */
+
 const roomRoot = root + '/areals/room';
 export const RoomSmall = (props) => {
     return (
@@ -87,6 +89,13 @@ export const RoomLarge = (props) => {
     )
 }
 
+/**
+ * Renders a page with data representing a room, contains predefined data which can are overrided by props
+ * @param {*} props 
+ * @param {*} props.id - identification
+ * @param {string} props.name - name
+ * @function
+ */
 export const RoomLargeStoryBook = (props) => {
     const extraProps = {
         'id': 1,
@@ -120,6 +129,11 @@ export const RoomLargeStoryBook = (props) => {
     return <RoomLarge {...extraProps} {...props} />
 }
 
+/**
+ * Retrieves the data from GraphQL API endpoint
+ * @param {*} id - identificator
+ * @function
+ */
 export const RoomLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
@@ -149,6 +163,13 @@ export const RoomLargeQuery = (id) =>
         }),
     })
 
+/**
+ * Fetch the data from API endpoint and renders a page representing a room
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @param {*} [props.as = RoomLargeStoryBook] - ReactJS component (function) which is responsible for rendering
+ * @param {*} [props.with = RoomLargeQuery] - function fetching the data and returning promise with the data from API endpoint
+ * @function
+ */
 export const RoomFetching = (props) => {
 
     const Visualizer = props.as || RoomLargeStoryBook;

@@ -1,4 +1,32 @@
-import { Link, useParams } from "react-router-dom";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: group/faculty.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: group/faculty.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import Card from "react-bootstrap/Card";
@@ -19,72 +47,72 @@ import { ProgramSmall } from "../studyprogram/studyprogram";
 
 export function FacultySmall(props) {
     return (
-        <Link to={root + "/groups/faculty/" + props.id}>{props.name}</Link>
+        &lt;Link to={root + "/groups/faculty/" + props.id}>{props.name}&lt;/Link>
     )
 }
 
 export function FacultyMedium(props) {
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>Fakulta <b><FacultySmall {...props} /></b></Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <b>Název:</b> {props.name}<br />
-                <b>Děkan:</b> <PersonSmall {...props.dean} /><br />
-            </Card.Body>
-        </Card>
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Fakulta &lt;b>&lt;FacultySmall {...props} />&lt;/b>&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;b>Název:&lt;/b> {props.name}&lt;br />
+                &lt;b>Děkan:&lt;/b> &lt;PersonSmall {...props.dean} />&lt;br />
+            &lt;/Card.Body>
+        &lt;/Card>
     )
 }
 
 function SeznamProgramu(props) {
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>Seznam uskutečňovaných programů</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <ProgramSmall name={'Kybernetická bezpečnost'} id={1} />                
-            </Card.Body>
-        </Card>
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Seznam uskutečňovaných programů&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;ProgramSmall name={'Kybernetická bezpečnost'} id={1} />                
+            &lt;/Card.Body>
+        &lt;/Card>
     )
 }
 
 /*
-                    <Col md={3}>
-                        <FacultyMedium {...props} />
-                        <ContactInfo {...props} />
-                    </Col>
-                    <Col md={6}>
-                        <SeznamKateder departments={departments} />
-                    </Col>
-                    <Col md={3}>
-                        <SeznamUcitelu teachers={props.members} />
-                    </Col>
+                    &lt;Col md={3}>
+                        &lt;FacultyMedium {...props} />
+                        &lt;ContactInfo {...props} />
+                    &lt;/Col>
+                    &lt;Col md={6}>
+                        &lt;SeznamKateder departments={departments} />
+                    &lt;/Col>
+                    &lt;Col md={3}>
+                        &lt;SeznamUcitelu teachers={props.members} />
+                    &lt;/Col>
 */
 
 export function FacultyLarge(props) {
     
     return (
-        <Card>
-            <Card.Header>
-                <h4>Karta fakulty</h4>
-            </Card.Header>
-            <Card.Body>
-                <Row>
-                    <Col md={3}>
-                        <FacultyMedium {...props} /> <br/>
-                        <ContactInfo {...props} />
-                    </Col>
-                    <Col md={6}>
-                        <SeznamKateder {...props} />
-                    </Col>
-                    <Col md={3}>
-                        <SeznamProgramu {...props} />
-                    </Col>
-                </Row>
-            </Card.Body> 
-        </Card>
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;h4>Karta fakulty&lt;/h4>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;Row>
+                    &lt;Col md={3}>
+                        &lt;FacultyMedium {...props} /> &lt;br/>
+                        &lt;ContactInfo {...props} />
+                    &lt;/Col>
+                    &lt;Col md={6}>
+                        &lt;SeznamKateder {...props} />
+                    &lt;/Col>
+                    &lt;Col md={3}>
+                        &lt;SeznamProgramu {...props} />
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/Card.Body> 
+        &lt;/Card>
     )
 }
 
@@ -151,39 +179,39 @@ export function FacultyPage(props) {
 
 
     return (
-        <FacultyLarge {...state} {...props} />
+        &lt;FacultyLarge {...state} {...props} />
     )
 }
 */
 
 function ContactInfo(props) {
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>Adresa</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <b>Areál: </b> <ArealSmall {...props.areal} /> <br />
-                <b>Budova: </b> <BuildingSmall {...props.building} /> <br />
-            </Card.Body>
-        </Card>
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Adresa&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;b>Areál: &lt;/b> &lt;ArealSmall {...props.areal} /> &lt;br />
+                &lt;b>Budova: &lt;/b> &lt;BuildingSmall {...props.building} /> &lt;br />
+            &lt;/Card.Body>
+        &lt;/Card>
     )
 }
 
 function SeznamKateder(props) {
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>Katedry</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <ul>
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Katedry&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;ul>
                     {props.departments.map((item) => 
-                        (<li key={item.id}><DepartmentSmall key={item.id} {...item} appRoot={props.appRoot} /></li>)
+                        (&lt;li key={item.id}>&lt;DepartmentSmall key={item.id} {...item} appRoot={props.appRoot} />&lt;/li>)
                     )}
-                </ul>
-            </Card.Body>
-        </Card>
+                &lt;/ul>
+            &lt;/Card.Body>
+        &lt;/Card>
     )
 }
 
@@ -212,7 +240,7 @@ export const FacultyLargeStoryBook = (props) => {
         ]
     }
 
-    return <FacultyLarge {...extendedProps} {...props} />;
+    return &lt;FacultyLarge {...extendedProps} {...props} />;
 }
 
 /**
@@ -263,11 +291,11 @@ export const FacultyLargeFetching = (props) => {
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.group, [props.id])
     
     if (error != null) {
-        return <LoadingError error={error} />
+        return &lt;LoadingError error={error} />
     } else if (state != null) {
-        return <Visualizer {...props} {...state} />
+        return &lt;Visualizer {...props} {...state} />
     } else {
-        return <Loading>Fakulta {props.id}</Loading>
+        return &lt;Loading>Fakulta {props.id}&lt;/Loading>
     }
 
 }
@@ -276,6 +304,28 @@ export const FacultyPage = (props) => {
     const { id } = useParams();
 
     return (
-        <FacultyLargeFetching {...props} id={id} />
+        &lt;FacultyLargeFetching {...props} id={id} />
     )       
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Areal.html">Areal</a></li><li><a href="module-Building.html">Building</a></li><li><a href="module-Department.html">Department</a></li><li><a href="module-Faculty.html">Faculty</a></li><li><a href="module-Group.html">Group</a></li><li><a href="module-Lesson.html">Lesson</a></li><li><a href="module-Room.html">Room</a></li><li><a href="module-Student.html">Student</a></li><li><a href="module-StudyProgram.html">StudyProgram</a></li><li><a href="module-Subject.html">Subject</a></li><li><a href="module-Teacher.html">Teacher</a></li><li><a href="module-TimeTable.html">TimeTable</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Feb 04 2022 12:57:51 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

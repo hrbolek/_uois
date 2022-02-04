@@ -15,6 +15,8 @@ import SVG from 'react-inlinesvg';
 
 import { root } from '../index'
 
+/** @module TimeTable */
+
 const timetableRoot = root + '/timetable'
 
 export const TimeTableSmall = (props) => {
@@ -114,6 +116,11 @@ export const TimeTablePage = (props) => {
 
 }
 
+/**
+ * Renders a page representing a time table sheet, designed as a component for a ReactJS router
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @function
+ */
 export const TimeTableA4Page = (props) => {
     const { id, entity } = useParams();
     const { search, location } = useLocation();

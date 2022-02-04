@@ -1,4 +1,32 @@
-import { Link, useParams } from "react-router-dom";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: person/teacher.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: person/teacher.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Link, useParams } from "react-router-dom";
 
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
@@ -25,39 +53,39 @@ import { ProgramSmall } from "../studyprogram/studyprogram";
 
 export function TeacherSmall(props) {
     return (
-        <Link to={root + "/users/teacher/" + (props.id)}>{props.name} {props.surname}</Link>
+        &lt;Link to={root + "/users/teacher/" + (props.id)}>{props.name} {props.surname}&lt;/Link>
     )
 }
 
 export function TeacherMedium(props) {
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>{props.label} - <TeacherSmall {...props} /></Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <Card.Text>
-                    <b>Jméno příjmení:</b> {props.name} {props.surname}<br />
-                    <b>Email:</b> {props.email}<br />
-                    { props.degreeRank ? (<><b>Titul:</b> { props.degreeRank }<br /></>) : ('')}
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>{props.label} - &lt;TeacherSmall {...props} />&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;Card.Text>
+                    &lt;b>Jméno příjmení:&lt;/b> {props.name} {props.surname}&lt;br />
+                    &lt;b>Email:&lt;/b> {props.email}&lt;br />
+                    { props.degreeRank ? (&lt;>&lt;b>Titul:&lt;/b> { props.degreeRank }&lt;br />&lt;/>) : ('')}
                     { props.departments ? (
-                        <>
-                            <b>Katedra:</b> {
+                        &lt;>
+                            &lt;b>Katedra:&lt;/b> {
                                 props.departments.map((department, index) => {
-                                    let element = <DepartmentSmall key={index} {...department} />
+                                    let element = &lt;DepartmentSmall key={index} {...department} />
                                     if (index > 0) {
-                                        return (<>, {element}</>)
+                                        return (&lt;>, {element}&lt;/>)
                                     } else {
                                         return (element)
                                     }
-                            })}<br />
-                        </>
+                            })}&lt;br />
+                        &lt;/>
 
                     ) : ('')}
-                    {/*<b>Fakulta:</b> {props.faculty}*/}
-                </Card.Text>
-            </Card.Body>
-        </Card>
+                    {/*&lt;b>Fakulta:&lt;/b> {props.faculty}*/}
+                &lt;/Card.Text>
+            &lt;/Card.Body>
+        &lt;/Card>
     )
 }
 
@@ -65,17 +93,17 @@ export function TeacherMedium(props) {
 function ContactInfo(props) {
     //data=props.datas;
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>Kontaktní údaje</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <b>E-mail:</b> {props.email}<br />
-                <b>Telefon:</b> {props.phone ? props.phone : 'Neuvedeno'}<br />
-                <b>Areál: </b> <ArealSmall {...props.areal} /><br />
-                <b>Budova: </b> <BuildingSmall {...props.building} /> <b>Místnost:</b> <RoomSmall {...props.room} /><br />
-            </Card.Body>
-        </Card>
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Kontaktní údaje&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;b>E-mail:&lt;/b> {props.email}&lt;br />
+                &lt;b>Telefon:&lt;/b> {props.phone ? props.phone : 'Neuvedeno'}&lt;br />
+                &lt;b>Areál: &lt;/b> &lt;ArealSmall {...props.areal} />&lt;br />
+                &lt;b>Budova: &lt;/b> &lt;BuildingSmall {...props.building} /> &lt;b>Místnost:&lt;/b> &lt;RoomSmall {...props.room} />&lt;br />
+            &lt;/Card.Body>
+        &lt;/Card>
     )
 }
 
@@ -86,96 +114,96 @@ const groupTypeComponent = {
 export const GroupInfo = (props) => {
     const GroupLink = groupTypeComponent[props.grouptype.name] || GroupSmall
     return (
-        <>
-        <b>{props.grouptype.name}: </b>
-        <GroupLink {...props} />
-        <br />
-        </>
+        &lt;>
+        &lt;b>{props.grouptype.name}: &lt;/b>
+        &lt;GroupLink {...props} />
+        &lt;br />
+        &lt;/>
     )
 }
 
 export const Membership = (props) => {
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>Členství</Card.Title>
-            </Card.Header>
-            <Card.Body>
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Členství&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
                 {props.groups.map((group, index) => (
-                    <GroupInfo key={index} {...group} />
+                    &lt;GroupInfo key={index} {...group} />
                 ))}
-            </Card.Body>
-        </Card>
+            &lt;/Card.Body>
+        &lt;/Card>
     )
 }
 
 export const TeacherSeznamSkupin = (props) => {
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>Seznam vyučovaných skupin</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <GroupSmall name={'23-5KB'} id={1} />
-            </Card.Body>
-        </Card>
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Seznam vyučovaných skupin&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;GroupSmall name={'23-5KB'} id={1} />
+            &lt;/Card.Body>
+        &lt;/Card>
     )
 }
 
 export const TeacherGrants = (props) => {
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>Seznam garancí</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <ProgramSmall name={'Kybernetická bezpečnost'} id={1} />
-            </Card.Body>
-        </Card>
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Seznam garancí&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;ProgramSmall name={'Kybernetická bezpečnost'} id={1} />
+            &lt;/Card.Body>
+        &lt;/Card>
     )
 }
 
 export const TeacherVaV = (props) => {
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>VaV link</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <a href={'https://vav.unob.cz/person/index/536479'} >VaV</a><br/>
-                <a href={'https://vav.unob.cz/results/person/536479'} >VaV výsledky</a><br/>
-                <a href={'https://vav.unob.cz/person/projects/536479'} >VaV projekty</a><br/>
-            </Card.Body>
-        </Card>
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>VaV link&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;a href={'https://vav.unob.cz/person/index/536479'} >VaV&lt;/a>&lt;br/>
+                &lt;a href={'https://vav.unob.cz/results/person/536479'} >VaV výsledky&lt;/a>&lt;br/>
+                &lt;a href={'https://vav.unob.cz/person/projects/536479'} >VaV projekty&lt;/a>&lt;br/>
+            &lt;/Card.Body>
+        &lt;/Card>
     )
 }
 
 export function TeacherLarge(props) {
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>
                     Karta učitele
-                </Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <Row>
-                    <Col md={3}>
-                        <TeacherMedium label={'Učitel'} {...props}  /> <br/>
-                        <ContactInfo {...props} /> <br/>
-                        <Membership {...props} /> <br/>
-                    </Col>
-                    <Col md={6}>
-                        <RozvrhMedium {...props}/> <br/>
-                    </Col>
-                    <Col md={3}>
-                        <TeacherGrants {...props} /> <br/>
-                        <SeznamPredmetu {...props} /> <br/>
-                        <TeacherSeznamSkupin {...props} /> <br/>
-                    </Col>
-                </Row>
-            </Card.Body>
-        </Card>
+                &lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;Row>
+                    &lt;Col md={3}>
+                        &lt;TeacherMedium label={'Učitel'} {...props}  /> &lt;br/>
+                        &lt;ContactInfo {...props} /> &lt;br/>
+                        &lt;Membership {...props} /> &lt;br/>
+                    &lt;/Col>
+                    &lt;Col md={6}>
+                        &lt;RozvrhMedium {...props}/> &lt;br/>
+                    &lt;/Col>
+                    &lt;Col md={3}>
+                        &lt;TeacherGrants {...props} /> &lt;br/>
+                        &lt;SeznamPredmetu {...props} /> &lt;br/>
+                        &lt;TeacherSeznamSkupin {...props} /> &lt;br/>
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/Card.Body>
+        &lt;/Card>
     )
 }
 
@@ -257,7 +285,7 @@ export function TeacherPage(props) {
 
 
     return (
-        <TeacherLarge {...props} {...state} />
+        &lt;TeacherLarge {...props} {...state} />
     )
 }
 */
@@ -266,36 +294,36 @@ export function TeacherPage(props) {
 
 // function RozvrhMedium() {
 //     return (
-//         <Card>
-//             <Card.Header>
-//                 <Card.Title>Rozvrh tento týden</Card.Title>
-//             </Card.Header>
-//             <Card.Body>
-//                 <img src={image} alt="Rozvrh" width={'100%'} />
-//             </Card.Body>
-//         </Card>
+//         &lt;Card>
+//             &lt;Card.Header>
+//                 &lt;Card.Title>Rozvrh tento týden&lt;/Card.Title>
+//             &lt;/Card.Header>
+//             &lt;Card.Body>
+//                 &lt;img src={image} alt="Rozvrh" width={'100%'} />
+//             &lt;/Card.Body>
+//         &lt;/Card>
 //     )
 // }
 
 function RozvrhMedium(props) {
     return (
-        <TimeTableMedium type={'teacher'} id={props.id} />
+        &lt;TimeTableMedium type={'teacher'} id={props.id} />
     )
 }
 
 function SeznamPredmetu(props) {
-    let subjects = props.subjects.map((subject, index) => (<li key={index}><SubjectSmall {...subject} /></li>))
+    let subjects = props.subjects.map((subject, index) => (&lt;li key={index}>&lt;SubjectSmall {...subject} />&lt;/li>))
     return (
-        <Card>
-            <Card.Header>
-                <Card.Title>Předměty</Card.Title>
-            </Card.Header>
-            <Card.Body>
-                <ul>
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Předměty&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;ul>
                     {subjects}
-                </ul>
-            </Card.Body>
-        </Card>
+                &lt;/ul>
+            &lt;/Card.Body>
+        &lt;/Card>
     )
 }
 
@@ -376,7 +404,7 @@ export const TeacherLargeStoryBook = (props) => {
             { 'id': 5, 'name': 'Počítačové sítě a jejich bezpečnost' }
         ]
     }
-    return <TeacherLarge {...extendedProps} {...props} />;
+    return &lt;TeacherLarge {...extendedProps} {...props} />;
 }
 
 /**
@@ -394,11 +422,11 @@ export const TeacherLargeFetching = (props) => {
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.user, [props.id])
     
     if (error != null) {
-        return <LoadingError error={error} />
+        return &lt;LoadingError error={error} />
     } else if (state != null) {
-        return <Visualizer {...props} {...state} />
+        return &lt;Visualizer {...props} {...state} />
     } else {
-        return <Loading>Uživatel {props.id}</Loading>
+        return &lt;Loading>Uživatel {props.id}&lt;/Loading>
     }
 }
 
@@ -411,6 +439,29 @@ export const TeacherPage = (props) => {
     const { id } = useParams();
 
     return (
-        <TeacherLargeFetching {...props} id={id} />
+        &lt;TeacherLargeFetching {...props} id={id} />
     )    
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Areal.html">Areal</a></li><li><a href="module-Building.html">Building</a></li><li><a href="module-Department.html">Department</a></li><li><a href="module-Faculty.html">Faculty</a></li><li><a href="module-Group.html">Group</a></li><li><a href="module-Lesson.html">Lesson</a></li><li><a href="module-Room.html">Room</a></li><li><a href="module-Student.html">Student</a></li><li><a href="module-StudyProgram.html">StudyProgram</a></li><li><a href="module-Subject.html">Subject</a></li><li><a href="module-Teacher.html">Teacher</a></li><li><a href="module-TimeTable.html">TimeTable</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Feb 04 2022 12:57:51 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

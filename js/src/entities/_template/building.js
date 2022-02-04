@@ -5,13 +5,31 @@ import { Link, useParams } from "react-router-dom";
 import { ArealSmall } from "../areal/areal";
 import { TeacherSmall } from "../person/teacher";
 import { root } from "../index";
+import React from "react";
 
 const buildingRoot = root + '/areals/building';
 
+/**
+ * Render link to the Building entity
+ * @param {*} props 
+ * @param {*} props.id - id of the Building entity
+ * @param {string} props.name - the Building's name
+ * @returns 
+ */
 export const BuildingSmall = (props) => {
     return <Link to={buildingRoot + `${props.id}`}>{props.name}{props.children}</Link>
 }
 
+/**
+ * 
+ * @param {*} props 
+ * @param {*} props.id - building's id
+ * @param {string} props.name - building's name
+ * @param {*} props.areal - data describing the areal where the building is located
+ * @param {*} props.user - user responsible for the building
+ * @param {*[]} props.rooms - rooms in the building 
+ * @returns 
+ */
 export const BuildingMedium = (props) => {
     return (
         <Card>
@@ -25,6 +43,12 @@ export const BuildingMedium = (props) => {
     )
 }
 
+/**
+ * 
+ * @param {*} props - data describing the Building entity
+ * @param {*[]} props.rooms - array containgin the rooms
+ * @returns {React.Component}
+ */
 export const BuildingRooms = (props) => {
     return (
         <>
@@ -37,6 +61,16 @@ export const BuildingRooms = (props) => {
     )
 }
 
+/**
+ * 
+ * @param {*} props - data describing the Building entity
+ * @param {*} props.name - building's name
+ * @param {*} props.id - building's id
+ * @param {*} props.areal - data describing the areal where the building is located
+ * @param {*} props.user - user responsible for the building
+ * @param {*[]} props.rooms - rooms in the building
+ * @returns {React.Component}
+ */
 export const BuildingLarge = (props) => {
     return (
         <Card>
@@ -53,6 +87,15 @@ export const BuildingLarge = (props) => {
     )
 }
 
+/**
+ * Renders Building page with predefined data. 
+ * @param {*} props - data to be displayed, overrides predefined data
+ * @param {*} props.name - building's name
+ * @param {*} props.id - building's id
+ * @param {*} props.areal - data describing the areal where the building is located
+ * @param {*} props.user - user responsible for the building
+ * @param {*[]} props.rooms - rooms in the building
+ */
 export const BuildingLargeStoryBook = (props) => {
     const extraProps = {
         'id' : 789,
@@ -66,6 +109,10 @@ export const BuildingLargeStoryBook = (props) => {
     return <BuildingLarge {...extraProps} {...props} />
 }
 
+/**
+ * Large Query fetching data from GraphQLAPI
+ * @param {*} id - identificator of Building entity
+ */
 export const BuildingLargeQuery = (id) => 
     fetch('/gql', {
         method: 'POST',
@@ -100,6 +147,13 @@ export const BuildingLargeQuery = (id) =>
         }),
     })
 
+/**
+ * Loads data from remote endpoint and renders the page for Building entity
+ * @param {id} props.id - id of building entity
+ * @param {React.Component} [props.as=BuildingLargeStoryBook] - a ReactJS component responsible for page rendering
+ * @param {*} [props.with=BuildingLargeQuery] - function returning Promise 
+ * @param {any} props - extra properties for rendering
+ */
 export const BuildingFetching = (props) => {
 
     const Visualizer = props.as || BuildingLargeStoryBook;
@@ -116,13 +170,11 @@ export const BuildingFetching = (props) => {
     }
 }
 
-export const _BuildingPage = (props) => {
-    const { id } = useParams();
-
-    return <BuildingFetching {...props} id={id} />;
-
-}
-
+/**
+ * Render the page for Building
+ * @param {id} props.id - id of building entity
+ * @param {any} props - extra props for page
+ */
 export const BuildingPage = (props) => {
     const { id } = useParams();
 

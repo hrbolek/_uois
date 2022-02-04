@@ -26,6 +26,10 @@ import { SubjectSmall } from "./subject";
 import { StudentSmall } from "../person/student";
 import { GroupSmall } from "../group/group";
 
+
+/** @module StudyProgram */
+
+
 export const progRoot = root + "/studyprograms";
 
 
@@ -381,6 +385,13 @@ export const ProgramMedium_ = (props) => {
     )
 }
 
+/**
+ * Renders a page with data representing a study program, contains predefined data which can are overrided by props
+ * @param {*} props 
+ * @param {*} props.id - identification
+ * @param {string} props.name - name
+ * @function
+ */
 export const ProgramLargeStoryBook = (props) => {
     const extraProps = {
         "id": "1",
@@ -401,6 +412,11 @@ export const ProgramLargeStoryBook = (props) => {
     return <ProgramLarge {...extraProps} {...props} />
 }
 
+/**
+ * Retrieves the data from GraphQL API endpoint
+ * @param {*} id - identificator
+ * @function
+ */
 export const StudyProgramLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
@@ -433,6 +449,13 @@ export const StudyProgramLargeQuery = (id) =>
             `}),
     })
 
+/**
+ * Fetch the data from API endpoint and renders a page representing a study program
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @param {*} [props.as = ProgramLargeStoryBook] - ReactJS component (function) which is responsible for rendering
+ * @param {*} [props.with = StudyProgramLargeQuery] - function fetching the data and returning promise with the data from API endpoint
+ * @function
+ */
 export const StudyProgramLargeFetching = (props) => {
    
     const Visualizer = props.as || ProgramLargeStoryBook;
@@ -450,6 +473,11 @@ export const StudyProgramLargeFetching = (props) => {
  
 }
 
+/**
+ * Renders a page representing a study program, designed as a component for a ReactJS router
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @function
+ */
 export const StudyProgramPage = (props) => {
     const { id }  = useParams();
 
