@@ -175,7 +175,7 @@ function RozvrhMedium(props) {
                         <ContactInfo {...props} />
                     </Col>
                     <Col md={6}>
-                        <RozvrhMedium />
+                        <RozvrhMedium {...props}/>
                     </Col>
                     <Col md={3}>
                         <StudentProgram {...props} /> <br />

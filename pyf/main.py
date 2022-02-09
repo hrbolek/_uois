@@ -1,3 +1,4 @@
+from urllib.request import Request
 from starlette.graphql import GraphQLApp
 
 from dbInit import GetSession
@@ -40,3 +41,4 @@ def buildApp():
 dbInit.InitAndRandomize()
 print('All initialization is done')
 app = buildApp()
+

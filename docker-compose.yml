@@ -6,16 +6,11 @@ services:
     build:
       context: ./pyf
     environment: 
-      - POSTGRES_USER=gql
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
-
-  python_tornado:
-    image: python_tornado
-    build:
-      context: ./pyt
-    ports:
-      - 50002:80
+    depends_on:
+      - postgres
 
   js:
     image: js
@@ -27,7 +22,7 @@ services:
   postgres:
     image: postgres
     environment:
-      - POSTGRES_USER=gql
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
     
@@ -40,4 +35,3 @@ services:
       - postgres
       - js
       - python_fastapi
-      - python_tornado 
