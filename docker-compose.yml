@@ -1,37 +1,47 @@
 version: "3.9"
 
 services:
-  python_fastapi:
+  backend:
     image: python_fastapi
     build:
-      context: ./pyf
+      dockerfile: Dockerfile
+      context: ./backend
     environment: 
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
     depends_on:
-      - postgres
+      - database
+    ports:
+      - 50082:8000
 
-  js:
+  frontend:
     image: js
     build: 
-      context: ./js
+      dockerfile: Dockerfile
+      context: ./frontend
     environment:
       NODE_ENV: development
+    ports:
+      - 50081:8000
 
-  postgres:
-    image: postgres
+  database:
+    image: database
+    build: 
+      dockerfile: Dockerfile
+      context: ./database
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
     
-  nginx:
+  proxy:
     build:
-      context: ./nginx
+      dockerfile: Dockerfile
+      context: ./proxy
     ports:
       - 50080:80
     depends_on:
-      - postgres
-      - js
-      - python_fastapi
+      - database
+      - frontend
+      - backend
