@@ -1,23 +1,21 @@
 version: "3.9"
 
 services:
-  python_fastapi:
-    image: python_fastapi
+  apollo:
+    image: apollo
     build:
-      context: ./pyf
+      context: ./apollo
+
+  ug_gql:
+    image: ug_gql
+    build:
+      context: ./ug_gql
     environment: 
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
     depends_on:
       - postgres
-
-  js:
-    image: js
-    build: 
-      context: ./js
-    environment:
-      NODE_ENV: development
 
   postgres:
     image: postgres
@@ -33,5 +31,6 @@ services:
       - 50080:80
     depends_on:
       - postgres
-      - js
-      - python_fastapi
+      - apollo
+
+
