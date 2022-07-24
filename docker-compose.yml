@@ -5,11 +5,26 @@ services:
     image: apollo
     build:
       context: ./apollo
+    ports:
+      - 31121:3000
 
-  ug_gql:
-    image: ug_gql
+  gql_ug:
+    image: gql_ug
     build:
-      context: ./ug_gql
+      context: ./gql_ug
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    depends_on:
+      - postgres
+    ports:
+      - 31120:8000
+
+  gql_events:
+    image: gql_events
+    build:
+      context: ./gql_events
     environment: 
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -24,11 +39,20 @@ services:
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
     
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=anoyne@anywhere.com
+      - PGADMIN_DEFAULT_PASSWORD=example
+    ports:
+      - 31122:80
+
   nginx:
     build:
       context: ./nginx
     ports:
-      - 50080:80
+      - 50081:80
     depends_on:
       - postgres
       - apollo

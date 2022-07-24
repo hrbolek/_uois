@@ -9,10 +9,10 @@ It is also a model of an information systems which could be used for some admini
 ## Used technologies
 
 - Python
-    - SQLAlchemy for modelling the database entitied
+    - SQLAlchemy for modelling the database entitied (async queries)
     - FastAPI for API definition and run 
     - Uvicorn as executor of FastAPI
-    - Strawberry for GraphQL endpoint
+    - Strawberry for GraphQL endpoint (federated GraphQL)
     - Appolo federation for GraphQL federation queries
 
 - Javascript
@@ -30,7 +30,7 @@ It is also a model of an information systems which could be used for some admini
 
 The project has several docker containers 
 - `apollo` master of federation
-- `*_gql` apollo federation member
+- `gql_*` apollo federation member
 - `nginx` is hardwired router 
 - `prostgres` is database server
 - `pgadmin` is an interface for database server administration
