@@ -1,3 +1,4 @@
+from email.policy import default
 import sqlalchemy
 import datetime
 
@@ -44,6 +45,9 @@ class UserModel(BaseModel):
     name = Column(String)
     surname = Column(String)
     email = Column(String)
+    valid = Column(Boolean, default=True)
+    startdate = Column(DateTime)
+    enddate = Column(DateTime)
     
     lastchange = Column(DateTime, default=datetime.datetime.now)
     externalId = Column(BigInteger, index=True)
@@ -142,7 +146,9 @@ async def startEngine(connectionstring, makeDrop=False, makeUp=True):
 
 import os
 def ComposeConnectionString():
-    """Odvozuje connections string z promennych prostredi (nebo Docker Envs)"""
+    """Odvozuje connectionString z promennych prostredi (nebo z Docker Envs, coz je fakticky totez).
+       Lze predelat na napr. konfiguracni file.
+    """
     user = os.environ.get("POSTGRES_USER", "postgres")
     password = os.environ.get("POSTGRES_PASSWORD", "example")
     database =  os.environ.get("POSTGRES_DB", "data")

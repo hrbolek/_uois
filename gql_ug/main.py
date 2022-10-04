@@ -23,7 +23,9 @@ from gql_ug.DBFeeder import createSystemDataStructureRoleTypes, createSystemData
 connectionString = ComposeConnectionString()
 
 def singleCall(asyncFunc):
-    """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena."""
+    """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
+       Dekorovana funkce je asynchronni.
+    """
     resultCache = {}
     async def result():
         if resultCache.get('result', None) is None:
@@ -33,7 +35,9 @@ def singleCall(asyncFunc):
 
 @singleCall
 async def RunOnceAndReturnSessionMaker():
-    """Provadi inicializaci asynchronniho db engine, inicializaci databaze a vraci asynchronni SessionMaker"""
+    """Provadi inicializaci asynchronniho db engine, inicializaci databaze a vraci asynchronni SessionMaker.
+       Protoze je dekorovana, volani teto funkce se provede jen jednou a vystup se zapamatuje a vraci se pri dalsich volanich.
+    """
     print(f'starting engine for "{connectionString}"')
 
     result = await startEngine(connectionstring=connectionString, makeDrop=False, makeUp=True)
@@ -55,11 +59,16 @@ class MyGraphQL(GraphQL):
         asyncSessionMaker = await RunOnceAndReturnSessionMaker()
         async with asyncSessionMaker() as session:
             self._session = session
+            self._user = {'id': '?'}
             return await GraphQL.__call__(self, scope, receive, send)
     
     async def get_context(self, request, response):
         parentResult = await GraphQL.get_context(self, request, response)
-        return {**parentResult, 'session': self._session, 'asyncSessionMaker': await RunOnceAndReturnSessionMaker()}
+        return {**parentResult, 
+            'session': self._session, 
+            'asyncSessionMaker': await RunOnceAndReturnSessionMaker(),
+            'user': self._user
+            }
 
 ## ASGI app, kterou "moutneme"
 graphql_app = MyGraphQL(
@@ -67,7 +76,6 @@ graphql_app = MyGraphQL(
     graphiql = True,
     allow_queries_via_get = True
 )
-
 
 app = FastAPI()
 app.mount("/gql", graphql_app)
