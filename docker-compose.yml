@@ -8,6 +8,14 @@ services:
     ports:
       - 31121:3000
 
+  jupyter:
+    image: jupyter/tensorflow-notebook
+    restart: always
+    ports:
+      - 31002:8888
+    volumes:
+      - .:/home/jovyan/work
+
   gql_ug:
     image: gql_ug
     build:
