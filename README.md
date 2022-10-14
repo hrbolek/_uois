@@ -1,7 +1,8 @@
 # ReadME
 
-Projekt pro 5. semestr
-Zadání č.11: Vytvořte datové struktury pro matriku, navažte na 1., umožněte zadání vzdělání (kde, kdy, typ), certifikáty, historie zaměstnání, historie hodností, udělená vyznamenání. (zadání č.1: Vytvořte datové struktury pro definici uživatele, skupiny, členství uživatele ve skupině, typ skupiny, role uživatele ve skupině, typ role uživatele ve skupině, podřízenost skupiny skupině. Zrealizováno jako vzor (kontejner gql_ug).)
+## Projekt pro 5. semestr
+Zadání č.11: 
+Vytvořte datové struktury pro matriku, navažte na 1., umožněte zadání vzdělání (kde, kdy, typ), certifikáty, historie zaměstnání, historie hodností, udělená vyznamenání. (zadání č.1: Vytvořte datové struktury pro definici uživatele, skupiny, členství uživatele ve skupině, typ skupiny, role uživatele ve skupině, typ role uživatele ve skupině, podřízenost skupiny skupině. Zrealizováno jako vzor (kontejner gql_ug).)
 
 
 
