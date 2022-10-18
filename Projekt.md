@@ -3,3 +3,5 @@
  zástupci garanta, semestry předmětu, témata předmětu (název, vyučující, délky a typy výuky v tématu).
 
  des. Doskočil, des. Vysloužil
+
+ bzfghhzufghhghghjhgzghj
