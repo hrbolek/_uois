@@ -13,3 +13,5 @@ sqlalchemy_utils==0.37.9
 pydantic==1.8.2
 starlette==0.16.0
 strawberry-graphql==0.119.0
+
+https://github.com/hrbolek/uoishelpers/archive/refs/heads/main.zip

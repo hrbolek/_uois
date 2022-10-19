@@ -4,7 +4,6 @@ import typing
 import strawberry as strawberryA
 import uuid
 
-from gql_ug.GraphResolvers import updateGQLWithSQLAlchemy
 def AsyncSessionFromInfo(info):
     return info.context['session']
 
