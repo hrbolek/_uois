@@ -16,6 +16,7 @@ Cấu trúc ủy quyền có sẵn cho mỗi mục.
     2. Phần uois này có phải là demo của chúng tôi ko? chúng tôi sẽ dựa vào nó và làm tiếp project??
     Chúng tôi xin lỗi và thực sự chúng tôi chưa hiểu hết cấu trúc của nhánh 2.1 này, chúng tôi cần biết nó gồm những cái gì?
 
+    - Tôi ko thể chạy được phần này???? nếu chạy thì kết quả chúng tôi có là gì???
     - phần gql_events này chứa những gì?
     - phần gql_ug này chưas những gì??
     - phần tests này, main.py có phải nơi chúng tôi thực hiện tiếp project ko?
