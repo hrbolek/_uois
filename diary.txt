@@ -9,3 +9,14 @@ The authorization structure is available for each item.
 8. Tạo cấu trúc dữ liệu để mô tả yêu cầu trống và đã hoàn thành, (biểu mẫu, phần, mục, biểu mẫu -> phần -> khối / bảng -> mục), 
 để ủy quyền (người dùng có quyền đọc, người dùng có quyền ghi, vai trò với quyền đọc quyền, vai có quyền viết, nhận các vai từ 1.). 
 Cấu trúc ủy quyền có sẵn cho mỗi mục.
+
+
+20/10: đặt câu hỏi cho thầy, làm rõ đề bài
+    1. kết quả: bảng chứa cấu trúc dữ liệu trong đó: các cột là các zadost, các hàng là các: user, các role, trạng thái.???
+    2. Phần uois này có phải là demo của chúng tôi ko? chúng tôi sẽ dựa vào nó và làm tiếp project??
+    Chúng tôi xin lỗi và thực sự chúng tôi chưa hiểu hết cấu trúc của nhánh 2.1 này, chúng tôi cần biết nó gồm những cái gì?
+
+    - phần gql_events này chứa những gì?
+    - phần gql_ug này chưas những gì??
+    - phần tests này, main.py có phải nơi chúng tôi thực hiện tiếp project ko?
+    - phần demo.pdf sẽ giúp chúng tôi như thế nào?
