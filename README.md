@@ -48,6 +48,8 @@ The project has several docker containers
 | Person | Role | Project Job | Period |
 |:------:|:----:|:-----------:|:------:|
 | AS     |Teacher|                          | 2022/9 - 2023/2 |
+| AS     |Teacher| gql_ug                   | 2022/9 - 2023/2 |
+| AS     |Teacher| gql_workflows            | 2022/9 - 2023/2 |
 
 
 ## Current Notes
