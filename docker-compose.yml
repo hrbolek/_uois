@@ -1,6 +1,11 @@
 version: "3.9"
 
 services:
+  frontend:
+    image: frontend
+    build:
+      context: ./frontend
+
   apollo:
     image: apollo
     build:

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: group/group.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: group/group.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Link, useParams } from "react-router-dom";
+
+import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import { useEffect, useState } from "react";
+
+import image from '../rozvrhSnimek.png';
+import { StudentSmall } from "../person/student";
+import { DepartmentSmall } from "../group/department";
+import { TeacherSmall } from "../person/teacher";
+import { TimeTableMedium } from '../timetable/timetable';
+
+import { root } from '../index';
+import { useQueryGQL, Loading, LoadingError } from "../index";
+import { SubjectSmall } from "../studyprogram/subject";
+import { ProgramSmall } from "../studyprogram/studyprogram";
+
+/** @module Group */
+
+export function GroupSmall(props) {
+    return (
+        &lt;Link to={root + "/groups/group/" + props.id}>{props.name}&lt;/Link>
+    )
+}
+
+export function GroupMedium(props) {
+    const faculties = []
+    for (var index = 0; index &lt; props.faculty.length; index++) {
+        if (index > 0) faculties.push(', ')
+        const sgItem = props.faculty[index]
+        faculties.push(&lt;DepartmentSmall {...props} id={sgItem.id} name={sgItem.name} key={sgItem.id} />);
+    }
+
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Skupina &lt;b>&lt;GroupSmall {...props} />&lt;/b>&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;b>Fakulta:&lt;/b> {faculties} &lt;br />
+                &lt;b>Ročník:&lt;/b> {props.grade} &lt;br />
+                &lt;b>Program:&lt;/b> &lt;ProgramSmall id={1} name={'Kybernetická bezpečnost'} />
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+
+/*
+export function GroupPage(props) {
+    const [state, setState] = useState(
+        {
+            'id': props.id,
+            'name': props.name,
+            'grade': '3',
+            'specialization': 'Kybernetická bezpečnost',
+            'VR': 'def',
+            'VC': 'def',
+            'VK': 'def',
+            'faculty': [
+                { 'id': 23, 'name': 'FVT' }
+            ],
+            'subjects': [
+                { 'id': 25, 'name': 'Informatika' },
+                { 'id': 1, 'name': 'Analýza informačních zdrojů' },
+                { 'id': 3, 'name': 'Anglický jazyk' },
+                { 'id': 2, 'name': 'Tělesná výchova' },
+                { 'id': 4, 'name': 'Kybernetická bezpečnost' },
+                { 'id': 5, 'name': 'Počítačové sítě a jejich bezpečnost' }
+            ],
+            'students': [
+                { 'id': 1, 'name': 'Honza Bernard' },
+                { 'id': 2, 'name': 'Pavel Motol' },
+                { 'id': 3, 'name': 'Dominik Vaněk' },
+                { 'id': 4, 'name': 'Andrea Svobodova' },
+                { 'id': 5, 'name': 'Michal Mrkev' },
+                { 'id': 6, 'name': 'Patrik Němý' },
+                { 'id': 7, 'name': 'Jiřina Stará' },
+                { 'id': 8, 'name': 'Petr Filip' },
+                { 'id': 9, 'name': 'Jiří Grau' },
+                { 'id': 10, 'name': 'Teodor Velký' },
+                { 'id': 11, 'name': 'Alexandr Veliký' },
+                { 'id': 22, 'name': 'Aleš Máchal' }
+            ]
+        }
+    )
+
+    useEffect(() => {
+        fetch('/gql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            redirect: 'follow', // manual, *follow, error
+            body: JSON.stringify({
+                "query":
+                    `
+                query {
+                    user(id: ${props.id}) {
+                        id
+                        name
+                        VR
+                        VC
+                        faculty: groupsByType(type: 0) {
+                            id
+                            name
+                        }
+                        groups: groupsByType(type: 1) {
+                            id
+                            name
+                        }
+                        subjects: groupsByType(type: 2) {
+                            id
+                            name
+                        }
+                        students: groupsByType(type: 3) {
+                            id
+                            name
+                        }
+                    }
+                }
+                `
+            }),
+        })
+            .then(response => response.json())
+            .then(data => setState(data.data))
+            .then(() => console.log('data logged'))
+            .catch(error => console.log('error nacteni'))
+    }, [props.id])
+
+
+    return (
+        &lt;GroupLarge {...state} {...props} />
+    )
+}
+*/
+
+// function RozvrhMedium() {
+//     return (
+//         &lt;Card>
+//             &lt;Card.Header>
+//                 &lt;Card.Title>Týdenní rozrvh&lt;/Card.Title>
+//             &lt;/Card.Header>
+//             &lt;Card.Body>
+//                 &lt;img src={image} alt="Rozvrh" width={'100%'} />
+//             &lt;/Card.Body>
+//         &lt;/Card>
+//     )
+// }
+
+
+function RozvrhMedium(props) {
+    return (
+        &lt;TimeTableMedium type={'student'} id={props.id} />
+    )
+}
+
+function SeznamPredmetu(props) {
+    let subjects = props.subjects.map((subject, index) => (&lt;li key={index}>&lt;SubjectSmall {...subject}/>&lt;/li>))
+
+    return (
+        &lt;div className="card mb-3">
+            &lt;Card.Header>
+                &lt;Card.Title>Předměty&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;ul>
+                    {subjects}
+                &lt;/ul>
+            &lt;/Card.Body>
+        &lt;/div>
+    )
+}
+
+function SeznamStudentu(props) {
+    let students = props.students.map((item) => (&lt;li key={item.id}>&lt;StudentSmall key={item.id} {...item} appRoot={props.appRoot} />&lt;/li>))
+    return (
+        &lt;div className="card mb-3">
+            &lt;Card.Header>
+                &lt;Card.Title>Studenti&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;ul>
+                    {students}
+                &lt;/ul>
+            &lt;/Card.Body>
+        &lt;/div>
+    )
+}
+
+function ContactInfo(props) {
+    return (
+        &lt;div className="card mb-3">
+            &lt;Card.Header>
+                &lt;Card.Title>Nadřízení&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;b>Velitel roty:&lt;/b> &lt;TeacherSmall id={23} name='Stanislav' surname='Dobrušák'  />&lt;br />
+                &lt;b>Velitel čety:&lt;/b> &lt;StudentSmall id={28} name='Pavel' surname='Rajská'  />&lt;br />
+                &lt;b>Vedoucí katedry:&lt;/b> &lt;TeacherSmall id={21} name='František' surname='Novák' />&lt;br />
+            &lt;/Card.Body>
+        &lt;/div>
+    )
+}
+
+export function GroupLarge(props) {
+
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>
+                    Karta učební skupiny
+                &lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;Row>
+                    &lt;Col md={3}>
+                        &lt;GroupMedium {...props} /> &lt;br/>
+                        &lt;ContactInfo {...props} />
+
+                    &lt;/Col>
+                    &lt;Col md={2}>
+                        &lt;SeznamStudentu {...props} />
+                    &lt;/Col>
+                    &lt;Col md={5}>
+                        &lt;RozvrhMedium {...props}/>
+                    &lt;/Col>
+                    &lt;Col md={2}>
+                        &lt;SeznamPredmetu {...props} />
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+/**
+ * Renders a page with data representing a group, contains predefined data which can are overrided by props
+ * @param {*} props 
+ * @param {*} props.id - identification
+ * @param {string} props.name - name
+ * @function
+ */
+export const GroupLargeStoryBook = (props) => {
+    const extraProps = {
+        'id': props.id,
+        'name': props.name,
+        'grade': '3',
+        'specialization': 'Kybernetická bezpečnost',
+        'VR': 'def',
+        'VC': 'def',
+        'VK': 'def',
+        'faculty': [
+            { 'id': 23, 'name': 'FVT' }
+        ],
+        'subjects': [
+            { 'id': 25, 'name': 'Informatika' },
+            { 'id': 1, 'name': 'Analýza informačních zdrojů' },
+            { 'id': 3, 'name': 'Anglický jazyk' },
+            { 'id': 2, 'name': 'Tělesná výchova' },
+            { 'id': 4, 'name': 'Kybernetická bezpečnost' },
+            { 'id': 5, 'name': 'Počítačové sítě a jejich bezpečnost' }
+        ],
+        'students': [
+            { 'id': 1, 'name': 'Honza Bernard' },
+            { 'id': 2, 'name': 'Pavel Motol' },
+            { 'id': 3, 'name': 'Dominik Vaněk' },
+            { 'id': 4, 'name': 'Andrea Svobodova' },
+            { 'id': 5, 'name': 'Michal Mrkev' },
+            { 'id': 6, 'name': 'Patrik Němý' },
+            { 'id': 7, 'name': 'Jiřina Stará' },
+            { 'id': 8, 'name': 'Petr Filip' },
+            { 'id': 9, 'name': 'Jiří Grau' },
+            { 'id': 10, 'name': 'Teodor Velký' },
+            { 'id': 11, 'name': 'Alexandr Veliký' },
+            { 'id': 22, 'name': 'Aleš Máchal' }
+        ]
+    }
+
+
+    return &lt;GroupLarge {...extraProps} {...props} />
+}
+
+/**
+ * Retrieves the data from GraphQL API endpoint
+ * @param {*} id - identificator
+ * @function
+ */
+export const GroupLargeQuery = (id) => 
+    fetch('/gql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        redirect: 'follow', // manual, *follow, error
+        body: JSON.stringify({
+            "query":
+                `
+            query {
+                group(id: ${id}) {
+                    id
+                    name
+                    members {
+                      id
+                      name
+                      surname
+                      address
+                      email
+                    }
+                  }
+            }
+            `
+        }),
+    })
+
+/**
+ * Fetch the data from API endpoint and renders a page representing a group
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @param {*} [props.as = GroupLargeStoryBook] - ReactJS component (function) which is responsible for rendering
+ * @param {*} [props.with = GroupLargeQuery] - function fetching the data and returning promise with the data from API endpoint
+ * @function
+ */
+export const GroupLargeFetching = (props) => {
+
+    const Visualizer = props.as || GroupLargeStoryBook;
+    const queryFunc = props.with || GroupLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.group, [props.id])
+    
+    if (error != null) {
+        return &lt;LoadingError error={error} />
+    } else if (state != null) {
+        return &lt;Visualizer {...props} {...state} />
+    } else {
+        return &lt;Loading>Skupina {props.id}&lt;/Loading>
+    }
+}
+
+export const GroupPage = (props) => {
+    const { id } = useParams();
+
+    return (
+        &lt;GroupLargeFetching {...props} id={id} />
+    )       
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Areal.html">Areal</a></li><li><a href="module-Building.html">Building</a></li><li><a href="module-Department.html">Department</a></li><li><a href="module-Faculty.html">Faculty</a></li><li><a href="module-Group.html">Group</a></li><li><a href="module-Lesson.html">Lesson</a></li><li><a href="module-Room.html">Room</a></li><li><a href="module-Student.html">Student</a></li><li><a href="module-StudyProgram.html">StudyProgram</a></li><li><a href="module-Subject.html">Subject</a></li><li><a href="module-Teacher.html">Teacher</a></li><li><a href="module-TimeTable.html">TimeTable</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sun Feb 06 2022 09:26:50 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

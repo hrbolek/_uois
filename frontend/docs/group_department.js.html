@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: group/department.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: group/department.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+import Card from "react-bootstrap/Card";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import { TeacherSmall } from "../person/teacher";
+import { FacultySmall } from "./faculty";
+
+import { root } from '../index';
+import { useQueryGQL, Loading, LoadingError } from "../index";
+import { ArealSmall } from "../areal/areal";
+import { BuildingSmall } from "../areal/building";
+
+/** @module Department */
+
+export function DepartmentSmall(props) {
+    return (
+        &lt;Link to={root + "/groups/department/" + props.id}>{props.name}&lt;/Link>
+    )
+}
+
+export function DepartmentMedium(props) {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Katedra &lt;b>&lt;DepartmentSmall {...props} />&lt;/b>&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;b>Název:&lt;/b> {props.fullname}&lt;br />
+                &lt;b>Vedoucí katedry:&lt;/b> {props.VK}&lt;br />
+                &lt;b>Fakulta:&lt;/b> &lt;FacultySmall {...props.faculty}/>&lt;br />
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+
+function SeznamUcitelu(props) {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Vyučující&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;ul>
+                    {props.members.map(
+                        (item, index) => (&lt;li key={index}>&lt;TeacherSmall key={item.id} {...item} />&lt;/li>)
+                        )
+                    }
+                &lt;/ul>
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+function ContactInfo(props) {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Adresa&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;b>Areál: &lt;/b> &lt;ArealSmall {...props.areal} />&lt;br />
+                &lt;b>Budova: &lt;/b> &lt;BuildingSmall {...props.building} /> &lt;br />
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+export const DepartmentVaV = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Vav link&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;a href={'https://vav.unob.cz/department/index/114'}>VaV&lt;/a>&lt;br/>
+                &lt;a href={'https://vav.unob.cz/results/department/114'}>VaV výsledky&lt;/a>&lt;br/>
+                &lt;a href={'https://vav.unob.cz/department/projects/114'}>VaV projekty&lt;/a>
+                
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+export function DepartmentLarge(props) {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>
+                    Karta katedry
+                &lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;Row>
+                    &lt;Col md={3}>
+                        &lt;DepartmentMedium {...props} /> &lt;br/>
+                        &lt;ContactInfo {...props} />
+                    &lt;/Col>
+                    &lt;Col md={6}>
+                    &lt;/Col>
+                    &lt;Col md={3}>
+                        &lt;SeznamUcitelu {...props}/> &lt;br/>
+                        &lt;DepartmentVaV {...props}/>
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+
+/*
+export function DepartmentPage(props) {
+    const [state, setState] = useState(
+        {
+            'id': props.id,
+            'name': props.name,
+            'fullname': 'Katedra informatiky a kybernetických operací',
+            'areal': 'Kasárny Šumavská',
+            'building': '3',
+            'faculty': [
+                { 'id': 23, 'name': 'FVT' }
+            ],
+            'teachers': [
+                { 'id': 1, 'name': 'Honza Bernard' },
+                { 'id': 2, 'name': 'Pavel Motol' },
+                { 'id': 3, 'name': 'Dominik Vaněk' },
+                { 'id': 4, 'name': 'Andrea Svobodova' },
+                { 'id': 5, 'name': 'Michal Mrkev' },
+                { 'id': 6, 'name': 'Patrik Němý' },
+                { 'id': 7, 'name': 'Jiřina Stará' },
+                { 'id': 8, 'name': 'Petr Filip' },
+                { 'id': 9, 'name': 'Jiří Grau' },
+                { 'id': 10, 'name': 'Teodor Velký' },
+                { 'id': 11, 'name': 'Alexandr Veliký' },
+                { 'id': 22, 'name': 'Aleš Máchal' }
+            ]
+        }
+    )
+
+    useEffect(() => {
+        fetch('/gql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            redirect: 'follow', // manual, *follow, error
+            body: JSON.stringify({
+                "query":
+                    `
+                query {
+                    user(id: ${props.id}) {
+                        id
+                        name
+                        fullname
+                        areal
+                        building
+                        faculty: groupsByType(type: 0) {
+                            id
+                            name
+                        }
+                        teachers: groupsByType(type: 1) {
+                            id
+                            name
+                        }
+                    }
+                }
+                `
+            }),
+        })
+            .then(response => response.json())
+            .then(data => setState(data.data))
+            .then(() => console.log('data logged'))
+            .catch(error => console.log('error nacteni'))
+    }, [props.id])
+
+
+    return (
+        &lt;DepartmentLarge {...state} {...props} />
+    )
+}
+*/
+
+
+/*
+
+    const Visualizer = props.as || TeacherLargeStoryBook;
+    const queryFunc = props.with || TeacherLargeQuery;
+*/
+
+/**
+ * Renders a page with data representing a department, contains predefined data which can are overrided by props
+ * @param {*} props 
+ * @param {*} props.id - identification
+ * @param {string} props.name - name
+ * @function
+ */
+export const DepartmentLargeStoryBook = (props) => {
+    const extendedProps = {
+        'id': props.id,
+        'name': props.name,
+        'fullname': 'Katedra informatiky a kybernetických operací',
+        'areal': {'name': 'Kasárna Šumavská', 'id': 1 },
+        'building': {'name': 'KŠ3', 'id': 1},
+        'faculty': { 'id': 23, 'name': 'FVT' },
+        'members': [
+            { 'id': 1, 'name': 'Honza Bernard' },
+            { 'id': 2, 'name': 'Pavel Motol' },
+            { 'id': 3, 'name': 'Dominik Vaněk' },
+            { 'id': 4, 'name': 'Andrea Svobodova' },
+            { 'id': 5, 'name': 'Michal Mrkev' },
+            { 'id': 6, 'name': 'Patrik Němý' },
+            { 'id': 7, 'name': 'Jiřina Stará' },
+            { 'id': 8, 'name': 'Petr Filip' },
+            { 'id': 9, 'name': 'Jiří Grau' },
+            { 'id': 10, 'name': 'Teodor Velký' },
+            { 'id': 11, 'name': 'Alexandr Veliký' },
+            { 'id': 22, 'name': 'Aleš Máchal' }
+        ]
+    }
+
+    return &lt;DepartmentLarge {...extendedProps} {...props} />;
+}
+
+/**
+ * Retrieves the data from GraphQL API endpoint
+ * @param {*} id - identificator
+ * @function
+ */
+export const DepartmentLargeQuery = (id) => 
+    fetch('/gql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        redirect: 'follow', // manual, *follow, error
+        body: JSON.stringify({
+            "query":
+                `
+            query {
+                group(id: ${id}) {
+                    id
+                    name
+                    members {
+                      id
+                      name
+                      surname
+                      address
+                      email
+                    }
+                  }
+            }
+            `
+        }),
+    })
+
+/**
+ * Fetch the data from API endpoint and renders a page representing a department
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @param {*} [props.as = DepartmentLargeStoryBook] - ReactJS component (function) which is responsible for rendering
+ * @param {*} [props.with = DepartmentLargeQuery] - function fetching the data and returning promise with the data from API endpoint
+ * @function
+ */
+export const DepartmentLargeFetching = (props) => {
+
+    const Visualizer = props.as || DepartmentLargeStoryBook;
+    const queryFunc = props.with || DepartmentLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.group, [props.id])
+    
+    if (error != null) {
+        return &lt;LoadingError error={error} />
+    } else if (state != null) {
+        return &lt;Visualizer {...props} {...state} />
+    } else {
+        return &lt;Loading>Katedra {props.id}&lt;/Loading>
+    }
+}
+
+export const DepartmentPage = (props) => {
+    const { id } = useParams();
+
+    return (
+        &lt;DepartmentLargeFetching {...props} id={id} />
+    )       
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Areal.html">Areal</a></li><li><a href="module-Building.html">Building</a></li><li><a href="module-Department.html">Department</a></li><li><a href="module-Faculty.html">Faculty</a></li><li><a href="module-Group.html">Group</a></li><li><a href="module-Lesson.html">Lesson</a></li><li><a href="module-Room.html">Room</a></li><li><a href="module-Student.html">Student</a></li><li><a href="module-StudyProgram.html">StudyProgram</a></li><li><a href="module-Subject.html">Subject</a></li><li><a href="module-Teacher.html">Teacher</a></li><li><a href="module-TimeTable.html">TimeTable</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sun Feb 06 2022 09:26:50 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -196,11 +196,13 @@ class GroupGQLModel:
         return self
 
 
+from typing import Optional
+
 @strawberryA.input
 class GroupUpdateGQLModel:
-    name: str = None
-    type_id: uuid.UUID = None
-    valid: bool = None
+    name: Optional[str] = None
+    type_id: Optional[uuid.UUID] = None
+    valid: Optional[bool] = None
 
 from gql_ug.GraphResolvers import resolveUpdateGroup, resolverRoleById, resolveInsertRole, resolveInsertMembership, resolveMembershipById
 @strawberryA.federation.type(keys=["id"], description="""Entity representing an editable group""")
