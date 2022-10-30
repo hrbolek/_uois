@@ -17,13 +17,13 @@ def UUIDColumn(name=None):
     
 #id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
-class UserModel(BaseModel):
+class UserModel(BaseModel):  
     """uzivatele v minimalni definici
     """
     __tablename__ = 'users'
     id = UUIDColumn()
 
-class GroupModel(BaseModel):
+class GroupModel(BaseModel): #
     """skupiny v minimalni definici
     """
     __tablename__ = 'groups'

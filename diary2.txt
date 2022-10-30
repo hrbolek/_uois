@@ -1,0 +1,26 @@
+8. Vytvořte datové struktury pro popis prázdné a vyplněné žádosti, (formulář, sekce, položka, formulář -> oddíl -> blok/tabulka -> položka), 
+pro autorizaci (uživatelé s právem čtení, uživatelé s právem zápisu, role s právem čtení, role s právem zápisu, role vezměte z 1.). 
+Struktura autorizace je dostupná pro každou položku.
+
+8.Create data structures to describe a blank and completed request, (form, section, item, form -> section -> block/table -> item), 
+for authorization (users with read permission, users with write permission, roles with read permission, roles with write permission, roles take from 1.)
+The authorization structure is available for each item.
+
+8. Tạo cấu trúc dữ liệu để mô tả yêu cầu trống và đã hoàn thành, (biểu mẫu, phần, mục, biểu mẫu -> phần -> khối / bảng -> mục), 
+để ủy quyền (người dùng có quyền đọc, người dùng có quyền ghi, vai trò với quyền đọc quyền, vai có quyền viết, nhận các vai từ 1.). 
+Cấu trúc ủy quyền có sẵn cho mỗi mục.
+
+
+20/10: đặt câu hỏi cho thầy, làm rõ đề bài
+    1. kết quả: bảng chứa cấu trúc dữ liệu trong đó: các cột là các zadost, các hàng là các: user, các role, trạng thái.???
+    2. Phần uois này có phải là demo của chúng tôi ko? chúng tôi sẽ dựa vào nó và làm tiếp project??
+    Chúng tôi xin lỗi và thực sự chúng tôi chưa hiểu hết cấu trúc của nhánh 2.1 này, chúng tôi cần biết nó gồm những cái gì?
+
+    - Tôi ko thể chạy được phần này???? nếu chạy thì kết quả chúng tôi có là gì???
+    - phần gql_events này chứa những gì?
+    - phần gql_ug này chưas những gì??
+    - phần tests này, main.py có phải nơi chúng tôi thực hiện tiếp project ko?
+    - phần demo.pdf sẽ giúp chúng tôi như thế nào?
+
+26/10:
+
