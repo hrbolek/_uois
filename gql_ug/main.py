@@ -56,6 +56,10 @@ from strawberry.asgi import GraphQL
 class MyGraphQL(GraphQL):
     """Rozsirena trida zabezpecujici praci se session"""
     async def __call__(self, scope, receive, send):
+        print("another gql call (ug)")
+        for item in scope['headers']:
+            print(item)
+
         asyncSessionMaker = await RunOnceAndReturnSessionMaker()
         async with asyncSessionMaker() as session:
             self._session = session
