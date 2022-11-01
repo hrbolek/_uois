@@ -24,3 +24,12 @@ Cấu trúc ủy quyền có sẵn cho mỗi mục.
 
 26/10:
 
+https://docs.google.com/document/d/1aVXl42oWuis0QJDfmtMFM5GtKLK1swo_ILMsjVWWZek/edit
+https://unob-my.sharepoint.com/personal/alexandr_stefek_unob_cz/_layouts/15/stream.aspx?id=%2Fpersonal%2Falexandr_stefek_unob_cz%2FDocuments%2FNahrávky%2FInformatika%2022-5KB%28C%29%20_%202021-22-20221027_201438-Záznam%20schůzky%2Emp4&ga=1
+
+
+https://github.com/Phamsianh/diplomova_prace/blob/experiment_abstract_api/backend/ORM/Model.py
+
+
+- Bước 1: DBDefinitions.py, tạo các class FormModel, SectionModel, BlockModel, ItemModel, UserModel, RoleModel, PermissionModel,...
+- Bước 2: create Resolver, inherit from gql_empty.DBDefinitions các BaseModel, 

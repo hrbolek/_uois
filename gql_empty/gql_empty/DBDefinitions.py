@@ -24,7 +24,31 @@ def UUIDColumn(name=None):
 #
 ###########################################################################################################################
 
+class FormModel(BaseModel):
+    __tablename__ = "forms"
+    id = UUIDColumn()
+    # name = Column(String(100), nullable=False)
+    # created = Column(DateTime, default=datetime.datetime.utcnow)
+    # updated = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    # deleted = Column(Boolean, default=False)
+    #fields = relationship("FieldModel", back_populates="form")
+    #data = relationship("DataModel", back_populates="form")
+class SectionModel(BaseModel):
+    __tablename__ = "formsSections"
+    id = UUIDColumn()
+    form_id = Column(ForeignKey("forms.id"), primary_key=True)
 
+
+class BlockModel(BaseModel):
+    __tablename__ = "blocks"
+    id = UUIDColumn()
+    section_id = Column(ForeignKey("formsSections.id"), primary_key=True)
+
+class ItemModel(BaseModel):
+    __tablename__ = "items"
+    id = UUIDColumn()
+    block_id = Column(ForeignKey("blocks.id"), primary_key=True)
+    name = Column(String(100), nullable=False)
 
 
 from sqlalchemy import create_engine
