@@ -1,3 +1,4 @@
+import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -167,6 +168,8 @@ export const IncommingLogin = (props) => {
     useEffect(() => {
 
         const getTokenFromCode = async () => {
+            let error = 0;
+
             const details = {
                 'code': code,
                 'grant_type': 'authorization_code'
@@ -174,15 +177,19 @@ export const IncommingLogin = (props) => {
             
             const formBody = Object.keys(details).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key])).join('&');
 
-            const response = await fetch('/oauth/token', { 
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-                    },
-                    body: formBody
-                })
+            try {
+                const response = await fetch('/oauth/token', { 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                        },
+                        body: formBody
+                    })
 
-            let jwtToken = (await response.text()).replaceAll('"', '')
+                let jwtToken = (await response.text()).replaceAll('"', '')
+            } catch (err) {
+                error = 'Token has not been got'
+            }
                 //validate token
             let publicKey = await getPublicKey()
             //console.log('got token: ' + jwtToken)
@@ -211,7 +218,11 @@ export const IncommingLogin = (props) => {
             //const verifyResult = await jose.compactVerify(jwtToken, publicKey, {algorithm:  ["RS256"]})
             //console.log(JSON.stringify(verifyResult))
             
-            const { payload, protectedHeader } = await jose.jwtVerify(jwtToken, publicKeyObject, {algorithm:  ["RS256"]})
+            try {
+                const { payload, protectedHeader } = await jose.jwtVerify(jwtToken, publicKeyObject, {algorithm:  ["RS256"]})
+            } catch (err) {
+                error = 'token has not been validated'
+            }
 
             pseudoStorage.accessToken = payload.access_token
             pseudoStorage.refreshToken = payload.refresh_token
@@ -221,12 +232,25 @@ export const IncommingLogin = (props) => {
             
             console.log('accessToken')
             console.log(JSON.stringify(localStorage.getItem('accessToken')))
+
+            if (error) {
+                return {error: error}
+            } else {
+                return {access_token: payload.access_token}
+            }
         }
 
-        getTokenFromCode();
+        getTokenFromCode().then(
+            ({error, access_token}) => {
+                if (access_token) {
+                    navigate('/ui/api')
+                } else {
+                    navigate('/ui/login')
+                }
+            }
+        );
 
 
-        navigate('/ui/api')
         return () => {}
     })
 
@@ -245,4 +269,35 @@ export const LoginButton = (props) => {
 
 export const LogoutButton = (props) => {
 
+}
+
+export const AuthentizationContext = React.createContext({logged: false, user: {}});
+export const Authentization = (props) => {
+    
+    //const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken'))
+    const [loggedUser, setLoggedUser] = useState(
+        {   
+            logged: false, 
+            code: null,
+            user: {}, 
+            accessToken: localStorage.getItem('accessToken')
+    })
+
+    useEffect(
+        () => {
+
+
+            //read public key of token issuer
+            //checks token validity
+            //get current user
+            //update with setLoggedUser
+        },
+        [loggedUser.accessToken]
+    )
+
+    return (
+        <AuthentizationContext.Provider value={loggedUser}>
+            {children}
+        </AuthentizationContext.Provider>
+    )
 }

@@ -40,7 +40,7 @@ const getENV = (name, defaultValue) => {
           // List of federation-capable GraphQL endpoints...
       ],
     }),
-    //*
+    /*
     context: ({ req }) => {
       // toto zjevne neni volano v prubehu dotazu
       console.log('called context function')
@@ -73,6 +73,10 @@ const getENV = (name, defaultValue) => {
               for (const headerItem of headers) {
                   //toto funguje
                   console.log('header: ' + headerItem)
+                  if (headerItem.startsWith('Authorization')) {
+                    const [key, value] = headerItem.split(' ')
+                    request.http?.headers.set(key, String(value));
+                  }
               }  
           }
           console.log('request')
