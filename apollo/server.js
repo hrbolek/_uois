@@ -38,6 +38,10 @@ const getENV = (name, defaultValue) => {
         */
 
           // List of federation-capable GraphQL endpoints...
+          // Graphql endpoint is the url of the graphql server, it helps the gateway to fetch the schema of the subgraph
+          // subgraph is used to identify the subgraph in the gateway
+          // racil help
+          { name: "test", url: "http://localhost:8000/gql" },
       ],
     }),
   })
