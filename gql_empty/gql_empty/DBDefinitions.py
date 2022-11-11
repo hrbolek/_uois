@@ -27,12 +27,10 @@ def UUIDColumn(name=None):
 class FormModel(BaseModel):
     __tablename__ = "forms"
     id = UUIDColumn()
-    # name = Column(String(100), nullable=False)
-    # created = Column(DateTime, default=datetime.datetime.utcnow)
-    # updated = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
-    # deleted = Column(Boolean, default=False)
-    #fields = relationship("FieldModel", back_populates="form")
-    #data = relationship("DataModel", back_populates="form")
+    created_at = Column(DateTime, default=datetime.datetime.now)
+    name = Column(String)
+    creator_id = Column(ForeignKey('users.id'))
+    creator = relationship('UserModel', back_populates='forms')
 class SectionModel(BaseModel):
     __tablename__ = "formsSections"
     id = UUIDColumn()

@@ -73,7 +73,7 @@ class GroupModel(BaseModel):
     grouptype_id = Column(ForeignKey('grouptypes.id'))
     grouptype = relationship('GroupTypeModel', back_populates='groups')
 
-    mastergroup_id = Column(ForeignKey('groups.id'))
+    # mastergroup_id = Column(ForeignKey('groups.id'))
     #mastergroup = relationship('GroupModel', back_populates='subgroups', uselist=False, foreign_keys=[mastergroup_id])
     #mastergroup = relationship('GroupModel', uselist=False, foreign_keys=[mastergroup_id])
     #subgroups = relationship('GroupModel', back_populates='mastergroup', uselist=True, foreign_keys=[])
