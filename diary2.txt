@@ -44,7 +44,12 @@ https://github.com/Phamsianh/diplomova_prace/blob/experiment_abstract_api/backen
 - shows relationships between entities: one-to-many, many-to-many
 - shows attributes of entities
 
-+ideas for improvement:
-- add more entity types: roles, group, permission...
-- Entity "phase" : phase is separate part of a process, where user(s) with assigned position(s) handle section(s) of the instance and where an audit trail is made.
-we have 3 process corresponds to the correction of: student, teacher, dean--- so we have 3 phases
+11/11: second ER diagram
+
+1. Create data structures to define user, group, user group membership, group type, user role in group, user role type in group, group subordination to group. 
+Implemented as a pattern (gql_ug container)
+
+https://apl.unob.cz/EprihlaskaV3/Eprihlaska - online application form
+
+- conzultation with the teacher: thầy yêu cầu xây dựng cấu trúc dữ liệu cho file JSON
+
