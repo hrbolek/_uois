@@ -77,15 +77,15 @@ export const Loading = (props) => (
  * if an error occured the LoadingError is displayed
 */
 export const Fetching = (props) => {
-    const { id, query, Visualiser, responseToJson } = props;
-    const [state, error] = useQueryGQL(id, query, responseToJson, [id])
-    if (!query || !Visualiser || !responseToJson) {
-        <LoadingError error={"Bad use of component Fetching. Missing parameters query and/or Visualiser and/or jsonMapper"} />
+    const { id, query, Visualiser, selector } = props;
+    const [state, error] = useQueryGQL(id, query, selector, [id])
+    if (!query || !Visualiser || !selector) {
+        return (<LoadingError error={"Bad use of component Fetching. Missing parameters query and/or Visualiser and/or jsonMapper"} />)
     } else {
-        if (error != null) {
-            return <LoadingError error={error} />
-        } else if (state != null) {
+        if (state != null) {
             return <Visualiser {...state} />
+        } else if (error != null) {
+            return <LoadingError error={error} />
         } else {
             return <Loading>DataEntity {id}</Loading>
         }
@@ -96,6 +96,22 @@ export const Fetching = (props) => {
  * Login related part
 */
 const pseudoStorage = {publicKey: null}
+
+const globalFetchParams = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    redirect: 'follow', // manual, *follow, error
+}
+
+export const authorizedFetch = (path, params) => {
+    const newParams = {...globalFetchParams, ...params} // allow owerwrite default parameters (globalFetchParams)
+    return (
+        fetch(path, newParams) //params.header should be extended with Authorization TOKEN
+    )
+}
 
 const getPublicKey = async () => {
     let publicKey = pseudoStorage?.publicKey
@@ -128,10 +144,6 @@ export const useJWTToken = () => {
     return [token, wrappedSetToken]
 
 }  
-
-export const authorizedFetch = (path, params={}) => {
-    const currentToken = null;
-}
 
 export const refreshToken = async () => {
     const refresh_token = localStorage.getItem(refreshToken) | pseudoStorage.refreshToken
@@ -176,6 +188,7 @@ export const IncommingLogin = (props) => {
             };
             
             const formBody = Object.keys(details).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key])).join('&');
+            let jwtToken = null;
 
             try {
                 const response = await fetch('/oauth/token', { 
@@ -186,7 +199,7 @@ export const IncommingLogin = (props) => {
                         body: formBody
                     })
 
-                let jwtToken = (await response.text()).replaceAll('"', '')
+                jwtToken = (await response.text()).replaceAll('"', '')
             } catch (err) {
                 error = 'Token has not been got'
             }
@@ -220,15 +233,17 @@ export const IncommingLogin = (props) => {
             
             try {
                 const { payload, protectedHeader } = await jose.jwtVerify(jwtToken, publicKeyObject, {algorithm:  ["RS256"]})
+
+                pseudoStorage.accessToken = payload.access_token
+                pseudoStorage.refreshToken = payload.refresh_token
+    
+                localStorage.setItem('accessToken', payload.access_token)
+                localStorage.setItem('refreshToken', payload.refresh_token)
+
             } catch (err) {
                 error = 'token has not been validated'
             }
 
-            pseudoStorage.accessToken = payload.access_token
-            pseudoStorage.refreshToken = payload.refresh_token
-
-            localStorage.setItem('accessToken', payload.access_token)
-            localStorage.setItem('refreshToken', payload.refresh_token)
             
             console.log('accessToken')
             console.log(JSON.stringify(localStorage.getItem('accessToken')))
@@ -236,7 +251,7 @@ export const IncommingLogin = (props) => {
             if (error) {
                 return {error: error}
             } else {
-                return {access_token: payload.access_token}
+                return {access_token: localStorage.getItem('accessToken')}
             }
         }
 
@@ -297,7 +312,7 @@ export const Authentization = (props) => {
 
     return (
         <AuthentizationContext.Provider value={loggedUser}>
-            {children}
+            {props.children}
         </AuthentizationContext.Provider>
     )
 }

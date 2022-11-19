@@ -53,6 +53,10 @@ async def RunOnceAndReturnSessionMaker():
     return result
 
 from strawberry.asgi import GraphQL
+
+shared = {
+    'counter': 0
+}
 class MyGraphQL(GraphQL):
     """Rozsirena trida zabezpecujici praci se session"""
     async def __call__(self, scope, receive, send):
@@ -62,9 +66,16 @@ class MyGraphQL(GraphQL):
 
         asyncSessionMaker = await RunOnceAndReturnSessionMaker()
         async with asyncSessionMaker() as session:
+            shared['counter'] = shared['counter'] + 1
+            print('Plus', shared['counter'])
+            print(session.in_transaction())
             self._session = session
             self._user = {'id': '?'}
-            return await GraphQL.__call__(self, scope, receive, send)
+            result = await GraphQL.__call__(self, scope, receive, send)
+            await session.commit()
+            shared['counter'] = shared['counter'] - 1
+            print('Minus', shared['counter'])
+            return result
     
     async def get_context(self, request, response):
         parentResult = await GraphQL.get_context(self, request, response)

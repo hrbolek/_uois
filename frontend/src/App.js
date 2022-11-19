@@ -17,11 +17,19 @@ import Col from 'react-bootstrap/Col';
 
 import { ApiPage } from './pages/api/api';
 import { DepartmentPage } from './pages/group/department';
+import { FacultyPage } from './pages/group/faculty';
+
+import { UserRoute } from './pages/user/index';
+import { GroupRoute } from './pages/group/index';
+
 import { IncommingLogin } from './helpers/index';
+import { SearchPage, SearchSmall } from './pages/search/index';
 
 const WithLayout = (props) => {
   return (
     <Container fluid>
+      <Row>
+        <Col md={8}>
     <Nav>
         <Nav.Link as={Link} to={root + "/"}>Home</Nav.Link>
         <Nav.Link as={Link} to={root + "/users/"}>Uživatelé</Nav.Link>
@@ -30,10 +38,24 @@ const WithLayout = (props) => {
         <Nav.Link as={Link} to={root + "/groups/"}>Skupiny</Nav.Link>
         <Nav.Link as={Link} to={root + "/subjects/"}>Předměty</Nav.Link>
     </Nav>
+    </Col>
+    <Col md={4}>
+    <div className="float-end" style={{'width': '100%'}}>
+        <SearchSmall />
+        </div>
+    </Col>
+    </Row>
     <Outlet />
     </Container>
   )
 }
+
+const Empty = (props) => {
+  return (
+    <Outlet />
+  )
+}
+
 
 const Links = (props) => {
   return (
@@ -120,11 +142,14 @@ export function App() {
           <Routes>
             <Route path={root + "/api"} element={<ApiPage />}>
             </Route>
-            <Route path={root + "/groups/"} element={<WithLayout />}>
-              <Route index element={<WithLayout />} />
-              <Route path={`department/:id`} element={<DepartmentPage />} />
-            </Route>
-            <Route path={root + "/login"} element={<IncommingLogin />}>
+            <Route path={root + "/"} element={<WithLayout />}>
+                {GroupRoute()}
+                {UserRoute()}
+                <Route path={"login"} element={<IncommingLogin />}>
+                </Route>
+                <Route path="" element={<SearchPage />}>
+
+                </Route>
             </Route>
            
           </Routes>

@@ -12,6 +12,8 @@ import { useSelector } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import { groupSlice } from './groupstorage'
 
+import { TeacherSmall } from '../user/teacher'
+
 /**
  * Retrieves the data from GraphQL API endpoint
  * @param {*} id - identificator
@@ -88,10 +90,12 @@ import { groupSlice } from './groupstorage'
                   id
                   name
                   roles {
+                    id
                     roletype {
                       name
                     }
                     user {
+                      id
                       name
                       surname
                       email
@@ -192,6 +196,160 @@ export const UniversityLargeStoryBook = (props) => {
       }
     return (
         <div>{JSON.stringify(props)}</div>
+    )
+}
+
+export const DepartmentRole = (props) => {
+    return (
+      <Row>
+        <Col md="3"><b>{props.roletype.name}</b></Col>
+        <Col md="auto"><TeacherSmall {...props.user} /></Col>
+      </Row>
+    )
+}
+
+export const DepartmentRoles = (props) => {
+    return (
+      <Card>
+          <Card.Header>
+              <Card.Title>
+                  Vedoucí pracovníci {props.name}
+              </Card.Title>
+          </Card.Header>
+          <Card.Body>
+              {
+                  props?.roles.map((role) => <DepartmentRole key={role.id} {...role}/>)
+              }
+          </Card.Body>
+      </Card>
+    )
+}
+
+export const DepartmentTimeTableSmall = (props) => {
+  return (
+    <Card>
+      <Card.Header>
+          <Card.Title>
+              Malý rozvrh
+          </Card.Title>
+      </Card.Header>
+      <Card.Body>
+          
+          <svg style={{"display": "inline-block",	"width": "100%"}} viewBox="0 0 1280 720" preserveAspectRatio="xMinYMid" width="1280" height="720" xmlns="http://www.w3.org/2000/svg" overflow="hidden">
+              <rect x="1" y="1" width="1280" height="720" style={{"fill":"rgb(127,127,127)", "strokeWidth":"3", "stroke": "rgb(0,0,0)"}} />
+              <rect x="50" y="20" width="300" height="100" style={{"fill":"rgb(127,127,255)", "strokeWidth":"3", "stroke": "rgb(0,0,0)"}} />
+          </svg>
+          
+      </Card.Body>
+  </Card>
+)
+}
+
+
+export const DepartmentMember = (props) => {
+  return (
+    <>
+    <TeacherSmall {...props} /><br />
+    </>
+  )
+}
+
+export const DepartmentMemberships = (props) => {
+    return (
+      <Card>
+          <Card.Header>
+              <Card.Title>
+                  Aktuální příslušníci {props.name}
+              </Card.Title>
+          </Card.Header>
+          <Card.Body>
+              <ul>
+              {
+                  props?.memberships.map(({user}) => <li key={user.id}><DepartmentMember key={user.id} {...user}/></li>)
+              }
+              </ul>
+          </Card.Body>
+      </Card>
+    )
+}
+
+export const FacultySmall = (props) => {
+    return (
+        <Link to={root + "/groups/faculty/" + (props.id)}>{props.name}</Link>
+    )
+}
+
+export const DepartmentPrograms = (props) => {
+    return (
+      <Card>
+        <Card.Header>
+            <Card.Title>
+                Programy
+            </Card.Title>
+        </Card.Header>
+        <Card.Body>
+        </Card.Body>
+      </Card>
+    )
+}
+
+export const DepartmentSubjects = (props) => {
+  return (
+    <Card>
+      <Card.Header>
+          <Card.Title>
+              Předměty
+          </Card.Title>
+      </Card.Header>
+      <Card.Body>
+      </Card.Body>
+    </Card>
+  )
+}
+
+
+export const DepartmentStudyGroups = (props) => {
+  return (
+    <Card>
+      <Card.Header>
+          <Card.Title>
+              Skupiny
+          </Card.Title>
+      </Card.Header>
+      <Card.Body>
+      </Card.Body>
+    </Card>
+  )
+}
+
+export const DepartmentLarge = (props) => {
+    return (
+        <Card>
+          <Card.Header>
+              <Card.Title>
+                  Katedra {props.name} {props?.mastergroup? <FacultySmall {...props.mastergroup}/> : null}
+              </Card.Title>
+          </Card.Header>
+          <Card.Body>
+              <Row>
+                  <Col md={3}>
+                      <DepartmentRoles {...props} />
+                      <DepartmentMemberships {...props} />
+                  </Col>
+                  <Col md={6}>
+                      <DepartmentTimeTableSmall {...props} />
+                  </Col>
+                  <Col md={3}>
+                      <DepartmentPrograms {...props} />
+                      <DepartmentSubjects {...props} />
+                      <DepartmentStudyGroups {...props} />
+                  </Col>
+              </Row>
+          </Card.Body>
+          <Card.Footer>
+              {JSON.stringify(props)}
+          </Card.Footer>
+        </Card>
     )
 }
 
@@ -374,7 +532,7 @@ export const DepartmentLargeStoryBook = (props) => {
         }
       }
     return (
-        <div>{JSON.stringify(props)}</div>
+        <DepartmentLarge {...props}/>
     )
 }
 
@@ -391,12 +549,14 @@ export const DepartmentLargeStoryBook = (props) => {
     const Visualizer = props.as || DepartmentLargeStoryBook;
     const queryFunc = props.with || DepartmentLargeQuery;
 
-    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.group, [props.id])
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.groupById, [props.id])
     
-    if (error != null) {
+    //console.log(JSON.stringify(state))
+
+    if (state != null) {
+      return <Visualizer {...props} {...state} />
+    } else if (error != null) {
         return <LoadingError error={error} />
-    } else if (state != null) {
-        return <Visualizer {...props} {...state} />
     } else {
         return <Loading>Katedra {props.id}</Loading>
     }
@@ -428,5 +588,18 @@ export const DepartmentPageWithStore = (props) => {
         <Provider store={createStore}>
             <DepartmentLargeFetching {...props} id={id} />
         </Provider>
+    )       
+}
+
+const pageTypes = {
+    department: DepartmentPage
+}
+
+export const GroupPage = (props) => {
+    const { id, pageType } = useParams();
+
+    const As = pageTypes[pageType] ? pageTypes[pageType] : DepartmentPage
+    return (
+        <DepartmentLargeFetching {...props} id={id} as={As}/>
     )       
 }

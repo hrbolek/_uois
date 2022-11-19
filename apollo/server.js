@@ -72,8 +72,11 @@ const getENV = (name, defaultValue) => {
               console.log('authHeaderValue: ' + authHeaderValue)
               for (const headerItem of headers) {
                   //toto funguje
-                  console.log('header: ' + headerItem)
-                  if (headerItem.startsWith('Authorization')) {
+                  console.log('header item: ' + headerItem)
+                  console.log('header item type: ' + (typeof headerItem))
+                  console.log('header item: ' + JSON.stringify(headerItem))
+                  console.log('header item methods: ' + JSON.stringify(Object.keys(headerItem)))
+                  if (headerItem[0].startsWith('Authorization')) {
                     const [key, value] = headerItem.split(' ')
                     request.http?.headers.set(key, String(value));
                   }
