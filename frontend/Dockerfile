@@ -5,6 +5,9 @@
 ###############################################################
 FROM python:3.9-slim-buster as pythonbase
 
+# instalace curl, aby bylo mozne zprovoznit standardni healthcheck
+RUN apt update && apt install curl -y && rm -rf /var/cache/apk/*
+
 # Install pip requirements
 COPY ./requirements.txt .
 RUN python -m pip install -r requirements.txt

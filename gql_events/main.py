@@ -45,7 +45,7 @@ class EventGQLModel:
         return self['name']
 
     @strawberryB.field
-    def users(self) -> typing.List['UserGQLModel']:
+    async def users(self) -> typing.List['UserGQLModel']:
         print(self['users'])
         return [UserGQLModel(user['id']) for user in self['users']]
 
@@ -56,8 +56,6 @@ class Query:
     @strawberryB.field
     def event_by_id(self, id: str) -> 'EventGQLModel':
         return randomEvent(id)
-
-
 
 from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter

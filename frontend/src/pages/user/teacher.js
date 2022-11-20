@@ -8,6 +8,7 @@ import { root } from '../../helpers/index';
 import { useQueryGQL, Loading, LoadingError } from '../../helpers/index';
 
 export const TeacherSmall = (props) => {
+    console.log(JSON.stringify(props))
     return (
         <>
         <Link to={root + "/users/teacher/" + (props.id)}>{props.name} {props.surname} </Link>
@@ -24,16 +25,73 @@ export const GroupSmall = (props) => {
     )
 }
 
+export const DepartmentSmall = (props) => {
+    return (
+        <>
+        <Link to={root + "/groups/department/" + (props.id)}>{props.name} </Link>
+        </>
+    )
+}
+
+export const FacultySmall = (props) => {
+    return (
+        <>
+        <Link to={root + "/groups/faculty/" + (props.id)}>{props.name} </Link>
+        </>
+    )
+}
+
+export const UniversitySmall = (props) => {
+    return (
+        <>
+        <Link to={root + "/groups/university/" + (props.id)}>{props.name} </Link>
+        </>
+    )
+}
+
+const DictOfComponents = {
+    'univerzita': UniversitySmall,
+    'fakulta': FacultySmall,
+    'katedra': DepartmentSmall
+}
+
 export const TeacherMembership = (props) => {
     const { membership } = props
+    console.log('TeacherMembership')
+    console.log(JSON.stringify(membership))
     return (
             <>
-            {membership.map(item => (
-                <Row>
-                    <Col><b>{item.group.grouptype.name}</b></Col>
-                    <Col><GroupSmall {...item.group}/></Col>
-                </Row>
-            ))}
+            {membership.map((item, index) => {
+                console.log(JSON.stringify(item.group.grouptype))
+                const Visualiser = DictOfComponents[item.group?.grouptype?.name]??UniversitySmall
+                return (
+                    <Row key={item.group.id}>
+                        <Col><b>{item.group?.grouptype?.name}</b></Col>
+                        <Col><Visualiser {...item.group}/></Col>
+                    </Row>
+                )
+            }
+            )}
+            </>
+    )
+}
+
+export const TeacherRoles = (props) => {
+    const { roles } = props
+    console.log('TeacherRoles')
+    console.log(JSON.stringify(TeacherRoles))
+    return (
+            <>
+            {roles.map((item, index) => {
+                console.log(JSON.stringify(item))
+                return (
+                    <Row key={item.id}>
+                        <Col><b>{item.roletype?.name}</b></Col>
+                        <Col>{item.group?.name}</Col>
+                    </Row>
+                )
+            }
+            )}
             </>
     )
 }
@@ -45,14 +103,25 @@ export function TeacherMedium(props) {
                 <Card.Title>
                     <TeacherSmall {...props}/>
                 </Card.Title>
-
             </Card.Header>
             <Card.Body>
-                <TeacherMembership {...props}/>
+                <Row>
+                    <b>Členství</b>
+                    <hr />
+                </Row>
+                <Row>
+                    <TeacherMembership {...props}/>
+                </Row>
             </Card.Body>
-            <Card.Footer>
-                {JSON.stringify(props)}
-            </Card.Footer>
+            <Card.Body>
+                <Row>
+                    <b>Role</b>
+                    <hr />
+                </Row>
+                <Row>
+                    <TeacherRoles {...props}/>
+                </Row>
+            </Card.Body>
         </Card>
     )
 }
@@ -70,6 +139,101 @@ export const SmallHeader = (props) => {
     )
 }
 
+export const SVGTime = (props) => {
+    const { Xdelta, HourValue } = props
+    return (
+        <>
+            <rect x={Xdelta} y="23" width="220" height="25" stroke="#000000" stroke-width="1.33333" stroke-miterlimit="8"></rect>
+            <rect x={Xdelta} y="23" width="220" height="25" stroke="#FFFFFF" stroke-width="1.33333" stroke-miterlimit="8" fill="#FFFFFF"></rect>
+            <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="600" font-size="18" transform={"translate(" + (Xdelta + 5) +" 43)"}>
+                {HourValue}
+            </text>
+        </>
+    )
+}
+
+export const SVGDate = (props) => {
+    const { YDelta, DateValue, DayValue } = props
+    return (
+        <>
+            <rect x="18" y={YDelta} width="60" height="100" stroke="#000000" stroke-width="1.33333" stroke-miterlimit="8"></rect>
+            <rect x="18" y={YDelta} width="60" height="100" stroke="#FFFFFF" stroke-width="1.33333" stroke-miterlimit="8" fill="#FFFFFF"></rect>
+            <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="600" font-size="18" transform={"translate(23 " + (YDelta + 20) + ")"}>
+                {DateValue}
+                <tspan font-size="15" font-weight="400" x="-0.0424118" y="23">{DayValue}</tspan>
+            </text>
+        </>
+    )
+}
+
+export const SVGEvent = (props) => {
+    const { XDelta, YDelta, fillColor, lesson, subject, teacher, room } = props
+    return (
+        <>
+            <rect x={XDelta} y={YDelta} width="220" height="100" stroke="#000000" stroke-width="1.33333" stroke-miterlimit="8"></rect>
+            <rect x={XDelta} y={YDelta} width="220" height="100" stroke="#f7b4b7" stroke-width="1.33333" stroke-miterlimit="8" fill={fillColor}></rect>
+            <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="600" font-size="18" transform={"translate(" + (XDelta + 5) + " " + (YDelta + 20) +")"}>
+                <a href={"/ui/studyprograms/subject/" + lesson.id} target="_top">{lesson.name}</a>
+                <tspan font-size="15" font-weight="400" x="-0.0424118" y="23"><a href={"/ui/studyprograms/subject/" + subject.id} target="_top"></a>{subject.name}</tspan>
+                <tspan font-size="15" font-weight="400" x="1.04089" y="45"><a href={"/ui/users/teacher/" + teacher.id} target="_top">{teacher.name + " " + teacher.surname }</a></tspan>
+                <tspan font-size="15" font-weight="400" x="1.04089" y="70"><a href={"/ui/areals/room/" + room.id} target="_top">{room.name}</a></tspan>
+            </text>
+        </>
+    )
+}
+
+export const SVGTimeTable = (props) => {
+  /*  return (
+        <svg style={{"display": "inline-block",	"width": "100%"}} viewBox="0 0 1280 720" preserveAspectRatio="xMinYMid" width="1280" height="720" xmlns="http://www.w3.org/2000/svg" overflow="hidden">
+        <rect x="1" y="1" width="1280" height="720" style={{"fill":"rgb(127,127,127)", "strokeWidth":"3", "stroke": "rgb(0,0,0)"}} />
+        <rect x="50" y="20" width="300" height="100" style={{"fill":"rgb(127,127,255)", "strokeWidth":"3", "stroke": "rgb(0,0,0)"}} />
+    </svg>
+
+    )
+*/
+    return (
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" overflow="hidden" viewBox="10 20 1400 550">
+         <g>
+                <SVGTime Xdelta={80} HourValue={"8:00"} />
+                <SVGTime Xdelta={302} HourValue={"9:50"} />
+                <SVGTime Xdelta={524} HourValue={"11:40"} />
+                <SVGTime Xdelta={746} HourValue={""} />
+                <SVGTime Xdelta={968} HourValue={"14:30"} />
+                <SVGTime Xdelta={1190} HourValue={"16:20"} />
+
+                <SVGDate YDelta={50} DateValue={"8.11."} />
+                <SVGDate YDelta={152} DateValue={"9.11."} />
+                <SVGDate YDelta={254} DateValue={"10.11."} />
+                <SVGDate YDelta={356} DateValue={"11.11."} />
+                <SVGDate YDelta={458} DateValue={"12.11."} />
+
+                <SVGEvent XDelta={968} YDelta={356} fillColor={"#f7b4b7"}
+                    lesson={{name: "konzultace", id: "1"}} 
+                    subject={{name: "", id: "1"}} 
+                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}} 
+                    room={{name: "", id: "1"}} />
+                <SVGEvent XDelta={302} YDelta={152} fillColor={"#b6bd82"}
+                    lesson={{name: "Letecké elektronické systémy", id: "1"}} 
+                    subject={{name: "3. Syntéza kmitočtu", id: "1"}} 
+                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}} 
+                    room={{name: "Č1/120", id: "1"}} />
+                <SVGEvent XDelta={302} YDelta={458} fillColor={"#b6bd82"}
+                    lesson={{name: "Letecké elektronické systémy", id: "1"}} 
+                    subject={{name: "3. Syntéza kmitočtu", id: "1"}} 
+                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}} 
+                    room={{name: "Č1/120", id: "1"}} />
+                <SVGEvent XDelta={80} YDelta={356} fillColor={"#859be9"}
+                    lesson={{name: "Mentoring studentů 1. ročníku", id: "1"}} 
+                    subject={{name: "", id: "1"}} 
+                    teacher={{name: "Jana", surname: "Svobodová", id: "1"}} 
+                    room={{name: "Č1/120", id: "1"}} />
+
+                
+            </g>
+        </svg>        
+    )
+}
+
 export const TeacherSmallTimeTable = (props) => {
     return (
         <Card>
@@ -81,12 +245,7 @@ export const TeacherSmallTimeTable = (props) => {
                 </Card.Title>
             </Card.Header>
             <Card.Body>
-                
-                <svg style={{"display": "inline-block",	"width": "100%"}} viewBox="0 0 1280 720" preserveAspectRatio="xMinYMid" width="1280" height="720" xmlns="http://www.w3.org/2000/svg" overflow="hidden">
-                    <rect x="1" y="1" width="1280" height="720" style={{"fill":"rgb(127,127,127)", "strokeWidth":"3", "stroke": "rgb(0,0,0)"}} />
-                    <rect x="50" y="20" width="300" height="100" style={{"fill":"rgb(127,127,255)", "strokeWidth":"3", "stroke": "rgb(0,0,0)"}} />
-                </svg>
-                
+                <SVGTimeTable />
             </Card.Body>
         </Card>
     )
@@ -440,11 +599,8 @@ export const TeacherTimeTable = (props) => {
             <Card.Body>
                 <Row>
                     <Col md={12}>
-                        <svg style={{"display": "inline-block",	"width": "100%"}} viewBox="0 0 1280 720" preserveAspectRatio="xMinYMid" width="1280" height="720" xmlns="http://www.w3.org/2000/svg" overflow="hidden">
-                            <rect x="0" y="0" width="1280" height="720" style={{"fill":"rgb(127,127,127)", "strokeWidth":"3", "stroke": "rgb(0,0,0)"}} />
-                            <rect x="50" y="20" width="300" height="100" style={{"fill":"rgb(127,127,255)", "strokeWidth":"3", "stroke": "rgb(0,0,0)"}} />
-                        </svg>                    
-                    </Col>
+                        <SVGTimeTable />
+                </Col>
                 </Row>
             </Card.Body>
         </Card>
@@ -623,21 +779,39 @@ export const TeacherStudyGroups = (props) => {
                     id
                     name
                     surname
-                    email
-                    
+                    externalIds {
+                        typeName
+                        outerId
+                    }
                     membership {
-                      group {
+                    group {
                         id
                         name
                         grouptype {
-                          id
-                          name
+                            id
+                            name
+                            nameEn
                         }
-                      }
-                      
                     }
-                  }
-                }`,
+                    }
+                    roles {
+                        id
+                        roletype {
+                            id
+                            name
+                        }
+                        group {
+                            id
+                            name
+                            grouptype {
+                                id
+                                name
+                                nameEn
+                            }
+                        }
+                    }
+                }
+            }`,
          "variables": {"id": id}
      }),
  })

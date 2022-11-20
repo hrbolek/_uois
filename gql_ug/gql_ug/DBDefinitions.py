@@ -121,7 +121,6 @@ class RoleModel(BaseModel):
     user = relationship('UserModel', back_populates='roles')
     group = relationship('GroupModel', back_populates='roles')
 
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 

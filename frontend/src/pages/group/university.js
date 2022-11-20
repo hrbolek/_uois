@@ -27,6 +27,7 @@ export const UniversityLargeQuery = (id) =>
                             name
                           }
                           user {
+                            id
                             name
                             surname
                             email
@@ -61,6 +62,7 @@ export const UniversityLargeQuery = (id) =>
     })
 
 export const RoleRow = (props) => {
+    //console.log(JSON.stringify(props))
     return (
         <Row>
             <Col md={4}><b>{props.roletype.name}</b></Col>
@@ -114,7 +116,11 @@ export const UniversityLarge = (props) => {
                     <Col md={3}>
                         <RolesCard {...props}/>
                     </Col>
-                    {props?.subgroups.map(subgroup => <Col md={3}><FacultyMedium {...subgroup}/></Col>)}                    
+                    <Col md={9}>
+                        <Row>
+                            {props?.subgroups.map(subgroup => <Col md={4}><FacultyMedium {...subgroup}/></Col>)}                    
+                        </Row>
+                    </Col>
                 </Row>
             </Card.Body>
         </Card>

@@ -75,7 +75,7 @@ class UserGQLModel:
         result = await resolveMembershipForUser(AsyncSessionFromInfo(info), self.id)
         return result
 
-    @strawberryA.field(description="""List of groups, where the user is member""")
+    @strawberryA.field(description="""List of roles, which the user has""")
     async def roles(self, info: strawberryA.types.Info) -> typing.List['RoleGQLModel']:
         result = await resolveRolesForUser(AsyncSessionFromInfo(info), self.id)
         return result
@@ -130,6 +130,14 @@ class UserEditorGQLModel:
     ##
     ## Mutace, obejiti problemu s federativnim API
     ##
+
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolveUserById(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
+
     @strawberryA.field(description="""Entity primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
@@ -196,7 +204,7 @@ class GroupGQLModel:
     @strawberryA.field(
         #permission_classes=[GroupEditorPermission],
         description="""List of roles in the group""")
-    async def editor(self, info: strawberryA.types.Info) -> Union['GroupGQLEditorModel', None]:
+    async def editor(self, info: strawberryA.types.Info) -> Union['GroupEditorGQLModel', None]:
         # check if user has right to get editor (can edit this group)
         # if hasNoRight:
         #    return None
@@ -222,10 +230,20 @@ class GroupInsertGQLModel:
 from gql_ug.GraphResolvers import resolveUpdateGroup, resolverRoleById, resolveInsertRole, resolveInsertMembership, resolveMembershipById
 from gql_ug.GraphResolvers import resolveInsertUser, resolveInsertGroup
 @strawberryA.federation.type(keys=["id"], description="""Entity representing an editable group""")
-class GroupGQLEditorModel:
+class GroupEditorGQLModel:
     ##
     ## Mutace, obejiti problemu s federativnim API
     ##
+    ##
+    ## Editor je rozšiřitelný v jiných prvcích federace.
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolveGroupById(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
+
+
     @strawberryA.field(description="""Entity primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
@@ -475,3 +493,17 @@ class Query:
         print('db response', result.name)
         return result
     
+
+    from strawberry.scalars import JSON
+
+    @strawberryA.field(description="""Empty university""")
+    async def importUG(self, info: strawberryA.types.Info, ug: JSON) -> GroupGQLModel:
+        newId = id 
+        if newId is None:
+            newId = f'{uuid.uuid1()}'
+
+        newId = await importUniversity(AsyncSessionFromInfo(info), id=newId, data=ug)
+        print('random university id', newId)
+        result = await resolveGroupById(AsyncSessionFromInfo(info), newId)
+        print('db response', result.name)
+        return result

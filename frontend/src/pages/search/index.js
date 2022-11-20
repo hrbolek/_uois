@@ -168,6 +168,7 @@ export const SearchPage = (props) => {
             <Col>
             </Col>
             <Col>
+                <div style={{"height": "40vh"}}></div> <br />
                 <SearchSmall {...props} />
             </Col>
             <Col>

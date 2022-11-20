@@ -1,6 +1,9 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
 FROM python:3.9-slim-buster as prepare
 
+# instalace curl, aby bylo mozne zprovoznit standardni healthcheck
+RUN apt update && apt install curl -y && rm -rf /var/cache/apk/*
+
 EXPOSE 8000
 
 # Keeps Python from generating .pyc files in the container

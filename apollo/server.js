@@ -27,6 +27,7 @@ const getENV = (name, defaultValue) => {
       subgraphs: [
         { name: "usersAndGroups", url: "http://gql_ug:8000/gql" },
        // { name: "workflows", url: "http://gql_workflow:8000/gql" },
+        { name: "externalids", url: "http://gql_externalids:8000/gql" },
         { name: "events", url: "http://gql_events:8000/gql" },
 
         /* 
