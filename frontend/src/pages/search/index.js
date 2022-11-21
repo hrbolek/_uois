@@ -8,8 +8,6 @@ import { root } from '../../helpers/index';
 import { useQueryGQL, Loading, LoadingError } from '../../helpers/index';
 import { useEffect, useState } from "react";
 
-import ReactSearchBox from "react-search-box";
-
 export const TeacherSmall = (props) => {
     return (
         <>

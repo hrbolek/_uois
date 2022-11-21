@@ -34,9 +34,9 @@ services:
       start_period: 60s
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
-    ports: #v deploymentu by nebylo zadne mapovani portu
-      # vnejsi port : port, kde sluzbu poskytuje kontejner
-      - 31121:3000
+    # ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+    #   - 31121:3000
 
   gql_ug:
     image: gql_ug
@@ -59,9 +59,9 @@ services:
       start_period: 60s
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
-    ports: #v deploymentu by nebylo zadne mapovani portu
-      # vnejsi port : port, kde sluzbu poskytuje kontejner
-      - 31120:8000
+    # ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+    #   - 31120:8000
 
   gql_externalids:
     image: gql_externalids
@@ -85,9 +85,9 @@ services:
       start_period: 60s
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
-    ports: #v deploymentu by nebylo zadne mapovani portu
-      # vnejsi port : port, kde sluzbu poskytuje kontejner
-      - 31125:8000
+    # ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+    #   - 31125:8000
 
   gql_workflow:
     image: gql_workflow
@@ -111,9 +111,9 @@ services:
       start_period: 60s
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
-    ports: #v deploymentu by nebylo zadne mapovani portu
-      # vnejsi port : port, kde sluzbu poskytuje kontejner
-      - 31123:8000
+    # ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+    #   - 31123:8000
 
   gql_empty:
     image: gql_empty
@@ -137,9 +137,9 @@ services:
       start_period: 60s
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
-    ports: #v deploymentu by nebylo zadne mapovani portu
-      # vnejsi port : port, kde sluzbu poskytuje kontejner
-      - 31128:8000
+    # ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+    #   - 31128:8000
 
   gql_events:
     image: gql_events
