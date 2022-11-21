@@ -24,6 +24,76 @@ def UUIDColumn(name=None):
 #
 ###########################################################################################################################
 
+class UserModel(BaseModel):
+    __tablename__ = 'users'
+
+    id = UUIDColumn()
+    name = Column(String)
+    surname = Column(String)
+    email = Column(String)
+    valid = Column(Boolean, default=True)
+    startdate = Column(DateTime)
+    enddate = Column(DateTime)
+    
+    lastchange = Column(DateTime, default=datetime.datetime.now)
+    externalId = Column(BigInteger, index=True)
+
+    #relationships
+
+class rank_history(BaseModel):
+    id = UUIDColumn()
+    rank_from = Column(int)
+    rank_until = Column(Integer) ###kunzultovat Int/Integer
+    rank_name = Column(String)
+    #relationships
+
+class study(BaseModel):
+    id = UUIDColumn()
+    study_place = Column(String)
+    study_from = Column(int)
+    study_until = Column(int)
+    study_program = Column(String)
+    #relationships
+
+class certificate(BaseModel):
+    id = UUIDColumn()
+    certificate_level = Column(String)
+    certificate_name = Column(String)
+    certificate_validity_from = Column(int)
+    certificate_validity_until = Column(int)
+    #relationships
+
+class certificate_types(BaseModel):
+    id = UUIDColumn()
+    certificate_types_kind = Column(String)
+    #relationships
+
+class medal(BaseModel):
+    id = UUIDColumn()
+    medal_year = Column(int)
+    medal_name = Column(String)
+    #relationships
+
+class medal_types(BaseModel):
+    id = UUIDColumn()
+    medal_types_kind = Column(String)
+    #relationships
+
+class work_history(BaseModel):
+    id = UUIDColumn()
+    work_from = Column(int)
+    work_until = Column(int)
+    work_position = Column(String)
+    work_ico = Column(String)
+    #relationships
+
+class related_docs(BaseModel):
+    id = UUIDColumn()
+    doc_name = Column(String)
+    #relationships
+
+
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 

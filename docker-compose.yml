@@ -9,6 +9,7 @@ services:
       - gql_ug
       - gql_workflow
       - gql_events
+      - gql_project11
     ports:
       - 31121:3000
 
@@ -39,10 +40,10 @@ services:
     ports:
       - 31123:8000
 
-  gql_empty:
-    image: gql_empty
+  gql_project11:
+    image: gql_project11
     build:
-      context: ./gql_empty
+      context: ./gql_project11
     environment: 
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
