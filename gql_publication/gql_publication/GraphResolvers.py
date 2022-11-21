@@ -32,7 +32,6 @@ resolverUpdateAuthor = createUpdateResolver(PublicationModel)
 resolveInsertAuthor = createInsertResolver(PublicationModel)
 
 
-
 ## PublicationType resolvers
 resolveRoleTypeById = createEntityByIdGetter(PublicationTypeModel)
 resolveRoleTypeAll = createEntityGetter(PublicationTypeModel)

@@ -53,7 +53,7 @@ class Query:
         result = f'Hello {id}'
         return result
 
-     @strawberryA.field(description="""Returns a list of publications (paged)""")
+    @strawberryA.field(description="""Returns a list of publications (paged)""")
     async def publication_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[PublicationGQLModel]:
         result = await resolveUserAll(AsyncSessionFromInfo(info), skip, limit)
         return result
