@@ -24,30 +24,42 @@ def UUIDColumn(name=None):
 #
 ###########################################################################################################################
 
-class FormModel(BaseModel):
-    __tablename__ = "forms"
+# class FormModel(BaseModel):
+#     __tablename__ = "forms"
+#     id = UUIDColumn()
+#     created_at = Column(DateTime, default=datetime.datetime.now)
+#     name = Column(String)
+#     creator_id = Column(ForeignKey('users.id'))
+#     creator = relationship('UserModel', back_populates='forms')
+# class SectionModel(BaseModel):
+#     __tablename__ = "formsSections"
+#     id = UUIDColumn()
+#     form_id = Column(ForeignKey("forms.id"), primary_key=True)
+
+
+# class BlockModel(BaseModel):
+#     __tablename__ = "blocks"
+#     id = UUIDColumn()
+#     section_id = Column(ForeignKey("formsSections.id"), primary_key=True)
+
+# class ItemModel(BaseModel):
+#     __tablename__ = "items"
+#     id = UUIDColumn()
+#     block_id = Column(ForeignKey("blocks.id"), primary_key=True)
+#     name = Column(String(100), nullable=False)
+
+
+class RequestModel(BaseModel):
+    __tablename__ = "requests"
     id = UUIDColumn()
-    created_at = Column(DateTime, default=datetime.datetime.now)
-    name = Column(String)
     creator_id = Column(ForeignKey('users.id'))
-    creator = relationship('UserModel', back_populates='forms')
-class SectionModel(BaseModel):
-    __tablename__ = "formsSections"
-    id = UUIDColumn()
-    form_id = Column(ForeignKey("forms.id"), primary_key=True)
-
-
-class BlockModel(BaseModel):
-    __tablename__ = "blocks"
-    id = UUIDColumn()
-    section_id = Column(ForeignKey("formsSections.id"), primary_key=True)
-
-class ItemModel(BaseModel):
-    __tablename__ = "items"
-    id = UUIDColumn()
-    block_id = Column(ForeignKey("blocks.id"), primary_key=True)
-    name = Column(String(100), nullable=False)
-
+    startTime = Column(DateTime)
+    endTime = Column(DateTime)
+    name = Column(String)
+    detailRequest = Column(String)
+   
+    
+    # sections = relationship("SectionModel", back_populates="request", cascade="all, delete, delete-orphan")
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
