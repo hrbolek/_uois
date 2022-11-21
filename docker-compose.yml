@@ -1,10 +1,10 @@
 version: "3.9"
 
 services:
-  frontend:
-    image: frontend
-    build:
-      context: ./frontend
+  # frontend:
+  #   image: frontend
+  #   build:
+  #     context: ./frontend
 
   apollo:
     image: apollo
@@ -12,8 +12,7 @@ services:
       context: ./apollo
     depends_on:
       - gql_ug
-      - gql_workflow
-      - gql_events
+      - gql_publication
     ports:
       - 31121:3000
 
@@ -30,24 +29,11 @@ services:
     ports:
       - 31120:8000
 
-  gql_workflow:
-    image: gql_workflow
-    build:
-      context: ./gql_workflow
-    environment: 
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=example
-      - POSTGRES_DB=data
-    depends_on:
-      - postgres
-      - gql_ug
-    ports:
-      - 31123:8000
 
-  gql_empty:
-    image: gql_empty
+  gql_publication:
+    image: gql_publication
     build:
-      context: ./gql_empty
+      context: ./gql_publication
     environment: 
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -57,17 +43,6 @@ services:
       - gql_ug
     ports:
       - 31128:8000
-
-  gql_events:
-    image: gql_events
-    build:
-      context: ./gql_events
-    environment: 
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=example
-      - POSTGRES_DB=data
-    depends_on:
-      - postgres
 
   postgres:
     image: postgres
