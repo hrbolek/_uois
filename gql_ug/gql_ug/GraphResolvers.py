@@ -16,7 +16,7 @@ from gql_ug.DBDefinitions import GroupTypeModel, RoleTypeModel
 ## user resolvers
 resolveUserById = createEntityByIdGetter(UserModel)
 resolveUserAll = createEntityGetter(UserModel)
-resolveMembershipForUser = create1NGetter(MembershipModel, foreignKeyName='user_id', options=joinedload(MembershipModel.group))
+resolveAuthorForUser = create1NGetter(MembershipModel, foreignKeyName='user_id', options=joinedload(MembershipModel.group))
 resolveRolesForUser = create1NGetter(RoleModel, foreignKeyName='user_id', options=joinedload(RoleModel.roletype))
 
 resolverUpdateUser = createUpdateResolver(UserModel)

@@ -25,7 +25,6 @@ class UserModel(BaseModel):
     __tablename__ = 'users'
 
     id = UUIDColumn()
-
     author = relationship('AuthorModel', back_populates='user')
 
 class PublicationModel(BaseModel):
