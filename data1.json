@@ -3,7 +3,7 @@
         "requests": [
             {
                 "id":"",
-                "creator_id":"",
+                "creator_id":"", 
                 "create_at": "",
                 "end_at": "",
                 "name":"vacation",
@@ -40,14 +40,13 @@
                             "name" : "STUDENT",
                             "order": 1,
                             "Info":{
+                                "id":"",
                                 "name" : "",
-                                "group" : "",
-                                "program": ""
+                                "group" : "23-5KB-C",
+                                "program": "",
+                                "email": ""
                             },
-                            "REQUEST":{
-                                "description": ""
-                            }
-                            
+                            "description": ""
                         },
                         
                         {
@@ -57,12 +56,12 @@
                             "name" : "TEACHER",
                             "order": 2,
                             "Info":{
+                                "id":"",
                                 "name" : "",
-                                "nameDepartment" : "K209"
+                                "nameDepartment" : "K209",
+                                "email": ""
                             },
-                            "SUGGESTION":{
-                                "description": ""
-                            }
+                            "description": ""
                                 
                         },
 
@@ -73,16 +72,16 @@
                             "name" : "DEAN",
                             "order": 3,
                             "Info":{
-                                "name" : ""
+                                "id":"",
+                                "name" : "",
+                                "email": ""
                             },
-                            "SUGGESTION":{
-                                "description": ""
-                            }
-
+                            "description": ""
                         }
                         
                     ]
-                }
+                },
+                "status": "pending"
             }
 
         ]

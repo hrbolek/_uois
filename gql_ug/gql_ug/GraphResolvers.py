@@ -23,6 +23,7 @@ resolverUpdateUser = createUpdateResolver(UserModel)
 resolveInsertUser = createInsertResolver(UserModel)
 
 async def resolveUsersByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[UserModel]:
+    """Function for searching users by three letters"""
     if len(letters) < 3:
         return []
     stmt = select(UserModel).where((UserModel.name + ' ' + UserModel.surname).like(f'%{letters}%'))
@@ -43,7 +44,9 @@ resolveRolesForGroup = create1NGetter(RoleModel, foreignKeyName='group_id')
 resolveUpdateGroup = createUpdateResolver(GroupModel)
 resolveInsertGroup = createInsertResolver(GroupModel)
 
+## membership resolvers - function for 
 async def resolveGroupsByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[GroupModel]:
+    """Function for searching groups by three letters"""
     if len(letters) < 3:
         return []
     stmt = select(GroupModel).where(GroupModel.name.like(f'%{letters}%'))

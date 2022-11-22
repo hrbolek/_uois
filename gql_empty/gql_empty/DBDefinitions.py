@@ -24,42 +24,65 @@ def UUIDColumn(name=None):
 #
 ###########################################################################################################################
 
-# class FormModel(BaseModel):
-#     __tablename__ = "forms"
-#     id = UUIDColumn()
-#     created_at = Column(DateTime, default=datetime.datetime.now)
-#     name = Column(String)
-#     creator_id = Column(ForeignKey('users.id'))
-#     creator = relationship('UserModel', back_populates='forms')
-# class SectionModel(BaseModel):
-#     __tablename__ = "formsSections"
-#     id = UUIDColumn()
-#     form_id = Column(ForeignKey("forms.id"), primary_key=True)
-
-
-# class BlockModel(BaseModel):
-#     __tablename__ = "blocks"
-#     id = UUIDColumn()
-#     section_id = Column(ForeignKey("formsSections.id"), primary_key=True)
-
-# class ItemModel(BaseModel):
-#     __tablename__ = "items"
-#     id = UUIDColumn()
-#     block_id = Column(ForeignKey("blocks.id"), primary_key=True)
-#     name = Column(String(100), nullable=False)
-
-
 class RequestModel(BaseModel):
-    __tablename__ = "requests"
+    __table__ = "requests"
     id = UUIDColumn()
-    creator_id = Column(ForeignKey('users.id'))
-    startTime = Column(DateTime)
-    endTime = Column(DateTime)
+    creatorId = Column(ForeignKey('users.id'))
     name = Column(String)
-    detailRequest = Column(String)
-   
+    createAt = Column(DateTime)
+    lastUpdate = Column(DateTime)
+    status = Column(String)
+
+    sections = relationship("SectionModel", back_populates="request")
+
+
+class SectionModel(BaseModel):
+    __table__ = "formsSections"
+    id = UUIDColumn()
+    requestId = Column(ForeignKey("requests.id"), primary_key=True)
+    name = Column(String)
+    createAt = Column(DateTime)
+    lastUpdate = Column(DateTime)
+    request = relationship("RequestModel", back_populates="sections")
+
+    parts = relationship("PartModel", back_populates="section")
+
+class PartModel(BaseModel):
+    __table__ = "parts"
+    id = UUIDColumn()
+    sectionId = Column(ForeignKey("formsSections.id"), primary_key=True)
+    name = Column(String)
+    createAt = Column(DateTime)
+    lastUpdate = Column(DateTime)
+    order = Column(Integer)
+    section = relationship("SectionModel", back_populates="parts")
+    items = relationship("ItemModel", back_populates="part")
+
+class ItemModel(BaseModel):
+    __table__ = "items"
+    id = UUIDColumn()
+    partId = Column(ForeignKey("parts.id"), primary_key=True)
+    name = Column(String(100), nullable=False)
+    createAt = Column(DateTime)
+    lastUpdate = Column(DateTime)
+    order = Column(Integer)
+    part = relationship("PartModel", back_populates="items")
+
+class UserModel(BaseModel):
+    __tablename__ = "users"
+    id = UUIDColumn()
+    name = Column(String)
+    email = Column(String)
+    password = Column(String)
+    created_at = Column(DateTime, default=datetime.datetime.now)
+    request = relationship('FormModel', back_populates='user')
+
+
     
-    # sections = relationship("SectionModel", back_populates="request", cascade="all, delete, delete-orphan")
+
+
+
+
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

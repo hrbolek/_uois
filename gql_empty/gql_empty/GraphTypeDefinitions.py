@@ -29,3 +29,5 @@ class Query:
     async def say_hello(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[str, None]:
         result = f'Hello {id}'
         return result
+
+
