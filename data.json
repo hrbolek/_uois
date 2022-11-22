@@ -4,18 +4,6 @@
             {
                 "id": "1",
                 "type": "A1",
-                "requester":{
-                    "id":"P01",
-                    "name": "Thanh Hiep",
-                    "surname": "Nguyen",
-                    "email":"thanhhiep.nguyen@unob.cz"
-                },
-                "approver":{
-                    "id":"P02",
-                    "name": "Petr",
-                    "surname": "Frantis",
-                    "email":"petr.frantis@unob.cz"
-                },
                 "requesterId": "P01",
                 "approverId":"P02",
                 "createdAt": "November 15",
@@ -78,6 +66,23 @@
                         ]
                     }
                 ]
+            }
+        ],
+        "requesters":[
+            {
+            "id":"P01",
+            "name": "Thanh Hiep",
+            "surname": "Nguyen",
+            "email":"thanhhiep.nguyen@unob.cz"
+            }
+        ],
+    
+        "approvers":[
+            {
+            "id":"P02",
+            "name": "Petr",
+            "surname": "Frantis",
+            "email":"petr.frantis@unob.cz"
             }
         ]
     }
