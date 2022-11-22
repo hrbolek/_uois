@@ -28,69 +28,100 @@ class UserModel(BaseModel):
     __tablename__ = 'users'
 
     id = UUIDColumn()
-    name = Column(String)
-    surname = Column(String)
-    email = Column(String)
-    valid = Column(Boolean, default=True)
-    startdate = Column(DateTime)
-    enddate = Column(DateTime)
+    #name = Column(String)
+    #surname = Column(String)
+    #email = Column(String)
+    #valid = Column(Boolean, default=True)
+    #startdate = Column(DateTime)
+    #enddate = Column(DateTime)
     
-    lastchange = Column(DateTime, default=datetime.datetime.now)
-    externalId = Column(BigInteger, index=True)
+    #lastchange = Column(DateTime, default=datetime.datetime.now)
+    #externalId = Column(BigInteger, index=True)
 
-    #relationships
+    ranks = relationship('rank_history', back_populates='user')
+    studies = relationship('study', back_populates='user')
+    certificates = relationship('certificate', back_populates='user')
+    medals = relationship('medal', back_populates='user')
+    work_histories = relationship('work_history', back_populates='user')
+    related_docs = relationship('related_doc', back_populates='user')
 
 class rank_history(BaseModel):
+    __tablename__ = 'ranks'
+
     id = UUIDColumn()
     rank_from = Column(int)
     rank_until = Column(Integer) ###kunzultovat Int/Integer
     rank_name = Column(String)
-    #relationships
+    
+    user = relationship('UserModel', back_populates = 'rank_history')
 
 class study(BaseModel):
+    __tablename__ = 'studies'
+
     id = UUIDColumn()
     study_place = Column(String)
     study_from = Column(int)
     study_until = Column(int)
     study_program = Column(String)
-    #relationships
+    
+    user = relationship('UserModel', back_populates = 'study') ### konzultovat název
 
 class certificate(BaseModel):
+    __tablename__ = 'certficates'
+
     id = UUIDColumn()
     certificate_level = Column(String)
     certificate_name = Column(String)
     certificate_validity_from = Column(int)
     certificate_validity_until = Column(int)
-    #relationships
+    
+    user = relationship('UserModel', back_populates = 'certificate')
+    certificate_type = relationship('certificate_type', back_populates = 'certificate')
 
-class certificate_types(BaseModel):
+class certificate_type(BaseModel):
+    __tablename__ = 'certificate_types'
+
     id = UUIDColumn()
-    certificate_types_kind = Column(String)
-    #relationships
+    certificate_type_kind = Column(String)
+    
+    certificates = relationship('certificate', back_populates = 'certificate_type')
 
 class medal(BaseModel):
+    __tablename__ = 'medals'
+
     id = UUIDColumn()
     medal_year = Column(int)
     medal_name = Column(String)
-    #relationships
+    
+    user = relationship('UserModel', back_populates = 'medal')
+    medal_type = relationship('medal_type', back_populates = 'medal')
 
-class medal_types(BaseModel):
+class medal_type(BaseModel):
+    __tablename__ = 'medal_types'
+
     id = UUIDColumn()
-    medal_types_kind = Column(String)
-    #relationships
+    medal_type_kind = Column(String)
+    
+    medals = relationship('medal', back_populates = 'medal_type')
 
 class work_history(BaseModel):
+    __tablename__ = 'work_histories'
+
     id = UUIDColumn()
     work_from = Column(int)
     work_until = Column(int)
     work_position = Column(String)
     work_ico = Column(String)
-    #relationships
+    
+    user = relationship('UserModel', back_populates = 'work_history')
 
-class related_docs(BaseModel):
+class related_doc(BaseModel):
+    __tablename__ = 'related_docs'
+
     id = UUIDColumn()
     doc_name = Column(String)
-    #relationships
+    
+    user = relationship('UserModel', back_populates = 'related_doc')
 
 
 
