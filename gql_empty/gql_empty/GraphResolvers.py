@@ -31,12 +31,20 @@ from uoishelpers.resolvers import putSingleEntityToDb
 from gql_empty.DBDefinitions import BaseModel, RequestModel, SectionModel, PartModel, ItemModel, UserModel
 
 
-## request resolvers
-resolveRequestById = createEntityByIdGetter(RequestModel)
-resolveRequestAll = createEntityGetter(RequestModel)
-resolveSectionsForRequest = create1NGetter(SectionModel, foreignKeyName='request_id', options=joinedload(SectionModel.parts))
-resolveUserForRequest = createEntityByIdGetter(UserModel)
+## request resolvers, 
+# it will use for form the table if y know the id , u can extract it from the database
 
+resolveRequestById = createEntityByIdGetter(RequestModel)
+# try to get from the database ..of request u can gert multiblae request 
+resolveRequestAll = createEntityGetter(RequestModel)
+
+
+# allow u to retry which are related to the request if i have the request id 
+# resolveSectionsForRequest = create1NGetter(SectionModel, foreignKeyName='request_id', options=joinedload(SectionModel.parts))
+resolveSectionsForRequest = create1NGetter(SectionModel, foreignKeyName='request_id')
+# #
+# resolveUserForRequest = createEntityByIdGetter(UserModel)
+# bith allow update request maske cration of request model 
 resolverUpdateRequest = createUpdateResolver(RequestModel)
 resolveInsertRequest = createInsertResolver(RequestModel)
 
@@ -51,11 +59,12 @@ async def resolveRequestsByThreeLetters(session: AsyncSession, validity = None, 
     dbSet = await session.execute(stmt)
     return dbSet.scalars()
 
-## section resolvers
+## section resolvers -- okie can use it :)))))))
 resolveSectionById = createEntityByIdGetter(SectionModel)
 resolveSectionAll = createEntityGetter(SectionModel)
-resolvePartsForSection = create1NGetter(PartModel, foreignKeyName='section_id', options=joinedload(PartModel.items))
-resolveRequestForSection = createEntityByIdGetter(RequestModel)
+resolvePartsForSection = create1NGetter(PartModel, foreignKeyName='section_id')
+
+# resolveRequestForSection = createEntityByIdGetter(RequestModel)
 
 resolverUpdateSection = createUpdateResolver(SectionModel)
 

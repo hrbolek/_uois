@@ -211,7 +211,7 @@ async def createSystemDataStructureRoleTypes(asyncSessionMaker):
     roleTypeNamesInDatabase = [roleType['name'] for roleType in dbRoleTypes]
 
     unsavedRoleTypes = list(filter(lambda roleType: not(roleType['name'] in roleTypeNamesInDatabase), roleTypes))
-
+    
     # ted by melo byt pole prazdne
     print('roletypes not found in database')
     print(unsavedRoleTypes)

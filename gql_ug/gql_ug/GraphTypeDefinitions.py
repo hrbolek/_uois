@@ -11,6 +11,7 @@ def AsyncSessionFromInfo(info):
 from gql_ug.GraphResolvers import resolveMembershipById
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a relation between an user and a group""")
 class MembershipGQLModel:
+    """"""
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         result = await resolveMembershipById(AsyncSessionFromInfo(info), id)

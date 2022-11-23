@@ -28,7 +28,7 @@ const getENV = (name, defaultValue) => {
         { name: "usersAndGroups", url: "http://gql_ug:8000/gql" },
         { name: "workflows", url: "http://gql_workflow:8000/gql" },
         { name: "events", url: "http://gql_events:8000/gql" },
-
+        { name: "requests", url: "http://gql_empty:8000/gql" },
         /* 
         * ###########################################################################################################################
         *
@@ -41,7 +41,7 @@ const getENV = (name, defaultValue) => {
           // Graphql endpoint is the url of the graphql server, it helps the gateway to fetch the schema of the subgraph
           // subgraph is used to identify the subgraph in the gateway
           // racil help
-          { name: "test", url: "http://localhost:8000/gql" },
+          // { name: "test", url: "http://localhost:8000/gql" },
       ],
     }),
   })

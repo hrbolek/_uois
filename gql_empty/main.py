@@ -16,6 +16,8 @@ from gql_empty.GraphTypeDefinitions import Query
 ## https://docs.sqlalchemy.org/en/14/core/future.html?highlight=select#sqlalchemy.future.select
 from gql_empty.DBDefinitions import startEngine, ComposeConnectionString
 
+from gql_empty.DBFeeder import createBasicDataStructure
+
 ## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
 #from gql_workflow.DBFeeder import createSystemDataStructureRoleTypes, createSystemDataStructureGroupTypes
 
@@ -48,12 +50,14 @@ async def RunOnceAndReturnSessionMaker():
     # zde definujte do funkce asyncio.gather
     # vlozte asynchronni funkce, ktere maji data uvest do prvotniho konzistentniho stavu
    
-    # await asyncio.gather( # concurency running :)
+    await asyncio.gather( # concurency running :)
     # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
     # musi byt asynchronniho typu (async def ...)
+        createBasicDataStructure()
         # createSystemDataStructureRoleTypes(result),
         # createSystemDataStructureGroupTypes(result)
-    # )
+
+    )
 
     ###########################################################################################################################
     print(f'all done')
@@ -98,3 +102,6 @@ print('All initialization is done')
 # pokud jste pripraveni testovat GQL funkcionalitu, rozsirte apollo/server.js
 # 
 ###########################################################################################################################
+
+
+

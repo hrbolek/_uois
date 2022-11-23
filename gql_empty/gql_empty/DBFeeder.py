@@ -1,7 +1,10 @@
 from doctest import master
 from functools import cache
-from gql_workflow.DBDefinitions import BaseModel, UserModel, GroupModel, RoleTypeModel
-
+# from gql_workflow.DBDefinitions import BaseModel, UserModel, GroupModel, RoleTypeModel
+# import the base model, when appolo sever ask your container for the first time, gql will ask 
+# next step define some resolver, how to use resolver in the file graptype
+# check all data strcture in database if it have -- (work)
+from gql_empty.DBDefinitions import BaseModel, UserModel, RequestModel, SectionModel, PartModel, ItemModel
 import random
 import itertools
 from functools import cache
@@ -26,3 +29,5 @@ def singleCall(asyncFunc):
 #
 ###########################################################################################################################
 
+async def createBasicDataStructure():
+    print()
