@@ -31,22 +31,41 @@ from uoishelpers.resolvers import putSingleEntityToDb
 from gql_empty.DBDefinitions import BaseModel, RequestModel, SectionModel, PartModel, ItemModel, UserModel
 
 
-## request resolvers, 
+## request resolvers
 # it will use for form the table if y know the id , u can extract it from the database
-
 resolveRequestById = createEntityByIdGetter(RequestModel)
 # try to get from the database ..of request u can gert multiblae request 
 resolveRequestAll = createEntityGetter(RequestModel)
-
-
 # allow u to retry which are related to the request if i have the request id 
 # resolveSectionsForRequest = create1NGetter(SectionModel, foreignKeyName='request_id', options=joinedload(SectionModel.parts))
 resolveSectionsForRequest = create1NGetter(SectionModel, foreignKeyName='request_id')
-# #
 # resolveUserForRequest = createEntityByIdGetter(UserModel)
 # bith allow update request maske cration of request model 
 resolverUpdateRequest = createUpdateResolver(RequestModel)
 resolveInsertRequest = createInsertResolver(RequestModel)
+
+## section resolvers -- okie can use it :)))))))
+resolveSectionById = createEntityByIdGetter(SectionModel)
+resolveSectionAll = createEntityGetter(SectionModel)
+resolvePartsForSection = create1NGetter(PartModel, foreignKeyName='section_id')
+
+resolverUpdateSection = createUpdateResolver(SectionModel)
+resolveInsertSection = createInsertResolver(SectionModel)
+
+## part resolvers -- okie can use it :)))))))
+resolvePartById = createEntityByIdGetter(PartModel)
+resolvePartAll = createEntityGetter(PartModel)
+resolveItemsForPart = create1NGetter(ItemModel, foreignKeyName='part_id')
+
+resolverUpdatePart = createUpdateResolver(PartModel)
+resolveInsertPart = createInsertResolver(PartModel)
+
+## item resolvers -- okie can use it :)))))))
+resolveItemById = createEntityByIdGetter(ItemModel)
+resolveItemAll = createEntityGetter(ItemModel)
+
+resolverUpdateItem = createUpdateResolver(ItemModel)
+resolveInsertItem = createInsertResolver(ItemModel)
 
 """Function for searching requests by three letters"""
 async def resolveRequestsByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[RequestModel]:
@@ -59,13 +78,5 @@ async def resolveRequestsByThreeLetters(session: AsyncSession, validity = None, 
     dbSet = await session.execute(stmt)
     return dbSet.scalars()
 
-## section resolvers -- okie can use it :)))))))
-resolveSectionById = createEntityByIdGetter(SectionModel)
-resolveSectionAll = createEntityGetter(SectionModel)
-resolvePartsForSection = create1NGetter(PartModel, foreignKeyName='section_id')
-
-# resolveRequestForSection = createEntityByIdGetter(RequestModel)
-
-resolverUpdateSection = createUpdateResolver(SectionModel)
 
 
