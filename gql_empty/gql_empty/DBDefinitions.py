@@ -66,7 +66,7 @@ class PartModel(BaseModel):
     items = relationship("ItemModel", back_populates="part")
 
 class ItemModel(BaseModel):
-    __tablename__ = "items"
+    __tablename__ = "form_items"
 
     id = UUIDColumn()
     name = Column(String(100), nullable=False)
