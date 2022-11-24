@@ -25,10 +25,11 @@ def UUIDColumn(name=None):
 ###########################################################################################################################
 
 class RequestModel(BaseModel):
-    __table__ = "requests"
+    __tablename__ = "forms"
+
     id = UUIDColumn()
-    creator_id = Column(ForeignKey('users.id'))
     name = Column(String)
+    creator_id = Column(ForeignKey('users.id'))
     createAt = Column(DateTime)
     lastUpdate = Column(DateTime)
     status = Column(String) 
@@ -37,13 +38,14 @@ class RequestModel(BaseModel):
 
 
 class SectionModel(BaseModel):
-    __table__ = "sections"
-    id = UUIDColumn()
+    __tablename__ = "formsections"
+    
     # requestId = Column(ForeignKey("requests.id"), primary_key=True)
     #key is st sys structure name pr as id, fk follpw by id in lower letter
-    request_id = Column(ForeignKey("requests.id"), primary_key=True)
+    id = UUIDColumn()
     name = Column(String)
     # createAt = Column(DateTime)
+    request_id = Column(ForeignKey("forms.id"), primary_key=True)
     createAt = Column(DateTime)
     lastUpdate = Column(DateTime)
     order = Column(Integer)
@@ -52,24 +54,30 @@ class SectionModel(BaseModel):
     parts = relationship("PartModel", back_populates="section")
 
 class PartModel(BaseModel):
-    __table__ = "parts"
+    __tablename__ = "formparts"
+
     id = UUIDColumn()
-    section_id = Column(ForeignKey("formsSections.id"), primary_key=True)
     name = Column(String)
+
     createAt = Column(DateTime)
     lastUpdate = Column(DateTime)
     order = Column(Integer)
+
+    section_id = Column(ForeignKey("formsections.id"), primary_key=True)
     section = relationship("SectionModel", back_populates="parts")
     items = relationship("ItemModel", back_populates="part")
 
 class ItemModel(BaseModel):
-    __table__ = "items"
+    __tablename__ = "formitems"
+
     id = UUIDColumn()
-    part_id = Column(ForeignKey("parts.id"), primary_key=True)
     name = Column(String(100), nullable=False)
+
     createAt = Column(DateTime)
     lastUpdate = Column(DateTime)
     order = Column(Integer)
+
+    part_id = Column(ForeignKey("formparts.id"), primary_key=True)
     part = relationship("PartModel", back_populates="items")
 
 class UserModel(BaseModel):
