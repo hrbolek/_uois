@@ -25,7 +25,7 @@ def UUIDColumn(name=None):
 ###########################################################################################################################
 
 class RequestModel(BaseModel):
-    __tablename__ = "requests"
+    __tablename__ = "form_table"
 
     id = UUIDColumn()
     name = Column(String)
@@ -38,12 +38,12 @@ class RequestModel(BaseModel):
 
 
 class SectionModel(BaseModel):
-    __tablename__ = "sections"
+    __tablename__ = "form_sections"
     #key is st sys structure name pr as id, fk follpw by id in lower letter
     id = UUIDColumn()
     name = Column(String)
     # createAt = Column(DateTime)
-    request_id = Column(ForeignKey("requests.id"), primary_key=True)
+    request_id = Column(ForeignKey("form_table.id"), primary_key=True)
     createAt = Column(DateTime)
     lastUpdate = Column(DateTime)
     order = Column(Integer)
@@ -52,7 +52,7 @@ class SectionModel(BaseModel):
     parts = relationship("PartModel", back_populates="section")
 
 class PartModel(BaseModel):
-    __tablename__ = "parts"
+    __tablename__ = "form_parts"
 
     id = UUIDColumn()
     name = Column(String)
@@ -61,7 +61,7 @@ class PartModel(BaseModel):
     lastUpdate = Column(DateTime)
     order = Column(Integer)
 
-    section_id = Column(ForeignKey("formsections.id"), primary_key=True)
+    section_id = Column(ForeignKey("form_sections.id"), primary_key=True)
     section = relationship("SectionModel", back_populates="parts")
     items = relationship("ItemModel", back_populates="part")
 
@@ -76,7 +76,7 @@ class ItemModel(BaseModel):
     lastUpdate = Column(DateTime)
     order = Column(Integer)
 
-    part_id = Column(ForeignKey("parts.id"), primary_key=True)
+    part_id = Column(ForeignKey("form_parts.id"), primary_key=True)
     part = relationship("PartModel", back_populates="items")
 
 class UserModel(BaseModel):
