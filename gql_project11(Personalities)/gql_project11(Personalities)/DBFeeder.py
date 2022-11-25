@@ -32,7 +32,7 @@ def determineCertificateTypes():
     certificateTypes = [
         {'name': 'jazykové', 'en_name': 'language', 'id': 'db9ba8c3-3d6e-4190-bfe7-d401586dd282'},
         {'name': 'vědecké', 'en_name': 'science', 'id': 'bc988cb6-38a7-45a1-97ec-d1e220621355'},
-        {'name': 'sportovní', 'en_name': 'sport', 'id': '3f1351ca-0624-43bb-9c93-23e6478fb1c1'}
+        {'name': 'sportovní', 'en_name': 'sport', 'id': '3f1351ca-0624-43bb-9c93-23e6478fb1c1'},
         {'name': 'pracovní', 'en_name': 'work', 'id': 'e4713dd6-69e6-4d35-964b-1bca141899eb'}
     ]
     return certificateTypes
@@ -43,14 +43,14 @@ def determineMedalTypes():
         #Řády a vyznamenání České republiky
         {'name': 'Řád Bílého lva', 'id': 'cf4c274c-6cf1-11ed-a1eb-0242ac120002' },
         {'name': 'Řád Tomáše Garrigua Masaryka', 'id': 'cf4c2ef4-6cf1-11ed-a1eb-0242ac120002'},
-        {'name': 'Medaile za hrdinství', 'id': 'cf4c3052-6cf1-11ed-a1eb-0242ac120002'}
-        {'name': 'Medaile za zásluhy', 'id': 'cf4c3188-6cf1-11ed-a1eb-0242ac120002'}
+        {'name': 'Medaile za hrdinství', 'id': 'cf4c3052-6cf1-11ed-a1eb-0242ac120002'},
+        {'name': 'Medaile za zásluhy', 'id': 'cf4c3188-6cf1-11ed-a1eb-0242ac120002'},
 
         #Vojenské resortní vyznamenání
         {'name': 'Záslužný kříž', 'id': '1ebfcc2a-6cf2-11ed-a1eb-0242ac120002' },
         {'name': 'Medaile za zranění', 'id': '1ebfcf2c-6cf2-11ed-a1eb-0242ac120002'},
-        {'name': 'Medaile ministra obrany za službu v zahraničí', 'id': '1ebfd076-6cf2-11ed-a1eb-0242ac120002'}
-        {'name': 'Medaile Armády České republiky', 'id': '1ebfd198-6cf2-11ed-a1eb-0242ac120002'}
+        {'name': 'Medaile ministra obrany za službu v zahraničí', 'id': '1ebfd076-6cf2-11ed-a1eb-0242ac120002'},
+        {'name': 'Medaile Armády České republiky', 'id': '1ebfd198-6cf2-11ed-a1eb-0242ac120002'},
 
         #Čestné odznaky
         {'name': 'Čestný pamětní odznak za službu míru', 'id': '97edb3fc-a4d2-4295-a8ca-e7e97fba87e1' },
