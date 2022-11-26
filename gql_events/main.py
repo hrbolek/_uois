@@ -1,84 +1,102 @@
 from typing import List
-from urllib.request import Request
-
 import typing
-import strawberry as strawberryB
 
-def randomEvent(id = 1):
-    return {'id': id, 'name': f'Event({id})', 'users': [{'id': "3edba4da-d136-42d8-9f65-2e63e3e9d3f4"}]}
-
-def randomUser(id = 1):
-    return {'id': id, 'name': 'John', 'surname': 'Leon', 'groups': [{'id': 1}]}
-
-def resolveDictField(self, info: strawberryB.types.Info) -> str:
-    return self[info.field_name]
-
-
-
-def get_id(self) -> strawberryB.ID:
-    return self['id']
-
-@strawberryB.federation.type(extend=True, keys=["id"])
-class UserGQLModel:
-
-    id: strawberryB.ID = strawberryB.federation.field(external=True)
-
-    @strawberryB.field
-    def events(self) -> typing.List['EventGQLModel']:
-        return [randomEvent(id) for id in range(10)]
-
-#    @classmethod
-#    def resolve_reference(cls, id: strawberryB.ID):
-        # here we could fetch the book from the database
-        # or even from an API
-#        return UserGQLModel(id=id)
-
-@strawberryB.federation.type(keys=["id"])
-class EventGQLModel:
-
-    @strawberryB.field
-    def id(self) -> str:
-        return self['id']
-
-    @strawberryB.field
-    def name(self) -> str:
-        return self['name']
-
-    @strawberryB.field
-    async def users(self) -> typing.List['UserGQLModel']:
-        print(self['users'])
-        return [UserGQLModel(user['id']) for user in self['users']]
-
-@strawberryB.type
-class Query:
-    _service: typing.Optional[str]
-    
-    @strawberryB.field
-    def event_by_id(self, id: str) -> 'EventGQLModel':
-        return randomEvent(id)
+import asyncio
 
 from fastapi import FastAPI
+import strawberry
 from strawberry.fastapi import GraphQLRouter
 
-def myContext():
-    return {'session': None}
+## Definice GraphQL typu (pomoci strawberry https://strawberry.rocks/)
+## Strawberry zvoleno kvuli moznosti mit federovane GraphQL API (https://strawberry.rocks/docs/guides/federation, https://www.apollographql.com/docs/federation/)
+from gql_events.GraphTypeDefinitions import Query
 
-graphql_app = GraphQLRouter(
-    strawberryB.federation.Schema(query=Query, types=[UserGQLModel, EventGQLModel]), 
+## Definice DB typu (pomoci SQLAlchemy https://www.sqlalchemy.org/)
+## SQLAlchemy zvoleno kvuli moznost komunikovat s DB asynchronne
+## https://docs.sqlalchemy.org/en/14/core/future.html?highlight=select#sqlalchemy.future.select
+from gql_events.DBDefinitions import startEngine, ComposeConnectionString
+
+## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
+#from gql_workflow.DBFeeder import createSystemDataStructureRoleTypes, createSystemDataStructureGroupTypes
+
+connectionString = ComposeConnectionString()
+
+def singleCall(asyncFunc):
+    """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
+       Dekorovana funkce je asynchronni.
+    """
+    resultCache = {}
+    async def result():
+        if resultCache.get('result', None) is None:
+            resultCache['result'] = await asyncFunc()
+        return resultCache['result']
+    return result
+
+@singleCall
+async def RunOnceAndReturnSessionMaker():
+    """Provadi inicializaci asynchronniho db engine, inicializaci databaze a vraci asynchronni SessionMaker.
+       Protoze je dekorovana, volani teto funkce se provede jen jednou a vystup se zapamatuje a vraci se pri dalsich volanich.
+    """
+    print(f'starting engine for "{connectionString}"')
+
+    result = await startEngine(connectionstring=connectionString, makeDrop=False, makeUp=True)
+    
+    print(f'initializing system structures')
+
+    ###########################################################################################################################
+    #
+    # zde definujte do funkce asyncio.gather
+    # vlozte asynchronni funkce, ktere maji data uvest do prvotniho konzistentniho stavu
+   
+    # await asyncio.gather( # concurency running :)
+    # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
+    # musi byt asynchronniho typu (async def ...)
+        # createSystemDataStructureRoleTypes(result),
+        # createSystemDataStructureGroupTypes(result)
+    # )
+
+    ###########################################################################################################################
+    print(f'all done')
+    return result
+
+from strawberry.asgi import GraphQL
+class MyGraphQL(GraphQL):
+    """Rozsirena trida zabezpecujici praci se session"""
+    async def __call__(self, scope, receive, send):
+        asyncSessionMaker = await RunOnceAndReturnSessionMaker()
+        async with asyncSessionMaker() as session:
+            self._session = session
+            self._user = {'id': '?'}
+            return await GraphQL.__call__(self, scope, receive, send)
+    
+    async def get_context(self, request, response):
+        parentResult = await GraphQL.get_context(self, request, response)
+        return {**parentResult, 
+            'session': self._session, 
+            'asyncSessionMaker': await RunOnceAndReturnSessionMaker(),
+            'user': self._user
+            }
+
+from gql_events.GraphTypeDefinitions import schema
+
+## ASGI app, kterou "moutneme"
+graphql_app = MyGraphQL(
+    schema, 
     graphiql = True,
-    allow_queries_via_get = True,
-    root_value_getter = None,
-    context_getter = myContext#None #https://strawberry.rocks/docs/integrations/fastapi#context_getter
+    allow_queries_via_get = True
 )
 
 app = FastAPI()
-#app.add_middleware(MyMiddleware)
-app.include_router(graphql_app, prefix="/gql")
+app.mount("/gql", graphql_app)
 
 print('All initialization is done')
 
-@app.get('api/ug_gql')
-def hello():
-    return {'hello': 'world'}
+#@app.get('/hello')
+#def hello():
+#    return {'hello': 'world'}
 
-
+###########################################################################################################################
+#
+# pokud jste pripraveni testovat GQL funkcionalitu, rozsirte apollo/server.js
+# 
+###########################################################################################################################

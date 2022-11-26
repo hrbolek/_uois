@@ -11,8 +11,6 @@ from uoishelpers.resolvers import putSingleEntityToDb
 
 from gql_empty.DBDefinitions import BaseModel
 
-## Nasleduji funkce, ktere lze pouzit jako asynchronni resolvery
-
 ###########################################################################################################################
 #
 # zde si naimportujte sve SQLAlchemy modely
@@ -28,5 +26,9 @@ from gql_empty.DBDefinitions import BaseModel
 #
 ###########################################################################################################################
 
+## Nasleduji funkce, ktere lze pouzit jako asynchronni resolvery
+
+# resolveItemById = createEntityByIdGetter(EntityModel)
+# resolveItemPage = createEntityGetter(EntityModel)
 
 # ...

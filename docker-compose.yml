@@ -22,10 +22,12 @@ services:
       context: ./apollo
     depends_on:
       # kontejnery, kter musi byt spusteny drive
-      - gql_ug
-      - gql_workflow
       - gql_events
       - gql_externalids
+      - gql_forms
+      - gql_survey
+      - gql_ug
+      - gql_workflow
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu)
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:3000/gql/ || exit 1"
@@ -161,6 +163,99 @@ services:
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
     depends_on:
       # kontejnery, kter musi byt spusteny drive
+      - gql_ug
+      - postgres
+
+  gql_forms:
+    image: gql_forms
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_forms
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - gql_ug
+      - postgres
+
+  gql_personalities:
+    image: gql_personalities
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_personalities
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - gql_ug
+      - postgres
+
+  gql_projects:
+    image: gql_projects
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_projects
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - gql_ug
+      - postgres
+
+  gql_survey:
+    image: gql_survey
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_survey
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - gql_ug
       - postgres
 
   postgres:
@@ -205,3 +300,8 @@ services:
       - apollo
 
 
+  redis:
+    image: redis/redis-stack:6.2.4-v4
+    ports:
+      - 31188:8001
+    

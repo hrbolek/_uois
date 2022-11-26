@@ -75,6 +75,7 @@ class AuthorizationRoleTypeModel(BaseModel):
     id = UUIDColumn()
     authorization_id = Column(ForeignKey('authorizations.id'), primary_key=True)
     authorization = relationship('AuthorizationModel', back_populates='roletypeacesses')
+    group_id = Column(ForeignKey('groups.id'), primary_key=True)
     roletype_id = Column(ForeignKey('roletypes.id'), primary_key=True)
     accesslevel = Column(Integer)
 
@@ -132,6 +133,7 @@ class WorkflowStateUserModel(BaseModel):
     workflowstate = relationship('WorkflowStateModel', back_populates='users')
 
     user_id = Column(ForeignKey('users.id'), primary_key=True)
+    group_id = Column(ForeignKey('groups.id'), primary_key=True)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

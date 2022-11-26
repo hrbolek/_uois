@@ -247,12 +247,12 @@ export const SheetA4WeekDayLesson = (props) => {
     return (
         <>
             <rect x={XDelta} y={YDelta} width="20" height="30" stroke="#000000" stroke-width="1" fill="#FFFFFF"></rect>
-            <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="600" font-size="5" transform={"translate(" + (XDelta + 1) + " " + (YDelta + 4) +")"}>
-                <a href={"/ui/studyprograms/subject/"} target="_top">lssN</a>
-                <tspan font-size="5" font-weight="400" x="0" y="7"><a href={"/ui/studyprograms/subject/"} target="_top"></a>SUB</tspan>
-                <tspan font-size="5" font-weight="400" x="0" y="12"><a href={"/ui/users/teacher/"} target="_top">TEA</a></tspan>
-                <tspan font-size="5" font-weight="400" x="0" y="18"><a href={"/ui/areals/room/"} target="_top">ROOM</a></tspan>
-                <tspan font-size="5" font-weight="400" x="0" y="24"><a href={"/ui/areals/room/"} target="_top">GRP</a></tspan>
+            <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="600" font-size="5" transform={"translate(" + (XDelta + 1) + " " + (YDelta + 5) +")"}>
+                <a href={"/ui/studyprograms/subject/"} target="_top">Topic</a>
+                <tspan font-size="5" font-weight="400" x="0" y="6"><a href={"/ui/studyprograms/subject/"} target="_top"></a>Subject</tspan>
+                <tspan font-size="5" font-weight="400" x="0" y="11"><a href={"/ui/users/teacher/"} target="_top">Teachr</a></tspan>
+                <tspan font-size="5" font-weight="400" x="0" y="17"><a href={"/ui/areals/room/"} target="_top">Room</a></tspan>
+                <tspan font-size="5" font-weight="400" x="0" y="23"><a href={"/ui/areals/room/"} target="_top">Group</a></tspan>
             </text>
         </>
 
@@ -303,7 +303,7 @@ export const TeacherSmallTimeTable = (props) => {
                 </Card.Title>
             </Card.Header>
             <Card.Body>
-                <SheetA4TimeTable />
+                <SVGTimeTable />
             </Card.Body>
         </Card>
     )
@@ -657,8 +657,8 @@ export const TeacherTimeTable = (props) => {
             <Card.Body>
                 <Row>
                     <Col md={12}>
-                        <SVGTimeTable />
-                </Col>
+                        <SheetA4TimeTable />
+                    </Col>
                 </Row>
             </Card.Body>
         </Card>

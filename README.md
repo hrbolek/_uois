@@ -30,6 +30,7 @@ It is also a model of an information systems which could be used for some admini
 
 The project has several docker containers 
 - `apollo` master of federation
+- `frontend` provides static files = REACT compiled items (including GQL interface)
 - `gql_*` apollo federation member
 - `nginx` is hardwired router 
 - `prostgres` is database server
@@ -37,12 +38,23 @@ The project has several docker containers
 
 ## Who participated on this project
 
-| Person | Role | Project Job | Period |
-|:------:|:----:|:-----------:|:------:|
+| Person | Role  | Project Job              | Period          |
+|:------:|:-----:|:------------------------:|:---------------:|
 | AS     |Teacher|                          | 2022/9 - 2023/2 |
 | AS     |Teacher| gql_ug                   | 2022/9 - 2023/2 |
 | AS     |Teacher| gql_workflows            | 2022/9 - 2023/2 |
 | AS     |Teacher| gql_externalids          | 2022/9 - 2023/2 |
+| S+V    |Student| gql_facilities           | 2022/9 - 2023/2 |
+| B+Z    |Student| gql_events               | 2022/9 - 2023/2 |
+| R+M    |Student| gql_attendance           | 2022/9 - 2023/2 |
+| D+V    |Student| gql_granting             | 2022/9 - 2023/2 |
+| K+C    |Student| gql_thesis               | 2022/9 - 2023/2 |
+| N+N    |Student| gql_lessons              | 2022/9 - 2023/2 |
+| D+N    |Student| gql_forms                | 2022/9 - 2023/2 |
+| P+B    |Student| gql_publications         | 2022/9 - 2023/2 |
+| H+L    |Student| gql_personalities        | 2022/9 - 2023/2 |
+| Ch+H   |Student| gql_projects             | 2022/9 - 2023/2 |
+| R+S    |Student| gql_surveys              | 2022/9 - 2023/2 |
 
 ## Current Notes
 To run this docker stack in some alpha mode you can run the docker-compose.yml. Be careful as it uses host volumes.

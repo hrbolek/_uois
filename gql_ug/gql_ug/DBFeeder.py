@@ -128,7 +128,7 @@ def randomFaculty(index):
 def randomStudyGroup(department):
     result = {
         'name': department['name'].replace('Department', 'Studenti'), 
-        'grouptype': {'name': 'studujní skupina'},
+        'grouptype': {'name': 'studijní skupina'},
         'subgroups': [],
         'roles': [],
         'users': [
