@@ -98,12 +98,7 @@ class AnswerGQLModel:
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
-
-    @strawberryA.field(description="""User by id""")
-    async def answer_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[UserGQLModel, None]:
-        result = await resolveUserById(AsyncSessionFromInfo(info), id)
-        return result
-    
+   
     @strawberryA.field(description="""Finds an survey by its id""")
     async def survey_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[SurveyGQLModel, None]:
         result = await resolveSurveyById(AsyncSessionFromInfo(info), id)
@@ -115,7 +110,7 @@ class Query:
         return result
 
     @strawberryA.field(description="""Question type by id""")
-    async def answer_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[QuestionTypeGQLModel, None]:
+    async def question_type_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[QuestionTypeGQLModel, None]:
         result = await resolveQuestionTypeById(AsyncSessionFromInfo(info), id)
         return result
 

@@ -5,7 +5,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import { root } from '../../helpers/index';
-import { useQueryGQL, Loading, LoadingError } from '../../helpers/index';
+import { useQueryGQL, Loading, LoadingError, authorizedFetch } from '../../helpers/index';
 import { useEffect, useState } from "react";
 
 export const TeacherSmall = (props) => {
@@ -50,7 +50,7 @@ const Suggestions = (props) => {
 }
 
 const queryUsersByLetters = (letters) => 
-    fetch('/gql', {
+    authorizedFetch('/gql', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const queryUsersByLetters = (letters) =>
     })
 
 const queryGroupsByLetters = (letters) => 
-    fetch('/gql', {
+    authorizedFetch('/gql', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

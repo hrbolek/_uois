@@ -14,13 +14,14 @@ import { groupSlice } from './groupstorage'
 
 import { TeacherSmall } from '../user/teacher'
 
+import { authorizedFetch } from '../../helpers/index'
 /**
  * Retrieves the data from GraphQL API endpoint
  * @param {*} id - identificator
  * @function
  */
  export const UniversityLargeQuery = (id) => 
- fetch('/gql', {
+ authorizedFetch('/gql', {
      method: 'POST',
      headers: {
          'Content-Type': 'application/json',
@@ -76,7 +77,7 @@ import { TeacherSmall } from '../user/teacher'
  * @function
  */
  export const DepartmentLargeQuery = (id) => 
- fetch('/gql', {
+ authorizedFetch('/gql', {
      method: 'POST',
      headers: {
          'Content-Type': 'application/json',

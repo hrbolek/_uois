@@ -53,7 +53,7 @@ class RequestGQLModel:
 class Query:
    
     @strawberryA.field(description="""Finds an workflow by their id""")
-    async def say_hello(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[str, None]:
+    async def say_hello_forms(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[str, None]:
         result = f'Hello {id}'
         return result
 

@@ -10,7 +10,7 @@ import { LoginButton } from "../../helpers/index";
 export const ApiPage = (props) => {
     const { id } = useParams();
 
-    const [parameters, setParameters] = useState({fetchURL: '/gql'})
+    const [parameters, setParameters] = useState({fetchURL: '/api/gql'})
 
     const updateURL = useCallback(() => null);
     const onEditQuery = useCallback(

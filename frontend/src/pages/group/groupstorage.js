@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { authorizedFetch } from '../../helpers/index'
 
 const extraProps = {
     "id": "4e3b3503-5d20-458b-9f4d-fd7f35306ee0",
@@ -70,7 +71,7 @@ export const groupSlice = createSlice({
 
 
 const updateGroup = async (group) => {
-    const response = await fetch('/gql', {
+    const response = await authorizedFetch('/gql', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -101,7 +102,7 @@ const updateGroup = async (group) => {
 }
 
 const fetchDepartment = async (id) => {
-    const response = await fetch('/gql', {
+    const response = await authorizedFetch('/gql', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -163,7 +164,7 @@ const fetchDepartment = async (id) => {
 }
 
 const fetchGroup = async (id) => {
-    const response = await fetch('/gql', {
+    const response = await authorizedFetch('/gql', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -218,7 +219,7 @@ const fetchGroup = async (id) => {
 
 
 const fetchGroupMembers = async (id) => {
-    const response = await fetch('/gql', {
+    const response = await authorizedFetch('/gql', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

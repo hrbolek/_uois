@@ -5,7 +5,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import { root } from '../../helpers/index';
-import { useQueryGQL, Loading, LoadingError } from '../../helpers/index';
+import { useQueryGQL, Loading, LoadingError, authorizedFetch } from '../../helpers/index';
 
 export const TeacherSmall = (props) => {
     console.log(JSON.stringify(props))
@@ -823,7 +823,7 @@ export const TeacherStudyGroups = (props) => {
  * @function
  */
  export const UserLargeQuery = (id) => 
- fetch('/gql', {
+    authorizedFetch('/gql', {
      method: 'POST',
      headers: {
          'Content-Type': 'application/json',
