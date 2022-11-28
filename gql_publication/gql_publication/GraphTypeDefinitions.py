@@ -163,7 +163,6 @@ class Query:
         result = await resolvePublicationById (AsyncSessionFromInfo(info), id)
         return result
 
-    
 
     @strawberryA.field(description="""Finds an author by their id""")
     async def author_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[AuthorGQLModel, None]:

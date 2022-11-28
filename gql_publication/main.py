@@ -18,9 +18,9 @@ from gql_publication.GraphTypeDefinitions import Query
 from gql_publication.DBDefinitions import startEngine, ComposeConnectionString
 
 ## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
-from gql_publication.DBFeeder import createDataStructurePublicationType, createDataStructurePublication, createDataStructureAuthor
+# from gql_publication.DBFeeder import createDataStructurePublicationType, createDataStructurePublication, createDataStructureAuthor
 
-from gql_publication.DBFeeder import dataLoader
+# from gql_publication.DBFeeder import dataLoader
 connectionString = ComposeConnectionString()
 
 def singleCall(asyncFunc):

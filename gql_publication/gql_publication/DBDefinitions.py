@@ -39,7 +39,7 @@ class PublicationModel(BaseModel):
     published_date = Column(Date)
     reference = Column(String)
     externalId = Column(String, index=True)
-    valid = Column(bool)
+    valid = Column(Boolean)
 
     author = relationship('AuthorModel', back_populates='publication')
     publication_type = relationship('PublicationTypeModel', back_populates='publication')
