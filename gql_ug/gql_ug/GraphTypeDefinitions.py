@@ -368,7 +368,7 @@ class Query:
 
     @strawberryA.field(
         description="""Finds an user by letters in name and surname, letters should be atleast three""")
-    async def user_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[UserGQLModel]:
+    async def user_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> UserGQLModel:
         result = await resolveUsersByThreeLetters(AsyncSessionFromInfo(info), validity, letters)
         return result
 

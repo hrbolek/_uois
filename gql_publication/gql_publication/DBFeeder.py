@@ -29,33 +29,30 @@ async def loadDataFromFIle():
 
 from sqlalchemy.future import select
 
-async def createDataStructurePublication(asyncSessionMaker,parsedDataset):
+async def createDataStructurePublication(session,parsedDataset):
       
     # publicationDataset = parsedDataset['publications']
     publicationsToAdd = [PublicationModel(**record) for record in parsedDataset]
-    async with asyncSessionMaker() as session:
-        async with session.begin():
-            session.add_all(publicationsToAdd)
+    async with session.begin():
+        session.add_all(publicationsToAdd)
     await session.commit()
 
 
 # async def createDataStructurePublicationType(asyncSessionMaker):
-async def createDataStructurePublicationType(asyncSessionMaker,parsedDataset):
+async def createDataStructurePublicationType(session,parsedDataset):
 
     # publicationTypeDataset = parsedDataset['publication_types']
     publicationTypesToAdd = [PublicationTypeModel(**record) for record in parsedDataset]
-    async with asyncSessionMaker() as session:
-        async with session.begin():
-            session.add_all(publicationTypesToAdd)
+    async with session.begin():
+        session.add_all(publicationTypesToAdd)
     await session.commit()
        
 # async def createDataStructureAuthor(asyncSessionMaker):
-async def createDataStructureAuthor(asyncSessionMaker,parsedDataset):
+async def createDataStructureAuthor(session,parsedDataset):
     # authorDataset = parsedDataset['authors']
     authorsToAdd = [AuthorModel(**record) for record in parsedDataset]
-    async with asyncSessionMaker() as session:
-        async with session.begin():
-            session.add_all(authorsToAdd)
+    async with session.begin():
+        session.add_all(authorsToAdd)
     await session.commit()
     
 #     selectedUsers = select(UserModel.id)\

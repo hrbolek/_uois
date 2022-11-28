@@ -2,7 +2,7 @@ from email.policy import default
 import sqlalchemy
 import datetime
 
-from sqlalchemy import Column, String, BigInteger, Integer, DateTime, ForeignKey, Sequence, Table, Boolean,Float
+from sqlalchemy import Column, String, BigInteger, Integer, Date, ForeignKey, Sequence, Table, Boolean,Float
 from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
@@ -36,9 +36,10 @@ class PublicationModel(BaseModel):
 
     publication_type_id = Column(ForeignKey('publication_types.id'), primary_key=True)
     place = Column(String)
-    published_year = Column(DateTime)
+    published_date = Column(Date)
     reference = Column(String)
     externalId = Column(String, index=True)
+    valid = Column(bool)
 
     author = relationship('AuthorModel', back_populates='publication')
     publication_type = relationship('PublicationTypeModel', back_populates='publication')
