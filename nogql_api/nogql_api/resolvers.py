@@ -96,3 +96,53 @@ async def create_upload_files(files: List[UploadFile]):
             'Content-Disposition': 'attachment; filename="VsechnyVykazy.xlsx"'
         }
         return Response(stream, media_type='application/vnd.ms-excel', headers=headers)
+
+
+async def exportSchema():
+    from sqlalchemy_schemadisplay import create_uml_graph
+    from sqlalchemy import MetaData
+    from sqlalchemy.ext.automap import automap_base
+    from sqlalchemy import create_engine
+
+    from nogql_api.DBDefinitions import ComposeConnectionString
+    Base = automap_base()
+    connectionstring = ComposeConnectionString()
+    connectionstring = connectionstring.replace("postgresql+asyncpg", "postgresql+psycopg2")
+    engine = create_engine(connectionstring)
+
+    print('Extracting metadata ...')
+    Base.prepare(engine, reflect=True,
+        # classname_for_table=fromTableToModelName,
+        # name_for_collection_relationship=fromTableToRelationNName,
+        # name_for_scalar_relationship=fromTableToRelation1Name
+        )
+
+    print('Creating graph for UML ...')
+    def getModels(SQLAlchemyBase=Base):
+        baseClasses = SQLAlchemyBase.classes
+        result = []
+        for item in dir(baseClasses):
+            if item.startswith('_'):
+                continue
+            result.append(getattr(baseClasses, item))
+        return result
+
+    mappers = [cls.__mapper__ for cls in getModels(SQLAlchemyBase=Base)]
+    graph = create_uml_graph(mappers,
+        show_operations=False, # not necessary in this case
+        show_multiplicity_one=False # some people like to see the ones, some don't
+    )
+    print('Writing UML...')
+
+
+    with NamedTemporaryFile() as tmp:
+        # graph.write_png('/output/img/uml.png') # write out the file
+        # graph.write_svg('/output/img/uml.svg') # write out the file
+        #graph.write_svg('/output/img/uml.svg') # write out the file
+        graph.write_svg(tmp.name)
+        tmp.seek(0)
+        stream = tmp.read()
+        # headers = {
+        #    'Content-Disposition': 'attachment; filename="uml.svg"'
+        # }
+        return Response(stream, media_type='image/svg+xml') #, headers=headers)

@@ -85,6 +85,12 @@ async def utils_vykazy_get():
     """
     return HTMLResponse(content=content)
 
+from nogql_api.resolvers import exportSchema
+
+@apiApp.get("/nogql/utils/umlschema")
+async def utils_umlschema_get():
+    return await exportSchema()
+
 app = FastAPI()
 app.mount("/api", apiApp)
 

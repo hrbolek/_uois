@@ -264,6 +264,29 @@ services:
       - gql_ug
       - postgres
 
+  gql_publications:
+    image: gql_publications
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_publications
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - gql_ug
+      - postgres
+
   gql_survey:
     image: gql_survey
     build:

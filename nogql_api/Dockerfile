@@ -1,23 +1,17 @@
-###############################################################
-#
-# Zero phase
-#
-###############################################################
-FROM python:3.9-slim-buster as pythonbase
+FROM ubuntu
 
-# instalace curl, aby bylo mozne zprovoznit standardni healthcheck
-RUN apt update && apt install curl -y && rm -rf /var/cache/apk/*
+RUN apt update
+RUN apt upgrade -y
+RUN apt install graphviz -y
 
-# Install pip requirements
-COPY ./requirements.txt .
-RUN python -m pip install -r requirements.txt
+RUN apt-get install python3 -y
 
-###############################################################
-#
-# Second phase
-#
-###############################################################
-FROM pythonbase as executepython
+RUN apt install python3-pip -y
+
+COPY requirements.txt .
+RUN python3 -m pip install -r requirements.txt
+
+RUN python3 --version
 
 EXPOSE 8000
 
