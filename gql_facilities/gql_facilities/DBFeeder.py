@@ -1,6 +1,7 @@
 from doctest import master
 from functools import cache
-from gql_empty.DBDefinitions import BaseModel
+
+from gql_facilities.DBDefinitions import BaseModel
 
 import random
 import itertools
