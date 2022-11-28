@@ -20,6 +20,9 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./apollo
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - PORT=3000
     depends_on:
       # kontejnery, kter musi byt spusteny drive
       - gql_events
@@ -29,7 +32,7 @@ services:
       - gql_ug
       - gql_workflow
     healthcheck:
-      # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu)
+      # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu a srovnejte s portem v environment)
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:3000/gql/ || exit 1"
       interval: 60s
       retries: 3
