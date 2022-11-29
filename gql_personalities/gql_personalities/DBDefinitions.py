@@ -40,13 +40,22 @@ class Rank(BaseModel):
     __tablename__ = 'personalitiesRanks'
 
     id = UUIDColumn()
-    name = Column(String)
     start = Column(DateTime)
     end = Column(DateTime) 
 
     user_id = Column(ForeignKey('users.id'))
+    rankType_id = Column(ForeignKey('personalitiesRankTypes.id'))
 
     user = relationship('UserModel', back_populates = 'Rank')
+    rankType = relationship('RankType', back_populates = 'Rank')
+
+class RankType(BaseModel):
+    __tablename__ = 'personalitiesRankTypes'
+
+    id = UUIDColumn()
+    name = Column(String)
+
+    rank = relationship('Rank', back_populates = 'RankTypes')
 
 class Study(BaseModel):
     __tablename__ = 'personalitiesStudies'
@@ -81,7 +90,7 @@ class CertificateType(BaseModel):
     id = UUIDColumn()
     name = Column(String)
     
-    certificates = relationship('Certificate', back_populates = 'CertificateType')
+    certificate = relationship('Certificate', back_populates = 'CertificateType')
 
 class Medal(BaseModel):
     __tablename__ = 'personalitiesMedals'
