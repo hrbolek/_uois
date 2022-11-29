@@ -43,7 +43,7 @@ services:
   gql_personalities:
     image: gql_personalities
     build:
-      context: . gql_personalities
+      context: ./gql_personalities
     environment: 
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
