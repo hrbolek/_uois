@@ -118,17 +118,36 @@ def determineMedalTypeGroup():
 @cache
 def determineRankType():
     rankTypes = [
-        {'name': '', 'id': '' },
-        {'name': '', 'id': ''},
-        {'name': '', 'id': ''},
-        {'name': '', 'id': '' },
-        {'name': '', 'id': ''},
-        {'name': '', 'id': ''},
-        {'name': '', 'id': '' },
-        {'name': '', 'id': ''},
-        {'name': '', 'id': ''},
-        {'name': '', 'id': '' },
-        {'name': '', 'id': ''},
-        {'name': '', 'id': ''},
+        #mužstvo
+        {'name': 'vojín (voj.)','en_name': 'private', 'id': '' },
+        {'name': 'svobodník (svob.)','en_name': 'Private First Class', 'id': '' },
+
+        #poddůstojníci
+        {'name': 'desátník (des.)','en_name': 'Corporal', 'id': '' },
+        {'name': 'četař (čet.)','en_name': 'Sergeant', 'id': '' },
+        {'name': 'rotný (rtn.)','en_name': 'Staff Sergeant', 'id': '' },
+
+        #praporčíci
+        {'name': 'rotmistr (rtm.)','en_name': 'Sergeant First Class', 'id': '' },
+        {'name': 'nadrotmistr (nrtm.)','en_name': 'Master Sergeant', 'id': '' },
+        {'name': 'praporčík (prap.)','en_name': 'Chief Warrant Officer (CW2)', 'id': '' },
+        {'name': 'nadpraporčík (nprap.)','en_name': 'Chief Warrant Officer (CW3)', 'id': '' },
+        {'name': 'štábní praporčík (št. prap.)','en_name': 'Master Warrant Officer (MW4)', 'id': '' },
+
+        #nižší důstojníci
+        {'name': 'poručík (por.)','en_name': 'Lieutenant (LT)', 'id': '' },
+        {'name': 'nadporučík (npor.)','en_name': 'First Lieutenant (1LT)', 'id': '' },
+        {'name': 'kapitán (ktp.)','en_name': 'Captain (CPT)', 'id': '' },
+
+        #vyšší důstojníci
+        {'name': 'major (mjr.)','en_name': 'Major (MAJ)', 'id': '' },
+        {'name': 'podplukovník (pplk.)','en_name': 'Lieutenant Colonel (LTC)', 'id': '' },
+        {'name': 'plukovník (plk.)','en_name': 'Colonel (COL)', 'id': '' },
+
+        #generálové
+        {'name': 'brigádní generál (brig.gen.)','en_name': 'Brigadier General (BG)', 'id': '' },
+        {'name': 'generálmajor (genmjr.)','en_name': 'Major General (MG)', 'id': '' },
+        {'name': 'generálporučík (genpor.)','en_name': 'Lieutenant General (LTG)', 'id': '' },
+        {'name': 'armádní generál (arm.gen.)','en_name': '[Army] General ([A]GEN)', 'id': '' },
     ]
     return rankTypes
