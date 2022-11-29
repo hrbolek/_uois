@@ -33,7 +33,7 @@ def determineCertificateTypes():
         {'name': 'jazykové', 'en_name': 'language', 'id': 'db9ba8c3-3d6e-4190-bfe7-d401586dd282'},
         {'name': 'vědecké', 'en_name': 'science', 'id': 'bc988cb6-38a7-45a1-97ec-d1e220621355'},
         {'name': 'sportovní', 'en_name': 'sport', 'id': '3f1351ca-0624-43bb-9c93-23e6478fb1c1'},
-        {'name': 'pracovní', 'en_name': 'work', 'id': 'e4713dd6-69e6-4d35-964b-1bca141899eb'}
+        {'name': 'pracovní', 'en_name': 'work', 'id': 'e4713dd6-69e6-4d35-964b-1bca141899eb'},
     ]
     return certificateTypes
 
@@ -100,7 +100,7 @@ def determineMedalTypes():
         {'name': 'Pamětní odznak Hradní stráže', 'id': '752bb4ee-f9ac-446d-bbb8-2592ce3ade79' },
         {'name': 'Pamětní odznak Inspekce MO a bývalého ÚřK BVLSI', 'id': '0f682be0-bb44-40fd-85b6-8eed606ca329' },
         {'name': 'Pamětní odznak pro 312. prapor chemické ochrany NATO za službu v jednotkách NRF', 'id': 'fbc8a9e0-8695-4a06-93ad-915065b04d91' },
-        {'name': 'Pamětní odznak Vojenské střední školy Vyškov', 'id': '36e1bc46-472c-4d43-b272-1fb994d581c6' }
+        {'name': 'Pamětní odznak Vojenské střední školy Vyškov', 'id': '36e1bc46-472c-4d43-b272-1fb994d581c6' },
        
     ]
     return medalTypes
@@ -111,7 +111,24 @@ def determineMedalTypeGroup():
     medalTypeGroup = [
         {'name': 'Řády a vyznamenání České republiky', 'id': '0747704c-d6f9-461c-9b2f-4b9681bd50ed' },
         {'name': 'Vojenské resortní vyznamenání', 'id': '2c34f055-d2fa-4eb1-a29a-ed28a2277e6c'},
-        {'name': 'Čestné odznaky', 'id': '6299630e-4d27-44a9-a844-53831add33ca'}
+        {'name': 'Čestné odznaky', 'id': '6299630e-4d27-44a9-a844-53831add33ca'},
     ]
     return medalTypeGroup
 
+@cache
+def determineRankType():
+    rankTypes = [
+        {'name': '', 'id': '' },
+        {'name': '', 'id': ''},
+        {'name': '', 'id': ''},
+        {'name': '', 'id': '' },
+        {'name': '', 'id': ''},
+        {'name': '', 'id': ''},
+        {'name': '', 'id': '' },
+        {'name': '', 'id': ''},
+        {'name': '', 'id': ''},
+        {'name': '', 'id': '' },
+        {'name': '', 'id': ''},
+        {'name': '', 'id': ''},
+    ]
+    return rankTypes
