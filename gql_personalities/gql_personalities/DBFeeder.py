@@ -1,6 +1,6 @@
 from doctest import master
 from functools import cache
-from gql_personalities.DBDefinitions import BaseModel, UserModel, Personalities_RankHistory, Personalities_Study, Personalities_Certificate, Personalities_Medal, Personalities_WorkHistory, Personalities_RelatedDoc
+from gql_personalities.DBDefinitions import BaseModel, UserModel, Personalities_Rank, Personalities_Study, Personalities_Certificate, Personalities_Medal, Personalities_WorkHistory, Personalities_RelatedDoc
 from gql_personalities.DBDefinitions import Personalities_CertificateType, Personalities_MedalType
 from gql_personalities.DBDefinitions import Personalities_MedalTypeGroup
 

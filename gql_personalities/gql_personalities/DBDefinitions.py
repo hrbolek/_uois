@@ -29,14 +29,14 @@ class UserModel(BaseModel):
 
     id = UUIDColumn()
 
-    ranks = relationship('RankHistory', back_populates='user')
+    ranks = relationship('Rank', back_populates='user')
     studies = relationship('Study', back_populates='user')
     certificates = relationship('Certificate', back_populates='user')
     medals = relationship('Medal', back_populates='user')
     workHistories = relationship('WorkHistory', back_populates='user')
     relatedDocs = relationship('RelatedDoc', back_populates='user')
 
-class Personalities_RankHistory(BaseModel):
+class Personalities_Rank(BaseModel):
     __tablename__ = 'ranks'
 
     id = UUIDColumn()
@@ -46,7 +46,7 @@ class Personalities_RankHistory(BaseModel):
 
     user_id = Column(ForeignKey('users.id'))
 
-    user = relationship('UserModel', back_populates = 'Personalities_RankHistory')
+    user = relationship('UserModel', back_populates = 'Personalities_Rank')
 
 class Personalities_Study(BaseModel):
     __tablename__ = 'studies'
