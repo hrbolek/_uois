@@ -40,7 +40,7 @@ services:
     ports:
       - 31123:8000
 
- gql_personalities:
+  gql_personalities:
     image: gql_personalities
     build:
       context: . gql_personalities
