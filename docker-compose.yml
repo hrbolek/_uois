@@ -9,7 +9,7 @@ services:
       - gql_ug
       - gql_workflow
       - gql_events
-      - gql_project11
+      - gql_personalities
     ports:
       - 31121:3000
 
@@ -40,10 +40,10 @@ services:
     ports:
       - 31123:8000
 
-  gql_project11:
-    image: gql_project11
+ gql_personalities:
+    image: gql_personalities
     build:
-      context: ./gql_project11
+      context: . gql_personalities
     environment: 
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
