@@ -45,7 +45,7 @@ from gql_empty.GraphResolvers import resolveSectionById, resolvePartsForSection
 #define the type help to get attribute name and name 
 @strawberryA.federation.type(keys = ["id"] ,description="""Section""")
 class SectionGQLModel:
-    @classmethod
+    @classmethod 
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         result = await resolveSectionById(AsyncSessionFromInfo(info), id)
         result._type_definition = cls._type_definition # little hack :)

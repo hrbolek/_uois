@@ -9,6 +9,7 @@ services:
       - gql_ug
       - gql_workflow
       - gql_events
+      - gql_empty
     ports:
       - 31121:3000
 

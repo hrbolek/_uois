@@ -52,6 +52,9 @@ resolvePartsForSection = create1NGetter(PartModel, foreignKeyName='section_id')
 resolverUpdateSection = createUpdateResolver(SectionModel)
 resolveInsertSection = createInsertResolver(SectionModel)
 
+
+
+
 ## part resolvers -- okie can use it :)))))))
 resolvePartById = createEntityByIdGetter(PartModel)
 resolvePartAll = createEntityGetter(PartModel)
