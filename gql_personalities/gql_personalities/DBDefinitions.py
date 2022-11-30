@@ -14,7 +14,7 @@ def UUIDColumn(name=None):
         return Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
     else:
         return Column(name, UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
-    
+        
 #id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
 ###########################################################################################################################
@@ -89,8 +89,20 @@ class CertificateType(BaseModel):
 
     id = UUIDColumn()
     name = Column(String)
+
+    certificateTypeGroup_id = Column(ForeignKey('personalitiesCertificateTypeGroups.id'))
     
     certificate = relationship('Certificate', back_populates = 'CertificateType')
+    certificateTypeGroup = relationship('CertificateTypeGroup', back_populates = 'CertificationType')
+
+class CertificateTypeGroup(BaseModel):
+    __tablename__ = 'personalitiesCertificateTypeGroups'
+
+    id = UUIDColumn()
+    name = Column(String)
+    
+    certificateType = relationship('CertificateType', back_populates = 'CertificateTypeGroup')
+
 
 class Medal(BaseModel):
     __tablename__ = 'personalitiesMedals'
