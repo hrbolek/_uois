@@ -30,12 +30,72 @@ def singleCall(asyncFunc):
 @cache
 def determineCertificateTypes():
     certificateTypes = [
+        #jazykové 
+        {'name': 'STANAG English', 'id': '34a29ef9-b9a9-4d62-9270-e16504d47fa9'},
+        {'name': 'PET', 'id': '8f212ce5-9dfb-4595-a3c0-8c819a6af424'},
+        {'name': 'CAE', 'id': '9ab4186a-1a23-4632-8dc5-8b6c7012c024'},
+        {'name': 'FCE', 'id': '228ad8c0-8ef9-48ec-9ad1-fa9e9c123d50'},
+        {'name': 'CPE', 'id': '6bc6e441-511c-403b-a754-50b8ccd9bfc3'},
+        {'name': 'TOEFL', 'id': '87408450-922a-4f2e-84c5-3fd25255d738'},
+        {'name': 'IELTS', 'id': '6c2b6c8f-812f-4372-bd10-1a395c7faf4b'},
+        {'name': 'TOEIC', 'id': '9afba032-ed69-4d5c-bc73-805ae6eb156b'},
+
+        {'name': 'STANAG German', 'id': '6b381e55-528e-4d13-85a2-963f0710e962'},
+        {'name': 'ZDaF', 'id': '3139c891-e59e-4345-9f87-e7e93b22d686'},
+        {'name': 'ZMF', 'id': 'e1bd3e67-363d-4e46-b616-89f22d64468f'},
+        {'name': 'KDS', 'id': '2f682b71-a772-4b55-8d30-2100844f5b53'},
+        {'name': 'GDS', 'id': '37147540-e3ac-49b8-8ae0-2121f417b92f'},
+        {'name': 'PNDS', 'id': '22bc21ab-5a87-448e-a0f4-74d0136678df'},
+        {'name': 'DSH', 'id': '62c41d70-2757-4378-a7c0-e90bdb57a051'},
+        
+        {'name': 'STANAG French', 'id': '9c615240-f23e-4b6b-abf6-b10327742a1f'},
+        {'name': 'DELF', 'id': 'b6cedca1-38c7-470c-8688-caab5a102aa8'},
+        {'name': 'DALF', 'id': 'c1177873-7ef0-4e59-b24c-803d430d7541'},
+
+        {'name': 'STANAG Spanish', 'id': '62aeac61-0c0a-4962-af06-9b32c375ad0b'},
+        {'name': 'DELE', 'id': 'c6275399-7302-49ca-837d-811f9238a5dc'},
+
+        {'name': 'STANAG Italian', 'id': '49d71536-e9fb-4110-8639-a07ca653e6fb'},
+        {'name': 'CILS', 'id': 'e1a2c256-8e11-4a94-8bfb-4d564c4a892f'},
+
+        {'name': 'STANAG Russian', 'id': '43089ad0-722c-4f13-9a89-c809b2e3ecee'},
+        
+        {'name': 'STANAG Polish', 'id': '634fe5b9-8494-4586-b67a-191157c0ed60'},
+
+
+        #vědecké
+        {'name': '', 'en_name': '', 'id': ''},
+        {'name': '', 'en_name': '', 'id': ''},
+        {'name': '', 'en_name': '', 'id': ''},
+        {'name': '', 'en_name': '', 'id': ''},
+        {'name': '', 'en_name': '', 'id': ''},
+
+        #sportovní
+        {'name': '', 'en_name': '', 'id': ''},
+        {'name': '', 'en_name': '', 'id': ''},
+        {'name': '', 'en_name': '', 'id': ''},
+        {'name': '', 'en_name': '', 'id': ''},
+        {'name': '', 'en_name': '', 'id': ''},
+
+        #pracovní
+        {'name': '', 'en_name': '', 'id': ''},
+        {'name': '', 'en_name': '', 'id': ''},
+        {'name': '', 'en_name': '', 'id': ''},
+        {'name': '', 'en_name': '', 'id': ''},
+        {'name': '', 'en_name': '', 'id': ''},
+
+    ]
+    return certificateTypes
+
+
+def determineCertificateTypeGroups():
+    certificateTypeGroups = [
         {'name': 'jazykové', 'en_name': 'language', 'id': 'db9ba8c3-3d6e-4190-bfe7-d401586dd282'},
         {'name': 'vědecké', 'en_name': 'science', 'id': 'bc988cb6-38a7-45a1-97ec-d1e220621355'},
         {'name': 'sportovní', 'en_name': 'sport', 'id': '3f1351ca-0624-43bb-9c93-23e6478fb1c1'},
         {'name': 'pracovní', 'en_name': 'work', 'id': 'e4713dd6-69e6-4d35-964b-1bca141899eb'},
     ]
-    return certificateTypes
+    return certificateTypeGroups
 
 @cache
 def determineMedalTypes():
