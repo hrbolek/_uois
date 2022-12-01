@@ -1,7 +1,7 @@
 from doctest import master
 from functools import cache
 from gql_personalities.DBDefinitions import BaseModel, UserModel, Rank, Study, Certificate, Medal, WorkHistory, RelatedDoc
-from gql_personalities.DBDefinitions import CertificateType, MedalType
+from gql_personalities.DBDefinitions import RankType, CertificateType, MedalType
 from gql_personalities.DBDefinitions import CertificateTypeGroup, MedalTypeGroup
 
 import random
@@ -27,6 +27,43 @@ def singleCall(asyncFunc):
 # zde definujte sve funkce, ktere naplni random data do vasich tabulek
 #
 ###########################################################################################################################
+@cache
+def determineRankType():
+    rankTypes = [
+        #mužstvo
+        {'name': 'vojín (voj.)','en_name': 'private', 'id': 'de5e6ae8-902c-4b06-aa8e-8fbca99026f3' },
+        {'name': 'svobodník (svob.)','en_name': 'Private First Class', 'id': 'f3038058-e1fa-4f7c-9e50-7b1d99998d37' },
+
+        #poddůstojníci
+        {'name': 'desátník (des.)','en_name': 'Corporal', 'id': 'a3cdae76-1c7d-409c-8bed-9e922c066bce' },
+        {'name': 'četař (čet.)','en_name': 'Sergeant', 'id': 'a17e81a6-776b-4883-a04d-cbd4f07ad095' },
+        {'name': 'rotný (rtn.)','en_name': 'Staff Sergeant', 'id': 'a9043224-9c3b-4562-a329-997fba9237d0' },
+
+        #praporčíci
+        {'name': 'rotmistr (rtm.)','en_name': 'Sergeant First Class', 'id': '72294ac5-1823-4164-9805-60a0aaa39296' },
+        {'name': 'nadrotmistr (nrtm.)','en_name': 'Master Sergeant', 'id': '453dff9e-fab2-41d0-8bef-ca76c78e79c8' },
+        {'name': 'praporčík (prap.)','en_name': 'Chief Warrant Officer (CW2)', 'id': '6a324f4a-2162-4fe7-a47c-8be1f3c9452b' },
+        {'name': 'nadpraporčík (nprap.)','en_name': 'Chief Warrant Officer (CW3)', 'id': '34cfd57e-6a09-4423-8025-b44d6dbce774' },
+        {'name': 'štábní praporčík (št. prap.)','en_name': 'Master Warrant Officer (MW4)', 'id': '841fa09f-625e-49b4-8872-05c43ce197cf' },
+
+        #nižší důstojníci
+        {'name': 'poručík (por.)','en_name': 'Lieutenant (LT)', 'id': '3914ab9f-78bc-45ac-bb2d-59ee921f3a19' },
+        {'name': 'nadporučík (npor.)','en_name': 'First Lieutenant (1LT)', 'id': '437fa94e-8442-4667-af9a-8327afef9ffa' },
+        {'name': 'kapitán (ktp.)','en_name': 'Captain (CPT)', 'id': 'a8ce2853-26ec-4e10-8bbe-899cc296a35f' },
+
+        #vyšší důstojníci
+        {'name': 'major (mjr.)','en_name': 'Major (MAJ)', 'id': '587cd381-aeec-4367-91f3-8849f900848a' },
+        {'name': 'podplukovník (pplk.)','en_name': 'Lieutenant Colonel (LTC)', 'id': '46a7325f-9b9e-4e80-9f17-670bd9151229' },
+        {'name': 'plukovník (plk.)','en_name': 'Colonel (COL)', 'id': '824533e5-eba7-45f7-80f6-e2466529e73c' },
+
+        #generálové
+        {'name': 'brigádní generál (brig.gen.)','en_name': 'Brigadier General (BG)', 'id': '9eb8d8f4-a87c-447d-aaee-c0a15cd6fbce' },
+        {'name': 'generálmajor (genmjr.)','en_name': 'Major General (MG)', 'id': 'd65a0d25-dc39-46fa-a107-a684c9724c5e' },
+        {'name': 'generálporučík (genpor.)','en_name': 'Lieutenant General (LTG)', 'id': '41f0772d-738a-492d-93c1-96c9cdb5d597' },
+        {'name': 'armádní generál (arm.gen.)','en_name': '[Army] General ([A]GEN)', 'id': '9234d06c-e811-4016-8ee5-f6975b4048a4' },
+    ]
+    return rankTypes
+
 @cache
 def determineCertificateType():
     certificateTypes = [
@@ -175,50 +212,13 @@ def determineMedalTypeGroup():
     ]
     return medalTypeGroup
 
-@cache
-def determineRankType():
-    rankTypes = [
-        #mužstvo
-        {'name': 'vojín (voj.)','en_name': 'private', 'id': 'de5e6ae8-902c-4b06-aa8e-8fbca99026f3' },
-        {'name': 'svobodník (svob.)','en_name': 'Private First Class', 'id': 'f3038058-e1fa-4f7c-9e50-7b1d99998d37' },
-
-        #poddůstojníci
-        {'name': 'desátník (des.)','en_name': 'Corporal', 'id': 'a3cdae76-1c7d-409c-8bed-9e922c066bce' },
-        {'name': 'četař (čet.)','en_name': 'Sergeant', 'id': 'a17e81a6-776b-4883-a04d-cbd4f07ad095' },
-        {'name': 'rotný (rtn.)','en_name': 'Staff Sergeant', 'id': 'a9043224-9c3b-4562-a329-997fba9237d0' },
-
-        #praporčíci
-        {'name': 'rotmistr (rtm.)','en_name': 'Sergeant First Class', 'id': '72294ac5-1823-4164-9805-60a0aaa39296' },
-        {'name': 'nadrotmistr (nrtm.)','en_name': 'Master Sergeant', 'id': '453dff9e-fab2-41d0-8bef-ca76c78e79c8' },
-        {'name': 'praporčík (prap.)','en_name': 'Chief Warrant Officer (CW2)', 'id': '6a324f4a-2162-4fe7-a47c-8be1f3c9452b' },
-        {'name': 'nadpraporčík (nprap.)','en_name': 'Chief Warrant Officer (CW3)', 'id': '34cfd57e-6a09-4423-8025-b44d6dbce774' },
-        {'name': 'štábní praporčík (št. prap.)','en_name': 'Master Warrant Officer (MW4)', 'id': '841fa09f-625e-49b4-8872-05c43ce197cf' },
-
-        #nižší důstojníci
-        {'name': 'poručík (por.)','en_name': 'Lieutenant (LT)', 'id': '3914ab9f-78bc-45ac-bb2d-59ee921f3a19' },
-        {'name': 'nadporučík (npor.)','en_name': 'First Lieutenant (1LT)', 'id': '437fa94e-8442-4667-af9a-8327afef9ffa' },
-        {'name': 'kapitán (ktp.)','en_name': 'Captain (CPT)', 'id': 'a8ce2853-26ec-4e10-8bbe-899cc296a35f' },
-
-        #vyšší důstojníci
-        {'name': 'major (mjr.)','en_name': 'Major (MAJ)', 'id': '587cd381-aeec-4367-91f3-8849f900848a' },
-        {'name': 'podplukovník (pplk.)','en_name': 'Lieutenant Colonel (LTC)', 'id': '46a7325f-9b9e-4e80-9f17-670bd9151229' },
-        {'name': 'plukovník (plk.)','en_name': 'Colonel (COL)', 'id': '824533e5-eba7-45f7-80f6-e2466529e73c' },
-
-        #generálové
-        {'name': 'brigádní generál (brig.gen.)','en_name': 'Brigadier General (BG)', 'id': '9eb8d8f4-a87c-447d-aaee-c0a15cd6fbce' },
-        {'name': 'generálmajor (genmjr.)','en_name': 'Major General (MG)', 'id': 'd65a0d25-dc39-46fa-a107-a684c9724c5e' },
-        {'name': 'generálporučík (genpor.)','en_name': 'Lieutenant General (LTG)', 'id': '41f0772d-738a-492d-93c1-96c9cdb5d597' },
-        {'name': 'armádní generál (arm.gen.)','en_name': '[Army] General ([A]GEN)', 'id': '9234d06c-e811-4016-8ee5-f6975b4048a4' },
-    ]
-    return rankTypes
-
-
 
 from gql_personalities.DBDefinitions import CertificateType, CertificateTypeGroup, MedalType, MedalTypeGroup
 
 import asyncio
 async def ensureAllTypes(asyncSessionMaker):
     done = await asyncio.gather(
+        putPredefinedStructuresIntoTable(asyncSessionMaker, RankType, determineRankType),
         putPredefinedStructuresIntoTable(asyncSessionMaker, CertificateType, determineCertificateType),
         putPredefinedStructuresIntoTable(asyncSessionMaker, CertificateTypeGroup, determineCertificateTypeGroup),
         putPredefinedStructuresIntoTable(asyncSessionMaker, MedalType, determineMedalType),

@@ -9,9 +9,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uoishelpers.resolvers import create1NGetter, createEntityByIdGetter, createEntityGetter, createInsertResolver, createUpdateResolver
 from uoishelpers.resolvers import putSingleEntityToDb
 
-from gql_personalities.DBDefinitions import BaseModel, UserModel, Personalities_Rank, Personalities_Study, Personalities_Certificate, Personalities_Medal, Personalities_WorkHistory, Personalities_RelatedDoc
-from gql_personalities.DBDefinitions import Personalities_CertificateType, Personalities_MedalType
-from gql_personalities.DBDefinitions import Personalities_MedalTypeGroup
+from gql_personalities.DBDefinitions import BaseModel, UserModel, Rank, Study, Certificate, Medal, WorkHistory, RelatedDoc
+from gql_personalities.DBDefinitions import RankType, CertificateType, MedalType
+from gql_personalities.DBDefinitions import CertificateTypeGroup, MedalTypeGroup
 
 ## Nasleduji funkce, ktere lze pouzit jako asynchronni resolvery
 
@@ -22,6 +22,41 @@ from gql_personalities.DBDefinitions import Personalities_MedalTypeGroup
 ###########################################################################################################################
 
 
+#user resolvers
+resolveUserById = createEntityByIdGetter(UserModel)
+
+#rank resolvers
+resolveRankById = createEntityByIdGetter(Rank)
+
+#rankType resolvers
+resolveRankTypeById = createEntityByIdGetter(RankType)
+
+#study resolvers
+resolveStudyById = createEntityByIdGetter(Study)
+
+#certificate resolvers
+resolveCertificateById = createEntityByIdGetter(Certificate)
+
+#certificateType resolvers
+resolveCertificateTypeById = createEntityByIdGetter(CertificateType)
+
+#certificateTypeGroup resolvers
+resolveCertificateTypeGroupById = createEntityByIdGetter(CertificateTypeGroup)
+
+#medal resolvers
+resolveMedalById = createEntityByIdGetter(Medal)
+
+#medalType resolvers
+resolveMedalTypeById = createEntityByIdGetter(MedalType)
+
+#medalTypeGroup resolvers
+resolveMedalTypeGroupById = createEntityByIdGetter(MedalTypeGroup)
+
+#workHistory resolvers
+resolveMedalTypeGroupById = createEntityByIdGetter(MedalTypeGroup)
+
+#relatedDoc resolvers
+resolveRelatedDocById = createEntityByIdGetter(RelatedDoc)
 
 ###########################################################################################################################
 #
