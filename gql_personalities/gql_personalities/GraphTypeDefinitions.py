@@ -14,7 +14,14 @@ def AsyncSessionFromInfo(info):
 #
 ###########################################################################################################################
 
+@strawberryA.federation.type(extend=True, keys=["id"])
+class UserGQLModel:
+    
+    id: strawberryA.ID = strawberryA.federation.field(external=True)
 
+    @classmethod
+    def resolve_reference(cls, id: strawberryA.ID):
+        return UserGQLModel(id=id)
 
 ###########################################################################################################################
 #
@@ -29,3 +36,6 @@ class Query:
     async def say_hello(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[str, None]:
         result = f'Hello {id}'
         return result
+
+
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, ))
