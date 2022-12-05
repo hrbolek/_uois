@@ -38,8 +38,8 @@ class PublicationModel(BaseModel):
     place = Column(String)
     published_date = Column(Date)
     reference = Column(String)
-    externalId = Column(String, index=True)
     valid = Column(Boolean)
+    externalId = Column(String, index=True)
 
     author = relationship('AuthorModel', back_populates='publication')
     publication_type = relationship('PublicationTypeModel', back_populates='publication')

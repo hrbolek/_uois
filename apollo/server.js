@@ -107,7 +107,7 @@ const getENV = (name, defaultValue) => {
 
   await server.start()
 
-  server.applyMiddleware({ app, path: '/gql' });
+  server.applyMiddleware({ app, path: '/api/gql' });
 
   const PORT = getENV("PORT", "3000");
 
