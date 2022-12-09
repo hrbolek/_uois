@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: student.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: student.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Link, useParams } from "react-router-dom";
+
+import Card from 'react-bootstrap/Card';
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import { useEffect, useState } from "react";
+
+import image from '../rozvrhSnimek.png'
+import { GroupSmall } from "../group/group";
+import { FacultySmall } from "../group/faculty";
+import { TeacherSmall } from "./teacher";
+
+import { root } from '../index';
+import { useQueryGQL, Loading, LoadingError } from "../index";
+import { TimeTableMedium } from "../timetable/timetable";
+import { SubjectSmall } from "../studyprogram/subject";
+import { ProgramSmall } from '../studyprogram/studyprogram';
+
+
+/** @module Student */
+
+/**
+ * Renders a link to a student's page
+ * @param {*} props 
+ * @param {*} props.id - identification
+ * @param {string} props.name - Student's name
+ * @function
+ */
+export function StudentSmall(props) {
+    return (
+        &lt;Link to={root + "/users/student/" + (props.id)}>{props.name} {props.surname}&lt;/Link>
+    )
+}
+
+/**
+ * Renders a medium set of student's data, it is compatible with {@link StudentLarge}
+ * @param {*} props 
+ * @param {*} props.id - identification
+ * @param {string} props.name - Student's name
+ * @param {*} props.faculty - Student's faculty
+ * @param {*} props.groups - Student's groups
+ * @function
+ */
+export function StudentMedium(props) {
+    let faculties = props.faculty.map((item, index) => index === 0 ? (&lt;FacultySmall key={item.id} {...item} />) : (&lt;>, &lt;FacultySmall key={item.id} {...item} />&lt;/>))
+    let groups = props.groups.map((item, index) => index === 0? (&lt;GroupSmall key={item.id} {...item} />) : (&lt;>, &lt;GroupSmall key={item.id} {...item} />&lt;/>))
+
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Student - &lt;StudentSmall {...props.person} />&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+    
+                &lt;Card.Text>
+                    &lt;b>Jméno  příjmení:&lt;/b> {props.person.name} {props.person.surname}&lt;br />
+                    &lt;b>Titul:&lt;/b> {props.degreeRank} &lt;b>Ročník:&lt;/b> {props.grade} &lt;br />
+                    &lt;b>Skupina:&lt;/b> {groups}&lt;br />
+                    &lt;b>Fakulta:&lt;/b> {faculties}
+                &lt;/Card.Text>
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+export const StudentProgram = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Program&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;ProgramSmall {...props.program} />
+            &lt;/Card.Body>
+        &lt;/Card>
+        
+    )
+}
+
+function SeznamPredmetuUStudenta(props) {
+    let subjects = props.subjects.map((subject, index) => (&lt;li>&lt;SubjectSmall {...subject} /> &lt;/li>))
+
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Předměty&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;ul>
+                    {subjects}
+                &lt;/ul>
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+
+//ContactInfo
+/*
+export function StudentPage(props) {
+    const [state, setState] = useState(
+        {
+            'id': props.id,
+            'name': props.name,
+            'lastname': props.lastname,
+            'degreeRank': 'ing. por.',
+            'grade': '3',
+            "email": props.name.toLowerCase() + '.' + props.lastname.toLowerCase() + '@unob.cz',
+            'phone': '720 525 980',
+            'areal': 'Kasárny Černá Pole',
+            'building': '3',
+            'room': '422',
+            'VR': 'def',
+            'VC': 'def',
+            'VK': 'def',
+            'faculty': [
+                { 'id': 23, 'name': 'FVT' }
+            ],
+            'groups': [
+                { 'id': 21, 'name': '23-5KB' },
+                { 'id': 22, 'name': '24-5KB' }
+            ],
+            'subjects': [
+                { 'id': 25, 'name': 'Informatika' },
+                { 'id': 1, 'name': 'Analýza informačních zdrojů' },
+                { 'id': 3, 'name': 'Anglický jazyk' },
+                { 'id': 2, 'name': 'Tělesná výchova' },
+                { 'id': 4, 'name': 'Kybernetická bezpečnost' },
+                { 'id': 5, 'name': 'Počítačové sítě a jejich bezpečnost' }
+            ]
+        }
+    )
+
+    useEffect(() => {
+        fetch('/gql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            redirect: 'follow', // manual, *follow, error
+            body: JSON.stringify({
+                "query":
+                    `
+                query {
+                    user(id: ${props.id}) {
+                      id
+                      name
+                      surname
+                      email
+                      groups: groupsByType(typeId: 1) {
+                        id
+                        name
+                      }
+                      faculty: groupsByType(typeId: 2) {
+                        id
+                        name
+                      }
+                      subjects: groupsByType(typeId: 0) {
+                        id
+                        name
+                      }
+                    }
+                  }
+                `
+            }),
+        })
+            .then(response => response.json())
+            .then(data => setState(data.data))
+            .then(() => console.log('data logged'))
+            .catch(error => console.log('error nacteni'))
+    }, [props.id])
+
+    // const groups = []
+    // for(index = 0; index &lt; state.groups.length; index++) {
+    //     if(index>0) groups.push(', ')
+    //     const sgItem = state.groups[index]
+    //     groups.push(&lt;GroupS {...props} id={sgItem.id} name={sgItem.name} key={sgItem.id}/>);
+    // }
+
+    return (
+        &lt;StudentLarge {...state} {...props} />
+    )
+}
+*/
+function RozvrhMedium() {
+    return ( 
+        &lt;TimeTableMedium type={'student'} id={1} />
+    )
+}
+
+function ContactInfo(props) {
+    return (
+        &lt;div className="card mb-3">
+            &lt;Card.Header>
+                &lt;Card.Title>Kontaktní údaje&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;b>E-mail:&lt;/b> {props.email}&lt;br />
+                &lt;b>Telefon:&lt;/b> {props.phone ? props.phone : 'Neuvedeno'}&lt;br />
+                &lt;b>Areál: &lt;/b> {props.areal}&lt;br />
+                &lt;b>Budova: &lt;/b>{props.building} &lt;b>Místnost:&lt;/b> {props.room}&lt;br />
+                &lt;hr />
+                &lt;b>Velitel roty:&lt;/b> &lt;TeacherSmall id={23} name='Stanislav' surname='Dobrušák' />&lt;br />
+                &lt;b>Velitel čety:&lt;/b> &lt;StudentSmall id={28} name='Pavel' surname='Rajská' />&lt;br />
+                &lt;b>Vedoucí katedry:&lt;/b> &lt;TeacherSmall id={21} name='František' surname='Petr' />&lt;br />
+            &lt;/Card.Body>
+        &lt;/div>
+    )
+    // &lt;b>Velitel roty:&lt;/b> &lt;PersonS id={23} name='Stanislav' lastname='Dobrušák' appRoot={props.appRoot}/>&lt;br />
+    // &lt;b>Velitel čety:&lt;/b> &lt;PersonS id={28} name='Pavel' lastname='Rajská' appRoot={props.appRoot}/>&lt;br />
+    // &lt;b>Vedoucí katedry:&lt;/b> &lt;PersonS id={21} name='František' lastname='Petr' appRoot={props.appRoot}/>&lt;br />
+
+}
+
+export function StudentLarge(props) {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>
+                    Karta studenta
+                &lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;Row>
+                    &lt;Col md={3}>
+                        &lt;StudentMedium {...props} />&lt;br />
+                        &lt;ContactInfo {...props} />
+                    &lt;/Col>
+                    &lt;Col md={6}>
+                        &lt;RozvrhMedium />
+                    &lt;/Col>
+                    &lt;Col md={3}>
+                        &lt;StudentProgram {...props} /> &lt;br />
+                        &lt;SeznamPredmetuUStudenta {...props} />
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+/**
+ * Renders a page with data representing a student
+ * @param {*} props 
+ * @param {*} props.id - identification
+ * @param {*} props.person - peronification fo student
+ * @param {string} props.name - Student's name
+ * @function
+ */
+export const StudentLargeStoryBook = (props) => {
+    const extendedProps = {
+        'id': 1,
+        'person': {
+            'id': 1,
+            'name': 'Name',
+            'surname': 'Lastname',
+            "email": 'name.lastname@unob.cz',   
+        },
+        'degreeRank': 'ing. por.',
+        'grade': '3',
+        'phone': '799 999 999',
+        'areal': 'Kasárna Černá Pole',
+        'building': '3',
+        'room': '422',
+        'VR': 'def',
+        'VC': 'def',
+        'VK': 'def',
+        'faculty': [
+            { 'id': 23, 'name': 'FVT' }
+        ],
+        'groups': [
+            { 'id': 21, 'name': '23-5KB' },
+            { 'id': 22, 'name': '24-5KB' }
+        ],
+        'subjects': [
+            { 'id': 25, 'name': 'Informatika' },
+            { 'id': 1, 'name': 'Analýza informačních zdrojů' },
+            { 'id': 3, 'name': 'Anglický jazyk' },
+            { 'id': 2, 'name': 'Tělesná výchova' },
+            { 'id': 4, 'name': 'Kybernetická bezpečnost' },
+            { 'id': 5, 'name': 'Počítačové sítě a jejich bezpečnost' }
+        ]
+    }
+
+    return &lt;StudentLarge {...extendedProps} {...props} />;
+}
+
+export const StudentLargeQuery = (id) => 
+    fetch('/gql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        redirect: 'follow', // manual, *follow, error
+        body: JSON.stringify({
+            "query":
+                `
+                query {
+                    user: student(id: ${id}) {
+                      id
+                      person {
+                        id
+                        name
+                        surname
+                        email
+                      }
+                      program {
+                        id
+                        name
+                        subjects {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+            `
+
+        }),
+    })
+
+export const StudentMediumQuery = (id) => 
+    fetch('/gql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        redirect: 'follow', // manual, *follow, error
+        body: JSON.stringify({
+            "query":
+                `
+                query {
+                    user: student(id: ${id}) {
+                        id
+                        person {
+                            id
+                            name
+                            surname
+                            email
+                        }
+                    }
+                }
+            `
+        }),
+    })
+
+  
+export const StudentLargeFetching = (props) => {
+
+    const Visualizer = props.as || StudentLargeStoryBook;
+    const queryFunc = props.with || StudentLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.user, [props.id])
+    
+    if (error != null) {
+        return &lt;LoadingError error={error} />
+    } else if (state != null) {
+        return &lt;Visualizer {...props} {...state} />
+    } else {
+        return &lt;Loading>Uživatel {props.id}&lt;/Loading>
+    }
+}
+
+export const StudentPage = (props) => {
+    const { id } = useParams();
+
+    return (
+        &lt;StudentLargeFetching {...props} id={id} as={StudentLargeStoryBook}/>
+    )    
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Student.html">Student</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Feb 03 2022 15:24:19 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

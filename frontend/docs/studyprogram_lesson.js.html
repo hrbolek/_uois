@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: studyprogram/lesson.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: studyprogram/lesson.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+import {root} from "../index";
+
+import { Link, useParams } from "react-router-dom";
+
+import  Card  from "react-bootstrap/Card";
+import { Row, Table} from "react-bootstrap";
+import React, {Component, useState, useEffect } from "react";
+
+import {SubjectSmall} from "./subject";
+import {PersonSmall} from "../person/person";
+
+import { useQueryGQL, Loading, LoadingError } from "../index";
+
+
+/** @module Lesson */
+
+export const lessonRoot = root + "/studyprograms/lesson"
+
+export const SubjectSemesterSmall = (props) => {
+    //const ProgID=props.ProgID
+    return (
+        &lt;Link to={lessonRoot + `/${props.id}`}>{props.name}{props.children}&lt;/Link>
+    )   
+}
+
+const tableStyle = {
+    color: '#333333',
+    width: '70%',
+    border: '1px solid black',
+    'border-collapse': 'collapse',
+        
+    //'background-color': '#CCCCCC',
+    };
+
+export const LessonMed = (props) => {
+
+    return(
+        &lt;Card.Body>
+                &lt;Table striped bordered hover style={tableStyle}>
+                    &lt;thead>
+                    &lt;tr>                                    
+                        &lt;td align="left">Název předmětu: &lt;/td>
+                        &lt;td colSpan="3" align="center">&lt;SubjectSemesterSmall name={props.name} lessonid={props.lessonid} ProgID={props.ProgID}/>&lt;/td>
+                        &lt;td colSpan="2" align="right">id (id): &lt;b>{props.lessonid}&lt;/b> &lt;/td>                        
+                    &lt;/tr>
+                    &lt;/thead>
+                    &lt;tbody>
+                    &lt;tr>
+                        &lt;td>Semestry: &lt;/td>
+                        &lt;td colSpan="5"> {props.semesters} &lt;/td>
+                    &lt;/tr>
+                    &lt;/tbody>
+                &lt;/Table>
+  
+        &lt;/Card.Body>
+
+    )
+}
+
+export const LessonsListLargeAPI = (props) => {
+    const { id } = useParams();
+    console.log("id v ClassroomTest je : ", id)
+
+    const [state, setState] = useState(
+        {'name': "StudyProgName",
+        'subjects' : [{'name':"name", 'id':"id", 'semesters':[{'name':'name','id':'id'}]}]}
+    );
+    useEffect(() => {
+        fetch('http://localhost:50001/gql', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              query: `
+              query{
+                program(id:`+id+`){
+                  name
+                  subjects{
+                    id
+                    name
+                    semesters{
+                      name
+                      id
+                    }
+                  }
+                }
+              }             
+                `,
+              variables: {
+                now: new Date().toISOString(),
+              },
+            }),
+          })
+            .then((res) => res.json())
+            .then((result) => setState(result.data.program));
+    }, [id] )
+    
+    //console.log("State je : ", state)
+    console.log("STATE je : ", state)
+    return(                                                        //předání testing-->vrácení se zpět na seznam arealů
+    &lt;div>   
+        &lt;LessonsListLarge json={state} ProgID={id}/>
+    &lt;/div>)
+}
+
+
+export const LessonsListLarge = (props) => {
+    console.log("PROPS:  ", props)
+    const json=props.json
+    const arealName=props.json.name
+    const ProgID=props.ProgID
+    
+    /*
+    const [state, setState] = useState(
+        {
+            'arealname' : 'props.json.name',
+            'countries' : [{'name':'budova', 'code': 'id'}]
+        });
+    */
+    
+    const subjects = []
+    for(var index = 0; index &lt; json.subjects.length; index++) {
+      const semesters = []
+      const sgItem = json.subjects[index]
+            for(var index2 = 0; index2 &lt; json.subjects[index].semesters.length; index2++) {
+                const sgItem2 = json.subjects[index].semesters[index2]
+                semesters.push(&lt;i>&lt;SubjectSmall name={sgItem2.name} semesterid={sgItem2.id} lessonid={sgItem.id} ProgID={ProgID}/> -||- &lt;/i>);
+            }
+        subjects.push(&lt;LessonMed name={sgItem.name} lessonid={sgItem.id} semesters={semesters} ProgID={ProgID}/>);
+    }
+    //console.log("buldings = ", state)
+    return(                                                        //předání testing-->vrácení se zpět na seznam arealů
+    &lt;div>   
+      &lt;Card>
+      &lt;Card.Header>&lt;h1>Seznam předmětů ve studijním programu &lt;i>{arealName}&lt;/i>: &lt;/h1>&lt;/Card.Header>
+            {subjects}
+      &lt;/Card>   
+            {/*&lt;p>&lt;b>fetchnuty JSON soubor z GraphQL:&lt;/b> {JSON.stringify(json)}&lt;/p>*/}
+    &lt;/div>)
+}
+
+
+///************---------------------------------------------------------------------------------------******************/
+
+
+export const LessonLargeAPI = (props) => {
+  const { id } = useParams();
+  const studyprog=id.split(',')[0]
+  const lesson=id.split(',')[1]
+    console.log("id v ClassroomLargeAPI je : ", id)
+
+    const [state, setState] = useState(
+      {'name': "StudyProgName",
+      'subjects' : [{'name':"name", 'id':"id", 'semesters':[{'name':'name','id':'id','topics':[{'name':'name','id':'id'}]}]}]}
+    );
+    useEffect(() => {
+        fetch('http://localhost:50001/gql', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              query: `
+              query{
+                program(id:`+studyprog+`){
+                  name
+                  subjects{
+                    id
+                    name
+                    semesters{
+                      name
+                      id
+                      topics{
+                        name
+                        id
+                      }
+                    }
+                  }
+                }
+              }              
+                `,
+              variables: {
+                now: new Date().toISOString(),
+              },
+            }),
+          })
+            .then((res) => res.json())
+            .then((result) => setState(result.data.program));
+    }, [id] )
+    
+    //console.log("State je : ", state)
+    console.log("STATE je : ", state)
+    return(                                                        //předání testing-->vrácení se zpět na seznam arealů
+    &lt;div>   
+        &lt;LessonLarge json={state} ProgID={studyprog} lessonid={lesson}/>
+    &lt;/div>)
+}
+
+
+export const LessonLarge = (props) => {
+    //console.log("id v ClassroomTest je : ", id)
+    console.log("PROPS:  ", props)
+    const json=props.json
+    const programName=props.json.name
+    var temaname="empty"
+    
+    /*
+    const [state, setState] = useState(
+        {
+            'arealname' : 'props.json.name',
+            'countries' : [{'name':'budova', 'code': 'id'}]
+        });
+    */
+    
+        const subjects = []
+        const semesters = []
+        for(var index = 0; index &lt; json.subjects.length; index++) {
+          const topics = []
+          const sgItem = json.subjects[index]
+          if(props.lessonid===sgItem.id){
+            for(var index2 = 0; index2 &lt; json.subjects[index].semesters.length; index2++) {
+              const sgItem2 = json.subjects[index].semesters[index2]
+              for(var index3 = 0; index3 &lt; json.subjects[index].semesters[index2].topics.length; index3++) {
+                const sgItem3 = json.subjects[index].semesters[index2].topics[index3]
+                topics.push(&lt;i>&lt;LessonSelectedMed name={sgItem3.name} semesterid={sgItem2.id} lessonid={sgItem.id} ProgID={props.ProgID} topicid={sgItem3.id}/>&lt;/i>);
+            }
+            topics.push(&lt;div>&lt;h3>&lt;b> ♣ další semestr:&lt;/b>&lt;/h3>&lt;/div>)
+              semesters.push(&lt;i>&lt;SubjectSmall name={sgItem2.name} semesterid={sgItem2.id} lessonid={sgItem.id} ProgID={props.ProgID}/> -||- &lt;/i>);
+          }
+          subjects.push(topics);
+          temaname=sgItem.name
+          }
+                
+        }
+        
+    return(                                                       
+    &lt;Card>   
+      &lt;Card.Header>&lt;h1>Informace o předmětu &lt;i>&lt;SubjectSemesterSmall name={temaname} ProgID={props.ProgID} lessonid={props.lessonid}/>&lt;/i>: &lt;/h1>&lt;/Card.Header>
+      &lt;Card>
+            &lt;Table>
+            &lt;Card.Body>
+                
+                    &lt;td>Garant pro studijní program "{programName}" : &lt;/td>
+                    &lt;td>&lt;h3>*&lt;PersonSmall id={props.id} name={"*garant*"}/>*&lt;/h3>&lt;/td>
+                
+            &lt;/Card.Body>
+            &lt;Card.Body>
+                
+                    &lt;td>Semestry: &lt;/td>
+                    &lt;td>&lt;b>{semesters}  (filtr podle semestru)&lt;/b>&lt;/td>
+                    
+                
+                &lt;br/>
+          &lt;/Card.Body>    
+            &lt;/Table>
+      &lt;/Card>
+      &lt;Card>
+      &lt;Card.Header>&lt;h3>Seznam lekcí(témat):&lt;/h3>&lt;/Card.Header>
+            &lt;Card>{subjects}&lt;/Card>
+      &lt;/Card>
+            {/*&lt;p>&lt;b>fetchnuty JSON soubor z GraphQL:&lt;/b> {JSON.stringify(json)}&lt;/p>*/}
+    &lt;/Card>)
+}
+
+export const LessonSelectedMed = (props) => {
+
+    return(
+        &lt;Card>
+          
+                &lt;Table striped bordered hover style={tableStyle}>
+                    &lt;thead>
+                    &lt;tr>                                    
+                        &lt;td align="left">Název tématu: &lt;/td>
+                        &lt;td colSpan="3" align="left"> {props.name} &lt;/td>
+                        &lt;td colSpan="2" align="right">id (id): &lt;b>{props.topicid}&lt;/b> &lt;/td>                        
+                    &lt;/tr>
+                    &lt;/thead>
+                    &lt;tbody>
+                    &lt;tr>                                    
+                        &lt;td align="left">Vyučující: &lt;/td>
+                        &lt;td colSpan="5" align="left"> {/*props.name*/}  -  
+                        &lt;PersonSmall id={props.topicid+"/1"} name={"vyučující1 "}/> -||-
+                        &lt;PersonSmall id={props.topicid+"/2"} name={"vyučující2 "}/> -||-
+                        &lt;PersonSmall id={props.topicid+"/3"} name={"vyučující3 "}/> &lt;/td>                      
+                    &lt;/tr>
+                    &lt;/tbody>
+                &lt;/Table>
+  
+        &lt;/Card>
+
+    )
+}
+
+export const SubjectSemesterTopicMedium = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                SubjectSemesterTopicMedium
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                {JSON.stringify(props)}
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+export const SubjectSemesterTopicLarge = (props) => {
+    return (
+        &lt;SubjectSemesterTopicMedium {...props} />
+    )
+}
+
+/**
+ * Renders a page with data representing a lesson, contains predefined data which can are overrided by props
+ * @param {*} props 
+ * @param {*} props.id - identification
+ * @param {string} props.name - name
+ * @function
+ */
+export const SubjectSemesterTopicLargeStoryBook = (props) => {
+    const extraProps = {
+        "id": "1",
+        "topic": "Téma 1",
+        'subject': {
+            'id': 1, 'name': 'Předmět',
+            'program': {'id': 1, 'name': 'Kybernetická bezpečnost'}
+        }
+      }
+    return (
+        &lt;SubjectSemesterTopicLarge {...extraProps} {...props}/>
+    )
+}
+
+/**
+ * Retrieves the data from GraphQL API endpoint
+ * @param {*} id - identificator
+ * @function
+ */
+export const SubjectSemesterTopicLargeQuery = (id) => 
+    fetch('/gql', {
+      method: 'POST',
+      headers: {
+      'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+      query: `
+      query {
+          lesson(id: ${id}) {
+            id
+            topic
+          }
+        }              
+          `,
+      variables: {
+          now: new Date().toISOString(),
+      },
+      }),
+  })
+
+/**
+ * Fetch the data from API endpoint and renders a page representing a lesson
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @param {*} [props.as = SubjectSemesterTopicLargeStoryBook] - ReactJS component (function) which is responsible for rendering
+ * @param {*} [props.with = SubjectSemesterTopicLargeQuery] - function fetching the data and returning promise with the data from API endpoint
+ * @function
+ */
+export const SubjectSemesterTopicLargeFetching = (props) => {
+
+    const Visualizer = props.as || SubjectSemesterTopicLargeStoryBook;
+    const queryFunc = props.with || SubjectSemesterTopicLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.subject, [props.id])
+    
+    if (error != null) {
+        return &lt;LoadingError error={error} />
+    } else if (state != null) {
+      return &lt;Visualizer {...props} {...state} />
+    } else {
+        return &lt;Loading>Předmět {props.id}&lt;/Loading>
+    }
+}
+
+/**
+ * Renders a page representing a lesson, designed as a component for a ReactJS router
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @function
+ */
+export const SubjectSemesterTopicPage = (props) => {
+    const { id } = useParams()
+    return (
+        &lt;SubjectSemesterTopicLargeFetching {...props} id={id} />
+    )
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Areal.html">Areal</a></li><li><a href="module-Building.html">Building</a></li><li><a href="module-Department.html">Department</a></li><li><a href="module-Faculty.html">Faculty</a></li><li><a href="module-Group.html">Group</a></li><li><a href="module-Lesson.html">Lesson</a></li><li><a href="module-Room.html">Room</a></li><li><a href="module-Student.html">Student</a></li><li><a href="module-StudyProgram.html">StudyProgram</a></li><li><a href="module-Subject.html">Subject</a></li><li><a href="module-Teacher.html">Teacher</a></li><li><a href="module-TimeTable.html">TimeTable</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sun Feb 06 2022 09:26:50 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

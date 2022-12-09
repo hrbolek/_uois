@@ -1,5 +1,5 @@
 from pydoc import resolve
-from typing import List, Union
+from typing import List, Union, Optional
 import typing
 import strawberry as strawberryA
 import uuid
@@ -8,9 +8,15 @@ def AsyncSessionFromInfo(info):
     return info.context['session']
 
 
-
+from gql_ug.GraphResolvers import resolveMembershipById
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a relation between an user and a group""")
 class MembershipGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
+
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
@@ -36,8 +42,17 @@ class MembershipGQLModel:
         return self.enddate
 
 from gql_ug.GraphResolvers import resolveMembershipForUser, resolveRolesForUser
+from gql_ug.GraphResolvers import resolveUserById
+
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a user""")
 class UserGQLModel:
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolveUserById(AsyncSessionFromInfo(info), id)
+        #result._type_definition = UserGQLModel()._type_definition # little hack :)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
 
     @strawberryA.field(description="""Entity primary key""")
     def id(self, info: strawberryA.types.Info) -> strawberryA.ID:
@@ -60,7 +75,7 @@ class UserGQLModel:
         result = await resolveMembershipForUser(AsyncSessionFromInfo(info), self.id)
         return result
 
-    @strawberryA.field(description="""List of groups, where the user is member""")
+    @strawberryA.field(description="""List of roles, which the user has""")
     async def roles(self, info: strawberryA.types.Info) -> typing.List['RoleGQLModel']:
         result = await resolveRolesForUser(AsyncSessionFromInfo(info), self.id)
         return result
@@ -96,10 +111,18 @@ class UserGQLModel:
 
 @strawberryA.input
 class UserUpdateGQLModel:
-    name: str = None
-    surname: str = None
-    email: str = None
-    valid: bool = None
+    name: Optional[str] = None
+    surname: Optional[str] = None
+    email: Optional[str] = None
+    valid: Optional[bool] = None
+
+@strawberryA.input
+class UserInsertGQLModel:
+    id: Optional[uuid.UUID] = None
+    name: Optional[str] = None
+    surname: Optional[str] = None
+    email: Optional[str] = None
+    valid: Optional[bool] = None
 
 from gql_ug.GraphResolvers import resolverUpdateUser
 @strawberryA.federation.type(keys=["id"], description="""Entity representing an editable user""")
@@ -107,6 +130,14 @@ class UserEditorGQLModel:
     ##
     ## Mutace, obejiti problemu s federativnim API
     ##
+
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolveUserById(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
+
     @strawberryA.field(description="""Entity primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
@@ -120,9 +151,16 @@ class UserEditorGQLModel:
 
 
 from gql_ug.GraphResolvers import resolveMembershipForGroup, resolveMastergroupForGroup, resolveSubgroupsForGroup, resolveRolesForGroup
+from gql_ug.GraphResolvers import resolveGroupById
 from gql_ug.GraphPermissions import GroupEditorPermission
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a group""")
 class GroupGQLModel:
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolveGroupById(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
 
     @strawberryA.field(description="""Entity primary key""")
     def id(self) -> strawberryA.ID:
@@ -164,27 +202,48 @@ class GroupGQLModel:
         return result
 
     @strawberryA.field(
-        permission_classes=[GroupEditorPermission],
+        #permission_classes=[GroupEditorPermission],
         description="""List of roles in the group""")
-    async def editor(self, info: strawberryA.types.Info) -> Union['GroupGQLEditorModel', None]:
+    async def editor(self, info: strawberryA.types.Info) -> Union['GroupEditorGQLModel', None]:
         # check if user has right to get editor (can edit this group)
         # if hasNoRight:
         #    return None
         # else:
         return self
 
+
+from typing import Optional
+
 @strawberryA.input
 class GroupUpdateGQLModel:
-    name: str = None
-    type_id: uuid.UUID = None
-    valid: bool = None
+    name: Optional[str] = None
+    type_id: Optional[uuid.UUID] = None
+    valid: Optional[bool] = None
+
+@strawberryA.input
+class GroupInsertGQLModel:
+    id: Optional[uuid.UUID] = None
+    name: Optional[str] = None
+    type_id: Optional[uuid.UUID] = None
+    valid: Optional[bool] = None
 
 from gql_ug.GraphResolvers import resolveUpdateGroup, resolverRoleById, resolveInsertRole, resolveInsertMembership, resolveMembershipById
+from gql_ug.GraphResolvers import resolveInsertUser, resolveInsertGroup
 @strawberryA.federation.type(keys=["id"], description="""Entity representing an editable group""")
-class GroupGQLEditorModel:
+class GroupEditorGQLModel:
     ##
     ## Mutace, obejiti problemu s federativnim API
     ##
+    ##
+    ## Editor je rozšiřitelný v jiných prvcích federace.
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolveGroupById(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
+
+
     @strawberryA.field(description="""Entity primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
@@ -218,13 +277,16 @@ class GroupGQLEditorModel:
         return role
 
     @strawberryA.field(description="""Create a new role""")
-    async def create_subgroup(self, info: strawberryA.types.Info, grouptype_id: uuid.UUID) -> 'GroupGQLModel':
-        pass
+    async def create_subgroup(self, info: strawberryA.types.Info, group: GroupInsertGQLModel) -> 'GroupGQLModel':
+        newGroup = await resolveInsertGroup(AsyncSessionFromInfo(info), group, extraAttributes={'mastergroup_id': self.id})
+        print(newGroup)
+        return newGroup
 
-    @strawberryA.field(description="""Create a new role""")
+    @strawberryA.field(description="""Makes a group subgroup""")
     async def assign_subgroup(self, info: strawberryA.types.Info, subgroup_id: strawberryA.ID) -> 'GroupGQLModel':
         #updated = await resolveUpdateGroup(AsyncSessionFromInfo(info), subgroup_id, )
-        pass
+        updated = await resolveUpdateGroup(AsyncSessionFromInfo(info), subgroup_id, data=None, extraAttributes={'mastergroup_id': self.id})
+        return self
 
     @strawberryA.field(description="""Updates group""")
     async def update(self, info: strawberryA.types.Info, group: GroupUpdateGQLModel) -> 'GroupGQLModel':
@@ -232,17 +294,42 @@ class GroupGQLEditorModel:
         print(updated)
         return updated   
 
+    @strawberryA.field(description="""Create user and introduce membership""")
+    async def create_user(self, info: strawberryA.types.Info, user: UserUpdateGQLModel) -> 'GroupGQLModel':
+        session = AsyncSessionFromInfo(info)
+        print('create_user')
+        print(session.in_transaction())
+        if session.in_transaction():
+            await session.commit()
+        newUser = await resolveInsertUser(session, user, {})
+        await session.commit()
+        print(newUser)
+        #result = await resolveInsertMembership(session, None, 
+        #    extraAttributes={'user_id': newUser.id, 'group_id': self.id})
+        return newUser
+
 from gql_ug.GraphResolvers import resolveGroupForGroupType
+from gql_ug.GraphResolvers import resolveGroupTypeById
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a group type (like Faculty)""")
 class GroupTypeGQLModel:
     
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolveGroupTypeById(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
+
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""Group type name""")
+    @strawberryA.field(description="""Group type name CZ""")
     def name(self) -> str:
         return self.name
+
+    @strawberryA.field(description="""Group type name EN""")
+    def name_en(self) -> str:
+        return self.name_en
 
     @strawberryA.field(description="""List of groups which have this type""")
     async def groups(self, info: strawberryA.types.Info) -> typing.List['GroupGQLModel']:
@@ -250,16 +337,27 @@ class GroupTypeGQLModel:
         return result       
 
 from gql_ug.GraphResolvers import resolveRoleForRoleType
+from gql_ug.GraphResolvers import resolveRoleTypeById
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a role type (like Dean)""")
 class RoleTypeGQLModel:
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolveRoleTypeById(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
 
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""Role type name""")
+    @strawberryA.field(description="""Role type name CZ""")
     def name(self) -> str:
         return self.name
+
+    @strawberryA.field(description="""Role type name EN""")
+    def name_en(self) -> str:
+        return self.name_en
 
     @strawberryA.field(description="""List of roles with this type""")
     async def roles(self, info: strawberryA.types.Info) -> typing.List['RoleGQLModel']:
@@ -268,9 +366,15 @@ class RoleTypeGQLModel:
 
 
 
-from gql_ug.GraphResolvers import resolveRoleTypeById
+from gql_ug.GraphResolvers import resolveRoleTypeById, resolverRoleById
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a role of a user in a group (like user A in group B is Dean)""")
 class RoleGQLModel:
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolverRoleById(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
 
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
@@ -303,13 +407,19 @@ class RoleGQLModel:
         result = await resolveGroupById(AsyncSessionFromInfo(info), self.group_id)
         return result
 
-from gql_ug.GraphResolvers import resolveUserById, resolveGroupById, resolveGroupTypeById
-from gql_ug.GraphResolvers import resolveAllRoleTypes
+from gql_ug.GraphResolvers import resolveUserById, resolveUserAll, resolveUserByRoleTypeAndGroup
+from gql_ug.GraphResolvers import resolveGroupById, resolveGroupTypeById, resolveGroupAll, resolveGroupTypeAll
+from gql_ug.GraphResolvers import resolveAllRoleTypes, resolveRoleTypeAll, resolveRoleTypeById
 from gql_ug.GraphResolvers import resolveUsersByThreeLetters, resolveGroupsByThreeLetters
-from gql_ug.DBFeeder import randomDataStructure
+from gql_ug.DBFeeder import randomDataStructure, createUniversity
 @strawberryA.type(description="""Type for query root""")
 class Query:
-   
+
+    @strawberryA.field(description="""Returns a list of users (paged)""")
+    async def user_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[UserGQLModel]:
+        result = await resolveUserAll(AsyncSessionFromInfo(info), skip, limit)
+        return result
+
     @strawberryA.field(description="""Finds an user by their id""")
     async def user_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[UserGQLModel, None]:
         result = await resolveUserById(AsyncSessionFromInfo(info), id)
@@ -318,8 +428,18 @@ class Query:
     @strawberryA.field(
         description="""Finds an user by letters in name and surname, letters should be atleast three""")
     async def user_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[UserGQLModel]:
-        print('user_by_letters')
         result = await resolveUsersByThreeLetters(AsyncSessionFromInfo(info), validity, letters)
+        return result
+
+    @strawberryA.field(
+        description="""Finds an users who plays in a group a roletype""")
+    async def users_by_group_and_role_type(self, info: strawberryA.types.Info, group_id: uuid.UUID, role_type_id: uuid.UUID) -> List[UserGQLModel]:
+        result = await resolveUserByRoleTypeAndGroup(AsyncSessionFromInfo(info), group_id, role_type_id)
+        return result
+
+    @strawberryA.field(description="""Returns a list of groups (paged)""")
+    async def group_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[GroupGQLModel]:
+        result = await resolveGroupAll(AsyncSessionFromInfo(info), skip, limit)
         return result
 
     @strawberryA.field(description="""Finds a group by its id""")
@@ -332,15 +452,26 @@ class Query:
         result = await resolveGroupsByThreeLetters(AsyncSessionFromInfo(info), validity, letters)
         return result
 
+    @strawberryA.field(description="""Returns a list of groups types (paged)""")
+    async def group_type_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[GroupTypeGQLModel]:
+        result = await resolveGroupTypeAll(AsyncSessionFromInfo(info), skip, limit)
+        return result
+
     @strawberryA.field(description="""Finds a group type by its id""")
     async def group_type_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[GroupTypeGQLModel, None]:
         result = await resolveGroupTypeById(AsyncSessionFromInfo(info), id)
         return result
 
-    @strawberryA.field(description="""Finds a group type by its id""")
-    async def roletypes(self, info: strawberryA.types.Info) -> List[RoleTypeGQLModel]:
-        result = await resolveAllRoleTypes(AsyncSessionFromInfo(info))
+    @strawberryA.field(description="""Finds all roles types paged""")
+    async def role_type_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[RoleTypeGQLModel]:
+        result = await resolveRoleTypeAll(AsyncSessionFromInfo(info), skip, limit)
         return result
+
+    @strawberryA.field(description="""Finds a role type by its id""")
+    async def role_type_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[RoleTypeGQLModel, None]:
+        result = await resolveRoleTypeById(AsyncSessionFromInfo(info), id)
+        return result
+
 
     @strawberryA.field(description="""Random university""")
     async def randomUniversity(self, name: str, info: strawberryA.types.Info) -> GroupGQLModel:
@@ -350,3 +481,29 @@ class Query:
         print('db response', result.name)
         return result
     
+    @strawberryA.field(description="""Empty university""")
+    async def createUniversity(self, info: strawberryA.types.Info, name: str, id: Optional[uuid.UUID] = None) -> GroupGQLModel:
+        newId = id 
+        if newId is None:
+            newId = f'{uuid.uuid1()}'
+
+        newId = await createUniversity(AsyncSessionFromInfo(info), id=newId, name=name)
+        print('random university id', newId)
+        result = await resolveGroupById(AsyncSessionFromInfo(info), newId)
+        print('db response', result.name)
+        return result
+    
+
+    from strawberry.scalars import JSON
+
+    @strawberryA.field(description="""Empty university""")
+    async def importUG(self, info: strawberryA.types.Info, ug: JSON) -> GroupGQLModel:
+        newId = id 
+        if newId is None:
+            newId = f'{uuid.uuid1()}'
+
+        newId = await importUniversity(AsyncSessionFromInfo(info), id=newId, data=ug)
+        print('random university id', newId)
+        result = await resolveGroupById(AsyncSessionFromInfo(info), newId)
+        print('db response', result.name)
+        return result

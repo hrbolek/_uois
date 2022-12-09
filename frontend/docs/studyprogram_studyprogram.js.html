@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: studyprogram/studyprogram.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: studyprogram/studyprogram.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {root} from "../index";
+
+//import {SubjectSmall} from "../subject/subject";
+//import {LessonSmall} from "../lesson/lesson";
+import { Link } from "react-router-dom";
+
+import Card  from "react-bootstrap/Card";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Table from "react-bootstrap/Table";
+import Accordion from "react-bootstrap/Accordion";
+import Button from "react-bootstrap/Button";
+
+import {useParams } from "react-router-dom";
+
+import React, { useState, useEffect } from "react";
+//import {LessonSmall} from "../lesson/lesson";
+
+import { TeacherSmall } from "../person/teacher";
+import { DepartmentSmall } from "../group/department";
+import { FacultySmall } from "../group/faculty";
+
+import { SubjectMedium, SubjectLarge } from "./subject";
+import { useQueryGQL, Loading, LoadingError } from "../index";
+import { SubjectSmall } from "./subject";
+import { StudentSmall } from "../person/student";
+import { GroupSmall } from "../group/group";
+
+
+/** @module StudyProgram */
+
+
+export const progRoot = root + "/studyprograms";
+
+
+export const ProgramSmall = (props) => {
+    return(
+        &lt;Link to={progRoot + `/program/${props.id}`}>{props.children} {props.name}&lt;/Link>
+    )
+}
+
+// export const ProgLargeAPI = (props) => {
+//     const [state, setState] = useState(
+//         {
+//             'programy':[{'id':'id',
+//             'name':'name',
+//             'subjects':[{'id':'id','name':'name','semesters':[{'id':'id','name':'name'}]}]
+//         }]}
+//     );
+//     useEffect(() => {
+//         fetch('http://localhost:50001/gql', {
+//             method: 'POST',
+//             headers: {
+//               'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify({
+//               query: `
+//               # Write your query or mutation here
+//               query{
+//                 program(id:1){
+//                   id
+//                   name
+//                   subjects{
+//                     id
+//                     name
+//                     semesters{
+//                       name
+//                       id
+//                     }
+//                   }
+//                 }
+//               }       
+//                 `,
+//               variables: {
+//                 now: new Date().toISOString(),
+//               },
+//             }),
+//           })
+//             .then((res) => res.json())
+//             .then((result) => setState(result.data));
+            
+//     }, [] )
+    
+//     //POTOM BUDE: [props.id] - závislost kdy se udělá fetch (vždy když změníme id)!
+//     //console.log("po fetchi:", state)
+//     return(
+//         &lt;div>
+//             &lt;ProgLarge json={state}/>
+//         &lt;/div>
+//     )
+// }
+
+
+
+export const ProgramGrants = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title> Garanti &lt;/Card.Title>
+                
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;TeacherSmall id={1} name={'Josef Marie'} surname={'Krejčí'} />
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+export const ProgramGroups = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title> Skupiny &lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                {props.groups.map((group, index) => &lt;>&lt;GroupSmall {...group}/>&lt;br/>&lt;/>)}
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+export const ProgramAppLink = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title> Link na akreditace &lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;a href={'https://apl.unob.cz/Akreditace2017/StudijniProgram/9'} >aplikace akreditace &lt;/a>
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+export const ProgramLarge = (props) => {
+    return (        
+            &lt;Card>
+                &lt;Card.Header>
+                    &lt;Card.Title>
+                    Program {props.name} ({props.id})
+                    &lt;/Card.Title>
+                &lt;/Card.Header>
+                &lt;Card.Body>
+                    &lt;Row>
+                        &lt;Col md={3}>
+                            &lt;ProgramGrants {...props} /> &lt;br/>
+                            &lt;ProgramAppLink {...props} />   
+                        &lt;/Col>
+                        &lt;Col md={6}>
+                            &lt;ProgramSubjectList {...props} />        
+                        &lt;/Col>
+                        &lt;Col md={3}>
+                            &lt;ProgramGroups {...props} />   &lt;br/>
+                        &lt;/Col>          
+                    &lt;/Row>
+                &lt;/Card.Body>
+                &lt;Card.Body>
+                    
+                &lt;/Card.Body>
+
+            &lt;/Card>
+            
+    )
+}
+
+export const ProgramLarge_ = (props) => {
+    const json=props.json
+
+
+    //setState(props)
+    console.log("----obsah props:--- ", json)
+
+    /*
+    const programy = []
+    for(var index = 0; index &lt; json.program.length; index++) {
+        const sgItem = json.program[index]
+        programy.push(&lt;ProgMedium name={sgItem.name} id={sgItem.id}/>);
+    }
+*/
+try{ 
+    if(json.program.length>1){
+        const programy = []
+        for(var index = 0; index &lt; json.program.length; index++) {
+            const sgItem = json.program[index]
+            programy.push(&lt;ProgramMedium name={sgItem.name} id={sgItem.id}/>);
+        }
+        return (&lt;div>
+            &lt;Table striped bordered hover>
+                &lt;thead>
+                    &lt;h3>Seznam studijních programů:&lt;/h3>
+                &lt;/thead>
+              {programy}                  
+            &lt;/Table>
+            
+            {/*&lt;p>&lt;b>fetchnuty JSON soubor z GraphQL:&lt;/b> {JSON.stringify(json)}&lt;/p>*/}
+
+        &lt;/div>)
+    
+        }
+        else{
+            return(&lt;div>
+                &lt;Table striped bordered hover>
+                    &lt;thead>
+                        &lt;h3>Studijní program:&lt;/h3>
+                    &lt;/thead>
+                        
+                  &lt;Card>&lt;ProgramMedium name={json.program.name} id={json.program.id}/>&lt;/Card>             
+                &lt;/Table>
+                
+                {/*&lt;p>&lt;b>fetchnuty JSON soubor z GraphQL:&lt;/b> {JSON.stringify(json)}&lt;/p>*/}
+
+            &lt;/div>)
+        }
+
+} catch(e) { 
+    console.error(e); 
+    return(&lt;div>
+        &lt;Table striped bordered hover>
+            &lt;thead>
+                &lt;h3>Studijní program:&lt;/h3>
+            &lt;/thead>
+              
+          &lt;Card>&lt;ProgramMedium name={json.programy.name} id={json.programy.id}/>&lt;/Card>             
+        &lt;/Table>
+        
+        {/*&lt;p>&lt;b>fetchnuty JSON soubor z GraphQL:&lt;/b> {JSON.stringify(json)}&lt;/p>*/}
+
+    &lt;/div>)
+    
+}
+
+
+//console.log("obsah program: ",programy)
+    
+}
+
+const tdStyle = {
+    'colspan': "2",
+    'align': "right",
+    
+    
+    //'background-color': '#CCCCCC',
+    };
+
+const tableStyle = {
+    color: '#333333',
+    width: '110%',
+    border: '1px solid black',
+    'border-collapse': 'collapse',
+        
+    //'background-color': '#CCCCCC',
+    };
+
+export const ProgramSubjectList_ = (props) => {
+    return (
+        &lt;Table >
+            &lt;thead>
+                &lt;tr>&lt;td>Předměty&lt;/td>&lt;/tr>
+            &lt;/thead>
+            &lt;tbody>
+                &lt;tr>&lt;td>{JSON.stringify(props)}&lt;/td>&lt;/tr>
+            &lt;/tbody>
+        &lt;/Table>
+    )
+}
+
+export const ProgramSubjectList = (props) => {
+    // see https://codesandbox.io/s/react-bootstrap-multiple-accordion-tabs-oboks
+    // see https://react-bootstrap.github.io/components/accordion/
+    if (!props.subjects) {
+        return (
+            &lt;>
+            NO subjects
+            &lt;/>
+        )
+    }
+
+    // const subjects = props.subjects.map((subject, index) => (      
+    //     &lt;Accordion.Item eventKey={index + ""}>
+    //         &lt;Accordion.Header>{subject.name}&lt;/Accordion.Header>
+    //         &lt;Accordion.Body>
+    //             &lt;SubjectMedium {...subject}/>
+    //         &lt;/Accordion.Body>
+    //     &lt;/Accordion.Item>
+    //   ));
+    // const subjects = props.subjects.map((subject, index) => (
+    //     &lt;Accordion key={subject.id} >
+    //     &lt;Card>
+    //         &lt;Card.Header>
+    //             &lt;Accordion.Toggle as={Button} variant="link" eventKey={subject.id}>
+    //                 {subject.name} ({subject.id})
+    //             &lt;/Accordion.Toggle>
+    //         &lt;/Card.Header>
+            
+    //         &lt;Accordion.Collapse eventKey={subject.id}>
+    //             &lt;Card.Body>
+    //                 &lt;SubjectLarge {...subject}/>
+    //             &lt;/Card.Body>
+    //         &lt;/Accordion.Collapse>
+            
+    //     &lt;/Card>
+    //     &lt;/Accordion>
+    // ))
+
+
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title> Předměty &lt;/Card.Title>
+                
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                {props.subjects.map((subject, index) => (
+                    &lt;>
+                        &lt;SubjectSmall {...subject} />
+                        &lt;br/>
+                    &lt;/>
+                )
+                )}
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+  
+
+
+export const ProgramMedium = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                Program {props.name}, typ {'P'} / {'Prezenční'}
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;Row>
+                    &lt;Col>
+                        Fakulta:
+                        &lt;br />
+                        &lt;FacultySmall id={13} name={'FVT'} />
+                    &lt;/Col>
+                    &lt;Col>
+                        Garant:
+                        &lt;br />
+                        &lt;TeacherSmall id={15} name={'Petr'} surname={'Novak'} />
+                    &lt;/Col>
+                &lt;/Row>
+                &lt;Row>
+                    &lt;Col>
+                        {props.children}
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+export const ProgramMedium_ = (props) => {
+
+    //VYŘEŠENO zmizení [0]teho prvku ----> ale je to správně ? ---> NENÍ TO NEJLEPŠÍ, NĚKDE SE OBJEVÍ CHYBA !!!
+    // const state ={
+    //     'name': props.name,
+    //     'id': props.id
+    // };
+    //console.log("ProgMedium state: ", state)
+    //useEffect(()=>{})
+    return (
+            &lt;Table striped bordered hover style={tableStyle}>
+            &lt;tbody>
+                    &lt;tr>
+                        &lt;td>Název: &lt;/td>
+                        &lt;td>&lt;b>{props.name}&lt;/b>&lt;/td>
+                        &lt;td>Typ programu: &lt;b>P&lt;/b>&lt;/td>
+                        &lt;td>Forma studia: &lt;b>prenzenční&lt;/b>&lt;/td>
+                    &lt;/tr>
+                    &lt;tr>
+                        &lt;td>Fakulta: &lt;/td>
+                        &lt;td>&lt;b>&lt;DepartmentSmall id={props.id} name={"*FAKULTA*"}/>&lt;/b>&lt;/td>
+                        &lt;td colSpan="2" align="left">Garant: &lt;b>&lt;TeacherSmall id={props.id} name={"ppl. Ing. Luděk Jedlička, Ph.D"}/>&lt;/b>&lt;/td>
+                    &lt;/tr>
+                    &lt;tr>
+                        &lt;td>id: &lt;/td>
+                        &lt;td>&lt;b>{props.id}&lt;/b>&lt;/td>
+                        &lt;td colSpan="2" align="left"> &lt;b>&lt;ProgramSmall name="předměty" id={props.id}/>&lt;/b>&lt;/td>
+                    &lt;/tr>
+            &lt;/tbody>
+            &lt;/Table>
+    )
+}
+
+/**
+ * Renders a page with data representing a study program, contains predefined data which can are overrided by props
+ * @param {*} props 
+ * @param {*} props.id - identification
+ * @param {string} props.name - name
+ * @function
+ */
+export const ProgramLargeStoryBook = (props) => {
+    const extraProps = {
+        "id": "1",
+        "name": "Kybernetická bezpečnost",
+        "subjects": [
+          { "id": "1", "name": "Programování" },
+          { "id": "2", "name": "Datová analýza" },
+          { "id": "3", "name": "Informační bezpečnost" },
+          { "id": "4", "name": "Distribované technologie" },
+          { "id": "5", "name": "Právní rámec" },
+        ],
+        "groups": [
+          { "id": "7", "name": "23-5KB" },
+          { "id": "8", "name": "24-5KB" },
+          { "id": "9", "name": "25-5KB" }
+        ]
+      }
+    return &lt;ProgramLarge {...extraProps} {...props} />
+}
+
+/**
+ * Retrieves the data from GraphQL API endpoint
+ * @param {*} id - identificator
+ * @function
+ */
+export const StudyProgramLargeQuery = (id) =>
+    fetch('/gql', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            query: `
+            # Write your query or mutation here
+            query {
+                program(id: ${id}) {
+                  id
+                  name
+                    subjects {
+                    id
+                    name
+                    
+                  }
+                  
+                  students {
+                    person {
+                      id
+                      name
+                      surname
+                      email
+                    }
+                  }
+                }
+              }
+            `}),
+    })
+
+/**
+ * Fetch the data from API endpoint and renders a page representing a study program
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @param {*} [props.as = ProgramLargeStoryBook] - ReactJS component (function) which is responsible for rendering
+ * @param {*} [props.with = StudyProgramLargeQuery] - function fetching the data and returning promise with the data from API endpoint
+ * @function
+ */
+export const StudyProgramLargeFetching = (props) => {
+   
+    const Visualizer = props.as || ProgramLargeStoryBook;
+    const queryFunc = props.with || StudyProgramLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.program, [props.id])
+    
+    if (error != null) {
+        return &lt;LoadingError error={error} />
+    } else if (state != null) {
+        return &lt;Visualizer {...props} {...state} />
+    } else {
+        return &lt;Loading>program {props.id}&lt;/Loading>
+    }
+ 
+}
+
+/**
+ * Renders a page representing a study program, designed as a component for a ReactJS router
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @function
+ */
+export const StudyProgramPage = (props) => {
+    const { id }  = useParams();
+
+    return &lt;StudyProgramLargeFetching {...props} id={id} />
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Areal.html">Areal</a></li><li><a href="module-Building.html">Building</a></li><li><a href="module-Department.html">Department</a></li><li><a href="module-Faculty.html">Faculty</a></li><li><a href="module-Group.html">Group</a></li><li><a href="module-Lesson.html">Lesson</a></li><li><a href="module-Room.html">Room</a></li><li><a href="module-Student.html">Student</a></li><li><a href="module-StudyProgram.html">StudyProgram</a></li><li><a href="module-Subject.html">Subject</a></li><li><a href="module-Teacher.html">Teacher</a></li><li><a href="module-TimeTable.html">TimeTable</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sun Feb 06 2022 09:26:50 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,12 +1,47 @@
 version: "3.9"
 
 services:
+  frontend:
+    image: frontend
+    build:
+      # context definuje cestu k popisu
+      context: ./frontend
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu)
+      test: "curl -f -X GET http://localhost:8000/ui/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+
   apollo:
     image: apollo
     build:
+      # context definuje cestu k popisu
       context: ./apollo
-    ports:
-      - 31121:3000
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - PORT=3000
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - gql_events
+      - gql_externalids
+      - gql_forms
+      - gql_survey
+      - gql_ug
+      - gql_workflow
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu a srovnejte s portem v environment)
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:3000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    # ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+    #   - 31121:3000
 
   jupyter:
     image: jupyter/tensorflow-notebook
@@ -19,50 +54,336 @@ services:
   gql_ug:
     image: gql_ug
     build:
+      # context definuje cestu k popisu
       context: ./gql_ug
     environment: 
+      # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
     depends_on:
+      # kontejnery, kter musi byt spusteny drive
       - postgres
-    ports:
-      - 31120:8000
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    # ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+    #   - 31120:8000
+
+  gql_externalids:
+    image: gql_externalids
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_externalids
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - postgres
+      - gql_ug
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    # ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+    #   - 31125:8000
+
+  gql_facilities:
+    image: gql_facilities
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_facilities
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - postgres
+      - gql_ug
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    # ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+    #   - 31125:8000
+
+  gql_workflow:
+    image: gql_workflow
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_workflow
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - postgres
+      - gql_ug
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    # ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+    #   - 31123:8000
+
+  gql_empty:
+    image: gql_empty
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_empty
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - postgres
+      - gql_ug
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    # ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+    #   - 31128:8000
 
   gql_events:
     image: gql_events
     build:
+      # context definuje cestu k popisu
       context: ./gql_events
     environment: 
+      # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
     depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - gql_ug
+      - postgres
+
+  gql_forms:
+    image: gql_forms
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_forms
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - gql_ug
+      - postgres
+
+  gql_personalities:
+    image: gql_personalities
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_personalities
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - gql_ug
+      - postgres
+
+  gql_projects:
+    image: gql_projects
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_projects
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - gql_ug
+      - postgres
+
+  gql_publications:
+    image: gql_publications
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_publications
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - gql_ug
+      - postgres
+
+  gql_survey:
+    image: gql_survey
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_survey
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - gql_ug
+      - postgres
+
+  nogql:
+    image: nogql
+    build:
+      # context definuje cestu k popisu
+      context: ./nogql_api
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X GET http://localhost:8000/api/hello || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
       - postgres
 
   postgres:
     image: postgres
     environment:
+      # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
-    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+
   pgadmin:
     image: dpage/pgadmin4
     restart: always
     environment:
+      # promenne, ktere lze cist v kontejneru
       - PGADMIN_DEFAULT_EMAIL=anoyne@anywhere.com
       - PGADMIN_DEFAULT_PASSWORD=example
+    healthcheck:
+      test: ["CMD", "wget", "-O", "-", "http://localhost:80/misc/ping"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
     ports:
       - 31122:80
 
-  nginx:
+  nginx: # funguje jako proxy mezi vnejskem a vnitrkem, tudy tece cela HTTP komunikace
     build:
+      # context definuje cestu k popisu
       context: ./nginx
-    ports:
-      - 50081:80
+    ports: 
+      # vnejsi port : port, kde sluzbu poskytuje kontejner
+      - 31180:80
     depends_on:
+      # kontejnery, kter musi byt spusteny drive
       - postgres
       - apollo
 
 
+  redis:
+    image: redis/redis-stack:6.2.4-v4
+    ports:
+      - 31188:8001
+    

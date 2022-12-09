@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: timetable/timetable.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: timetable/timetable.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Container from 'react-bootstrap/Container';
+import {
+    Link,
+    useParams, useLocation, useNavigate 
+  } from "react-router-dom";
+
+import React, { useState, useEffect } from 'react';
+
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+
+import SVG from 'react-inlinesvg';
+
+import { root } from '../index'
+
+/** @module TimeTable */
+
+const timetableRoot = root + '/timetable'
+
+export const TimeTableSmall = (props) => {
+    return (
+        &lt;Link to={timetableRoot + `/${props.id}`}>Rozvrh ({props.id})&lt;/Link>
+    )
+}
+
+//&lt;SVG src={props.link} width={'700'} height={'300'} viewBox='10 40 1370 500' />
+//&lt;Card.Title>Rozvrh &lt;Link to={`${root}/svg/${props.type}/${props.id}/?start=2021-11-10`}> velký &lt;/Link> (&lt;Link to={`${root}/A4/${props.type}/${props.id}/`}> A4 &lt;/Link> )&lt;/Card.Title>
+//&lt;SVG src={`/svg/${props.type}/${props.id}/?start=2021-11-10`} width={'100%'} height={'100%'} viewBox='10 20 1400 550' />
+export const TimeTableMedium = (props) => {
+    
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Rozvrh &lt;Link to={`${root}/svg/${props.type}/${props.id}/`}> velký &lt;/Link> (&lt;Link to={`${root}/A4/${props.type}/${props.id}/`}> A4 &lt;/Link> )&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;div>
+                &lt;SVG src={`/svg/${props.type}/${props.id}/?start=2021-11-08`} width={'100%'} height={'100%'} viewBox='10 20 1400 550' />
+                &lt;/div>
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+export const TimeTableFull = (props) => {
+    return (
+        &lt;Row>
+            &lt;Col>
+                &lt;TimeTableMedium {...props} />
+            &lt;/Col>
+        &lt;/Row>
+    )
+}
+
+//&lt;TimeTableFull id={id} />
+export const TimeTablePage = (props) => {
+    const { id, entity } = useParams();
+    const { search, location } = useLocation();
+    const navigate = useNavigate();
+    //let start = (new Date()) + '';
+    const start = (new URLSearchParams(search)).get('start') || (new Date().toISOString().substring(0, 10));
+    //if (props.)
+    const PrevWeekClick = () => {
+        let parsed = start.split('-')
+        //console.log(JSON.stringify(parsed))
+        let nextDate = new Date(parsed[0], parsed[1] - 1, parsed[2], 12) //MONTH Index WTF https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date
+        //console.log(JSON.stringify(nextDate))
+        nextDate.setDate(nextDate.getDate() - 7);
+        //console.log(JSON.stringify(nextDate)) //http://localhost:3000/ui/svg/teacher/633/?start=2021-10-07
+        navigate(`./?start=${nextDate. toISOString().substring(0, 10)}`)//, {replace: true})
+    }
+    const NextWeekClick = () => {
+        let parsed = start.split('-')
+        //console.log(JSON.stringify(parsed))
+        let nextDate = new Date(parsed[0], parsed[1] - 1, parsed[2], 12) //MONTH Index WTF https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date
+        //console.log(JSON.stringify(nextDate))
+        nextDate.setDate(nextDate.getDate() + 7);
+        //console.log(JSON.stringify(nextDate)) //http://localhost:3000/ui/svg/teacher/633/?start=2021-10-07
+        navigate(`./?start=${nextDate.toISOString().substring(0, 10)}`)//, {replace: true})
+    }
+
+     return (
+        &lt;>
+            &lt;object id="svg1" data={`/svg/${entity}/${id}/?start=${start}`} type="image/svg+xml">&lt;/object>
+            &lt;br/>
+            &lt;Row>
+                &lt;Col>&lt;/Col>
+                &lt;Col>
+                    &lt;div className="d-grid gap-2">
+                        &lt;Button variant="outline-primary" onClick={PrevWeekClick}>Předcházející týden&lt;/Button>
+                    &lt;/div>
+                &lt;/Col>
+                &lt;Col>
+                    &lt;div className="d-grid gap-2">
+                        &lt;Button variant="outline-success"> {id}&lt;/Button>
+                    &lt;/div>                
+                &lt;/Col>
+                &lt;Col>
+                    &lt;div className="d-grid gap-2">
+                        &lt;Button variant="outline-primary" onClick={NextWeekClick}>Následující týden&lt;/Button>
+                    &lt;/div>
+                &lt;/Col>
+                &lt;Col>&lt;/Col>
+            &lt;/Row>
+        &lt;/>
+    )
+
+    /*
+    return (
+        &lt;div>
+            &lt;SVG src={`/svg/nav/${entity}/${id}/`} width={'100%'} height={'100%'} viewBox='10 20 1400 550' />
+        &lt;/div>
+    ) */
+
+}
+
+/**
+ * Renders a page representing a time table sheet, designed as a component for a ReactJS router
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @function
+ */
+export const TimeTableA4Page = (props) => {
+    const { id, entity } = useParams();
+    const { search, location } = useLocation();
+
+     return (
+        &lt;>
+            &lt;object id="svg1" data={`/svg/A4/`} type="image/svg+xml">&lt;/object>
+        &lt;/>
+    )
+
+    /*
+    return (
+        &lt;div>
+            &lt;SVG src={`/svg/nav/${entity}/${id}/`} width={'100%'} height={'100%'} viewBox='10 20 1400 550' />
+        &lt;/div>
+    ) */
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Areal.html">Areal</a></li><li><a href="module-Building.html">Building</a></li><li><a href="module-Department.html">Department</a></li><li><a href="module-Faculty.html">Faculty</a></li><li><a href="module-Group.html">Group</a></li><li><a href="module-Lesson.html">Lesson</a></li><li><a href="module-Room.html">Room</a></li><li><a href="module-Student.html">Student</a></li><li><a href="module-StudyProgram.html">StudyProgram</a></li><li><a href="module-Subject.html">Subject</a></li><li><a href="module-Teacher.html">Teacher</a></li><li><a href="module-TimeTable.html">TimeTable</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sun Feb 06 2022 09:26:50 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

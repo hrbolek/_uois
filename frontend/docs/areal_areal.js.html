@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: areal/areal.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: areal/areal.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//import MapaSumavska from "../../media/sumak_svg.SVG";
+//import MapaCP from "../../media/cernapole_svg.SVG";
+//import MapaKOU from "../../media/kounicova_svg.SVG";
+//import MapaBAB from "../../media/babak_svg.SVG";
+
+import MapaSumavska from "./media/sumak_svg.svg";
+import MapaCP from "./media/cernapole_svg.svg";
+import MapaKOU from "./media/kounicova_svg.svg";
+import MapaBAB from "./media/babak_svg.svg";
+
+
+import  Card  from "react-bootstrap/Card";
+import  Accordion  from "react-bootstrap/Accordion";
+import { Row,Table,Button, Col } from "react-bootstrap";
+//import ArealData from "../../media/classrooms2.js";
+import ArealData from "./classrooms2";
+
+import { Link, useParams } from "react-router-dom";
+
+import React, { useState, useEffect } from "react";
+
+import { root } from "../index";
+import { useQueryGQL, Loading, LoadingError } from "../index";
+import { BuildingSmall } from "./building";
+import { RoomSmall } from "./room";
+
+//import {ClassroomsListAPI, ClassroomsList} from "../classroom/classroom";
+
+//import { useButtonProps } from "@restart/ui/esm/Button";
+import  CardGroup  from "react-bootstrap/CardGroup";
+
+/** @module Areal */
+
+export const arealRoot = root + "/areals"
+
+export const ArealSmall = (props) => {
+    return(
+            &lt;Link to={arealRoot + `/areal/${props.id}`}>{props.name}{props.children}&lt;/Link>
+    )
+}
+
+export const ArealLargeSUM = () => {
+    const arealRoot = root + "areals/5"
+        return(
+            &lt;Card>
+                &lt;Card.Header>
+                    &lt;Card.Title>
+                        Areál Šumavská - Mapa
+                    &lt;/Card.Title>
+                &lt;/Card.Header>
+                &lt;Card.Body>
+                    &lt;map name="sumavska">
+                        &lt;area shape="rect" coords="276,613,400,649" href={arealRoot+"/šumák1"} target="_self" alt="Š1"/>
+                        &lt;area shape="rect" coords="265,442,329,483" href={arealRoot+"/šumák3"} target="_self" alt="Š3"/>
+                        &lt;area shape="rect" coords="193,437,250,487" href={arealRoot+"/šumák4"} target="_self" alt="Š4"/>
+                        &lt;area shape="poly" coords="102,422,102,488,185,488,185,445,162,445,162,465,129,465,129,423,103,423" href={arealRoot+"/asiŠ5-zakroucenabudova"} target="_self" alt="zakroucenaBudovaAsiŠ5" />
+                        &lt;area shape="rect" coords="97,378,141,415" href={arealRoot+"/šumák5A"} target="_self" alt="Š5A"/>
+                        &lt;area shape="rect" coords="97,169,143,253" href={arealRoot+"/šumák5B"} target="_self" alt="Š5B"/>
+                        &lt;area shape="rect" coords="97,88,220,143" href={arealRoot+"/šumák6"} target="_self" alt="Š6"/>
+                        &lt;area shape="rect" coords="284,88,419,141" href={arealRoot+"/šumák8"} target="_self" alt="Š8"/>
+                        &lt;area shape="rect" coords="359,160,419,287" href={arealRoot+"/šumák9"} target="_self" alt="Š9"/>
+                        &lt;area shape="rect" coords="359,288,419,404" href={arealRoot+"/šumák9A"} target="_self" alt="Š9A"/>
+                    &lt;/map>
+                    &lt;img useMap="#sumavska" src={MapaSumavska} alt="mapa Sumavska" />              
+                &lt;/Card.Body>           
+            &lt;/Card>
+        )
+
+}
+
+export const ArealLargeCP = () => {
+    const arealRoot = root + "areals/2"
+    return(
+        &lt;div>
+
+        &lt;div>
+            &lt;map name="cernapole">
+                &lt;area shape="rect" coords="276,613,400,649" href={arealRoot+"/..."} target="_self" alt="."/>
+                &lt;area shape="rect" coords="265,442,329,483" href={arealRoot+"/..."} target="_self" alt="."/>
+                &lt;area shape="rect" coords="193,437,250,487" href={arealRoot+"/..."} target="_self" alt="."/>
+                &lt;area shape="poly" coords="102,422,102,488,185,488,185,445,162,445,162,465,129,465,129,423,103,423" href={arealRoot+"/..."} target="_self" alt="." />
+            &lt;/map>
+            &lt;img usemap="#cernapole" src={MapaCP} alt="mapa Cerna Pole" />              
+
+        &lt;/div>
+
+        &lt;/div>
+    )
+
+}
+
+export const ArealLargeKOU = () => {
+const arealRoot = root + "areals/7"
+    return(
+        &lt;div>    
+    
+        &lt;div>
+            &lt;map name="kounicova">
+                &lt;area shape="rect" coords="276,613,400,649" href={arealRoot+"/..."} target="_self" alt="."/>
+                &lt;area shape="rect" coords="265,442,329,483" href={arealRoot+"/..."} target="_self" alt="."/>
+                &lt;area shape="rect" coords="193,437,250,487" href={arealRoot+"/..."} target="_self" alt="."/>
+                &lt;area shape="poly" coords="102,422,102,488,185,488,185,445,162,445,162,465,129,465,129,423,103,423" href={arealRoot+"/..."} target="_self" alt="." />
+            &lt;/map>
+            &lt;img usemap="#kounicova" src={MapaKOU} alt="mapa Kounicova a Soudni" />              
+        &lt;/div>
+    
+        &lt;/div>
+    )
+    
+}
+
+export const ArealLargeBAB = () => {
+const arealRoot = root + "areals/6"
+    return(
+        &lt;div>        
+        
+        &lt;div>
+            &lt;map name="babak">
+                &lt;area shape="rect" coords="276,613,400,649" href={arealRoot+"/..."} target="_self" alt="."/>
+                &lt;area shape="rect" coords="265,442,329,483" href={arealRoot+"/..."} target="_self" alt="."/>
+                &lt;area shape="rect" coords="193,437,250,487" href={arealRoot+"/..."} target="_self" alt="."/>
+                &lt;area shape="poly" coords="102,422,102,488,185,488,185,445,162,445,162,465,129,465,129,423,103,423" href={arealRoot+"/..."} target="_self" alt="." />
+            &lt;/map>
+            &lt;img usemap="#babak" src={MapaBAB} alt="mapa Jana Babaka" />              
+        
+        &lt;/div>
+        
+        &lt;/div>
+    )
+        
+}
+
+//---------------------------------Nové, správné provedení pomocí FETCH (GraphQL)-----------------------------
+
+const tableStyle = {
+    color: '#333333',
+    width: '70%',
+    border: '1px solid black',
+    'border-collapse': 'collapse',
+        
+    //'background-color': '#CCCCCC',
+    };
+
+
+
+
+export const ArealLarge = (props) => {
+
+        return (
+            &lt;Card>
+                &lt;Card.Header>
+                    &lt;Card.Title>
+                    &lt;ArealSmall {...props}>&lt;/ArealSmall>
+                    &lt;/Card.Title>
+                &lt;/Card.Header>
+                &lt;Card.Body>
+                    &lt;Row>
+                        &lt;Col md={8} xs={12}>
+                            &lt;ArealLargeSUM />
+                        &lt;/Col>
+                        &lt;Col md={4} xs={12}>
+                            &lt;BuildingsCondition {...props} />
+                        &lt;/Col>
+                    &lt;/Row>
+                    
+                &lt;/Card.Body>
+            &lt;/Card>
+        
+        )
+}
+
+
+export const BuildingMulti = (props) => {
+    let BuildingComponent = BuildingMedium;
+    if (props.as) {
+        BuildingComponent = props.as
+    }
+
+    let buldingsComponents = props.buildings.map((building, index) => &lt;BuildingComponent key={index} {...building} />)
+    return (
+        &lt;>
+            {buldingsComponents}
+        &lt;/>
+    )
+
+}
+
+export const ArealMedium = (props) => {
+
+    //VYŘEŠENO zmizení [0]teho prvku ----> ale je to správně ? ---> NENÍ TO NEJLEPŠÍ, NĚKDE SE OBJEVÍ CHYBA !!!
+    // const state ={
+    //     'name': props.name,
+    //     'id': props.id
+    // };
+    //console.log("ArealMedium state: ", state)
+    //useEffect(()=>{})
+    
+    //&lt;ArealSmall name={" budovy v arealu - " + props.name} id={props.id}/>
+    //&lt;BuildingMulti buildings={props.buildings} />
+
+    return (
+        &lt;Card>
+            &lt;Card.Header>Název AREÁLU: &lt;b>{props.name}&lt;/b> areal id: {props.id}&lt;/Card.Header>
+            &lt;Card.Body>
+            &lt;Card.Title>
+               Budovy
+
+            &lt;/Card.Title>
+            &lt;BuildingMulti buildings={props.buildings} />
+            &lt;/Card.Body> 
+        {/*&lt;Link to={arealRoot + `/${props.code}`}>{props.name}{props.children}&lt;/Link>*/}
+        &lt;/Card>
+    )
+
+}
+
+
+export const BuildingMedium = (props) => {
+
+    //console.log("props code v building je: ", props.code)
+    //{JSON.stringify(props.rooms)}
+    return(
+        &lt;CardGroup>
+        &lt;Card>
+                &lt;Card.Header>&lt;Row>&lt;h3>Třídy:&lt;/h3>&lt;/Row>&lt;Row>budova id: {props.id}&lt;/Row>&lt;/Card.Header>
+                &lt;Card.Body>
+                        {props.rooms.map((room, index) => &lt;>&lt;RoomSmall {...room} />&lt;br/>&lt;/>)}
+                &lt;/Card.Body>
+                
+        &lt;/Card>
+        &lt;/CardGroup>
+
+    )
+}
+
+
+//Accordion
+export const BuildingsCondition = (props) => { 
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>Budovy&lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;Accordion>
+                    {props.buildings.map((building, index) => (
+                        &lt;Accordion.Item eventKey={index}>
+                            &lt;Accordion.Header>
+                                &lt;BuildingSmall {...building} />
+                            &lt;/Accordion.Header>
+                            &lt;Accordion.Body>
+                                {JSON.stringify(building)}
+                            &lt;/Accordion.Body>
+                        &lt;/Accordion.Item>
+                    ))}
+                &lt;/Accordion>
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+/**
+ * Renders a page with data representing an areal, contains predefined data which can are overrided by props
+ * @param {*} props 
+ * @param {*} props.id - identification
+ * @param {string} props.name - name
+ * @function
+ */
+export const ArealLargeStoryBook = (props) => {
+    const extraProps = {
+        "id": "1",
+        "name": "Kasárna Šumavská",
+        "buildings": [
+          { "id": "1", "name": "Jídelna",
+            "rooms": [
+              { "id": "1", "name": "Jídelna / 1" },
+              { "id": "2", "name": "Jídelna / 2" },
+              { "id": "3", "name": "Jídelna / 3" },
+              { "id": "4", "name": "Jídelna / 4" },
+              { "id": "5", "name": "Jídelna / 5" },
+              { "id": "6", "name": "Jídelna / 6" },
+              { "id": "7", "name": "Jídelna / 7" },
+            ]
+          },
+          { "id": "2", "name": "Katedra Informatiky",
+            "rooms": [
+              { "id": "13", "name": "Katedra Informatiky / 1" },
+              { "id": "14", "name": "Katedra Informatiky / 2" },
+              { "id": "15", "name": "Katedra Informatiky / 3" },
+              { "id": "16", "name": "Katedra Informatiky / 4" },
+              { "id": "17", "name": "Katedra Informatiky / 5" },
+              { "id": "18", "name": "Katedra Informatiky / 6" },
+            ]
+          },
+          { "id": "3", "name": "Katedra matematiky",
+            "rooms": [
+              { "id": "37", "name": "Katedra matematiky / 1" },
+              { "id": "38", "name": "Katedra matematiky / 2" },
+              { "id": "39", "name": "Katedra matematiky / 3" },
+              { "id": "40", "name": "Katedra matematiky / 4" },
+              { "id": "41", "name": "Katedra matematiky / 5" },
+
+            ]
+          }
+        ]
+      }
+    return (
+        &lt;ArealLarge {...extraProps} {...props} />
+    )
+}
+
+/**
+ * Retrieves the data from GraphQL API endpoint
+ * @param {*} id - identificator
+ * @function
+ */
+export const ArealLargeQuery = (id) => 
+    fetch('/gql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        redirect: 'follow', // manual, *follow, error
+        body: JSON.stringify({
+            "query":
+                `
+                query {
+                    areal: area(id: ${id}) {
+                      id
+                      name
+                      buildings {
+                        id
+                        name
+                        rooms {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+            `
+        }),
+    })
+
+/**
+ * Fetch the data from API endpoint and renders a page representing a Areal
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @param {*} [props.as = ArealLargeStoryBook] - ReactJS component (function) which is responsible for rendering
+ * @param {*} [props.with = ArealLargeQuery] - function fetching the data and returning promise with the data from API endpoint
+ * @function
+ */
+export const ArealFetching = (props) => {
+
+    const Visualizer = props.as || ArealLargeStoryBook;
+    const queryFunc = props.with || ArealLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.areal, [props.id])
+    
+    if (error != null) {
+        return &lt;LoadingError error={error} />
+    } else if (state != null) {
+        return &lt;Visualizer {...props} {...state} />
+    } else {
+        return &lt;Loading>Areál {props.id}&lt;/Loading>
+    }
+}
+
+export const ArealPage = (props) => {
+    const { id } = useParams();
+
+    return &lt;ArealFetching {...props} id={id} />;
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Areal.html">Areal</a></li><li><a href="module-Building.html">Building</a></li><li><a href="module-Department.html">Department</a></li><li><a href="module-Faculty.html">Faculty</a></li><li><a href="module-Group.html">Group</a></li><li><a href="module-Lesson.html">Lesson</a></li><li><a href="module-Room.html">Room</a></li><li><a href="module-Student.html">Student</a></li><li><a href="module-StudyProgram.html">StudyProgram</a></li><li><a href="module-Subject.html">Subject</a></li><li><a href="module-Teacher.html">Teacher</a></li><li><a href="module-TimeTable.html">TimeTable</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sun Feb 06 2022 09:26:50 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

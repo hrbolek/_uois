@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: areal/building.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: areal/building.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useQueryGQL, Loading, LoadingError } from "../index";
+import Card from "react-bootstrap/Card";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import { Link, useParams } from "react-router-dom";
+
+import { root } from "../index";
+import { ArealSmall } from "./areal";
+import { TeacherMedium } from "../person/teacher";
+
+
+/** @module Building */
+
+const buildingRoot = root + '/areals/building';
+
+export const BuildingSmall = (props) => {
+    return &lt;Link to={buildingRoot + `/${props.id}`}>{props.name}{props.children}&lt;/Link>
+}
+
+export const BuildingMedium = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                Budova
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                {JSON.stringify(props)}
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+
+export const BuildingRoomList = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>
+                Místnosti
+                &lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                {JSON.stringify(props)}
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+export const BuildingSpravce = (props) => {
+    const spravceProps = {
+        'id': 1,
+        'name': 'Petr Jana',
+        'surname': 'Novak',
+        'email': 'petr.jana.novak@uni.world'
+    }
+    return (
+        &lt;TeacherMedium label='Správce' {...spravceProps}/>
+    )
+}
+
+export const BuildingLarge = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                &lt;Card.Title>
+                {props.name} (&lt;ArealSmall {...props.areal}/>)
+                &lt;/Card.Title>
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;Row>
+                    &lt;Col md={3}>
+                        &lt;BuildingSpravce {...props}/>
+                    &lt;/Col>
+                    &lt;Col>
+                        &lt;BuildingRoomList {...props}/>
+                    &lt;/Col>
+                &lt;/Row>
+                
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+/**
+ * Renders a page with data representing a building, contains predefined data which can are overrided by props
+ * @param {*} props 
+ * @param {*} props.id - identification
+ * @param {string} props.name - name
+ * @function
+ */
+export const BuildingLargeStoryBook = (props) => {
+    const extraProps = {
+        'id' : 1,
+        'name' : 'KŠ/9A',
+        'rooms' : [
+            {'id': 1, 'name': 'KŠ/9A/586'},
+            {'id': 2, 'name': 'KŠ/9A/584'},
+            {'id': 3, 'name': 'KŠ/9A/583'},
+            {'id': 4, 'name': 'KŠ/9A/588'},
+            {'id': 5, 'name': 'KŠ/9A/589'},
+        ],
+        'areal' : {'id' : 1, 'name': 'KŠ'},
+        'user' : {'id' : 1, 'name': 'John', 'surname': 'Nowick'}
+    }
+
+   
+    return &lt;BuildingLarge {...extraProps} {...props} />
+}
+
+/**
+ * Retrieves the data from GraphQL API endpoint
+ * @param {*} id - identificator
+ * @function
+ */
+export const BuildingLargeQuery = (id) => 
+    fetch('/gql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        redirect: 'follow', // manual, *follow, error
+        body: JSON.stringify({
+            "query":
+                `
+                query {
+                    building(id:${id}) {
+                      id
+                      name
+                      
+                      rooms {
+                        id
+                        name
+                      }
+                      
+                      areal: area {
+                        id
+                        name
+                      }
+                    }
+                  }
+            `
+        }),
+    })
+
+/**
+ * Fetch the data from API endpoint and renders a page representing a building
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @param {*} [props.as = BuildingLargeStoryBook] - ReactJS component (function) which is responsible for rendering
+ * @param {*} [props.with = BuildingLargeQuery] - function fetching the data and returning promise with the data from API endpoint
+ * @function
+ */
+export const BuildingFetching = (props) => {
+
+    const Visualizer = props.as || BuildingLargeStoryBook;
+    const queryFunc = props.with || BuildingLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.building, [props.id])
+    
+    if (error != null) {
+        return &lt;LoadingError error={error} />
+    } else if (state != null) {
+        return &lt;Visualizer {...props} {...state} />
+    } else {
+        return &lt;Loading>Budova {props.id}&lt;/Loading>
+    }
+}
+
+export const BuildingPage = (props) => {
+    const { id } = useParams();
+
+    return &lt;BuildingFetching {...props} id={id} />;
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Areal.html">Areal</a></li><li><a href="module-Building.html">Building</a></li><li><a href="module-Department.html">Department</a></li><li><a href="module-Faculty.html">Faculty</a></li><li><a href="module-Group.html">Group</a></li><li><a href="module-Lesson.html">Lesson</a></li><li><a href="module-Room.html">Room</a></li><li><a href="module-Student.html">Student</a></li><li><a href="module-StudyProgram.html">StudyProgram</a></li><li><a href="module-Subject.html">Subject</a></li><li><a href="module-Teacher.html">Teacher</a></li><li><a href="module-TimeTable.html">TimeTable</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sun Feb 06 2022 09:26:50 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,4 +1,3 @@
-from email.policy import default
 import sqlalchemy
 import datetime
 
@@ -12,10 +11,10 @@ BaseModel = declarative_base()
 
 def UUIDColumn(name=None):
     if name is None:
-        return Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"),)
+        return Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
     else:
-        return Column(name, UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"),)
-
+        return Column(name, UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
+    
 #id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
 class MembershipModel(BaseModel):
@@ -89,6 +88,7 @@ class GroupTypeModel(BaseModel):
     
     id = UUIDColumn()
     name = Column(String)
+    name_en = Column(String)
 
     groups = relationship('GroupModel', back_populates='grouptype')
 
@@ -99,6 +99,7 @@ class RoleTypeModel(BaseModel):
 
     id = UUIDColumn()
     name = Column(String)
+    name_en = Column(String)
 
     roles = relationship('RoleModel', back_populates='roletype')
 
@@ -119,7 +120,6 @@ class RoleModel(BaseModel):
     roletype = relationship('RoleTypeModel', back_populates='roles')
     user = relationship('UserModel', back_populates='roles')
     group = relationship('GroupModel', back_populates='roles')
-
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

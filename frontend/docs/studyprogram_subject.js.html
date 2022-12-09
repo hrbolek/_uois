@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: studyprogram/subject.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: studyprogram/subject.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+import {root} from "../index";
+
+import { Link, useParams } from "react-router-dom";
+
+import { Row, Table, Card, Col} from "react-bootstrap";
+import Accordion from "react-bootstrap/Accordion";
+import Button from "react-bootstrap/Button";
+
+//import AccordionCollapse from "react-bootstrap/AccordionCollapse";
+
+import React, {Component, useState, useEffect } from "react";
+
+import { PersonSmall } from "../person/person";
+import { SubjectSemesterSmall, SubjectSemesterTopicMedium } from "./lesson";
+import { useQueryGQL, Loading, LoadingError } from "../index";
+import { ProgramSmall } from "./studyprogram";
+import { TeacherSmall } from "../person/teacher";
+import { TimeTableMedium } from "../timetable/timetable";
+import { GroupSmall } from "../group/group";
+
+//import { LessonSmall } from "../lesson/lesson";
+
+/** @module Subject */
+
+export const subjectsRoot = root + "/studyprograms/subject"
+
+export const SubjectSmall = (props) => {
+    //const ProgID=props.ProgID
+    return (
+        &lt;Link to={subjectsRoot + `/${props.id}`}>{props.name}{props.children}&lt;/Link>
+    )   
+}
+
+const tableStyle = {
+    color: '#333333',
+    width: '70%',
+    border: '1px solid black',
+    'border-collapse': 'collapse',
+        
+    //'background-color': '#CCCCCC',
+    };
+
+export const SubjectLargeAPI = (props) => {
+    const { id } = useParams();
+    const studyprog=id.split(',')[0]
+    const lesson=id.split(',')[1]
+    const semestr=id.split(',')[2]
+      console.log("id v ClassroomLargeAPI je : ", id)
+  
+      const [state, setState] = useState(
+        {'name': "StudyProgName",
+        'subjects' : [{'name':"name", 'id':"id", 'semesters':[{'name':'name','id':'id','topics':[{'name':'name','id':'id'}]}]}]}
+      );
+      useEffect(() => {
+          fetch('/gql', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                query: `
+                query{
+                  program(id:`+studyprog+`){
+                    name
+                    subjects{
+                      id
+                      name
+                      semesters{
+                        name
+                        id
+                        topics{
+                          name
+                          id
+                        }
+                      }
+                    }
+                  }
+                }              
+                  `,
+                variables: {
+                  now: new Date().toISOString(),
+                },
+              }),
+            })
+              .then((res) => res.json())
+              .then((result) => setState(result.data.program));
+      }, [id] )
+      
+      //console.log("State je : ", state)
+      console.log("STATE je : ", state)
+      return(                                                        //předání testing-->vrácení se zpět na seznam arealů
+      &lt;div>   
+          &lt;SubjectLarge json={state} ProgID={studyprog} lessonid={lesson} semesterid={semestr}/>
+      &lt;/div>)
+  }
+  
+export const SubjectMedium = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                { props.name } ({ props.id })
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                { props.children }
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+export const SubjectSemesterMedium = (props) => {
+    const lessons = props.topics.map((lesson, index) => (
+        &lt;Col>&lt;SubjectSemesterTopicMedium key={index} {...lesson} />&lt;/Col>
+    ))
+    return (
+        &lt;Row xs={12} md={4}>
+        {lessons}
+        &lt;/Row>
+    )
+}
+
+export const SemesterList = (props) => {
+    // see https://codesandbox.io/s/react-bootstrap-multiple-accordion-tabs-oboks
+    const semesters = props.semesters.map(semester => (
+        &lt;Accordion key={semester.id}>
+          &lt;Card>
+            &lt;Card.Header>
+              &lt;Accordion.Toggle as={Button} variant="link" eventKey={semester.id}>
+                {semester.name}
+              &lt;/Accordion.Toggle>
+            &lt;/Card.Header>
+            &lt;Accordion.Collapse eventKey={semester.id}>
+              &lt;Card.Body>
+                  &lt;SubjectSemesterMedium {...semester}/>
+              &lt;/Card.Body>
+            &lt;/Accordion.Collapse>
+          &lt;/Card>
+        &lt;/Accordion>
+      ))
+    
+    return (
+        &lt;>
+            {semesters}
+        &lt;/>
+    )
+}
+  
+export const SubjectTopicList = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                Seznam témat
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                {props.lessons.map((lesson, index) => (
+                    &lt;>
+                    {lesson.topic}, {lesson.id} &lt;br/>
+                    &lt;/>
+                ))}
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+export const SubjectProgram = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                Program &lt;ProgramSmall {...props.program} />
+            &lt;/Card.Header>
+            &lt;Card.Body>
+            {JSON.stringify(props.program)}
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+export const SubjectGrants = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                Garanti
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;TeacherSmall id={1} name={'Alexandr'} surname={'Štefek'}/>
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+export const SubjectMasters = (props) => {
+    if (props.master) {
+        return (
+            &lt;Card>
+                &lt;Card.Header>
+                    Správci
+                &lt;/Card.Header>
+                &lt;Card.Body>
+                    &lt;TeacherSmall {...props.master}/>
+                &lt;/Card.Body>
+            &lt;/Card>
+        )
+    } else {
+        return null
+    }
+}
+
+export const SubjectTerms = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                Vypsané termíny
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;Button variant="outline-primary">Vypsat termín&lt;/Button>
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+export const SubjectTimeTable = (props) => {
+    return &lt;TimeTableMedium type={'student'} id={props.id} />
+}
+
+export const SubjectGroupList = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>Učební skupiny&lt;/Card.Header>
+            &lt;Card.Body>
+                {props.groups.map((group, index) => (&lt;>
+                    &lt;GroupSmall {...group} key={`g${index}`}/> &lt;br key={`b${index}`}/>
+                &lt;/>))}
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+export const SubjectLarge = (props) => {
+    return (
+        &lt;Card>
+            &lt;Card.Header>
+                Předmět {props.name} ({props.id})
+            &lt;/Card.Header>
+            &lt;Card.Body>
+                &lt;Row>
+                    &lt;Col md={3} xs={12}>
+                        &lt;SubjectProgram {...props} /> &lt;br/>
+                        &lt;SubjectGrants {...props} /> &lt;br/>
+                    &lt;/Col> 
+                    &lt;Col md={6} xs={12}>
+                        &lt;SubjectTopicList {...props} />
+                    &lt;/Col> 
+                    &lt;Col md={3} xs={12}>
+                        &lt;SubjectMasters {...props} /> &lt;br/>
+                        &lt;SubjectGroupList {...props} /> &lt;br/>
+                        &lt;SubjectTerms {...props} />
+                    &lt;/Col> 
+                &lt;/Row>
+                &lt;Row>
+                    &lt;Col>
+                        &lt;SubjectTimeTable {...props} /> 
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/Card.Body>
+        &lt;/Card>
+    )
+}
+
+  export const SubjectLarge_ = (props) => {
+      //console.log("id v ClassroomTest je : ", id)
+      console.log("PROPS:  ", props)
+      const json=props.json
+      const programName=props.json.name
+      var temaname="empty"
+      
+      /*
+      const [state, setState] = useState(
+          {
+              'arealname' : 'props.json.name',
+              'countries' : [{'name':'budova', 'code': 'id'}]
+          });
+      */
+      
+          const subjects = []
+          const semesters = []
+          for(var index = 0; index &lt; json.subjects.length; index++) {
+            const topics = []
+            const sgItem = json.subjects[index]
+            if(props.lessonid===sgItem.id){
+              for(var index2 = 0; index2 &lt; json.subjects[index].semesters.length; index2++) {
+                const sgItem2 = json.subjects[index].semesters[index2]
+                if(props.semesterid===sgItem2.id){
+                    for(var index3 = 0; index3 &lt; json.subjects[index].semesters[index2].topics.length; index3++) {
+                        const sgItem3 = json.subjects[index].semesters[index2].topics[index3]
+                        topics.push(&lt;i>&lt;SubjectSelectedMed name={sgItem3.name} semesterid={sgItem2.id} lessonid={sgItem.id} ProgID={props.ProgID} topicid={sgItem3.id}/>&lt;/i>);
+                    }
+                }                
+              //topics.push(&lt;b>------------------------------------------------další---semestr---------------------------------------------------&lt;/b>)
+                semesters.push(&lt;i>&lt;SubjectSmall name={sgItem2.name} semesterid={sgItem2.id} lessonid={sgItem.id} ProgID={props.ProgID}/> -||- &lt;/i>);
+            }
+            subjects.push(topics);
+            temaname=sgItem.name
+            }
+                  
+          }
+          
+      return(                                                       
+      
+      &lt;Card>   
+      &lt;Card.Header>&lt;h1>Informace o předmětu &lt;i>&lt;SubjectSemesterSmall name={temaname} ProgID={props.ProgID} lessonid={props.lessonid}/>&lt;/i>: &lt;/h1>&lt;/Card.Header>
+      &lt;Card>
+            &lt;Table>
+            &lt;Card.Body>
+                    &lt;td>Garant pro studijní program "{programName}" : &lt;/td>
+                    &lt;td>&lt;h3>*&lt;PersonSmall id={props.id} name={"*garant*"}/>*&lt;/h3>&lt;/td>
+            &lt;/Card.Body>
+            &lt;Card.Body>
+                    &lt;td>Semestry: &lt;/td>
+                    &lt;td>&lt;b>{semesters}  (filtr podle semestru)&lt;/b>&lt;/td>
+                &lt;br/>
+          &lt;/Card.Body>    
+            &lt;/Table>
+      &lt;/Card>
+      &lt;Card>
+      &lt;Card.Header>&lt;h3>Seznam lekcí(témat):&lt;/h3>&lt;/Card.Header>
+            &lt;Card>{subjects}&lt;/Card>
+      &lt;/Card>
+            {/*&lt;p>&lt;b>fetchnuty JSON soubor z GraphQL:&lt;/b> {JSON.stringify(json)}&lt;/p>*/}
+    &lt;/Card>
+      
+      )
+  }
+  
+  export const SubjectSelectedMed = (props) => {
+        return(
+        &lt;Card>
+                  &lt;Table striped bordered hover style={tableStyle}>
+                  &lt;thead>
+                      &lt;tr>                                    
+                          &lt;td align="left">Název tématu: &lt;/td>
+                          &lt;td colSpan="3" align="left"> {props.name} &lt;/td>
+                          &lt;td colSpan="2" align="right">id (id): &lt;b>{props.topicid}&lt;/b> &lt;/td>                        
+                      &lt;/tr>
+                  &lt;/thead>
+                  &lt;tbody>
+                      &lt;tr>                                    
+                          &lt;td align="left">Vyučující: &lt;/td>
+                          &lt;td colSpan="5" align="left"> {/*props.name*/}  -  
+                          &lt;PersonSmall id={props.topicid+"/1"} name={"vyučující1 "}/> -||-
+                          &lt;PersonSmall id={props.topicid+"/2"} name={"vyučující2 "}/> -||-
+                          &lt;PersonSmall id={props.topicid+"/3"} name={"vyučující3 "}/> &lt;/td>                      
+                      &lt;/tr>
+                  &lt;/tbody>
+                  &lt;/Table>
+    
+        &lt;/Card>
+  
+      )
+  }
+
+/**
+ * Renders a page with data representing a subject, contains predefined data which can are overrided by props
+ * @param {*} props 
+ * @param {*} props.id - identification
+ * @param {string} props.name - name
+ * @function
+ */
+export const SubjectLargeStoryBook = (props) => {
+    const extraProps = {
+        "id": "1",
+        "name": "Kybernetická bezpečnost / Předmět 1",
+        "lessons": [
+          { "id": "1", "topic": "Téma 1" },
+          { "id": "2", "topic": "Téma 2" },
+          { "id": "3", "topic": "Téma 3" },
+          { "id": "4", "topic": "Téma 4" },
+          { "id": "5", "topic": "Téma 5" },
+          { "id": "6", "topic": "Téma 6" },
+          { "id": "7", "topic": "Téma 7" },
+          { "id": "8", "topic": "Téma 8" },
+          { "id": "9", "topic": "Téma 9" },
+        ],
+        "program": { "id": "1", "name": "Kyberneticka bezpecnost" },
+        "groups": [
+            {"id": 5, 'name': '23-5KB'}
+        ],
+        "master": {'id': 1, 'name': 'Josef Petr', 'surname': 'Kovář', 'email': 'josef.petr.kovar@university.world'}
+      }
+    return &lt;SubjectLarge {...extraProps} {...props} />
+}
+
+/**
+ * Retrieves the data from GraphQL API endpoint
+ * @param {*} id - identificator
+ * @function
+ */
+export const SubjectLargeQuery = (id) => 
+    fetch('/gql', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+        query: `
+        query{
+            subject(id: ${id}) {
+                id
+                name
+                lessons {
+                  id
+                  topic
+                }
+                program {
+                  id
+                  name
+                }
+              }
+        }              
+            `,
+        variables: {
+            now: new Date().toISOString(),
+        },
+        }),
+    })
+    
+/**
+ * Fetch the data from API endpoint and renders a page representing a subject
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @param {*} [props.as = SubjectLargeStoryBook] - ReactJS component (function) which is responsible for rendering
+ * @param {*} [props.with = SubjectLargeQuery] - function fetching the data and returning promise with the data from API endpoint
+ * @function
+ */
+export const SubjectPageFetching = (props) => {
+
+    const Visualizer = props.as || SubjectLargeStoryBook;
+    const queryFunc = props.with || SubjectLargeQuery;
+
+    const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.subject, [props.id])
+    
+    if (error != null) {
+        return &lt;LoadingError error={error} />
+    } else if (state != null) {
+        return &lt;Visualizer {...props} {...state} />
+    } else {
+        return &lt;Loading>Předmět {props.id}&lt;/Loading>
+    }
+}
+
+/**
+ * Renders a page representing a subject, designed as a component for a ReactJS router
+ * @param {*} props - extra props for encapsulated components / visualisers
+ * @function
+ */
+export const SubjectPage = (props) => {
+    const { id } = useParams()
+
+    return &lt;SubjectPageFetching {...props} id={id} />
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Areal.html">Areal</a></li><li><a href="module-Building.html">Building</a></li><li><a href="module-Department.html">Department</a></li><li><a href="module-Faculty.html">Faculty</a></li><li><a href="module-Group.html">Group</a></li><li><a href="module-Lesson.html">Lesson</a></li><li><a href="module-Room.html">Room</a></li><li><a href="module-Student.html">Student</a></li><li><a href="module-StudyProgram.html">StudyProgram</a></li><li><a href="module-Subject.html">Subject</a></li><li><a href="module-Teacher.html">Teacher</a></li><li><a href="module-TimeTable.html">TimeTable</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sun Feb 06 2022 09:26:50 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
