@@ -20,25 +20,14 @@ resolvePublicaitonAll = createEntityGetter(PublicationModel)
 resolveUpdatePublication = createUpdateResolver(PublicationModel)
 resolveInsertPublication = createInsertResolver(PublicationModel)
 
-### Probrat na konzultaci
-
-# resolvePublicationByName = createEntityByNameGetter(PublicationModel)
-# resolvePublicationByYear = createEntityByYearGetter(PublicationModel)
-
-async def resolvePublicationByPublicationTypeAndAuthor(session, authorId, publicationTypeId):
-    stmt = select(PublicationModel).join(PublicationTypeModel).where(PublicationModel.publication_type_id == publicationTypeId).join(AuthorModel).where(AuthorModel.authorId == authorId)
-    dbSet = await session.execute(stmt)
-    result = dbSet.scalars()
-    return result
-
 
 # Author resolvers
 
 resolveAuthorById = createEntityByIdGetter(AuthorModel)
-resolverUpdateAuthor = createUpdateResolver(AuthorModel)
+resolveUpdateAuthor = createUpdateResolver(AuthorModel)
 resolveInsertAuthor = createInsertResolver(AuthorModel)
-resolveUserForAuthor = create1NGetter(AuthorModel, foreignKeyName='user_id', options=joinedload(AuthorModel.user))
-resolveAuthorForPublication = create1NGetter(AuthorModel, foreignKeyName='publication_id', options=joinedload(AuthorModel.user))
+resolveUserForAuthor = create1NGetter(AuthorModel, foreignKeyName='user_id')
+resolveAuthorsForPublication = create1NGetter(AuthorModel, foreignKeyName='publication_id', options=joinedload(AuthorModel.user))
 
 
 

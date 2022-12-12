@@ -1,32 +1,3 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Codespaces
-Marketplace
-Explore
- 
-@JakubP1 
-hrbolek
-/
-_uois
-Public
-Code
-Issues
-Pull requests
-6
-Actions
-Projects
-Security
-Insights
-_uois/gql_ug/gql_ug/GraphTypeDefinitions.py /
-
-Profesor Hrbolek Sunday upgrades
-Latest commit 503f0f6 15 days ago
- History
- 0 contributors
-509 lines (411 sloc)  22.4 KB
-
 from pydoc import resolve
 from typing import List, Union, Optional
 import typing
@@ -536,18 +507,3 @@ class Query:
         result = await resolveGroupById(AsyncSessionFromInfo(info), newId)
         print('db response', result.name)
         return result
-Footer
-© 2022 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-_uois/GraphTypeDefinitions.py at v2.1 · hrbolek/_uois
