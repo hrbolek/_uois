@@ -33,7 +33,10 @@ class StudyProgramsModel(BaseModel):
     type = Column(String)
     lenght = Column(Integer)
     type_of_study = Column(String)
-    name_id = Column(Integer)
+    name_id = Column(ForeignKey('name.id'))
+
+    subjects = relationship('SubjectsOfStudyModel',back_populates='programs')
+    names = relationship('ThemeNameModel', back_populates='')
 
 class ThemeNameModel(BaseModel):
     __tablename__ = "plan_theme_name"
@@ -48,37 +51,27 @@ class SubjectsOfStudyModel(BaseModel):
     subject_id = Column(Integer)
     language_id = Column(Integer)
 
-class SubjectOptionModel(BaseModel):
-    __tablename__= "plan_subject_option"
-    id = UUIDColumn()
-    name = Column(String)
-
-class StudyLanguageModel(BaseModel):
-    __tablename__ = "plan_study_language"
-    id = UUIDColumn()
-    name = Column(String)
-##############################################
-
 class SemestersOfStudyModel(BaseModel):
     __tablename__ = "plan_semesters_of_study"
     id = UUIDColumn()
     semester_number = Column(Integer)
     credits = Column(Integer)
-    semester_id = Column(Integer)
-    classification_id = Column(Integer)
+    semester_id = Column(ForeignKey('semester.id'))
+    classification_id = Column(ForeignKey('classification.id'))
 
-class ClassificationModel(BaseModel):
-    __tablename__ = "plan_classification"
-    id = UUIDColumn()
-    name = Column(String)
-################################################
+    subsemesters = relationship('SubjectsOfStudyModel', back_populates='semesters')
+    classifications = relationship('ClassificationModel', back_populates='')
+    themes = relationship('StudyThemesModel', back_populates='studysemesters')
 
-class StudyThemesModel(BaseModel):
+class StudyThemes(BaseModel):
     __tablename__ = "plan_study_themes"
     id = UUIDColumn()
     unit = Column(Integer)
-    theme_id = Column(Integer)
-    type_id = Column(Integer)
+    theme_id = Column(ForeignKey('theme.id'))
+    type_id = Column(ForeignKey('type.id'))
+
+    studysemesters = relationship('SemestersOfStudyModel', back_populates='themes')
+    types = relationship('ThemeTypeModel', back_populates='')
 
 class ThemeTypeModel(BaseModel):
     __tablename__= "plan_theme_type"
