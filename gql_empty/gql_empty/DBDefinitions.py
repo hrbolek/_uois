@@ -1,6 +1,5 @@
 import sqlalchemy
 import datetime
-##WEXE JE KOKOS
 from sqlalchemy import Column, String, BigInteger, Integer, DateTime, ForeignKey, Sequence, Table, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 
