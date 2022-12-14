@@ -4,8 +4,10 @@ from unittest import result
 import strawberry as strawberryA
 import uuid
 
+
 def AsyncSessionFromInfo(info):
     return info.context['session']
+
 
 ###########################################################################################################################
 #
@@ -13,18 +15,38 @@ def AsyncSessionFromInfo(info):
 # - nove, kde mate zodpovednost
 # - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
 #
+
+@strawberryA.federation.type(keys=["id"], description="""Entity representing premade study programs""")
+class StudyProgramsGQLModel:
+    @strawberryA.field(description="""primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    class MembershipGQLModel:
+        @classmethod
+        async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+            result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
+            result._type_definition = cls._type_definition  # little hack :)
+            return result
+
+       x
+
+        @strawberryA.field(description="""user""")
+        async def user(self) -> 'UserGQLModel':
+            return self.user
+
 ###########################################################################################################################
 #
 # priklad rozsireni UserGQLModel
 #
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
-    
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
     def resolve_reference(cls, id: strawberryA.ID):
-        return UserGQLModel(id=id) # jestlize rozsirujete, musi byt tento vyraz
+        return UserGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
+
 
 #     zde je rozsireni o dalsi resolvery
 #     @strawberryA.field(description="""Inner id""")
@@ -41,11 +63,12 @@ class UserGQLModel:
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
-   
+
     @strawberryA.field(description="""Finds an workflow by their id""")
     async def say_hello(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[str, None]:
         result = f'Hello {id}'
         return result
+
 
 ###########################################################################################################################
 #
@@ -56,4 +79,4 @@ class Query:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, ))
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,))
