@@ -28,12 +28,18 @@ def UUIDColumn(name=None):
 #
 
 class StudyProgramsModel(BaseModel):
-    __tablename__ = "plan_programs"
+    __tablename__ = "plan_study_programs"
     id = UUIDColumn()
     type = Column(String)
     lenght = Column(Integer)
     type_of_study = Column(String)
     name_id = Column(Integer)
+
+class ThemeNameModel(BaseModel):
+    __tablename__ = "plan_theme_name"
+    id = UUIDColumn()
+    name = Column(String)
+##############################################
 
 class SubjectsOfStudyModel(BaseModel):
     __tablename__ = "plan_subjects_of_study"
@@ -41,6 +47,17 @@ class SubjectsOfStudyModel(BaseModel):
     option_id = Column(Integer)
     subject_id = Column(Integer)
     language_id = Column(Integer)
+
+class SubjectOptionModel(BaseModel):
+    __tablename__= "plan_subject_option"
+    id = UUIDColumn()
+    name = Column(String)
+
+class StudyLanguageModel(BaseModel):
+    __tablename__ = "plan_study_language"
+    id = UUIDColumn()
+    name = Column(String)
+##############################################
 
 class SemestersOfStudyModel(BaseModel):
     __tablename__ = "plan_semesters_of_study"
@@ -50,12 +67,23 @@ class SemestersOfStudyModel(BaseModel):
     semester_id = Column(Integer)
     classification_id = Column(Integer)
 
-class StudyThemes(BaseModel):
+class ClassificationModel(BaseModel):
+    __tablename__ = "plan_classification"
+    id = UUIDColumn()
+    name = Column(String)
+################################################
+
+class StudyThemesModel(BaseModel):
     __tablename__ = "plan_study_themes"
     id = UUIDColumn()
     unit = Column(Integer)
     theme_id = Column(Integer)
     type_id = Column(Integer)
+
+class ThemeTypeModel(BaseModel):
+    __tablename__= "plan_theme_type"
+    id = UUIDColumn()
+    name = Column(String)
 
 
 ###########################################################################################################################
