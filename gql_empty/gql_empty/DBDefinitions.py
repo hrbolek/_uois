@@ -36,30 +36,43 @@ class StudyProgramsModel(BaseModel):
     name_id = Column(ForeignKey('name.id'))
 
     subjects = relationship('SubjectsOfStudyModel',back_populates='programs')
-    names = relationship('ThemeNameModel', back_populates='')
+    names = relationship('ThemeNameModel', back_populates='nameprograms')
 
+##############################################
 class ThemeNameModel(BaseModel):
     __tablename__ = "plan_theme_name"
     id = UUIDColumn()
     name = Column(String)
+
+    nameprograms = relationship('StudyProgramsModel',back_populates='names')
 ##############################################
 
 class SubjectsOfStudyModel(BaseModel):
     __tablename__ = "plan_subjects_of_study"
     id = UUIDColumn()
-    option_id = Column(Integer)
-    subject_id = Column(Integer)
-    language_id = Column(Integer)
+    option_id = Column(ForeignKey('option.id'))
+    subject_id = Column(ForeignKey('subject.id'))
+    language_id = Column(ForeignKey('language.id'))
 
+    programs = relationship('StudyProgramsModel', back_populates='subjects')
+    semesters = relationship('SemestersOfStudyModel', back_populates='subsemesters')
+    options = relationship('SubjectOptionModel', back_populates='optionsubjects')
+    languages = relationship('StudyLanguageModel', back_populates='languagesubjects')
+
+##############################################
 class SubjectOptionModel(BaseModel):
     __tablename__= "plan_subject_option"
     id = UUIDColumn()
     name = Column(String)
 
+    optionsubjects = relationship('SubjectsOfStudyModel',back_populates='options')
+
 class StudyLanguageModel(BaseModel):
     __tablename__= "plan_study_language"
     id = UUIDColumn()
     name = Column(String)
+
+    languagesubjects = relationship('SubjectsOfStudyModel', back_populates='languages')
 #######################################
 
 class SemestersOfStudyModel(BaseModel):
@@ -70,16 +83,19 @@ class SemestersOfStudyModel(BaseModel):
     semester_id = Column(ForeignKey('semester.id'))
     classification_id = Column(ForeignKey('classification.id'))
 
+    subsemesters = relationship('SubjectsOfStudyModel', back_populates='semesters')
+    classifications = relationship('ClassificationModel', back_populates='classificationsemesters')
+    themes = relationship('StudyThemesModel', back_populates='studysemesters')
+
+##############################################
 class ClassificationModel(BaseModel):
     __tablename__ = "plan_classification"
     id = UUIDColumn()
     name = Column(String)
 
-    subsemesters = relationship('SubjectsOfStudyModel', back_populates='semesters')
-    classifications = relationship('ClassificationModel', back_populates='')
-    themes = relationship('StudyThemesModel', back_populates='studysemesters')
+    classificationsemesters = relationship('SemestersOfStudyModel',back_populates='classifications')
 ##############################################
-class StudyThemes(BaseModel):
+class StudyThemesModel(BaseModel):
     __tablename__ = "plan_study_themes"
     id = UUIDColumn()
     unit = Column(Integer)
@@ -87,15 +103,16 @@ class StudyThemes(BaseModel):
     type_id = Column(ForeignKey('type.id'))
 
     studysemesters = relationship('SemestersOfStudyModel', back_populates='themes')
-    types = relationship('ThemeTypeModel', back_populates='')
+    types = relationship('ThemeTypeModel', back_populates='typethemes')
 
+##############################################
 class ThemeTypeModel(BaseModel):
     __tablename__= "plan_theme_type"
     id = UUIDColumn()
     name = Column(String)
 
-
-###########################################################################################################################
+    typethemes = relationship('StudyThemesModel', back_populates='types')
+##############################################
 
 
 from sqlalchemy import create_engine
