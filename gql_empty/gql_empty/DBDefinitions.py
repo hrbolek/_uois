@@ -51,6 +51,17 @@ class SubjectsOfStudyModel(BaseModel):
     subject_id = Column(Integer)
     language_id = Column(Integer)
 
+class SubjectOptionModel(BaseModel):
+    __tablename__= "plan_subject_option"
+    id = UUIDColumn()
+    name = Column(String)
+
+class StudyLanguageModel(BaseModel):
+    __tablename__= "plan_study_language"
+    id = UUIDColumn()
+    name = Column(String)
+#######################################
+
 class SemestersOfStudyModel(BaseModel):
     __tablename__ = "plan_semesters_of_study"
     id = UUIDColumn()
@@ -59,10 +70,15 @@ class SemestersOfStudyModel(BaseModel):
     semester_id = Column(ForeignKey('semester.id'))
     classification_id = Column(ForeignKey('classification.id'))
 
+class ClassificationModel(BaseModel):
+    __tablename__ = "plan_classification"
+    id = UUIDColumn()
+    name = Column(String)
+
     subsemesters = relationship('SubjectsOfStudyModel', back_populates='semesters')
     classifications = relationship('ClassificationModel', back_populates='')
     themes = relationship('StudyThemesModel', back_populates='studysemesters')
-
+##############################################
 class StudyThemes(BaseModel):
     __tablename__ = "plan_study_themes"
     id = UUIDColumn()
