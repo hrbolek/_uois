@@ -15,49 +15,9 @@ def AsyncSessionFromInfo(info):
 # - nove, kde mate zodpovednost
 # - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
 #
-@strawberryA.federation.type(keys=["id"], description="""Entity representing premade study programs""")
-class StudyProgramsGQLModel:
-    @classmethod
-    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
-        result._type_definition = cls._type_definition  # little hack :)
-        return result
-    @strawberryA.field(description="""primary key""")
-    def id(self) -> strawberryA.ID:
-        return self.id
 
-@strawberryA.federation.type(keys=["id"], description="""Entity which connects programs and semesters, includes informations about subjects""")
-class SubjectsOfStudyGQLModel:
-    @classmethod
-    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
-        result._type_definition = cls._type_definition  # little hack :)
-        return result
-    @strawberryA.field(description="""primary key""")
-    def id(self) -> strawberryA.ID:
-        return self.id
 
-@strawberryA.federation.type(keys=["id"], description="""Entity representing each semester in study program""")
-class SemestersOfStudyGQLModel:
-    @classmethod
-    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
-        result._type_definition = cls._type_definition  # little hack :)
-        return result
-    @strawberryA.field(description="""primary key""")
-    def id(self) -> strawberryA.ID:
-        return self.id
 
-@strawberryA.federation.type(keys=["id"], description="""Entity which represents all themes included in semester""")
-class StudyThemesGQLModel:
-    @classmethod
-    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
-        result._type_definition = cls._type_definition  # little hack :)
-        return result
-    @strawberryA.field(description="""primary key""")
-    def id(self) -> strawberryA.ID:
-        return self.id
 
 
 ###########################################################################################################################
