@@ -26,7 +26,7 @@ class StudyProgramsGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-@strawberryA.federation.type(keys=["id"], description="""Entity representing premade study programs""")
+@strawberryA.federation.type(keys=["id"], description="""Entity which connects programs and semesters, includes informations about subjects""")
 class SubjectsOfStudyGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -37,7 +37,7 @@ class SubjectsOfStudyGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-@strawberryA.federation.type(keys=["id"], description="""Entity representing premade study programs""")
+@strawberryA.federation.type(keys=["id"], description="""Entity representing each semester in study program""")
 class SemestersOfStudyGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -48,7 +48,7 @@ class SemestersOfStudyGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-@strawberryA.federation.type(keys=["id"], description="""Entity representing premade study programs""")
+@strawberryA.federation.type(keys=["id"], description="""Entity which represents all themes included in semester""")
 class StudyThemesGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
