@@ -494,16 +494,16 @@ class Query:
         return result
     
 
-    from strawberry.scalars import JSON
+    # from strawberry.scalars import JSON
 
-    @strawberryA.field(description="""Empty university""")
-    async def importUG(self, info: strawberryA.types.Info, ug: JSON) -> GroupGQLModel:
-        newId = id 
-        if newId is None:
-            newId = f'{uuid.uuid1()}'
+    # @strawberryA.field(description="""Empty university""")
+    # async def importUG(self, info: strawberryA.types.Info, ug: JSON) -> GroupGQLModel:
+    #     newId = id 
+    #     if newId is None:
+    #         newId = f'{uuid.uuid1()}'
 
-        newId = await importUniversity(AsyncSessionFromInfo(info), id=newId, data=ug)
-        print('random university id', newId)
-        result = await resolveGroupById(AsyncSessionFromInfo(info), newId)
-        print('db response', result.name)
-        return result
+    #     newId = await importUniversity(AsyncSessionFromInfo(info), id=newId, data=ug)
+    #     print('random university id', newId)
+    #     result = await resolveGroupById(AsyncSessionFromInfo(info), newId)
+    #     print('db response', result.name)
+    #     return result

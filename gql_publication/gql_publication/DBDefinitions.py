@@ -19,6 +19,23 @@ def UUIDColumn(name=None):
 #id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
 
+class PlanSubjectModel(BaseModel):
+    """Spravuje data spojena s uzivatelem
+    """
+    __tablename__ = 'plan_subjects'
+
+    id = UUIDColumn()
+
+
+class SubjectModel(BaseModel):
+    __tablename__ = 'publication_subjects'
+    
+    id = UUIDColumn()
+    publication_id = Column(ForeignKey('publications.id'), primary_key=True)
+    subject_id = Column(ForeignKey('plan_subjects.id'), primary_key=True)
+
+    publication = relationship('PublicationModel')
+
 class UserModel(BaseModel):
     """Spravuje data spojena s uzivatelem
     """
@@ -46,7 +63,7 @@ class PublicationModel(BaseModel):
 
 
 class AuthorModel(BaseModel):
-    __tablename__ = 'authors'
+    __tablename__ = 'publication_authors'
 
     id = UUIDColumn()
     user_id = Column(ForeignKey('users.id'), primary_key=True)

@@ -25,6 +25,8 @@ class UserGQLModel:
     def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id)
 
+    # def author_publications():
+    #   pass 
 
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing a publication type""")
@@ -142,21 +144,21 @@ class PublicationEditorGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""Updates the publication data""")
+    @strawberryA.field(description="""Updates publication data""")
     async def update(self, info: strawberryA.types.Info, data: PublicationUpdateGQLModel) -> 'PublicationGQLModel':
         result = await resolveUpdatePublication(AsyncSessionFromInfo(info), id=self.id, data=data)
         return result
 
-######################   KONZULTACE
-
-    # @strawberryA.field(description="""Updates the author data""")
-    # async def set_author_share(self, info: strawberryA.types.Info, user_id: uuid.UUID,share) -> 'AuthorGQLModel':
-    #     result = await resolveUpdateAuthor(AsyncSessionFromInfo(info),self.id, user_id)
-    #     return result
+    @strawberryA.field(description="""Sets author a share""")
+    async def set_author_share(self, info: strawberryA.types.Info, author_id: uuid.UUID, share: float) -> 'AuthorGQLModel':
+        result = await resolveUpdateAuthor(AsyncSessionFromInfo(info),author_id, data=None, extraAttributes={'share': share})
+        return result
     
     # @strawberryA.field(description="""Updates the author data""")
-    # async def set_author_order(self, info: strawberryA.types.Info, user_id: uuid.UUID,share) -> 'AuthorGQLModel':
-    #     result = await resolveAuthorAsyncSessionFromInfo(info),self.id, user_id)
+    # async def set_author_order(self, info: strawberryA.types.Info, author_id: uuid.UUID,order) -> 'AuthorGQLModel':
+    #     # result = await resolveUpdateAuthor(AsyncSessionFromInfo(info),self.id, data=None,  extraAttributes={'order': order})
+    #     # await resolveUp
+    
     #     return result
 
 
@@ -212,14 +214,7 @@ class AuthorGQLModel:
     def valid(self) -> bool:
         return self.valid
 
- 
 
-
-# @strawberryA.input
-# class AuthorUpdateGQLModel:
-#     order: Optional[int] = None
-#     share: Optional[float] = None
-#     valid: Optional[bool] = None
 
 
 from gql_publication.DBFeeder import randomDataStructure
@@ -262,4 +257,4 @@ class Query:
         # print('db response', result.name)
         return result
 
-Schema = strawberryA.federation.Schema(Query, types=(UserGQLModel))
+Schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,))
