@@ -91,14 +91,26 @@ async def resolveUserByRoleTypeAndGroup(session, groupId, roleTypeId):
 
 from uoishelpers.feeders import ImportModels, ExportModels
 import json
-async def export_ug(sessionMaker):
+import datetime
+class ExportEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, uuid.UUID):
+            return f'{obj}'
+        if isinstance(obj, datetime.datetime):
+            return f'{obj}'
+        # Let the base class default method raise the TypeError
+        return json.JSONEncoder.default(self, obj)
+
+async def export_ug(session):
+    sessionMaker = lambda:session
     jsonData = await ExportModels(sessionMaker, DBModels=[UserModel, GroupModel, MembershipModel, GroupTypeModel, RoleModel, RoleTypeModel])
     with open('./extradata/ug_data.json', 'w') as f:
-        json.dump(jsonData, f)
+        json.dump(jsonData, f, cls=ExportEncoder)
 
     return 'ok'
 
-async def import_ug(sessionMaker):
+async def import_ug(session):
+    sessionMaker = lambda:session
     with open('./extradata/ug_data.json', 'r') as f:
         jsonData = json.load(f)
         await ImportModels(sessionMaker, 
