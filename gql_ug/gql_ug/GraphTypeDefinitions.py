@@ -411,6 +411,9 @@ from gql_ug.GraphResolvers import resolveUserById, resolveUserAll, resolveUserBy
 from gql_ug.GraphResolvers import resolveGroupById, resolveGroupTypeById, resolveGroupAll, resolveGroupTypeAll
 from gql_ug.GraphResolvers import resolveAllRoleTypes, resolveRoleTypeAll, resolveRoleTypeById
 from gql_ug.GraphResolvers import resolveUsersByThreeLetters, resolveGroupsByThreeLetters
+
+from gql_ug.GraphResolvers import import_ug, export_ug
+
 from gql_ug.DBFeeder import randomDataStructure, createUniversity
 @strawberryA.type(description="""Type for query root""")
 class Query:
@@ -472,7 +475,6 @@ class Query:
         result = await resolveRoleTypeById(AsyncSessionFromInfo(info), id)
         return result
 
-
     @strawberryA.field(description="""Random university""")
     async def randomUniversity(self, name: str, info: strawberryA.types.Info) -> GroupGQLModel:
         newId = await randomDataStructure(AsyncSessionFromInfo(info), name)
@@ -481,29 +483,13 @@ class Query:
         print('db response', result.name)
         return result
     
-    @strawberryA.field(description="""Empty university""")
-    async def createUniversity(self, info: strawberryA.types.Info, name: str, id: Optional[uuid.UUID] = None) -> GroupGQLModel:
-        newId = id 
-        if newId is None:
-            newId = f'{uuid.uuid1()}'
-
-        newId = await createUniversity(AsyncSessionFromInfo(info), id=newId, name=name)
-        print('random university id', newId)
-        result = await resolveGroupById(AsyncSessionFromInfo(info), newId)
-        print('db response', result.name)
+    @strawberryA.field(description="""exports ug related data into inner file""")
+    async def export_ug(self, info: strawberryA.types.Info) -> 'str':
+        result = await export_ug(AsyncSessionFromInfo(info))
         return result
-    
 
-    from strawberry.scalars import JSON
-
-    @strawberryA.field(description="""Empty university""")
-    async def importUG(self, info: strawberryA.types.Info, ug: JSON) -> GroupGQLModel:
-        newId = id 
-        if newId is None:
-            newId = f'{uuid.uuid1()}'
-
-        newId = await importUniversity(AsyncSessionFromInfo(info), id=newId, data=ug)
-        print('random university id', newId)
-        result = await resolveGroupById(AsyncSessionFromInfo(info), newId)
-        print('db response', result.name)
+    @strawberryA.field(description="""imports ug related data from inner file""")
+    async def import_ug(self, info: strawberryA.types.Info) -> 'str':
+        result = await import_ug(AsyncSessionFromInfo(info))
         return result
+

@@ -87,3 +87,21 @@ async def resolveUserByRoleTypeAndGroup(session, groupId, roleTypeId):
     dbSet = await session.execute(stmt)
     result = dbSet.scalars()
     return result
+
+
+from uoishelpers.feeders import ImportModels, ExportModels
+import json
+async def export_ug(sessionMaker):
+    jsonData = await ExportModels(sessionMaker, DBModels=[UserModel, GroupModel, MembershipModel, GroupTypeModel, RoleModel, RoleTypeModel])
+    with open('./extradata/ug_data.json', 'w') as f:
+        json.dump(jsonData, f)
+
+    return 'ok'
+
+async def import_ug(sessionMaker):
+    with open('./extradata/ug_data.json', 'r') as f:
+        jsonData = json.load(f)
+        await ImportModels(sessionMaker, 
+            DBModels=[UserModel, GroupModel, MembershipModel, GroupTypeModel, RoleModel, RoleTypeModel],
+            jsonData=jsonData)
+    return 'ok'
