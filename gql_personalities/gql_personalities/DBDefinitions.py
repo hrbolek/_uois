@@ -29,13 +29,6 @@ class UserModel(BaseModel):
 
     id = UUIDColumn()
 
-    ranks = relationship('Personalities_RankHistory', back_populates='user')
-    studies = relationship('Personalities_Study', back_populates='user')
-    certificates = relationship('Personalities_Certificate', back_populates='user')
-    medals = relationship('Personalities_Medal', back_populates='user')
-    workHistories = relationship('Personalities_WorkHistory', back_populates='user')
-    relatedDocs = relationship('Personalities_RelatedDoc', back_populates='user')
-
 class Personalities_RankHistory(BaseModel):
     __tablename__ = 'personalitiesRanks'
 
@@ -45,8 +38,6 @@ class Personalities_RankHistory(BaseModel):
     end = Column(DateTime) 
 
     user_id = Column(ForeignKey('users.id'))
-
-    user = relationship('UserModel', back_populates = 'ranks')
 
 class Personalities_Study(BaseModel):
     __tablename__ = 'personalitiesStudies'
@@ -59,8 +50,6 @@ class Personalities_Study(BaseModel):
     
     user_id = Column(ForeignKey('users.id'))
     
-    user = relationship('UserModel', back_populates = 'studies')
-
 class Personalities_Certificate(BaseModel):
     __tablename__ = 'personalitiesCertficates'
 
@@ -73,7 +62,6 @@ class Personalities_Certificate(BaseModel):
     user_id = Column(ForeignKey('users.id'))
     certificateType_id = Column(ForeignKey('personalitiesCertificateTypes.id'))
     
-    user = relationship('UserModel', back_populates = 'certificates')
     certificateType = relationship('Personalities_CertificateType', back_populates = 'certificates')
 
 class Personalities_CertificateType(BaseModel):
@@ -95,7 +83,6 @@ class Personalities_Medal(BaseModel):
     user_id = Column(ForeignKey('users.id'))
     medalType_id = Column(ForeignKey('personalitiesMedalTypes.id'))
     
-    user = relationship('UserModel', back_populates = 'medals')
     medalType = relationship('Personalities_MedalType', back_populates = 'medals')
 
 class Personalities_MedalType(BaseModel):
@@ -128,7 +115,6 @@ class Personalities_WorkHistory(BaseModel):
 
     user_id = Column(ForeignKey('users.id'))
     
-    user = relationship('UserModel', back_populates = 'workHistories')
 
 class Personalities_RelatedDoc(BaseModel):
     __tablename__ = 'personalitiesRelatedDocs'
@@ -139,7 +125,6 @@ class Personalities_RelatedDoc(BaseModel):
 
     user_id = Column(ForeignKey('users.id'))
     
-    user = relationship('UserModel', back_populates = 'relatedDocs')
 
 
 
@@ -158,13 +143,21 @@ async def startEngine(connectionstring, makeDrop=False, makeUp=True):
             await conn.run_sync(BaseModel.metadata.drop_all)
             print('BaseModel.metadata.drop_all finished')
         if makeUp:
-            await conn.run_sync(BaseModel.metadata.create_all)    
-            print('BaseModel.metadata.create_all finished')
+            try:
+                await conn.run_sync(BaseModel.metadata.create_all)    
+                print('BaseModel.metadata.create_all finished')
+            except sqlalchemy.exc.NoReferencedTableError as e:
+                print(e)
+                print('Unable automaticaly create tables')
+                return None
 
     async_sessionMaker = sessionmaker(
         asyncEngine, expire_on_commit=False, class_=AsyncSession
     )
     return async_sessionMaker
+
+
+
 
 import os
 def ComposeConnectionString():

@@ -26,7 +26,7 @@ def UUIDColumn(name=None):
 ###########################################################################################################################
 class EventModel(BaseModel):
 
-    __tablename__ = 'event'
+    __tablename__ = 'events'
 
     id = UUIDColumn()
     name = Column(String)
@@ -35,8 +35,8 @@ class EventModel(BaseModel):
     capacity = Column(Integer)
     comment = Column(String)
 
-    eventtype_id = Column(ForeignKey('eventtype.id'))
-    location_id = Column(ForeignKey('location.id'))
+    eventtype_id = Column(ForeignKey('eventtypes.id'))
+    location_id = Column(ForeignKey('facilities.id'))
     
 
     eventtype = relationship('EventTypeModel', back_populates='event')
@@ -47,7 +47,7 @@ class EventModel(BaseModel):
     #user = relationship('UserModel', back_populates='event')
 
 class EventTypeModel(BaseModel):
-    __tablename__ = 'eventtype'
+    __tablename__ = 'eventtypes'
 
     id = UUIDColumn()
     name = Column(String)
@@ -55,7 +55,7 @@ class EventTypeModel(BaseModel):
     events = relationship('EventModel', back_populates='eventtype')
 
 class LocationModel(BaseModel):
-    __tablename__ = 'location'
+    __tablename__ = 'facilities'
 
     id = UUIDColumn()
     name = Column(String)
@@ -68,13 +68,13 @@ class LessonModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    subject_id = Column(ForeignKey('subject.id'))
+    subject_id = Column(ForeignKey('subjects.id'))
 
     events = relationship('EventModel', back_populates='lessons')
     subjects = relationship('SubjectModel', back_populates='lessons')
 
 class SubjectModel(BaseModel):
-    __tablename__ = 'subject'
+    __tablename__ = 'subjects'
 
     id = UUIDColumn()
     name = Column(String)
@@ -83,7 +83,7 @@ class SubjectModel(BaseModel):
     lesson = relationship('LessonModel', back_populates='subjects') ##########################################
 
 class GroupModel(BaseModel):
-    __tablename__ = 'group'
+    __tablename__ = 'groups'
 
     id = UUIDColumn()
     name = Column(String)
@@ -91,7 +91,7 @@ class GroupModel(BaseModel):
     #events = relationship('EventModel', back_populates='group')
 
 class UserModel(BaseModel):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
 
     id = UUIDColumn()
     name = Column(String)
@@ -116,13 +116,20 @@ async def startEngine(connectionstring, makeDrop=False, makeUp=True):
             await conn.run_sync(BaseModel.metadata.drop_all)
             print('BaseModel.metadata.drop_all finished')
         if makeUp:
-            await conn.run_sync(BaseModel.metadata.create_all)    
-            print('BaseModel.metadata.create_all finished')
+            try:
+                await conn.run_sync(BaseModel.metadata.create_all)    
+                print('BaseModel.metadata.create_all finished')
+            except sqlalchemy.exc.NoReferencedTableError as e:
+                print(e)
+                print('Unable automaticaly create tables')
+                return None
 
     async_sessionMaker = sessionmaker(
         asyncEngine, expire_on_commit=False, class_=AsyncSession
     )
     return async_sessionMaker
+
+
 
 import os
 def ComposeConnectionString():

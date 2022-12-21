@@ -22,6 +22,8 @@ def UUIDColumn(name=None):
 # zde definujte sve SQLAlchemy modely
 # je-li treba, muzete definovat modely obsahujici jen id polozku, na ktere se budete odkazovat
 #
+#     metadata = sqlalchemy.MetaData()
+#
 ###########################################################################################################################
 
 
@@ -43,13 +45,19 @@ async def startEngine(connectionstring, makeDrop=False, makeUp=True):
             await conn.run_sync(BaseModel.metadata.drop_all)
             print('BaseModel.metadata.drop_all finished')
         if makeUp:
-            await conn.run_sync(BaseModel.metadata.create_all)    
-            print('BaseModel.metadata.create_all finished')
+            try:
+                await conn.run_sync(BaseModel.metadata.create_all)    
+                print('BaseModel.metadata.create_all finished')
+            except sqlalchemy.exc.NoReferencedTableError as e:
+                print(e)
+                print('Unable automaticaly create tables')
+                return None
 
     async_sessionMaker = sessionmaker(
         asyncEngine, expire_on_commit=False, class_=AsyncSession
     )
     return async_sessionMaker
+
 
 import os
 def ComposeConnectionString():

@@ -104,6 +104,8 @@ const getENV = (name, defaultValue) => {
           }  
           //request.http.headers.set("Authorization", "Bearer ABCDE");
           //*/
+
+          request.http.timeout = 5 * 60
         }
       });
     }

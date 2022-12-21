@@ -21,17 +21,20 @@ class UserModel(BaseModel):
     """uzivatele v minimalni definici
     """
     __tablename__ = 'users'
+
     id = UUIDColumn()
 
 class GroupModel(BaseModel):
     """skupiny v minimalni definici
     """
     __tablename__ = 'groups'
+
     id = UUIDColumn()
 
 class RoleTypeModel(BaseModel):
     ""
     __tablename__ = 'roletypes'
+
     id = UUIDColumn()
 
 class AuthorizationModel(BaseModel):
@@ -150,13 +153,20 @@ async def startEngine(connectionstring, makeDrop=False, makeUp=True):
             await conn.run_sync(BaseModel.metadata.drop_all)
             print('BaseModel.metadata.drop_all finished')
         if makeUp:
-            await conn.run_sync(BaseModel.metadata.create_all)    
-            print('BaseModel.metadata.create_all finished')
+            try:
+                await conn.run_sync(BaseModel.metadata.create_all)    
+                print('BaseModel.metadata.create_all finished')
+            except sqlalchemy.exc.NoReferencedTableError as e:
+                print(e)
+                print('Unable automaticaly create tables')
+                return None
 
     async_sessionMaker = sessionmaker(
         asyncEngine, expire_on_commit=False, class_=AsyncSession
     )
     return async_sessionMaker
+
+
 
 import os
 def ComposeConnectionString():

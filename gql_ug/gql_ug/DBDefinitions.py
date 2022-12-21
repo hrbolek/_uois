@@ -49,7 +49,6 @@ class UserModel(BaseModel):
     enddate = Column(DateTime)
     
     lastchange = Column(DateTime, default=datetime.datetime.now)
-    externalId = Column(BigInteger, index=True)
 
     memberships = relationship('MembershipModel', back_populates='user')
     roles = relationship('RoleModel', back_populates='user')
@@ -67,8 +66,6 @@ class GroupModel(BaseModel):
     startDate = Column(DateTime)
     endDate = Column(DateTime)
     valid = Column(Boolean, default=True)
-
-    externalId = Column(String, index=True)
 
     grouptype_id = Column(ForeignKey('grouptypes.id'))
     grouptype = relationship('GroupTypeModel', back_populates='groups')
@@ -136,13 +133,20 @@ async def startEngine(connectionstring, makeDrop=False, makeUp=True):
             await conn.run_sync(BaseModel.metadata.drop_all)
             print('BaseModel.metadata.drop_all finished')
         if makeUp:
-            await conn.run_sync(BaseModel.metadata.create_all)    
-            print('BaseModel.metadata.create_all finished')
+            try:
+                await conn.run_sync(BaseModel.metadata.create_all)    
+                print('BaseModel.metadata.create_all finished')
+            except sqlalchemy.exc.NoReferencedTableError as e:
+                print(e)
+                print('Unable automaticaly create tables')
+                return None
 
     async_sessionMaker = sessionmaker(
         asyncEngine, expire_on_commit=False, class_=AsyncSession
     )
     return async_sessionMaker
+
+
 
 import os
 def ComposeConnectionString():

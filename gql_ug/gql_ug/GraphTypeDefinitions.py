@@ -490,6 +490,10 @@ class Query:
 
     @strawberryA.field(description="""imports ug related data from inner file""")
     async def import_ug(self, info: strawberryA.types.Info) -> 'str':
-        result = await import_ug(AsyncSessionFromInfo(info))
+
+        print('import_ug started')
+        asyncSessionMaker = info.context['asyncSessionMaker']
+        result = await import_ug(asyncSessionMaker)
+        print('import_ug returned')
         return result
 
