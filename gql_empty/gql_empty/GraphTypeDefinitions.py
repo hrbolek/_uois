@@ -13,56 +13,36 @@ def AsyncSessionFromInfo(info):
 # - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
 #
 ###########################################################################################################################
-from gql_empty.GraphResolvers import resolveRequestById, resolveRequestAll, resolveSectionsForRequest
+from gql_empty.GraphResolvers import resolveRequestById
+from gql_empty.GraphResolvers import resolveRequestAll
 
-#define the type help to get attribute name and name 
-@strawberryA.federation.type(keys = ["id"] ,description="""Request""")
-class RequestGQLModel:
+@strawberryA.federation.type(extend=True, keys=["id"])
+class UserGQLModel:
+    
+    id: strawberryA.ID = strawberryA.federation.field(external=True)
+
     @classmethod
-    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        #how to fetch request from database
-        result = await resolveRequestById(AsyncSessionFromInfo(info), id)
-        result._type_definition = cls._type_definition # little hack :)
-        return result
-    @strawberryA.field(description="""id""")
-    async def id(self, info: strawberryA.types.Info) -> Union[str, None]:
-        result = self.id
-        #resovle will be ask 
-        return result
-    #for the name attribute
-    @strawberryA.field(description="""name""")
-    async def name(self, info: strawberryA.types.Info) -> Union[str, None]:
-        result = self.name
-        #resovle will be ask 
-        return result
-    @strawberryA.field(description="""List of sections in the request""")
-    async def sections(self, info: strawberryA.types.Info) -> typing.List['SectionGQLModel']:
-        result = await resolveSectionsForRequest(AsyncSessionFromInfo(info), self.id)
-        return result
+    def resolve_reference(cls, id: strawberryA.ID):
+        return UserGQLModel(id=id)
 
-from gql_empty.GraphResolvers import resolveSectionById, resolvePartsForSection
+
 
 #define the type help to get attribute name and name 
-@strawberryA.federation.type(keys = ["id"] ,description="""Section""")
-class SectionGQLModel:
-    @classmethod 
-    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveSectionById(AsyncSessionFromInfo(info), id)
-        result._type_definition = cls._type_definition # little hack :)
-        return result
-    @strawberryA.field(description="""id""")
+@strawberryA.federation.type(keys = ["id"] ,description="""Type for query root""")
+class RequestGQLModel:
+   
+    @strawberryA.field(description="""Finds an workflow by their id""")
     async def id(self, info: strawberryA.types.Info) -> Union[str, None]:
         result = self.id
-        return result
-    @strawberryA.field(description="""name""")
-    async def name(self, info: strawberryA.types.Info) -> Union[str, None]:
-        result = self.name
-        return result
-    @strawberryA.field(description="""List of sections in the request""")
-    async def parts(self, info: strawberryA.types.Info) -> typing.List['PartGQLModel']:
-        result = await resolvePartsForSection(AsyncSessionFromInfo(info), self.id)
+        #resovle will be ask 
         return result
 
+    #for the name attribute
+    @strawberryA.field(description="""Finds an workflow by their id""")
+    async def name(self, info: strawberryA.types.Info) -> Union[str, None]:
+        result = self.name
+        #resovle will be ask 
+        return result
 ###########################################################################################################################
 #
 # zde definujte svuj Query model
@@ -73,15 +53,12 @@ class SectionGQLModel:
 class Query:
    
     @strawberryA.field(description="""Finds an workflow by their id""")
-    async def say_hello(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[str, None]:
+    async def say_hello_forms(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[str, None]:
         result = f'Hello {id}'
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
-    async def requests(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[RequestGQLModel, None]:
-        result = await resolveRequestAll(AsyncSessionFromInfo(info) ,id)
-        return result
 
+    
     @strawberryA.field(description="""Finds an workflow by their id""")
     async def request_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[RequestGQLModel, None]:
         result = await resolveRequestById(AsyncSessionFromInfo(info) ,id)
@@ -104,3 +81,14 @@ class Query:
 
 # check the database if it have the table, u can retry this 
 # go to rebulid the decompose, insert arrow in request table, retrieve arrow with the help of , line 52, available from , receive as the response the row, extension 
+
+###########################################################################################################################
+#
+# Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
+# se ve schema objevi jen ty struktury, ktere si strawberry dokaze odvodit z Query. Protoze v teto konkretni implementaci
+# nektere modely nejsou s Query propojene je potreba je explicitne vyjmenovat. Jinak ve federativnim schematu nebude
+# dostupne rozsireni, ktere tento prvek federace implementuje.
+#
+###########################################################################################################################
+
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, ))

@@ -81,12 +81,15 @@ class MyGraphQL(GraphQL):
             'user': self._user
             }
 
+from gql_empty.GraphTypeDefinitions import schema
+
 ## ASGI app, kterou "moutneme"
 graphql_app = MyGraphQL(
-    strawberry.federation.Schema(Query), 
+    schema, 
     graphiql = True,
     allow_queries_via_get = True
 )
+
 
 app = FastAPI()
 app.mount("/gql", graphql_app)
@@ -102,6 +105,4 @@ print('All initialization is done')
 # pokud jste pripraveni testovat GQL funkcionalitu, rozsirte apollo/server.js
 # 
 ###########################################################################################################################
-
-
 

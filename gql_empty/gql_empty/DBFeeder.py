@@ -31,3 +31,74 @@ def singleCall(asyncFunc):
 
 async def createBasicDataStructure():
     print()
+
+
+@cache
+def determineRequestNames():
+    """Definuje zakladni typy pozadavku a udrzuje je v pameti"""
+    requestNames = [
+        'Vacation',
+        'Sick Leave',
+        'Business Trip',
+        'Maternity Leave',
+        'Parental Leave',
+        'Study Leave',
+        'Other Leave'
+    ]
+    return requestNames
+
+
+@cache
+def determineSectionNames():
+    """Definuje zakladni typy sekci pozadavku a udrzuje je v pameti"""
+    sectionNames = [
+        'Student Information',
+        'Request Description',
+        'Head of Department Approval',
+        'Department Suggestion',
+        'Dean Approval',
+        'Faculty Suggestion'
+    ]
+    return sectionNames
+
+@Cache
+def determinePartNames():
+    """Definuje zakladni typy casti pozadavku a udrzuje je v pameti"""
+    partNames = [
+        'Personal Information',
+        'Leave Details',
+        'Approvals'
+    ]
+    return partNames
+
+@Cache
+def determineItemNames():
+    """Definuje zakladni typy polozek pozadavku a udrzuje je v pameti"""
+    itemNames = [
+        'Name',
+        'Group',
+        'Program',
+        'Description',
+        'Name of Department',
+        'Head of Department',
+        'Name of Dean',
+        'Dean Approval'
+    ]
+    return itemNames
+
+
+def randomString(length=10, chars=string.ascii_lowercase):
+    """Generuje nahodny retezec o zadane delce"""
+    return ''.join(random.choice(chars) for _ in range(length))
+def randomUser():
+    """Generuje nahodneho uzivatele"""
+    return {
+        'name': randomString(),
+        'surname': randomString(),
+        'email': f'{randomString()}@{randomString()}.com',
+    }
+
+# generate 10 random users
+# users = [randomUser() for _ in range(10)]
+# print(users)
+
