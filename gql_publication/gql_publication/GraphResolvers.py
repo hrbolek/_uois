@@ -11,7 +11,13 @@ from uoishelpers.resolvers import putSingleEntityToDb
 
 from gql_publication.DBDefinitions import BaseModel, PublicationModel, AuthorModel, PublicationTypeModel, UserModel, SubjectModel
 
- ## Publication resolvers 
+
+
+# User resolvers
+
+resolveAuthorsByUser = create1NGetter()
+
+# Publication resolvers 
 
 resolvePublicationById = createEntityByIdGetter(PublicationModel)
 resolvePublicationAll = createEntityGetter(PublicationModel)
@@ -25,22 +31,36 @@ resolveInsertPublication = createInsertResolver(PublicationModel)
 resolveAuthorById = createEntityByIdGetter(AuthorModel)
 resolveUpdateAuthor = createUpdateResolver(AuthorModel)
 resolveInsertAuthor = createInsertResolver(AuthorModel)
-resolveUserForAuthor = create1NGetter(AuthorModel, foreignKeyName='user_id')
+resolveAuthorByUser = create1NGetter(AuthorModel, foreignKeyName='user_id')
 resolveAuthorsForPublication = create1NGetter(AuthorModel, foreignKeyName='publication_id', options=joinedload(AuthorModel.user))
 
+resolvePublicationForUser = create1NGetter(AuthorModel, foreignKeyName='publication_id', options=joinedload(AuthorModel.publication))
 # Subject resolvers
 
 resolvePublicationsForSubject = create1NGetter(SubjectModel, foreignKeyName='subject_id', options=joinedload(SubjectModel.publication))
 
 
-async def setCascadeAuthorsOrder(session, publication_id, author_id, order):
-    result = list(await resolveAuthorsForPublication(session))
-    for row in dbRecords:
-        row['order']
-
+async def setCascadeAuthorsOrder(session, id, author_id, order):
+    result = list(await resolveAuthorsForPublication(session),id)
+    sortedAuthors = sorted(result, key=lambda i: i['order'])
     
+    modifiedAuthor = {}    
+    index = next((index for (index, d) in enumerate(sortedAuthors) if d["id"] == author_id), None)
+    modifiedAuthor =sortedAuthors.pop(index)
+
+    limitValue = modifiedAuthor["order"]
+    modifiedAuthor["order"] = order
+
+    for author in sortedAuthors:
+        if((author["order"] <= order) and (author["order"] >= limitValue)):
+            author["order"] -= 1
+        elif(author["order"] >= order) and (author["order"] <= limitValue):
+            author["order"] += 1
+
+    sortedAuthors.append(modifiedAuthor)
+
     await session.commit()
-    return result
+    return sortedAuthors
 
 ## PublicationType resolvers
 resolvePublicationTypeById = createEntityByIdGetter(PublicationTypeModel)

@@ -20,7 +20,7 @@ def UUIDColumn(name=None):
 
 
 class PlanSubjectModel(BaseModel):
-    """Spravuje data spojena s uzivatelem
+    """Spravuje data spojena s predmetem
     """
     __tablename__ = 'plan_subjects'
 
@@ -28,6 +28,8 @@ class PlanSubjectModel(BaseModel):
 
 
 class SubjectModel(BaseModel):
+    """Spojujici tabulka - predmet, publikace
+    """
     __tablename__ = 'publication_subjects'
     
     id = UUIDColumn()
