@@ -36,13 +36,16 @@ class RequestModel(BaseModel):
 
     sections = relationship("SectionModel", back_populates="request")
 
-
+    
 class SectionModel(BaseModel):
     __tablename__ = "formsections"
+    
+    # requestId = Column(ForeignKey("requests.id"), primary_key=True)
     #key is st sys structure name pr as id, fk follpw by id in lower letter
+
     id = UUIDColumn()
     name = Column(String)
-    # createAt = Column(DateTime)
+
     request_id = Column(ForeignKey("forms.id"), primary_key=True)
     createAt = Column(DateTime)
     lastUpdate = Column(DateTime)
@@ -50,10 +53,11 @@ class SectionModel(BaseModel):
 
     request = relationship("RequestModel", back_populates="sections")
     parts = relationship("PartModel", back_populates="section")
+    
 
 class PartModel(BaseModel):
     __tablename__ = "formparts"
-
+    
     id = UUIDColumn()
     name = Column(String)
 
@@ -64,13 +68,11 @@ class PartModel(BaseModel):
     section_id = Column(ForeignKey("formsections.id"), primary_key=True)
     section = relationship("SectionModel", back_populates="parts")
     items = relationship("ItemModel", back_populates="part")
-
 class ItemModel(BaseModel):
     __tablename__ = "formitems"
 
     id = UUIDColumn()
-    name = Column(String(100), nullable=False)
-    value= Column(String)
+    name = Column(String)
 
     createAt = Column(DateTime)
     lastUpdate = Column(DateTime)
@@ -81,18 +83,13 @@ class ItemModel(BaseModel):
 
 class UserModel(BaseModel):
     __tablename__ = "users"
+
     id = UUIDColumn()
     # name = Column(String)
     # email = Column(String)
     # password = Column(String)
     # created_at = Column(DateTime, default=datetime.datetime.now)
     # request = relationship('FormModel', back_populates='user')
-
-
-    
-
-
-
 
 
 from sqlalchemy import create_engine
@@ -110,13 +107,21 @@ async def startEngine(connectionstring, makeDrop=False, makeUp=True):
             await conn.run_sync(BaseModel.metadata.drop_all)
             print('BaseModel.metadata.drop_all finished')
         if makeUp:
-            await conn.run_sync(BaseModel.metadata.create_all)    
-            print('BaseModel.metadata.create_all finished')
+            try:
+                await conn.run_sync(BaseModel.metadata.create_all)    
+                print('BaseModel.metadata.create_all finished')
+            except sqlalchemy.exc.NoReferencedTableError as e:
+                print(e)
+                print('Unable automaticaly create tables')
+                return None
 
     async_sessionMaker = sessionmaker(
         asyncEngine, expire_on_commit=False, class_=AsyncSession
     )
     return async_sessionMaker
+
+
+
 
 import os
 def ComposeConnectionString():
