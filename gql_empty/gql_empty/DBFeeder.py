@@ -61,7 +61,7 @@ def determineSectionNames():
     ]
     return sectionNames
 
-@Cache
+@cache
 def determinePartNames():
     """Definuje zakladni typy casti pozadavku a udrzuje je v pameti"""
     partNames = [
@@ -71,7 +71,7 @@ def determinePartNames():
     ]
     return partNames
 
-@Cache
+@cache
 def determineItemNames():
     """Definuje zakladni typy polozek pozadavku a udrzuje je v pameti"""
     itemNames = [
@@ -87,18 +87,18 @@ def determineItemNames():
     return itemNames
 
 
-def randomString(length=10, chars=string.ascii_lowercase):
-    """Generuje nahodny retezec o zadane delce"""
-    return ''.join(random.choice(chars) for _ in range(length))
-def randomUser():
-    """Generuje nahodneho uzivatele"""
-    return {
-        'name': randomString(),
-        'surname': randomString(),
-        'email': f'{randomString()}@{randomString()}.com',
-    }
+# def randomString(length=10, chars=string.ascii_lowercase):
+#     """Generuje nahodny retezec o zadane delce"""
+#     return ''.join(random.choice(chars) for _ in range(length))
+# def randomUser():
+#     """Generuje nahodneho uzivatele"""
+#     return {
+#         'name': randomString(),
+#         'surname': randomString(),
+#         'email': f'{randomString()}@{randomString()}.com',
+#     }
 
-# generate 10 random users
-# users = [randomUser() for _ in range(10)]
-# print(users)
+# # generate 10 random users
+# # users = [randomUser() for _ in range(10)]
+# # print(users)
 
