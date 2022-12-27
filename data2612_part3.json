@@ -1,0 +1,104 @@
+{
+    "id": "1234",
+    "phases": [
+      {
+        "id": "5678",
+        "name": "Submission",
+        "parts": [
+          {
+            "id": "9101",
+            "name": "Student Part",
+            "items": [
+              {
+                "id": "1121",
+                "name": "Name",
+                "value": "Tai"
+              },
+              {
+                "id": "1222",
+                "name": "Group",
+                "value": "23-5KB-C"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "6789",
+        "name": "Teacher Approval",
+        "parts": [
+          {
+            "id": "9101",
+            "name": "Student Part",
+            "items": [
+              {
+                "id": "1122",
+                "name": "Program",
+                "value": "Master"
+              }
+            ]
+          },
+          {
+            "id": "9103",
+            "name": "Teacher Part",
+            "items": [
+              {
+                "id": "1124",
+                "name": "Name",
+                "value": "Frantis"
+              },
+              {
+                "id": "1224",
+                "name": "Department",
+                "value": "K209"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "7890",
+        "name": "Dean Approval",
+        "parts": [
+          {
+            "id": "9101",
+            "name": "Student Part",
+            "items": [
+              {
+                "id": "1122",
+                "name": "Program",
+                "value": "Master"
+              }
+            ]
+          },
+          {
+            "id": "9103",
+            "name": "Teacher Part",
+            "items": [
+              {
+                "id": "1124",
+                "name": "Name",
+                "value": "Frantis"
+              },
+              {
+                "id": "1224",
+                "name": "Department",
+                "value": "K209"
+              }
+            ]
+          },
+          {
+            "id": "9104",
+            "name": "Dean Part",
+            "items": [
+              {
+                "id": "1125",
+                "name": "Name",
+                "value": "Petr"
+              }
+            ]
+          }
+        ]
+    }
+    ]
+}  

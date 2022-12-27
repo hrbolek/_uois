@@ -1,0 +1,66 @@
+{
+    "requests": [
+        {
+            "id": "0001",
+            "sections": [
+                {
+                    "id": "5001",
+                    "name": "Submission"
+                },
+                {
+                    "id": "5002",
+                    "name": "Teacher Approval"
+                },
+                {
+                    "id": "5003",
+                    "name": "Dean Approval"
+                }
+            ],
+            "parts": [
+                {
+                    "id": "1001",
+                    "name": "Student Part",
+                    "items": [
+                        {
+                            "id": "2001",
+                            "name": "Name",
+                            "value": "Tai"
+                        },
+                        {
+                            "id": "2002",
+                            "name": "Group",
+                            "value": "23-5KB-C"
+                        }
+                    ]
+                },
+                {
+                    "id": "1002",
+                    "name": "Teacher Part",
+                    "items": [
+                        {
+                            "id": "2003",
+                            "name": "Name",
+                            "value": "Frantis"
+                        },
+                        {
+                            "id": "2004",
+                            "name": "Department",
+                            "value": "K209"
+                        }
+                    ]
+                },
+                {
+                    "id": "1003",
+                    "name": "Dean Part",
+                    "items": [
+                        {
+                            "id": "2005",
+                            "name": "Name",
+                            "value": "Petr"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

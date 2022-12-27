@@ -1,0 +1,63 @@
+{
+    "data": {
+        "requests":[
+            {
+                "id": "0001",
+                "parts":[
+                    {
+                        "id": "0011",
+                        "name": "PART1",
+                        "sections":[
+                            {
+                                "id": "0111",
+                                "name": "STUDENT",
+                                "items":[
+                                    {
+                                        "id": "1111",
+                                        "name": "name",
+                                        "value": "Tai"
+                                    },
+                                    {
+                                        "id": "01112",
+                                        "name": "group",
+                                        "value": "23-5KB-C"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+
+                "PART1":{
+                    "STUDENT":{
+                        "name":"Tai",
+                        "group":"23-5KB-C",
+                        "program": "Master"
+                    },
+                    "REQUEST":{
+                        "description":"hi! i need some vacation :)))"
+                    }
+                },
+
+                "PART2":{
+                    "HEADOFDEPARTMENT":{
+                        "name":"Frantis",
+                        "nameDepartment":"K209"
+                    },
+                    "SUGGESTION":{
+                        "description":"OKE GUD"
+                    }
+                },
+
+                "PART3":{
+                    "DEAN":{
+                        "name":"Petr"
+                    },
+                    "SUGGESTION":{
+                        "description":"OKE GUD"
+                    }
+                }
+            }
+        ]
+    }
+}
