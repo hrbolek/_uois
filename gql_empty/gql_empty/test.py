@@ -1,31 +1,30 @@
-@strawberryA.federation.type(keys=["id"], description="Type representing a request in the system")
-class RequestGQLModel:
-    """
-    Type representing a request in the system.
-    This class extends the base `RequestModel` from the database and adds additional fields and methods needed for use in GraphQL.
-    """
-    
-    id: strawberryA.ID = strawberryA.federation.field(external=True)
-    name: str = strawberryA.Field(description="The name of the request")
-    valid: bool = strawberryA.Field(description="Indicates whether the request is valid or not")
+@strawberryA.federation.type(keys = ["id"] ,description="""Type representing a section in the workflow""")
+class SectionGQLModel:
+   
+     @strawberryA.field(description="""Finds an section by their id""")
+     async def id(self, info: strawberryA.types.Info) -> Union[str, None]:
+         result = self.id
+         #resovle will be ask
+         return result
 
-    @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
-        return RequestGQLModel(id=id)
-    
-    @strawberryA.field(description="Retrieves the sections related to this request")
-    async def sections(self, info: strawberryA.types.Info) -> List[SectionGQLModel]:
+     @strawberryA.field(description="""Finds an section by their id""")
+     async def name(self, info: strawberryA.types.Info) -> Union[str, None]:
+         result = self.name
+         #resovle will be ask
+         return result
+
+     @strawberryA.field(description="Retrieves the parts related to this section")
+     async def parts(self, info: strawberryA.types.Info) -> List[PartGQLModel]:
         session = AsyncSessionFromInfo(info)
-        sections = await resolveSectionsForRequest(session, self.id)
-        return sections
-    
-    @strawberryA.field(description="Updates the name and valid status of the request")
-    async def update(self, info: strawberryA.types.Info, name: Optional[str] = None, valid: Optional[bool] = None) -> RequestGQLModel:
+        parts = await resolvePartsForSection(session, self.id)
+        return parts
+
+     @strawberryA.field(description="Updates the name of the section")
+     async def update(self, info: strawberryA.types.Info, name: Optional[str] = None) -> SectionGQLModel:
         session = AsyncSessionFromInfo(info)
         update_data = {}
         if name is not None:
             update_data["name"] = name
-        if valid is not None:
-            update_data["valid"] = valid
-        updated_request = await resolverUpdateRequest(session, self.id, update_data)
-        return updated_request
+        updated_section = await resolverUpdateSection(session, self.id, update_data)
+        return updated_section
+
