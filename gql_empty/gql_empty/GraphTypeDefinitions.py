@@ -13,7 +13,7 @@ def AsyncSessionFromInfo(info):
 # - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
 #
 ###########################################################################################################################
-from gql_empty.GraphResolvers import resolveRequestById, resolveRequestAll, resolveSectionsForRequest, resolverUpdateRequest, resolveInsertRequest
+from gql_empty.GraphResolvers import resolveRequestById, resolveRequestAll, resolveSectionsForRequest, resolverUpdateRequest, resolveInsertRequest, resolveRequestsByThreeLetters
 # from gql_empty.GraphResolvers import resolveRequestsByThreeLetters
 from gql_empty.GraphResolvers import resolveSectionById, resolveSectionAll, resolvePartsForSection, resolverUpdateSection, resolveInsertSection
 from gql_empty.GraphResolvers import resolvePartById, resolvePartAll, resolveItemsForPart, resolverUpdatePart, resolveInsertPart
@@ -177,18 +177,30 @@ class ItemGQLModel:
 @strawberryA.type(description="""Type for query root""")
 class Query:
    
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Say hello to the world""")
     async def say_hello_forms(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[str, None]:
         result = f'Hello {id}'
         return result
 
 
     
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds an request by their id""")
     async def request_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[RequestGQLModel, None]:
         result = await resolveRequestById(AsyncSessionFromInfo(info) ,id)
         #u r getting the database sections , u srxtracting calling the function, returning the data from the table, able to extract , ask for it by Id there will be call the record 
         return result
+
+    @strawberryA.field(description="Retrieves all requests")
+    async def all_requests(self, info: strawberryA.types.Info) -> List[RequestGQLModel]:
+        session = AsyncSessionFromInfo(info)
+        requests = await resolveRequestAll(session)
+        return requests
+
+    @strawberryA.field(description="Retrieves requests by three letters in their name")
+    async def requests_by_letters(self, info: strawberryA.types.Info, letters: str) -> List[RequestGQLModel]:
+        session = AsyncSessionFromInfo(info)
+        requests = await resolveRequestsByThreeLetters(session, letters=letters)
+        return requests
 
 
 
