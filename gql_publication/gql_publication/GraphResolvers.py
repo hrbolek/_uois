@@ -39,8 +39,11 @@ resolvePublicationForUser = create1NGetter(AuthorModel, foreignKeyName='publicat
 
 resolvePublicationsForSubject = create1NGetter(SubjectModel, foreignKeyName='subject_id', options=joinedload(SubjectModel.publication))
 
+resolveSubjectsFroPublication = create1NGetter(SubjectModel, foreignKeyName='publication_id', options=joinedload(SubjectModel.subject))
 
-async def setCascadeAuthorsOrder(session, id, author_id, order):
+
+
+async def resolveUpdateAuthorOrder(session, id, author_id, order):
     result = list(await resolveAuthorsForPublication(session),id)
     sortedAuthors = sorted(result, key=lambda i: i['order'])
     

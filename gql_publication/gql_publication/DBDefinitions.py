@@ -2,7 +2,7 @@ from email.policy import default
 import sqlalchemy
 import datetime
 
-from sqlalchemy import Column, String, BigInteger, Integer, Date, ForeignKey, Sequence, Table, Boolean,Float
+from sqlalchemy import Column, String, BigInteger, Integer, Date, ForeignKey, Sequence, Table, Boolean,Float, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
@@ -37,6 +37,7 @@ class SubjectModel(BaseModel):
     subject_id = Column(ForeignKey('plan_subjects.id'), primary_key=True)
 
     publication = relationship('PublicationModel')
+    subject =  relationship('PlanSubjectModel')
 
 class UserModel(BaseModel):
     """Spravuje data spojena s uzivatelem
@@ -58,7 +59,7 @@ class PublicationModel(BaseModel):
     published_date = Column(Date)
     reference = Column(String)
     valid = Column(Boolean)
-    externalId = Column(String, index=True)
+    lastchange = Column(DateTime)
 
     author = relationship('AuthorModel', back_populates='publication')
     publication_type = relationship('PublicationTypeModel', back_populates='publication')
@@ -72,7 +73,7 @@ class AuthorModel(BaseModel):
     publication_id = Column(ForeignKey('publications.id'), primary_key=True)
     order = Column(Integer)
     share = Column(Float)
-    externalId = Column(String, index=True)
+    lastchange = Column(DateTime)
 
     user = relationship('UserModel', back_populates='author')
     publication = relationship('PublicationModel', back_populates='author')
@@ -82,7 +83,7 @@ class PublicationTypeModel(BaseModel):
     __tablename__= 'publication_types'
 
     id = UUIDColumn()
-    type = Column(String)
+    name = Column(String)
 
     publication = relationship('PublicationModel', back_populates='publication_type')
 
