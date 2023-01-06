@@ -59,7 +59,7 @@ class PublicationModel(BaseModel):
     published_date = Column(Date)
     reference = Column(String)
     valid = Column(Boolean)
-    lastchange = Column(DateTime)
+    lastchange = Column(DateTime,  default=datetime.datetime.now)
 
     author = relationship('AuthorModel', back_populates='publication')
     publication_type = relationship('PublicationTypeModel', back_populates='publication')
@@ -73,7 +73,7 @@ class AuthorModel(BaseModel):
     publication_id = Column(ForeignKey('publications.id'), primary_key=True)
     order = Column(Integer)
     share = Column(Float)
-    lastchange = Column(DateTime)
+    lastchange = Column(DateTime, default=datetime.datetime.now)
 
     user = relationship('UserModel', back_populates='author')
     publication = relationship('PublicationModel', back_populates='author')

@@ -115,6 +115,12 @@ class PublicationGQLModel:
     @strawberryA.field(description="""If a publication is valid""")
     def valid(self) -> bool:
         return self.valid
+    
+    @strawberryA.field(description="""last change""")
+    def lastchange(self) -> datetime.datetime:
+            return self.lastchange
+
+
 
     @strawberryA.field(description="""List of authors, where the author participated in publication""")
     async def authors(self, info: strawberryA.types.Info) -> typing.List['AuthorGQLModel']:
@@ -141,6 +147,7 @@ class PublicationUpdateGQLModel:
     reference: Optional[str] = None
     publication_type_id: Optional[uuid.UUID] = None
     valid: Optional[bool] = None
+    
 
 
 
@@ -241,6 +248,10 @@ class AuthorGQLModel:
     @strawberryA.field(description="""If an author is valid""")
     def valid(self) -> bool:
         return self.valid
+
+    @strawberryA.field(description="""last change""")
+    def lastchange(self) -> datetime.datetime:
+            return self.lastchange
 
 
 
