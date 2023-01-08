@@ -19,7 +19,8 @@ from gql_events.DBDefinitions import BaseModel
 #
 ###########################################################################################################################
 
-
+from gql_events.DBDefinitions import EventModel, EventGroupModel, EventTypeModel, EventOrganizerModel
+from gql_events.DBDefinitions import UserModel, GroupModel
 
 ###########################################################################################################################
 #
@@ -28,3 +29,35 @@ from gql_events.DBDefinitions import BaseModel
 #
 ###########################################################################################################################
 
+resolveEventById = createEntityByIdGetter(EventModel)
+resolveEventPage = createEntityGetter(EventModel)
+resolveUsersForEvent = create1NGetter(EventOrganizerModel, foreignKeyName='event_id', options=joinedload(EventOrganizerModel.user))
+resolveGroupsForEvent = create1NGetter(EventGroupModel, foreignKeyName='event_id', options=joinedload(EventGroupModel.group))
+
+resolveEventsForUser_ = create1NGetter(EventOrganizerModel, foreignKeyName='user_id', options=joinedload(EventOrganizerModel.event))
+resolveEventsForGroup_ = create1NGetter(EventGroupModel, foreignKeyName='group_id', options=joinedload(EventGroupModel.event))
+
+from sqlalchemy.future import select
+async def resolveEventsForGroup(session, id, startdate=None, enddate=None):
+    statement = select(EventModel).join(EventGroupModel)
+    if startdate is not None:
+        statement = statement.filter(EventModel.start >= startdate)
+    if enddate is not None:
+        statement = statement.filter(EventModel.end <= enddate)
+    statement = statement.filter(EventGroupModel.group_id == id)
+
+    response = await session.execute(statement)
+    result = response.scalars()
+    return result
+
+async def resolveEventsForUser(session, id, startdate=None, enddate=None):
+    statement = select(EventModel).join(EventOrganizerModel)
+    if startdate is not None:
+        statement = statement.filter(EventModel.start >= startdate)
+    if enddate is not None:
+        statement = statement.filter(EventModel.end <= enddate)
+    statement = statement.filter(EventOrganizerModel.user_id == id)
+
+    response = await session.execute(statement)
+    result = response.scalars()
+    return result

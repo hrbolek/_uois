@@ -6,7 +6,11 @@ import Col from "react-bootstrap/Col";
 
 import { root } from '../../helpers/index';
 import { authorizedFetch } from '../../helpers/index';
-import { TeacherSmall } from '../user/teacher';
+//import { TeacherSmall } from '../user/teacher';
+
+import { TeacherSmall } from 'components/links';
+import { FacultyMedium } from 'components/groupcard';
+
 
 export const UniversityLargeQuery = (id) =>
     authorizedFetch('/gql', {
@@ -73,21 +77,6 @@ export const RoleRow = (props) => {
     )
 }
 
-export const FacultyMedium = (props) => {
-    return (
-        <Card>
-            <Card.Header>
-                <Card.Title>
-                    {props.grouptype.name} {props.name}
-                </Card.Title>
-            </Card.Header>
-            <Card.Body>
-                {props.roles.map(role => <RoleRow {...role}/>)}
-            </Card.Body>
-        </Card>
-    )
-}
-
 export const RolesCard = (props) => {
     return (
         <Card>
@@ -108,7 +97,7 @@ export const UniversityLarge = (props) => {
         <Card>
             <Card.Header>
                 <Card.Title>
-                    Univerzita {props.name}
+                    Univerzit {props.name}
                 </Card.Title>
             </Card.Header>
             <Card.Body>

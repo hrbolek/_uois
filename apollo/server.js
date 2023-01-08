@@ -93,6 +93,8 @@ const getENV = (name, defaultValue) => {
           console.log(JSON.stringify(Object.keys(request)))
           console.log(JSON.stringify(Object.keys(request.http)))
           console.log(JSON.stringify(request.query))
+          console.log(JSON.stringify(request.variables))
+          console.log(JSON.stringify(request.context))
           console.log(JSON.stringify(typeof context))
           //const headers = context.req.headers
           /*

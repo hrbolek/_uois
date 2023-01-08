@@ -32,6 +32,7 @@ RUN npm install
 # RUN npm ci --only=production
 
 # Bundle app source
+COPY jsconfig.json jsconfig.json
 COPY src ./src
 COPY public ./public
 RUN npm run build

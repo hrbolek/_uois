@@ -48,7 +48,7 @@ class UserModel(BaseModel):
     startdate = Column(DateTime)
     enddate = Column(DateTime)
     
-    lastchange = Column(DateTime, default=datetime.datetime.now)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
     memberships = relationship('MembershipModel', back_populates='user')
     roles = relationship('RoleModel', back_populates='user')
@@ -61,7 +61,7 @@ class GroupModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
     
-    lastchange = Column(DateTime, default=datetime.datetime.now)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     
     startDate = Column(DateTime)
     endDate = Column(DateTime)
@@ -126,7 +126,8 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 async def startEngine(connectionstring, makeDrop=False, makeUp=True):
     """Provede nezbytne ukony a vrati asynchronni SessionMaker """
-    asyncEngine = create_async_engine(connectionstring) 
+    asyncEngine = create_async_engine(connectionstring, pool_pre_ping=True, 
+        pool_size=20, max_overflow=10, pool_recycle=60) #pool_pre_ping=True, pool_recycle=3600
 
     async with asyncEngine.begin() as conn:
         if makeDrop:

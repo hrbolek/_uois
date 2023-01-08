@@ -20,6 +20,28 @@ def UUIDColumn(name=None):
 
 ###########################################################################################################################
 #
+###########################################################################################################################
+
+class EventOrganizerModel(BaseModel):
+    __tablename__ = "events_organizers"
+    id = UUIDColumn()
+    event_id = Column(ForeignKey('events.id'))
+    user_id = Column(ForeignKey('users.id'))
+
+    event = relationship('EventModel')
+    user = relationship('UserModel')
+
+class EventGroupModel(BaseModel):
+    __tablename__ = "events_groups"
+    id = UUIDColumn()
+    event_id = Column(ForeignKey('events.id'))
+    group_id = Column(ForeignKey('groups.id'))
+
+    event = relationship('EventModel')
+    group = relationship('GroupModel')
+
+###########################################################################################################################
+#
 # zde definujte sve SQLAlchemy modely
 # je-li treba, muzete definovat modely obsahujici jen id polozku, na ktere se budete odkazovat
 #
@@ -39,12 +61,12 @@ class EventModel(BaseModel):
     location_id = Column(ForeignKey('facilities.id'))
     
 
-    eventtype = relationship('EventTypeModel', back_populates='event')
-    locations = relationship('LocationModel', back_populates='event')
-    lesson = relationship('LessonModel', back_populates='event')
-    subject = relationship('SubjectModel', back_populates='event')
-    #group = relationship('GroupModel', back_populates='event')
-    #user = relationship('UserModel', back_populates='event')
+    eventtype = relationship('EventTypeModel', back_populates='events')
+    #locations = relationship('LocationModel', back_populates='event')
+    #lesson = relationship('LessonModel', back_populates='event')
+    #subject = relationship('SubjectModel', back_populates='event')
+    #grouplinks = relationship('EventGroupModel', back_populates='event')
+    #userlinks = relationship('EventOrganizerModel', back_populates='event')
 
 class EventTypeModel(BaseModel):
     __tablename__ = 'eventtypes'
@@ -60,27 +82,27 @@ class LocationModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    events = relationship('EventModel', back_populates='location')
+#     events = relationship('EventModel', back_populates='location')
 
-class LessonModel(BaseModel):
-    __tablename__ = 'lessons'
+# class LessonModel(BaseModel):
+#     __tablename__ = 'lessons'
 
-    id = UUIDColumn()
-    name = Column(String)
+#     id = UUIDColumn()
+#     name = Column(String)
 
-    subject_id = Column(ForeignKey('subjects.id'))
+#     subject_id = Column(ForeignKey('subjects.id'))
 
-    events = relationship('EventModel', back_populates='lessons')
-    subjects = relationship('SubjectModel', back_populates='lessons')
+#     events = relationship('EventModel', back_populates='lessons')
+#     subjects = relationship('SubjectModel', back_populates='lessons')
 
-class SubjectModel(BaseModel):
-    __tablename__ = 'subjects'
+# class SubjectModel(BaseModel):
+#     __tablename__ = 'subjects'
 
-    id = UUIDColumn()
-    name = Column(String)
+#     id = UUIDColumn()
+#     name = Column(String)
 
-    events = relationship('EventModel', back_populates='Subject')
-    lesson = relationship('LessonModel', back_populates='subjects') ##########################################
+#     events = relationship('EventModel', back_populates='Subject')
+#     lesson = relationship('LessonModel', back_populates='subjects') ##########################################
 
 class GroupModel(BaseModel):
     __tablename__ = 'groups'
