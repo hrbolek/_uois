@@ -65,6 +65,7 @@ class SemesterModel(BaseModel):
     credits = Column(Integer)
     subject_id = Column(ForeignKey('plan_subjects.id'))
     classification_id = Column(ForeignKey('plan_classifications.id'))
+    last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
     subject = relationship('SubjectModel', back_populates='semesters')
     classifications = relationship('ClassificationModel', back_populates='classificationsemesters')
