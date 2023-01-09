@@ -153,7 +153,7 @@ class RelatedDoc(BaseModel):
 
     id = UUIDColumn()
     name = Column(String)
-    #saved ? (destination?)
+    #doc_upload
 
     user_id = Column(ForeignKey('users.id'))
     

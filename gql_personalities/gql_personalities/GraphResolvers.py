@@ -27,16 +27,12 @@ resolveRelatedDocsForUser = create1NGetter(RelatedDoc, foreignKeyName='user_id')
 #rank resolvers
 resolveRankById = createEntityByIdGetter(Rank)
 resolveRankAll = createEntityGetter(Rank)
-
-resolveRankTypesForRank = create1NGetter(RankType, RankTypeforeignKeyName='rankType_id')
-
 resolverUpdateRank = createUpdateResolver(Rank)
 resolveInsertRank = createInsertResolver(Rank)
 
 #rankType resolvers
 resolveRankTypeById = createEntityByIdGetter(RankType)
 resolveRankTypeAll = createEntityGetter(RankType)
-
 resolverUpdateRankType = createUpdateResolver(RankType)
 resolveInsertRankType = createInsertResolver(RankType)
 
@@ -54,7 +50,6 @@ async def resolveRankTypeByThreeLetters(session: AsyncSession, validity = None, 
 #study resolvers
 resolveStudyById = createEntityByIdGetter(Study)
 resolveStudyAll = createEntityGetter(Study)
-
 resolverUpdateStudy = createUpdateResolver(Study)
 resolveInsertStudy = createInsertResolver(Study)
 
@@ -75,15 +70,12 @@ resolveCertificateAll = createEntityGetter(Certificate)
 resolverUpdateCertificate = createUpdateResolver(Certificate)
 resolveInsertCertificate = createInsertResolver(Certificate)
 
-resolveCertificateTypesforCertificate = create1NGetter(CertificateType, CertificateTypeforeignKeyName='certificateType_id')
 
 #certificateType resolvers
 resolveCertificateTypeById = createEntityByIdGetter(CertificateType)
 resolveCertificateTypeAll = createEntityGetter(CertificateType)
 resolverUpdateCertificateType = createUpdateResolver(CertificateType)
 resolveInsertCertificateType = createInsertResolver(CertificateType)
-
-resolveCertificateTypeGroupsforCertificateType = create1NGetter(CertificateTypeGroup, CertificateTypeGroupforeignKeyName='certificateTypeGroup_id')
 
 async def resolveCertificateTypeByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[CertificateType]:
     if len(letters) < 3:
@@ -94,6 +86,7 @@ async def resolveCertificateTypeByThreeLetters(session: AsyncSession, validity =
 
     dbSet = await session.execute(stmt)
     return dbSet.scalars()
+
 
 #certificateTypeGroup resolvers
 resolveCertificateTypeGroupById = createEntityByIdGetter(CertificateTypeGroup)
@@ -111,21 +104,19 @@ async def resolveCertificateTypeGroupByThreeLetters(session: AsyncSession, valid
     dbSet = await session.execute(stmt)
     return dbSet.scalars()
 
+
 #medal resolvers
 resolveMedalById = createEntityByIdGetter(Medal)
 resolveMedalAll = createEntityGetter(Medal)
 resolverUpdateMedal = createUpdateResolver(Medal)
 resolveInsertMedal = createInsertResolver(Medal)
 
-resolveMedalTypesforMedal = create1NGetter(MedalType, MedalTypeforeignKeyName='medalType_id')
 
 #medalType resolvers
 resolveMedalTypeById = createEntityByIdGetter(MedalType)
 resolveMedalTypeAll = createEntityGetter(MedalType)
 resolverUpdateMedalType = createUpdateResolver(MedalType)
 resolveInsertMedalType = createInsertResolver(MedalType)
-
-resolveMedalTypeGroupsforMedalType = create1NGetter(MedalTypeGroup, MedalTypeGroupforeignKeyName='medalTypeGroup_id')
 
 async def resolveMedalTypeByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[MedalType]:
     if len(letters) < 3:
@@ -136,6 +127,7 @@ async def resolveMedalTypeByThreeLetters(session: AsyncSession, validity = None,
 
     dbSet = await session.execute(stmt)
     return dbSet.scalars()
+
 
 #medalTypeGroup resolvers
 resolveMedalTypeGroupById = createEntityByIdGetter(MedalTypeGroup)
@@ -153,6 +145,7 @@ async def resolveMedalTypeGroupByThreeLetters(session: AsyncSession, validity = 
     dbSet = await session.execute(stmt)
     return dbSet.scalars()
 
+
 #workHistory resolvers
 resolveWorkHistoryById = createEntityByIdGetter(WorkHistory)
 resolveWorkHistoryAll = createEntityGetter(WorkHistory)
@@ -168,6 +161,7 @@ async def resolveWorkHistoryByThreeLetters(session: AsyncSession, validity = Non
 
     dbSet = await session.execute(stmt)
     return dbSet.scalars()
+
 
 #relatedDoc resolvers
 resolveRelatedDocById = createEntityByIdGetter(RelatedDoc)
