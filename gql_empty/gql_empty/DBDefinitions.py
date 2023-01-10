@@ -30,8 +30,8 @@ class RequestModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
     creator_id = Column(ForeignKey('users.id'))
-    createAt = Column(DateTime)
-    lastUpdate = Column(DateTime)
+    create_at = Column(DateTime)
+    lastchange  = Column(DateTime)
     status = Column(String) 
 
     sections = relationship("SectionModel", back_populates="request")
@@ -47,8 +47,8 @@ class SectionModel(BaseModel):
     name = Column(String)
 
     request_id = Column(ForeignKey("forms.id"), primary_key=True)
-    createAt = Column(DateTime)
-    lastUpdate = Column(DateTime)
+    create_at = Column(DateTime)
+    lastchange  = Column(DateTime)
     order = Column(Integer)
 
     request = relationship("RequestModel", back_populates="sections")
@@ -61,8 +61,8 @@ class PartModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    createAt = Column(DateTime)
-    lastUpdate = Column(DateTime)
+    create_at = Column(DateTime)
+    lastchange  = Column(DateTime)
     order = Column(Integer)
 
     section_id = Column(ForeignKey("formsections.id"), primary_key=True)
@@ -74,8 +74,8 @@ class ItemModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    createAt = Column(DateTime)
-    lastUpdate = Column(DateTime)
+    create_at = Column(DateTime)
+    lastchange  = Column(DateTime)
     order = Column(Integer)
 
     part_id = Column(ForeignKey("formparts.id"), primary_key=True)
