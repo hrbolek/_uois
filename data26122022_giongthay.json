@@ -21,6 +21,11 @@
                                         "id": "01112",
                                         "name": "group",
                                         "value": "23-5KB-C"
+                                    },
+                                    {
+                                        "id": "01113",
+                                        "name": "program",
+                                        "value": "Master"
                                     }
                                 ]
                             }
