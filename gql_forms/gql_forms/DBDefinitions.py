@@ -50,6 +50,7 @@ class SectionModel(BaseModel):
     create_at = Column(DateTime)
     lastchange  = Column(DateTime)
     order = Column(Integer)
+    status = Column(String)
 
     request = relationship("RequestModel", back_populates="sections")
     parts = relationship("PartModel", back_populates="section")
@@ -78,6 +79,8 @@ class ItemModel(BaseModel):
     lastchange  = Column(DateTime)
     order = Column(Integer)
 
+    value = Column(String)
+
     part_id = Column(ForeignKey("formparts.id"), primary_key=True)
     part = relationship("PartModel", back_populates="items")
 
@@ -87,9 +90,10 @@ class UserModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
     email = Column(String)
-    password = Column(String)
-    created_at = Column(DateTime, default=datetime.datetime.now)
-    lastchange  = Column(DateTime, default=datetime.datetime.now)
+    # created_at = Column(DateTime, default=datetime.datetime.now)
+    # lastchange  = Column(DateTime, default=datetime.datetime.now)
+    create_at = Column(DateTime)
+    lastchange  = Column(DateTime)
 
     request = relationship('RequestModel', back_populates='user')
 
