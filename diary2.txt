@@ -32,7 +32,7 @@ https://github.com/Phamsianh/diplomova_prace/blob/experiment_abstract_api/backen
 
 
 - Bước 1: DBDefinitions.py, tạo các class FormModel, SectionModel, BlockModel, ItemModel, UserModel, RoleModel, PermissionModel,...
-- Bước 2: create Resolver, inherit from gql_empty.DBDefinitions các BaseModel,
+- Bước 2: create Resolver, inherit from gql_forms.DBDefinitions các BaseModel,
 
 
 1/11:

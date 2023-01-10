@@ -26,7 +26,7 @@ from uoishelpers.resolvers import putSingleEntityToDb
 # tyto pouzijete v GraphTypeDefinitions
 #
 ###########################################################################################################################
-from gql_empty.DBDefinitions import BaseModel, RequestModel, SectionModel, PartModel, ItemModel, UserModel
+from gql_forms.DBDefinitions import BaseModel, RequestModel, SectionModel, PartModel, ItemModel, UserModel
 
 
 ## request resolvers, 

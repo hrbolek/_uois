@@ -13,12 +13,12 @@ def AsyncSessionFromInfo(info):
 # - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
 #
 ###########################################################################################################################
-from gql_empty.GraphResolvers import resolveRequestById, resolveRequestAll, resolveSectionsForRequest, resolverUpdateRequest, resolveInsertRequest, resolveRequestsByThreeLetters
-# from gql_empty.GraphResolvers import resolveRequestsByThreeLetters
-from gql_empty.GraphResolvers import resolveSectionById, resolveSectionAll, resolvePartsForSection, resolverUpdateSection, resolveInsertSection
-from gql_empty.GraphResolvers import resolvePartById, resolvePartAll, resolveItemsForPart, resolverUpdatePart, resolveInsertPart
-from gql_empty.GraphResolvers import resolveItemById, resolveItemAll, resolverUpdateItem, resolveInsertItem
-from gql_empty.GraphResolvers import resolveUserById, resolveUserAll, resolverUpdateUser, resolveInsertUser
+from gql_forms.GraphResolvers import resolveRequestById, resolveRequestAll, resolveSectionsForRequest, resolverUpdateRequest, resolveInsertRequest, resolveRequestsByThreeLetters
+# from gql_forms.GraphResolvers import resolveRequestsByThreeLetters
+from gql_forms.GraphResolvers import resolveSectionById, resolveSectionAll, resolvePartsForSection, resolverUpdateSection, resolveInsertSection
+from gql_forms.GraphResolvers import resolvePartById, resolvePartAll, resolveItemsForPart, resolverUpdatePart, resolveInsertPart
+from gql_forms.GraphResolvers import resolveItemById, resolveItemAll, resolverUpdateItem, resolveInsertItem
+from gql_forms.GraphResolvers import resolveUserById, resolveUserAll, resolverUpdateUser, resolveInsertUser
 
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:

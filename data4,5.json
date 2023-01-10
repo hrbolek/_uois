@@ -4,14 +4,17 @@
             "id": "0001",
             "sections": [
                 {
+                    "request_id": "1af7c7a6-9104-11ed-9aef-0242ac110002",
                     "id": "5001",
                     "name": "Submission"
                 },
                 {
+                    "request_id": "1af7c7a6-9104-11ed-9aef-0242ac110002",
                     "id": "5002",
                     "name": "Teacher Approval"
                 },
                 {
+                    "request_id": "1af7c7a6-9104-11ed-9aef-0242ac110002",
                     "id": "5003",
                     "name": "Dean Approval"
                 }

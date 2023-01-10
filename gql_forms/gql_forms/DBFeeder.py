@@ -4,7 +4,7 @@ from functools import cache
 # import the base model, when appolo sever ask your container for the first time, gql will ask 
 # next step define some resolver, how to use resolver in the file graptype
 # check all data strcture in database if it have -- (work)
-from gql_empty.DBDefinitions import BaseModel, UserModel, RequestModel, SectionModel, PartModel, ItemModel
+from gql_forms.DBDefinitions import BaseModel, UserModel, RequestModel, SectionModel, PartModel, ItemModel
 import random
 import itertools
 from functools import cache
