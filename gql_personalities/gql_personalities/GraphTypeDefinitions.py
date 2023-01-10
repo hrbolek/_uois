@@ -64,6 +64,14 @@ class RankGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""start""")
+    def start(self) -> strawberryA.ID:
+        return self.start
+
+    @strawberryA.field(description="""end""")
+    def end(self) -> strawberryA.ID:
+        return self.end
+
 
 from gql_personalities.GraphResolvers import resolveRankTypeAll, resolveRankTypeById
 from gql_personalities.GraphResolvers import resolveRankTypeByThreeLetters
@@ -78,6 +86,10 @@ class RankTypeGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
+    @strawberryA.field(description="""name""")
+    def name(self) -> strawberryA.ID:
+        return self.name
 
 
 from gql_personalities.GraphResolvers import resolveStudyAll, resolveStudyById
@@ -94,6 +106,22 @@ class StudyGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""place""")
+    def place(self) -> strawberryA.ID:
+        return self.place
+
+    @strawberryA.field(description="""program""")
+    def program(self) -> strawberryA.ID:
+        return self.program
+
+    @strawberryA.field(description="""start""")
+    def start(self) -> strawberryA.ID:
+        return self.start
+
+    @strawberryA.field(description="""end""")
+    def end(self) -> strawberryA.ID:
+        return self.end
+
 
 from gql_personalities.GraphResolvers import resolveCertificateAll, resolveCertificateById
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a certificate""")
@@ -107,6 +135,18 @@ class CertificateGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+    
+    @strawberryA.field(description="""level""")
+    def level(self) -> strawberryA.ID:
+        return self.level
+
+    @strawberryA.field(description="""validity start""")
+    def validity_start(self) -> strawberryA.ID:
+        return self.validity_start
+
+    @strawberryA.field(description="""validity end""")
+    def validity_end(self) -> strawberryA.ID:
+        return self.validity_end
 
 
 from gql_personalities.GraphResolvers import resolveCertificateTypeAll, resolveCertificateTypeById
@@ -123,6 +163,10 @@ class CertificateTypeGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""name""")
+    def name(self) -> strawberryA.ID:
+        return self.name
+
 
 from gql_personalities.GraphResolvers import resolveCertificateTypeGroupAll, resolveCertificateTypeGroupById
 from gql_personalities.GraphResolvers import resolveCertificateTypeGroupByThreeLetters
@@ -138,6 +182,10 @@ class CertificateTypeGroupGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""name""")
+    def name(self) -> strawberryA.ID:
+        return self.name
+
 
 from gql_personalities.GraphResolvers import resolveMedalAll, resolveMedalById
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a medal""")
@@ -152,6 +200,9 @@ class MedalGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""year""")
+    def year(self) -> strawberryA.ID:
+        return self.year
     
 from gql_personalities.GraphResolvers import resolveMedalTypeAll, resolveMedalTypeById
 from gql_personalities.GraphResolvers import resolveMedalTypeByThreeLetters
@@ -166,6 +217,10 @@ class MedalTypeGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
+    @strawberryA.field(description="""name""")
+    def name(self) -> strawberryA.ID:
+        return self.name
 
 
 from gql_personalities.GraphResolvers import resolveMedalTypeGroupAll, resolveMedalTypeGroupById
@@ -182,6 +237,10 @@ class MedalTypeGroupGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""name""")
+    def name(self) -> strawberryA.ID:
+        return self.name
+
 
 from gql_personalities.GraphResolvers import resolveWorkHistoryAll, resolveWorkHistoryById
 from gql_personalities.GraphResolvers import resolveWorkHistoryByThreeLetters
@@ -197,6 +256,22 @@ class WorkHistoryGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""start""")
+    def start(self) -> strawberryA.ID:
+        return self.start
+
+    @strawberryA.field(description="""end""")
+    def end(self) -> strawberryA.ID:
+        return self.end
+
+    @strawberryA.field(description="""position""")
+    def position(self) -> strawberryA.ID:
+        return self.position
+
+    @strawberryA.field(description="""ico""")
+    def ico(self) -> strawberryA.ID:
+        return self.ico
+
 
 from gql_personalities.GraphResolvers import resolveRelatedDocAll, resolveRelatedDocById 
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a relatedDoc""")
@@ -210,6 +285,16 @@ class RelatedDocGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
+    @strawberryA.field(description="""name""")
+    def name(self) -> strawberryA.ID:
+        return self.name
+
+    #@strawberryA.field(description="""uploaded""")
+    #def uploaded(self) -> strawberryA.ID:
+    #    return self.uploaded
+
+
 ###########################################################################################################################
 #
 # zde definujte svuj Query model

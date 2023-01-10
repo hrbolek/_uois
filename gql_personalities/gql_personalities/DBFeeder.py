@@ -31,17 +31,17 @@ def singleCall(asyncFunc):
 def determineRankType():
     rankTypes = [
         #mužstvo
-        {'name': 'vojín (voj.)','en_name': 'private', 'id': 'de5e6ae8-902c-4b06-aa8e-8fbca99026f3' },
-        {'name': 'svobodník (svob.)','en_name': 'Private First Class', 'id': 'f3038058-e1fa-4f7c-9e50-7b1d99998d37' },
+        {'name': 'vojín (voj.)','en_name': 'Private (PVT)', 'id': 'de5e6ae8-902c-4b06-aa8e-8fbca99026f3' },
+        {'name': 'svobodník (svob.)','en_name': 'Private First Class (PFC)', 'id': 'f3038058-e1fa-4f7c-9e50-7b1d99998d37' },
 
         #poddůstojníci
-        {'name': 'desátník (des.)','en_name': 'Corporal', 'id': 'a3cdae76-1c7d-409c-8bed-9e922c066bce' },
-        {'name': 'četař (čet.)','en_name': 'Sergeant', 'id': 'a17e81a6-776b-4883-a04d-cbd4f07ad095' },
-        {'name': 'rotný (rtn.)','en_name': 'Staff Sergeant', 'id': 'a9043224-9c3b-4562-a329-997fba9237d0' },
+        {'name': 'desátník (des.)','en_name': 'Corporal (CPL)', 'id': 'a3cdae76-1c7d-409c-8bed-9e922c066bce' },
+        {'name': 'četař (čet.)','en_name': 'Sergeant (SGT)', 'id': 'a17e81a6-776b-4883-a04d-cbd4f07ad095' },
+        {'name': 'rotný (rtn.)','en_name': 'Staff Sergeant (SSG)', 'id': 'a9043224-9c3b-4562-a329-997fba9237d0' },
 
         #praporčíci
-        {'name': 'rotmistr (rtm.)','en_name': 'Sergeant First Class', 'id': '72294ac5-1823-4164-9805-60a0aaa39296' },
-        {'name': 'nadrotmistr (nrtm.)','en_name': 'Master Sergeant', 'id': '453dff9e-fab2-41d0-8bef-ca76c78e79c8' },
+        {'name': 'rotmistr (rtm.)','en_name': 'Sergeant First Class (SFC)', 'id': '72294ac5-1823-4164-9805-60a0aaa39296' },
+        {'name': 'nadrotmistr (nrtm.)','en_name': 'Master Sergeant (MSG)', 'id': '453dff9e-fab2-41d0-8bef-ca76c78e79c8' },
         {'name': 'praporčík (prap.)','en_name': 'Chief Warrant Officer (CW2)', 'id': '6a324f4a-2162-4fe7-a47c-8be1f3c9452b' },
         {'name': 'nadpraporčík (nprap.)','en_name': 'Chief Warrant Officer (CW3)', 'id': '34cfd57e-6a09-4423-8025-b44d6dbce774' },
         {'name': 'štábní praporčík (št. prap.)','en_name': 'Master Warrant Officer (MW4)', 'id': '841fa09f-625e-49b4-8872-05c43ce197cf' },
@@ -60,9 +60,57 @@ def determineRankType():
         {'name': 'brigádní generál (brig.gen.)','en_name': 'Brigadier General (BG)', 'id': '9eb8d8f4-a87c-447d-aaee-c0a15cd6fbce' },
         {'name': 'generálmajor (genmjr.)','en_name': 'Major General (MG)', 'id': 'd65a0d25-dc39-46fa-a107-a684c9724c5e' },
         {'name': 'generálporučík (genpor.)','en_name': 'Lieutenant General (LTG)', 'id': '41f0772d-738a-492d-93c1-96c9cdb5d597' },
-        {'name': 'armádní generál (arm.gen.)','en_name': '[Army] General ([A]GEN)', 'id': '9234d06c-e811-4016-8ee5-f6975b4048a4' },
+        {'name': 'armádní generál (arm.gen.)','en_name': 'General of the Army (GA)', 'id': '9234d06c-e811-4016-8ee5-f6975b4048a4' },
     ]
     return rankTypes
+
+
+@cache
+def determineStudyPlace():
+    studyPlaces = [
+        #veřejné VŠ
+        {'name': 'Akademie múzických umění v Praze (AMU)', 'id': '88556487-cbf0-46ec-889a-71720b93ea37' },
+        {'name': 'Akademie výtvarných umění v Praze (AVU)', 'id': '2b84e0ab-fe7b-4104-8601-4553caa0f83d' },
+        {'name': 'Česká zemědělská univerzita v Praze (ČZU)', 'id': 'db8a49b1-5c1d-4681-b964-8a32db02c0a0' },
+        {'name': 'České vysoké učení technické v Praze (ČVUT)', 'id': '635135dc-f119-4a1c-88dd-f5fc8395f501' },
+        {'name': 'Janáčkova akademie múzických umění (JAMU)', 'id': '10f191ae-284f-44ed-90ce-29b3cdadc070' },
+        {'name': 'Jihočeská univerzita v Českých Budějovicích (JU)', 'id': '4bdb5ce2-ad70-4c2b-9ba5-516d3df3fb3b' },
+        {'name': 'Masarykova univerzita (MU)', 'id': '782e1ee1-9f15-46bd-8e74-3e546c9afd37' },
+        {'name': 'Mendelova univerzita v Brně (MENDELU)', 'id': '258f8f4e-a7f2-418f-bdd9-cfbbf8f38099' },
+        {'name': 'Ostravská univerzita (OU)', 'id': '0a9d1130-5bc2-4de2-92a1-8c1be055e707' },
+        {'name': 'Slezská univerzita v Opavě (SU)', 'id': 'd51f4119-0918-4427-ad36-27818dc49bc3' },
+        {'name': 'Technická univerzita v Liberci (TUL)', 'id': '6a059f6f-16d9-4cb8-94ac-084d6165a345' },
+        {'name': 'Univerzita Hradec Králové (UHK)', 'id': 'b8491178-53fd-4b6b-84cb-5cb8d859d489' },
+        {'name': 'Univerzita Jana Evangelisty Purkyně v Ústí nad Labem (UJEP)', 'id': '236a2e9f-010c-443c-84e7-52973e8094fd' },
+        {'name': 'Univerzita Karlova (UK)', 'id': '94115ab6-0443-473c-b66e-0c6d29572c89' },
+        {'name': 'Univerzita Palackého v Olomouci (UP)', 'id': 'e7e69091-982b-4f0c-80ad-a5bb074ef5bd' },
+        {'name': 'Univerzita Pardubice (UPCE)', 'id': 'c2886fd7-c3df-470a-9abc-25617e838453' },
+        {'name': 'Univerzita Tomáše Bati ve Zlíně (UTB, zkrácený název: UTB ve Zlíně)', 'id': '533ed300-f78e-4f8e-abb1-7b039ff63438' },
+        {'name': 'Veterinární univerzita Brno (VETUNI)', 'id': 'a8f84591-d060-4763-8b95-890f5e9e9dc1' },
+        {'name': 'Vysoká škola báňská - Technická univerzita Ostrava (VŠB-TUO, zkrácený název: VŠB - Technická univerzita Ostrava)', 'id': 'c63b55eb-c6a0-4302-aa27-3ff8f082cc35' },
+        {'name': 'Vysoká škola ekonomická v Praze (VŠE)', 'id': 'b38fc480-98bd-4a9c-8b3f-58a0eff3506c' },
+        {'name': 'Vysoká škola chemicko-technologická v Praze (VŠCHT Praha)', 'id': 'cce2633e-a059-4b72-92d3-52652f6bc07c' },
+        {'name': 'Vysoká škola polytechnická Jihlava (VŠPJ či VŠP Jihlava)', 'id': '9f128a38-6405-4435-a4f2-be7050755a2e' },
+        {'name': 'Vysoká škola technická a ekonomická v Českých Budějovicích (VŠTE)', 'id': '8e1c2c35-50fd-40b6-9cd9-cad795f20dbf' },
+        {'name': 'Vysoká škola uměleckoprůmyslová v Praze (UMPRUM)', 'id': '4c807453-dd9d-455f-a334-f4007f2bbefc' },
+        {'name': 'Vysoké učení technické v Brně (VUT)', 'id': '4bb8f25a-79e5-493a-9b52-dbb2855537b8' },
+        {'name': 'Západočeská univerzita v Plzni (ZČU)', 'id': 'fbad1416-2f46-4671-927c-100be0914dcb' },
+
+        #státní VŠ
+        {'name': 'Policejní akademie České republiky v Praze (POLAC)', 'id': '31a7d00f-de73-4d70-9e02-a139d0a3096c' },
+        {'name': 'Univerzita obrany (UNOB)', 'id': '3da845f7-a616-4ed9-98d8-329fac7fae81' },
+    ]
+    return studyPlaces
+
+@cache
+def determineStudyProgram():
+    studyPrograms = [
+        {'name': 'bakalářský','en_name': 'bachelor', 'id': '00602448-9d42-4af3-95fd-20fd6a551771' },
+        {'name': 'magisterský','en_name': 'master', 'id': 'f0e17944-e7d8-434a-9b36-b70cf6f0fac5' },
+        {'name': 'doktorský','en_name': 'doctoral', 'id': '0ea55a54-1fa5-43ce-b2e6-67ebf57c9671' },
+    ]
+    return studyPrograms
+
 
 @cache
 def determineCertificateType():
@@ -101,25 +149,25 @@ def determineCertificateType():
 
 
         #vědecké
-        {'name': '', 'en_name': '', 'id': ''},
-        {'name': '', 'en_name': '', 'id': ''},
-        {'name': '', 'en_name': '', 'id': ''},
-        {'name': '', 'en_name': '', 'id': ''},
-        {'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
 
         #sportovní
-        {'name': '', 'en_name': '', 'id': ''},
-        {'name': '', 'en_name': '', 'id': ''},
-        {'name': '', 'en_name': '', 'id': ''},
-        {'name': '', 'en_name': '', 'id': ''},
-        {'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
 
         #pracovní
-        {'name': '', 'en_name': '', 'id': ''},
-        {'name': '', 'en_name': '', 'id': ''},
-        {'name': '', 'en_name': '', 'id': ''},
-        {'name': '', 'en_name': '', 'id': ''},
-        {'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
+        #{'name': '', 'en_name': '', 'id': ''},
 
     ]
     return certificateTypes
@@ -213,16 +261,38 @@ def determineMedalTypeGroup():
     return medalTypeGroup
 
 
-from gql_personalities.DBDefinitions import CertificateType, CertificateTypeGroup, MedalType, MedalTypeGroup
+@cache
+def determineWorkHistoryPosition():
+    workHistoryPosition = [
+        {'name': 'manažer', 'id': '3406c765-8454-4f3a-b3bb-76b74582be2e' },
+        {'name': 'účetní', 'id': 'd9a50a22-edf4-4264-98f0-5a9eced115c4'},
+        {'name': 'úředník', 'id': '203cb4d1-6d61-4dfd-8662-d7a352db739c'},
+        {'name': 'konzultant', 'id': '7925ca15-acd5-4af9-9731-2884c8225081'},
+        {'name': 'asistent', 'id': 'fd8ea6b7-4706-4537-8569-5dc8040519f8'},
+        {'name': 'právní zástupce', 'id': '242a84a8-f754-4136-b322-e20b0382dff4'},
+        {'name': 'administrátor', 'id': 'cc3f7106-f38c-48ee-89d9-d1a420e45df5'},
+        {'name': 'pokladní', 'id': '950d3466-af5b-4a59-b91f-14514bf693d0'},
+        {'name': 'uklízeč', 'id': 'c24dba24-b636-46d4-b0b2-2dc03e6af933'},
+        {'name': 'operátor', 'id': '02addd4f-ee6f-4141-bbc7-5a6ca9bc8647'},
+        {'name': 'analytik', 'id': 'aaea9b89-dbed-42a2-8f22-737ce913f803'},
+        {'name': 'správce', 'id': '87897e28-c92d-49be-8878-e9c39c9b8a5a'},
+        {'name': 'technická podpora', 'id': 'f60e38af-069b-4f8e-8cc9-b6cd077a7cee'},
+        {'name': 'řidič', 'id': 'c11f1606-bdd2-4973-89ca-1489e8249c0f'},
+        {'name': 'specialista', 'id': '8b18a1a2-f759-4441-a18b-0bee41e71519'},
+    ]
+    return workHistoryPosition
 
 import asyncio
 async def ensureAllTypes(asyncSessionMaker):
     done = await asyncio.gather(
         putPredefinedStructuresIntoTable(asyncSessionMaker, RankType, determineRankType),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, Study, determineStudyPlace),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, Study, determineStudyProgram),
         putPredefinedStructuresIntoTable(asyncSessionMaker, CertificateType, determineCertificateType),
         putPredefinedStructuresIntoTable(asyncSessionMaker, CertificateTypeGroup, determineCertificateTypeGroup),
         putPredefinedStructuresIntoTable(asyncSessionMaker, MedalType, determineMedalType),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, MedalTypeGroup, determineMedalTypeGroup)
+        putPredefinedStructuresIntoTable(asyncSessionMaker, MedalTypeGroup, determineMedalTypeGroup),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, WorkHistory, determineWorkHistoryPosition),
     )
     return 
 
