@@ -188,9 +188,6 @@ class ItemGQLModel:
     @strawberryA.field(description="""Item's time of last update""")
     def lastchange(self) -> str:
         return self.lastchange
-    
-
-
 
 
 ###########################################################################################################################

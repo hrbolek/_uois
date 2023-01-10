@@ -85,11 +85,13 @@ class UserModel(BaseModel):
     __tablename__ = "users"
 
     id = UUIDColumn()
-    # name = Column(String)
-    # email = Column(String)
-    # password = Column(String)
-    # created_at = Column(DateTime, default=datetime.datetime.now)
-    # request = relationship('FormModel', back_populates='user')
+    name = Column(String)
+    email = Column(String)
+    password = Column(String)
+    created_at = Column(DateTime, default=datetime.datetime.now)
+    lastchange  = Column(DateTime, default=datetime.datetime.now)
+
+    request = relationship('RequestModel', back_populates='user')
 
 
 

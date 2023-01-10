@@ -3,6 +3,13 @@
         "requests":[
             {
                 "id": "0001",
+
+                "creator": {
+                    "id": "00001",
+                    "name": "Dang Quy Tai",
+                    "email": "quytai.dang@unob.cz"
+                },
+                
                 "parts":[
                     {
                         "id": "0011",
