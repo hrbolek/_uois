@@ -45,7 +45,7 @@ class StudyProgramGQLModel:
     def name(self) -> str:
         return self.name
 
-    ###Ignoruj#######################################
+    ###Ignoruj
     @strawberryA.field(description="""primary key""")
     def editor(self) -> 'StudyProgramEditorGQLModel':
         return self
