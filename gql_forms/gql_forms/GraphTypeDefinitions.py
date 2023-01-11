@@ -29,6 +29,9 @@ class UserGQLModel:
     def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id)
 
+    async def requests(self, info: strawberryA.types.Info)-> List['RequestGQLModel']:
+        result = await resolveRequestByUser(AsyncSessionFromInfo(info), self.id)
+        return result
 
 
 #define the type help to get attribute name and name 
@@ -195,6 +198,8 @@ class ItemGQLModel:
 # zde definujte svuj Query model
 #
 ###########################################################################################################################
+from gql_forms.DBFeeder import randomData
+from gql_forms.GraphResolvers import resolveRequestByUser
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
@@ -225,6 +230,18 @@ class Query:
         return requests
 
 
+    @strawberryA.field(description="""returns all requests created by a user""")
+    async def request_by_user(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[RequestGQLModel, None]:
+        result = await resolveRequestByUser(AsyncSessionFromInfo(info) ,id)
+        #u r getting the database sections , u srxtracting calling the function, returning the data from the table, able to extract , ask for it by Id there will be call the record 
+        return result
+
+    
+
+    @strawberryA.field(description="Fills the database with demo form")
+    async def fill_request(self, info: strawberryA.types.Info) -> str:
+        await randomData(info.context['asyncSessionMaker'])
+        return 'ok'
 
 
 

@@ -69,6 +69,7 @@ class PartModel(BaseModel):
     section_id = Column(ForeignKey("formsections.id"), primary_key=True)
     section = relationship("SectionModel", back_populates="parts")
     items = relationship("ItemModel", back_populates="part")
+    
 class ItemModel(BaseModel):
     __tablename__ = "formitems"
 

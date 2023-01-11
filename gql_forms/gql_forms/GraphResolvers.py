@@ -36,6 +36,7 @@ resolveRequestById = createEntityByIdGetter(RequestModel)
 # try to get from the database ..of request u can gert multiblae request 
 resolveRequestAll = createEntityGetter(RequestModel)
 
+resolveRequestByUser = create1NGetter(RequestModel, foreignKeyName='creator_id')
 
 # allow u to retry which are related to the request if i have the request id 
 # resolveSectionsForRequest = create1NGetter(SectionModel, foreignKeyName='request_id', options=joinedload(SectionModel.parts))
