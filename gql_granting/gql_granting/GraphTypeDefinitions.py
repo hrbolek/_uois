@@ -30,12 +30,26 @@ class StudyProgramGQLModel:
         return self.id
 
     @strawberryA.field(description="""type""")
-    def type(self) -> strawberryA.type:
+    def type(self) -> str:
         return self.type
 
+    @strawberryA.field(description="""type""")
+    def study_duration(self) -> int:
+        return self.study_duration
+
+    @strawberryA.field(description="""type""")
+    def type_of_study(self) -> str:
+        return self.type_of_study
+
+    @strawberryA.field(description="""type""")
+    def name(self) -> str:
+        return self.name
+
+    ###Ignoruj#######################################
     @strawberryA.field(description="""primary key""")
     def editor(self) -> 'StudyProgramEditorGQLModel':
         return self
+    #################################################
 
 ###########################################################################################################################
 @strawberryA.federation.type(keys=["id"], description="""Entity representing premade study programs""")
