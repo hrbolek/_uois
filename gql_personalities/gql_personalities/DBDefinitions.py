@@ -29,32 +29,52 @@ class UserModel(BaseModel):
 
     id = UUIDColumn()
 
-class Personalities_RankHistory(BaseModel):
+    ranks = relationship('Rank', back_populates='user')
+    studies = relationship('Study', back_populates='user')
+    certificates = relationship('Certificate', back_populates='user')
+    medals = relationship('Medal', back_populates='user')
+    workHistories = relationship('WorkHistory', back_populates='user')
+    relatedDocs = relationship('RelatedDoc', back_populates='user')
+
+class Rank(BaseModel):
     __tablename__ = 'personalitiesRanks'
 
     id = UUIDColumn()
-    name = Column(String)
     start = Column(DateTime)
     end = Column(DateTime) 
 
     user_id = Column(ForeignKey('users.id'))
+    rankType_id = Column(ForeignKey('personalitiesRankTypes.id'))
 
-class Personalities_Study(BaseModel):
+    user = relationship('UserModel', back_populates = 'ranks')
+    rankType = relationship('RankType', back_populates = 'rank')
+
+class RankType(BaseModel):
+    __tablename__ = 'personalitiesRankTypes'
+
+    id = UUIDColumn()
+    name = Column(String)
+    name_en = Column(String)
+
+    rank = relationship('Rank', back_populates = 'rankType')
+
+class Study(BaseModel):
     __tablename__ = 'personalitiesStudies'
 
     id = UUIDColumn()
-    place = Column(String)
+    name = Column(String)
     program = Column(String)
     start = Column(DateTime)
     end = Column(DateTime)
     
     user_id = Column(ForeignKey('users.id'))
     
-class Personalities_Certificate(BaseModel):
-    __tablename__ = 'personalitiesCertficates'
+    user = relationship('UserModel', back_populates = 'studies')
+
+class Certificate(BaseModel):
+    __tablename__ = 'personalitiesCertificates'
 
     id = UUIDColumn()
-    name = Column(String)
     level = Column(String)
     validity_start = Column(DateTime)
     validity_end = Column(DateTime)
@@ -62,69 +82,88 @@ class Personalities_Certificate(BaseModel):
     user_id = Column(ForeignKey('users.id'))
     certificateType_id = Column(ForeignKey('personalitiesCertificateTypes.id'))
     
-    certificateType = relationship('Personalities_CertificateType', back_populates = 'certificates')
+    user = relationship('UserModel', back_populates = 'certificates')
+    certificateType = relationship('CertificateType', back_populates = 'certificates')
 
-class Personalities_CertificateType(BaseModel):
+class CertificateType(BaseModel):
     __tablename__ = 'personalitiesCertificateTypes'
 
     id = UUIDColumn()
     name = Column(String)
-    en_name = Column(String)
-    
-    certificates = relationship('Personalities_Certificate', back_populates = 'certificateType')
+    name_en = Column(String)
 
-class Personalities_Medal(BaseModel):
-    __tablename__ = 'personalitiesMedals'
+    certificateTypeGroup_id = Column(ForeignKey('personalitiesCertificateTypeGroups.id'))
+    
+    certificates = relationship('Certificate', back_populates = 'certificateType')
+    certificateTypeGroup = relationship('CertificateTypeGroup', back_populates = 'certificateType')
+
+class CertificateTypeGroup(BaseModel):
+    __tablename__ = 'personalitiesCertificateTypeGroups'
 
     id = UUIDColumn()
     name = Column(String)
+    name_en = Column(String)
+    
+    certificateType = relationship('CertificateType', back_populates = 'certificateTypeGroup')
+
+
+class Medal(BaseModel):
+    __tablename__ = 'personalitiesMedals'
+
+    id = UUIDColumn()
     year = Column(Integer)
     
     user_id = Column(ForeignKey('users.id'))
     medalType_id = Column(ForeignKey('personalitiesMedalTypes.id'))
     
-    medalType = relationship('Personalities_MedalType', back_populates = 'medals')
+    user = relationship('UserModel', back_populates = 'medals')
+    medalType = relationship('MedalType', back_populates = 'medal')
 
-class Personalities_MedalType(BaseModel):
+class MedalType(BaseModel):
     __tablename__ = 'personalitiesMedalTypes'
 
     id = UUIDColumn()
     name = Column(String)
+    name_en = Column(String)
     
     medalTypeGroup_id = Column(ForeignKey('personalitiesMedalTypeGroups.id'))
 
-    medals = relationship('Personalities_Medal', back_populates = 'medalType')
-    medalTypeGroup = relationship('Personalities_MedalTypeGroup', back_populates = 'medalTypes')
+    medal = relationship('Medal', back_populates = 'medalType')
+    medalTypeGroup = relationship('MedalTypeGroup', back_populates = 'medalTypes')
 
-class Personalities_MedalTypeGroup(BaseModel):
+class MedalTypeGroup(BaseModel):
     __tablename__ = 'personalitiesMedalTypeGroups'
 
     id = UUIDColumn()
     name = Column(String)
+    name_en = Column(String)
     
-    medalTypes = relationship('Personalities_MedalType', back_populates = 'medalTypeGroup')
+    medalTypes = relationship('MedalType', back_populates = 'medalTypeGroup')
 
-class Personalities_WorkHistory(BaseModel):
+class WorkHistory(BaseModel):
     __tablename__ = 'personalitiesWorkHistories'
 
     id = UUIDColumn()
     start = Column(DateTime)
     end = Column(DateTime)
-    position = Column(String)
+    name = Column(String)
     ico = Column(String)
 
     user_id = Column(ForeignKey('users.id'))
     
+    user = relationship('UserModel', back_populates = 'workHistories')
 
-class Personalities_RelatedDoc(BaseModel):
+class RelatedDoc(BaseModel):
     __tablename__ = 'personalitiesRelatedDocs'
 
     id = UUIDColumn()
     name = Column(String)
-    #saved ? (destination?)
+    #doc_upload
 
     user_id = Column(ForeignKey('users.id'))
     
+    user = relationship('UserModel', back_populates = 'relatedDocs')
+
 
 
 

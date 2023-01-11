@@ -30,13 +30,13 @@ class RequestModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
     creator_id = Column(ForeignKey('users.id'))
-    createAt = Column(DateTime)
-    lastUpdate = Column(DateTime)
+    create_at = Column(DateTime)
+    lastchange  = Column(DateTime)
     status = Column(String) 
 
     sections = relationship("SectionModel", back_populates="request")
 
-
+    
 class SectionModel(BaseModel):
     __tablename__ = "formsections"
     
@@ -47,12 +47,14 @@ class SectionModel(BaseModel):
     name = Column(String)
 
     request_id = Column(ForeignKey("forms.id"), primary_key=True)
-    createAt = Column(DateTime)
-    lastUpdate = Column(DateTime)
+    create_at = Column(DateTime)
+    lastchange  = Column(DateTime)
     order = Column(Integer)
+    status = Column(String)
 
     request = relationship("RequestModel", back_populates="sections")
     parts = relationship("PartModel", back_populates="section")
+    
 
 class PartModel(BaseModel):
     __tablename__ = "formparts"
@@ -60,23 +62,24 @@ class PartModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    createAt = Column(DateTime)
-    lastUpdate = Column(DateTime)
+    create_at = Column(DateTime)
+    lastchange  = Column(DateTime)
     order = Column(Integer)
 
     section_id = Column(ForeignKey("formsections.id"), primary_key=True)
     section = relationship("SectionModel", back_populates="parts")
     items = relationship("ItemModel", back_populates="part")
-
 class ItemModel(BaseModel):
     __tablename__ = "formitems"
 
     id = UUIDColumn()
     name = Column(String)
 
-    createAt = Column(DateTime)
-    lastUpdate = Column(DateTime)
+    create_at = Column(DateTime)
+    lastchange  = Column(DateTime)
     order = Column(Integer)
+
+    value = Column(String)
 
     part_id = Column(ForeignKey("formparts.id"), primary_key=True)
     part = relationship("PartModel", back_populates="items")
@@ -85,14 +88,15 @@ class UserModel(BaseModel):
     __tablename__ = "users"
 
     id = UUIDColumn()
-    # name = Column(String)
-    # email = Column(String)
-    # password = Column(String)
+    name = Column(String)
+    email = Column(String)
     # created_at = Column(DateTime, default=datetime.datetime.now)
-    # request = relationship('FormModel', back_populates='user')
+    # lastchange  = Column(DateTime, default=datetime.datetime.now)
+    create_at = Column(DateTime)
+    lastchange  = Column(DateTime)
 
+    request = relationship('RequestModel', back_populates='user')
 
-    
 
 
 

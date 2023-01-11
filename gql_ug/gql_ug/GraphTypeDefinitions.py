@@ -18,6 +18,7 @@ async def withInfo(info):
 
 
 def AsyncSessionFromInfo(info):
+    print('obsolete function used AsyncSessionFromInfo, use withInfo context manager instead')
     return info.context['session']
 
 def AsyncSessionMakerFromInfo(info):
@@ -29,7 +30,7 @@ from gql_ug.GraphResolvers import resolveMembershipById
 class MembershipGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        #result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
+        #result = await resolveMembershipById(session,  id)
         async with withInfo(info) as session:
             result = await resolveMembershipById(session, id)
             result._type_definition = cls._type_definition # little hack :)
@@ -70,7 +71,7 @@ class UserGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        #result = await resolveUserById(AsyncSessionFromInfo(info), id)
+        #result = await resolveUserById(session,  id)
         async with withInfo(info) as session:
             result = await resolveUserById(session, id)
 
@@ -80,7 +81,7 @@ class UserGQLModel:
 
     @classmethod
     async def resolve_references(cls, info: strawberryA.types.Info, id: typing.List[strawberryA.ID]):
-        #result = await resolveUserById(AsyncSessionFromInfo(info), id)
+        #result = await resolveUserById(session,  id)
         async with withInfo(info) as session:
             results = await resolveUsersById(session, id)
             for item in results:
@@ -109,14 +110,14 @@ class UserGQLModel:
 
     @strawberryA.field(description="""List of groups, where the user is member""")
     async def membership(self, info: strawberryA.types.Info) -> typing.List['MembershipGQLModel']:
-        #result = await resolveMembershipForUser(AsyncSessionFromInfo(info), self.id)
+        #result = await resolveMembershipForUser(session,  self.id)
         async with withInfo(info) as session:
             result = await resolveMembershipForUser(session, self.id)
             return result
 
     @strawberryA.field(description="""List of roles, which the user has""")
     async def roles(self, info: strawberryA.types.Info) -> typing.List['RoleGQLModel']:
-        #result = await resolveRolesForUser(AsyncSessionFromInfo(info), self.id)
+        #result = await resolveRolesForUser(session,  self.id)
         async with withInfo(info) as session:
             result = await resolveRolesForUser(session, self.id)
             return result
@@ -126,7 +127,7 @@ class UserGQLModel:
         """type hinting pouziva strawberry ke spravne deserializaci, vysledek deserializace ma vliv na operatory (napr. __EQ__)
            v tomto pripade je mozne primo srovnavat, pokud by jako hint typ u grouptype_id byl str, muselo by se srovnavat jinak
         """
-        #memberships = await resolveMembershipForUser(AsyncSessionFromInfo(info), self.id)
+        #memberships = await resolveMembershipForUser(session,  self.id)
         async with withInfo(info) as session:
             memberships = await resolveMembershipForUser(session, self.id)
             #memberships = [ membership for membership in memberships ]
@@ -183,7 +184,7 @@ class UserEditorGQLModel:
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
             result = await resolveUserById(session, id)
-            #result = await resolveUserById(AsyncSessionFromInfo(info), id)
+            #result = await resolveUserById(session,  id)
             result._type_definition = cls._type_definition # little hack :)
             return result
 
@@ -197,7 +198,7 @@ class UserEditorGQLModel:
 
     @strawberryA.field(description="""Result of update operation""")
     async def user(self, info: strawberryA.types.Info) -> UserGQLModel:
-        #result = await resolveUserById(AsyncSessionFromInfo(info), self.id)
+        #result = await resolveUserById(session,  self.id)
         async with withInfo(info) as session:
             result = await resolveUserById(session, self.id)
             return result
@@ -205,7 +206,7 @@ class UserEditorGQLModel:
     @strawberryA.field(description="""Updates the user data""")
     async def update(self, info: strawberryA.types.Info, data: UserUpdateGQLModel) -> 'UserEditorGQLModel':
         lastchange = data.lastchange
-        #await resolverUpdateUser(AsyncSessionFromInfo(info), id=self.id, data=data)
+        #await resolverUpdateUser(session,  id=self.id, data=data)
         async with withInfo(info) as session:
             await resolverUpdateUser(session, id=self.id, data=data)
             if (lastchange == data.lastchange):
@@ -231,7 +232,7 @@ class GroupGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        #result = await resolveGroupById(AsyncSessionFromInfo(info), id)
+        #result = await resolveGroupById(session,  id)
         async with withInfo(info) as session:
             result = await resolveGroupById(session, id)
             result._type_definition = cls._type_definition # little hack :)
@@ -269,13 +270,13 @@ class GroupGQLModel:
             if self.grouptype_id is None:
                 return None
             else:
-                #result = resolveGroupTypeById(AsyncSessionFromInfo(info), self.grouptype_id)
+                #result = resolveGroupTypeById(session,  self.grouptype_id)
                 result = await resolveGroupTypeById(session, self.grouptype_id)
                 return result
 
     @strawberryA.field(description="""Directly commanded groups""")
     async def subgroups(self, info: strawberryA.types.Info) -> typing.List['GroupGQLModel']:
-        #result = await resolveSubgroupsForGroup(AsyncSessionFromInfo(info), self.id)
+        #result = await resolveSubgroupsForGroup(session,  self.id)
         async with withInfo(info) as session:
             result = await resolveSubgroupsForGroup(session, self.id)
 
@@ -286,21 +287,21 @@ class GroupGQLModel:
         if self.mastergroup_id is None:
             return None
         else:
-            #result = await resolveMastergroupForGroup(AsyncSessionFromInfo(info), self.mastergroup_id)
+            #result = await resolveMastergroupForGroup(session,  self.mastergroup_id)
             async with withInfo(info) as session:
                 result = await resolveMastergroupForGroup(session, self.mastergroup_id)
                 return result
 
     @strawberryA.field(description="""List of users who are member of the group""")
     async def memberships(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 100) -> typing.List['MembershipGQLModel']:
-        #result = await resolveMembershipForGroup(AsyncSessionFromInfo(info), self.id, skip, limit)
+        #result = await resolveMembershipForGroup(session,  self.id, skip, limit)
         async with withInfo(info) as session:
             result = await resolveMembershipForGroup(session, self.id, skip, limit)
             return result       
 
     @strawberryA.field(description="""List of roles in the group""")
     async def roles(self, info: strawberryA.types.Info) -> typing.List['RoleGQLModel']:
-        #result = await resolveRolesForGroup(AsyncSessionFromInfo(info), self.id)
+        #result = await resolveRolesForGroup(session,  self.id)
         async with withInfo(info) as session:
             result = await resolveRolesForGroup(session, self.id)
             return result
@@ -344,7 +345,7 @@ class GroupEditorGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        #result = await resolveGroupById(AsyncSessionFromInfo(info), id)
+        #result = await resolveGroupById(session,  id)
         async with withInfo(info) as session:
             result = await resolveGroupById(session, id)
             result._type_definition = cls._type_definition # little hack :)
@@ -356,7 +357,7 @@ class GroupEditorGQLModel:
 
     @strawberryA.field(description="""Link to the group.""")
     async def group(self, info: strawberryA.types.Info) -> GroupGQLModel:
-        #result = await resolveGroupById(AsyncSessionFromInfo(info), self.id)
+        #result = await resolveGroupById(session,  self.id)
         async with withInfo(info) as session:
             result = await resolveGroupById(session, self.id)
             return result
@@ -367,7 +368,7 @@ class GroupEditorGQLModel:
 
     @strawberryA.field(description="""Create a new membership""")
     async def add_membership(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'MembershipGQLModel':
-        #result = await resolveInsertMembership(AsyncSessionFromInfo(info), None, 
+        #result = await resolveInsertMembership(session,  None, 
         #    extraAttributes={'user_id': user_id, 'group_id': self.id})
 
         async with withInfo(info) as session:
@@ -387,7 +388,7 @@ class GroupEditorGQLModel:
 
     @strawberryA.field(description="""Create a new role""")
     async def add_role(self, info: strawberryA.types.Info, user_id: uuid.UUID, roletype_id: uuid.UUID) -> 'RoleGQLModel':
-        #result = await resolveInsertRole(AsyncSessionFromInfo(info), None, 
+        #result = await resolveInsertRole(session,  None, 
         #    extraAttributes={'user_id': user_id, 'group_id': self.id, 'roletype_id': roletype_id})
         async with withInfo(info) as session:
             result = await resolveInsertRole(session, None, 
@@ -406,7 +407,7 @@ class GroupEditorGQLModel:
 
     @strawberryA.field(description="""Create a new role""")
     async def create_subgroup(self, info: strawberryA.types.Info, group: GroupInsertGQLModel) -> 'GroupGQLModel':
-        #newGroup = await resolveInsertGroup(AsyncSessionFromInfo(info), group, extraAttributes={'mastergroup_id': self.id})
+        #newGroup = await resolveInsertGroup(session,  group, extraAttributes={'mastergroup_id': self.id})
         async with withInfo(info) as session:
             newGroup = await resolveInsertGroup(session, group, extraAttributes={'mastergroup_id': self.id})
             print(newGroup)
@@ -414,8 +415,8 @@ class GroupEditorGQLModel:
 
     @strawberryA.field(description="""Makes a group subgroup""")
     async def assign_subgroup(self, info: strawberryA.types.Info, subgroup_id: strawberryA.ID) -> 'GroupGQLModel':
-        #updated = await resolveUpdateGroup(AsyncSessionFromInfo(info), subgroup_id, )
-        #updated = await resolveUpdateGroup(AsyncSessionFromInfo(info), subgroup_id, data=None, extraAttributes={'mastergroup_id': self.id})
+        #updated = await resolveUpdateGroup(session,  subgroup_id, )
+        #updated = await resolveUpdateGroup(session,  subgroup_id, data=None, extraAttributes={'mastergroup_id': self.id})
         async with withInfo(info) as session:
             updated = await resolveUpdateGroup(session, subgroup_id, data=None, extraAttributes={'mastergroup_id': self.id})
             return self
@@ -425,7 +426,7 @@ class GroupEditorGQLModel:
         async with withInfo(info) as session:
             lastchange = group.lastchange
             print(lastchange)
-            #updated = await resolveUpdateGroup(AsyncSessionFromInfo(info), id=self.id, data=group)
+            #updated = await resolveUpdateGroup(session,  id=self.id, data=group)
             updated = await resolveUpdateGroup(session, id=self.id, data=group)
             print(updated)
             print(group.lastchange)
@@ -461,7 +462,7 @@ class GroupTypeGQLModel:
     
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        #result = await resolveGroupTypeById(AsyncSessionFromInfo(info), id)
+        #result = await resolveGroupTypeById(session,  id)
         async with withInfo(info) as session:
             result = await resolveGroupTypeById(session, id)
             result._type_definition = cls._type_definition # little hack :)
@@ -481,7 +482,7 @@ class GroupTypeGQLModel:
 
     @strawberryA.field(description="""List of groups which have this type""")
     async def groups(self, info: strawberryA.types.Info) -> typing.List['GroupGQLModel']:
-        #result = await resolveGroupForGroupType(AsyncSessionFromInfo(info), self.id)
+        #result = await resolveGroupForGroupType(session,  self.id)
         async with withInfo(info) as session:
             result = await resolveGroupForGroupType(session, self.id)
             return result       
@@ -493,7 +494,7 @@ class RoleTypeGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        #result = await resolveRoleTypeById(AsyncSessionFromInfo(info), id)
+        #result = await resolveRoleTypeById(session,  id)
         async with withInfo(info) as session:
             result = await resolveRoleTypeById(session, id)
             result._type_definition = cls._type_definition # little hack :)
@@ -513,7 +514,7 @@ class RoleTypeGQLModel:
 
     @strawberryA.field(description="""List of roles with this type""")
     async def roles(self, info: strawberryA.types.Info) -> typing.List['RoleGQLModel']:
-        #result = await resolveRoleForRoleType(AsyncSessionFromInfo(info), self.id)
+        #result = await resolveRoleForRoleType(session,  self.id)
         async with withInfo(info) as session:
             result = await resolveRoleForRoleType(session, self.id)
             return result
@@ -526,7 +527,7 @@ class RoleGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        #result = await resolverRoleById(AsyncSessionFromInfo(info), id)
+        #result = await resolverRoleById(session,  id)
         async with withInfo(info) as session:
             result = await resolverRoleById(session, id)
             result._type_definition = cls._type_definition # little hack :)
@@ -550,21 +551,21 @@ class RoleGQLModel:
 
     @strawberryA.field(description="""Role type (like Dean)""")
     async def roletype(self, info: strawberryA.types.Info) -> RoleTypeGQLModel:
-        #result = await resolveRoleTypeById(AsyncSessionFromInfo(info), self.roletype_id)
+        #result = await resolveRoleTypeById(session,  self.roletype_id)
         async with withInfo(info) as session:
             result = await resolveRoleTypeById(session, self.roletype_id)
             return result
 
     @strawberryA.field(description="""User having this role. Must be member of group?""")
     async def user(self, info: strawberryA.types.Info) -> UserGQLModel:
-        #result = await resolveUserById(AsyncSessionFromInfo(info), self.user_id)
+        #result = await resolveUserById(session,  self.user_id)
         async with withInfo(info) as session:
             result = await resolveUserById(session, self.user_id)
             return result
 
     @strawberryA.field(description="""Group where user has a role name""")
     async def group(self, info: strawberryA.types.Info) -> GroupGQLModel:
-        #result = await resolveGroupById(AsyncSessionFromInfo(info), self.group_id)
+        #result = await resolveGroupById(session,  self.group_id)
         async with withInfo(info) as session:
             result = await resolveGroupById(session, self.group_id)
             return result   
@@ -582,14 +583,14 @@ class Query:
 
     @strawberryA.field(description="""Returns a list of users (paged)""")
     async def user_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[UserGQLModel]:
-        #result = await resolveUserAll(AsyncSessionFromInfo(info), skip, limit)
+        #result = await resolveUserAll(session,  skip, limit)
         async with withInfo(info) as session:
             result = await resolveUserAll(session, skip, limit)
             return result
 
     @strawberryA.field(description="""Finds an user by their id""")
     async def user_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[UserGQLModel, None]:
-        #result = await resolveUserById(AsyncSessionFromInfo(info), id)
+        #result = await resolveUserById(session,  id)
         async with withInfo(info) as session:
             result = await resolveUserById(session, id)
             return result
@@ -597,7 +598,7 @@ class Query:
     @strawberryA.field(
         description="""Finds an user by letters in name and surname, letters should be atleast three""")
     async def user_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[UserGQLModel]:
-        #result = await resolveUsersByThreeLetters(AsyncSessionFromInfo(info), validity, letters)
+        #result = await resolveUsersByThreeLetters(session,  validity, letters)
         async with withInfo(info) as session:
             result = await resolveUsersByThreeLetters(session, validity, letters)
             return result
@@ -605,56 +606,56 @@ class Query:
     @strawberryA.field(
         description="""Finds an users who plays in a group a roletype""")
     async def users_by_group_and_role_type(self, info: strawberryA.types.Info, group_id: uuid.UUID, role_type_id: uuid.UUID) -> List[UserGQLModel]:
-        #result = await resolveUserByRoleTypeAndGroup(AsyncSessionFromInfo(info), group_id, role_type_id)
+        #result = await resolveUserByRoleTypeAndGroup(session,  group_id, role_type_id)
         async with withInfo(info) as session:
             result = await resolveUserByRoleTypeAndGroup(session, group_id, role_type_id)
             return result
 
     @strawberryA.field(description="""Returns a list of groups (paged)""")
     async def group_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[GroupGQLModel]:
-        #result = await resolveGroupAll(AsyncSessionFromInfo(info), skip, limit)
+        #result = await resolveGroupAll(session,  skip, limit)
         async with withInfo(info) as session:
             result = await resolveGroupAll(session, skip, limit)
             return result
 
     @strawberryA.field(description="""Finds a group by its id""")
     async def group_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[GroupGQLModel, None]:
-        #result = await resolveGroupById(AsyncSessionFromInfo(info), id)
+        #result = await resolveGroupById(session,  id)
         async with withInfo(info) as session:
             result = await resolveGroupById(session, id)
             return result
 
     @strawberryA.field(description="""Finds an user by letters in name and surname, letters should be atleast three""")
     async def group_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[GroupGQLModel]:
-        #result = await resolveGroupsByThreeLetters(AsyncSessionFromInfo(info), validity, letters)
+        #result = await resolveGroupsByThreeLetters(session,  validity, letters)
         async with withInfo(info) as session:
             result = await resolveGroupsByThreeLetters(session, validity, letters)
             return result
 
     @strawberryA.field(description="""Returns a list of groups types (paged)""")
     async def group_type_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[GroupTypeGQLModel]:
-        #result = await resolveGroupTypeAll(AsyncSessionFromInfo(info), skip, limit)
+        #result = await resolveGroupTypeAll(session,  skip, limit)
         async with withInfo(info) as session:
             result = await resolveGroupTypeAll(session, skip, limit)
             return result
 
     @strawberryA.field(description="""Finds a group type by its id""")
     async def group_type_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[GroupTypeGQLModel, None]:
-        #result = await resolveGroupTypeById(AsyncSessionFromInfo(info), id)
+        #result = await resolveGroupTypeById(session,  id)
         async with withInfo(info) as session:
             result = await resolveGroupTypeById(session, id)
             return result
 
     @strawberryA.field(description="""Finds all roles types paged""")
     async def role_type_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[RoleTypeGQLModel]:
-        #result = await resolveRoleTypeAll(AsyncSessionFromInfo(info), skip, limit)
+        #result = await resolveRoleTypeAll(session,  skip, limit)
         async with withInfo(info) as session:
             result = await resolveRoleTypeAll(session, skip, limit)
             return result
 
     @strawberryA.field(description="""Finds a role type by its id""")
     async def role_type_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[RoleTypeGQLModel, None]:
-        #result = await resolveRoleTypeById(AsyncSessionFromInfo(info), id)
+        #result = await resolveRoleTypeById(session,  id)
         async with withInfo(info) as session:
             result = await resolveRoleTypeById(session, id)
             return result
@@ -662,10 +663,10 @@ class Query:
     @strawberryA.field(description="""Random university""")
     async def randomUniversity(self, name: str, info: strawberryA.types.Info) -> GroupGQLModel:
         async with withInfo(info) as session:
-            #newId = await randomDataStructure(AsyncSessionFromInfo(info), name)
+            #newId = await randomDataStructure(session,  name)
             newId = await randomDataStructure(session, name)
             print('random university id', newId)
-            #result = await resolveGroupById(AsyncSessionFromInfo(info), newId)
+            #result = await resolveGroupById(session,  newId)
             result = await resolveGroupById(session, newId)
             print('db response', result.name)
             return result

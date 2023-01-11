@@ -29,7 +29,7 @@ class UserGQLModel:
 #     zde je rozsireni o dalsi resolvery
 #     @strawberryA.field(description="""Inner id""")
 #     async def external_ids(self, info: strawberryA.types.Info) -> List['ExternalIdGQLModel']:
-#         result = await resolveExternalIds(AsyncSessionFromInfo(info), self.id)
+#         result = await resolveExternalIds(session,  self.id)
 #         return result
 
 

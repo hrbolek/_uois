@@ -28,8 +28,13 @@ services:
       - gql_ug
       - gql_events
       - gql_externalids
+      - gql_facilities
       - gql_forms
-      - gql_survey
+      - gql_personalities
+      - gql_presences
+      - gql_projects
+      - gql_publications
+      - gql_surveys
       - gql_workflow
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu a srovnejte s portem v environment)
@@ -69,6 +74,56 @@ services:
     ports: #v deploymentu by nebylo zadne mapovani portu
     #   # vnejsi port : port, kde sluzbu poskytuje kontejner
       - 31120:8000
+
+  gql_lessons:
+    image: gql_lessons
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_lessons
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - postgres
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    #ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+      #- 31120:8000
+
+  gql_presences:
+    image: gql_presences
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_presences
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - postgres
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    #ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+      #- 31120:8000
 
   gql_externalids:
     image: gql_externalids
@@ -301,11 +356,11 @@ services:
       gql_ug: 
         condition: service_started
 
-  gql_survey:
-    image: gql_survey
+  gql_surveys:
+    image: gql_surveys
     build:
       # context definuje cestu k popisu
-      context: ./gql_survey
+      context: ./gql_surveys
     environment: 
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres

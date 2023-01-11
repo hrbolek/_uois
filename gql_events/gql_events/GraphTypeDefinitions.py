@@ -3,8 +3,19 @@ import typing
 from warnings import filters
 import strawberry as strawberryA
 import uuid
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def withInfo(info):
+    asyncSessionMaker = info.context['asyncSessionMaker']
+    async with asyncSessionMaker() as session:
+        try:
+            yield session
+        finally:
+            pass
 
 def AsyncSessionFromInfo(info):
+    print('obsolte function used AsyncSessionFromInfo, use withInfo context manager instead')
     return info.context['session']
 
 ###########################################################################################################################
@@ -27,8 +38,9 @@ class UserGQLModel:
 
     @strawberryA.field(description="""Events""")
     async def events(self, info: strawberryA.types.Info, startdate: datetime.datetime = None, enddate: datetime.datetime = None) -> List['EventGQLModel']:
-        result = await resolveEventsForUser(AsyncSessionFromInfo(info), self.id, startdate, enddate)
-        return result
+        async with withInfo(info) as session:
+            result = await resolveEventsForUser(session,  self.id, startdate, enddate)
+            return result
 
 
 from gql_events.GraphResolvers import resolveEventsForGroup
@@ -43,8 +55,9 @@ class GroupGQLModel:
 
     @strawberryA.field(description="""Events""")
     async def events(self, info: strawberryA.types.Info, startdate: datetime.datetime = None, enddate: datetime.datetime = None) -> List['EventGQLModel']:
-        result = await resolveEventsForGroup(AsyncSessionFromInfo(info), self.id, startdate, enddate)
-        return result
+        async with withInfo(info) as session:
+            result = await resolveEventsForGroup(session,  self.id, startdate, enddate)
+            return result
 
 import datetime
 from gql_events.GraphResolvers import resolveEventById, resolveUsersForEvent, resolveGroupsForEvent
@@ -53,10 +66,11 @@ class EventGQLModel:
     
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveEventById(AsyncSessionFromInfo(info), id)
-        #result._type_definition = UserGQLModel()._type_definition # little hack :)
-        result._type_definition = cls._type_definition # little hack :)
-        return result
+        async with withInfo(info) as session:
+            result = await resolveEventById(session,  id)
+            #result._type_definition = UserGQLModel()._type_definition # little hack :)
+            result._type_definition = cls._type_definition # little hack :)
+            return result
 
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
@@ -76,17 +90,19 @@ class EventGQLModel:
 
     @strawberryA.field(description="""Organizers of the event""")
     async def organizers(self, info: strawberryA.types.Info) -> List['UserGQLModel']:
-        links = await resolveUsersForEvent(AsyncSessionFromInfo(info), self.id)
-        result = list(map(lambda item: item.user, links))
-        print('event.orgs', result)
-        return result
+        async with withInfo(info) as session:
+            links = await resolveUsersForEvent(session,  self.id)
+            result = list(map(lambda item: item.user, links))
+            print('event.orgs', result)
+            return result
 
     @strawberryA.field(description="""Groups of users linked to the event""")
     async def groups(self, info: strawberryA.types.Info) -> List['GroupGQLModel']:
-        links = await resolveGroupsForEvent(AsyncSessionFromInfo(info), self.id)
-        result = list(map(lambda item: item.group, links))
-        print('event.group', result)
-        return result
+        async with withInfo(info) as session:
+            links = await resolveGroupsForEvent(session,  self.id)
+            result = list(map(lambda item: item.group, links))
+            print('event.group', result)
+            return result
 
 
 ###########################################################################################################################
@@ -108,23 +124,27 @@ class Query:
 
     @strawberryA.field(description="""Finds all events paged""")
     async def event_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[EventGQLModel]:
-        result = await resolveEventPage(AsyncSessionFromInfo(info), skip, limit)
-        return result
+        async with withInfo(info) as session:
+            result = await resolveEventPage(session,  skip, limit)
+            return result
 
     @strawberryA.field(description="""Finds a particulat event""")
     async def event_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[EventGQLModel, None]:
-        result = await resolveEventById(AsyncSessionFromInfo(info), id)
-        return result
+        async with withInfo(info) as session:
+            result = await resolveEventById(session,  id)
+            return result
 
     @strawberryA.field(description="""Finds all events for an organizer""")
     async def event_by_organizer(self, info: strawberryA.types.Info, id: uuid.UUID, startdate: Optional[datetime.datetime] = None, enddate: Optional[datetime.datetime] = None) -> List[EventGQLModel]:
-        result = await resolveEventsForUser(AsyncSessionFromInfo(info), id, startdate, enddate)
-        return result
+        async with withInfo(info) as session:
+            result = await resolveEventsForUser(session,  id, startdate, enddate)
+            return result
 
     @strawberryA.field(description="""Finds all events for a group""")
     async def event_by_group(self, info: strawberryA.types.Info, id: uuid.UUID, startdate: Optional[datetime.datetime] = None, enddate: Optional[datetime.datetime] = None) -> List[EventGQLModel]:
-        result = await resolveEventsForGroup(AsyncSessionFromInfo(info), id, startdate, enddate)
-        return result
+        async with withInfo(info) as session:
+            result = await resolveEventsForGroup(session,  id, startdate, enddate)
+            return result
 
 ###########################################################################################################################
 #

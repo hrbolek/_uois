@@ -17,7 +17,7 @@ from gql_publications.DBDefinitions import BaseModel
 #
 ###########################################################################################################################
 
-from gql_publications.DBDefinitions import BaseModel, PublicationModel, AuthorModel, PublicationTypeModel, UserModel
+from gql_publications.DBDefinitions import BaseModel, PublicationModel, AuthorModel, PublicationTypeModel, UserModel, SubjectModel
 
 ###########################################################################################################################
 #
@@ -35,37 +35,60 @@ from gql_publications.DBDefinitions import BaseModel, PublicationModel, AuthorMo
 
 
 
- ## Publication resolvers 
+# User resolvers
+
+
+
+# Publication resolvers 
 
 resolvePublicationById = createEntityByIdGetter(PublicationModel)
-resolvePublicaitonAll = createEntityGetter(PublicationModel)
+resolvePublicationAll = createEntityGetter(PublicationModel)
 
 resolveUpdatePublication = createUpdateResolver(PublicationModel)
 resolveInsertPublication = createInsertResolver(PublicationModel)
 
-#### Probrat na konzultaci
 
-# resolvePublicationByName = createEntityByNameGetter(PublicationModel)
-# resolvePublicationByYear = createEntityByYearGetter(PublicationModel)
-
-# async def resolvePublicationByPublicationTypeAndUser(session, userId, publicationTypeId):
-#     stmt = select(PublicationModel).join(PublicationTypeModel).where(PublicationModel.publication_type_id == publicationTypeId).join(AuthorModel).where(AuthorModel.publication_id == PublicationModel.publication_type_id).where(AuthorModel.user_id == UserModel.id)
-#     dbSet = await session.execute(stmt)
-#     result = dbSet.scalars()
-#     return result
-
-
-## Author resolvers
+# Author resolvers
 
 resolveAuthorById = createEntityByIdGetter(AuthorModel)
-resolverUpdateAuthor = createUpdateResolver(AuthorModel)
+resolveUpdateAuthor = createUpdateResolver(AuthorModel)
 resolveInsertAuthor = createInsertResolver(AuthorModel)
-resolveUserForAuthor = create1NGetter(AuthorModel, foreignKeyName='user_id', options=joinedload(AuthorModel.user))
-resolveAuthorForPublication = create1NGetter(AuthorModel, foreignKeyName='publication_id', options=joinedload(AuthorModel.publication))
+resolveAuthorsByUser = create1NGetter(AuthorModel, foreignKeyName='user_id')
+resolveAuthorsForPublication = create1NGetter(AuthorModel, foreignKeyName='publication_id', options=joinedload(AuthorModel.user))
+
+resolvePublicationForUser = create1NGetter(AuthorModel, foreignKeyName='publication_id', options=joinedload(AuthorModel.publication))
+# Subject resolvers
+
+resolvePublicationsForSubject = create1NGetter(SubjectModel, foreignKeyName='subject_id', options=joinedload(SubjectModel.publication))
+
+resolveSubjectsFroPublication = create1NGetter(SubjectModel, foreignKeyName='publication_id', options=joinedload(SubjectModel.subject))
 
 
+
+async def resolveUpdateAuthorOrder(session, id, author_id, order):
+    result = list(await resolveAuthorsForPublication(session),id)
+    sortedAuthors = sorted(result, key=lambda i: i['order'])
+    
+    modifiedAuthor = {}    
+    index = next((index for (index, d) in enumerate(sortedAuthors) if d["id"] == author_id), None)
+    modifiedAuthor =sortedAuthors.pop(index)
+
+    limitValue = modifiedAuthor["order"]
+    modifiedAuthor["order"] = order
+
+    for author in sortedAuthors:
+        if((author["order"] <= order) and (author["order"] >= limitValue)):
+            author["order"] -= 1
+        elif(author["order"] >= order) and (author["order"] <= limitValue):
+            author["order"] += 1
+
+    sortedAuthors.append(modifiedAuthor)
+
+    await session.commit()
+    return sortedAuthors
 
 ## PublicationType resolvers
 resolvePublicationTypeById = createEntityByIdGetter(PublicationTypeModel)
 resolvePublicationTypeAll = createEntityGetter(PublicationTypeModel)
 resolvePublicationForPublicationType = create1NGetter(PublicationModel, foreignKeyName='publication_type_id')
+

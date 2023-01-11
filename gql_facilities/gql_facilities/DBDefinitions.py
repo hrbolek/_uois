@@ -41,6 +41,8 @@ class FacilityModel(BaseModel):
     enddate = Column(DateTime)
     facilitytype_id = Column(ForeignKey('facilitytypes.id'))
     capacity = Column(Integer)
+    geometry=Column(String)
+    geolocation=Column(String)
     manager_id = Column(ForeignKey('users.id'), primary_key=True)
     
     master_facility_id = Column(ForeignKey('facilities.id'), primary_key=True)   

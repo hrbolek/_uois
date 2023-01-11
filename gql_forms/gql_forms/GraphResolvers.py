@@ -59,13 +59,33 @@ async def resolveRequestsByThreeLetters(session: AsyncSession, validity = None, 
     dbSet = await session.execute(stmt)
     return dbSet.scalars()
 
-## section resolvers -- okie can use it :)))))))
+## section resolvers
 resolveSectionById = createEntityByIdGetter(SectionModel)
 resolveSectionAll = createEntityGetter(SectionModel)
 resolvePartsForSection = create1NGetter(PartModel, foreignKeyName='section_id')
 
-# resolveRequestForSection = createEntityByIdGetter(RequestModel)
-
 resolverUpdateSection = createUpdateResolver(SectionModel)
+resolveInsertSection = createInsertResolver(SectionModel)
 
+## part resolvers
+resolvePartById = createEntityByIdGetter(PartModel)
+resolvePartAll = createEntityGetter(PartModel)
+resolveItemsForPart = create1NGetter(ItemModel, foreignKeyName='part_id')
+
+resolverUpdatePart = createUpdateResolver(PartModel)
+resolveInsertPart = createInsertResolver(PartModel)
+
+## item resolvers
+resolveItemById = createEntityByIdGetter(ItemModel)
+resolveItemAll = createEntityGetter(ItemModel)
+
+resolverUpdateItem = createUpdateResolver(ItemModel)
+resolveInsertItem = createInsertResolver(ItemModel)
+
+## user resolvers
+resolveUserById = createEntityByIdGetter(UserModel)
+resolveUserAll = createEntityGetter(UserModel)
+
+resolverUpdateUser = createUpdateResolver(UserModel)
+resolveInsertUser = createInsertResolver(UserModel)
 

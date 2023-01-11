@@ -1,4 +1,3 @@
-from multiprocessing import connection
 from typing import List
 import typing
 
@@ -10,14 +9,13 @@ from strawberry.fastapi import GraphQLRouter
 
 ## Definice GraphQL typu (pomoci strawberry https://strawberry.rocks/)
 ## Strawberry zvoleno kvuli moznosti mit federovane GraphQL API (https://strawberry.rocks/docs/guides/federation, https://www.apollographql.com/docs/federation/)
-from gql_survey.GraphTypeDefinitions import Query
-
 ## Definice DB typu (pomoci SQLAlchemy https://www.sqlalchemy.org/)
 ## SQLAlchemy zvoleno kvuli moznost komunikovat s DB asynchronne
 ## https://docs.sqlalchemy.org/en/14/core/future.html?highlight=select#sqlalchemy.future.select
-from gql_survey.DBDefinitions import startEngine, ComposeConnectionString
+from gql_lessons.DBDefinitions import startEngine, ComposeConnectionString
 
 ## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
+#from gql_workflow.DBFeeder import createSystemDataStructureRoleTypes, createSystemDataStructureGroupTypes
 
 connectionString = ComposeConnectionString()
 
@@ -42,13 +40,20 @@ async def RunOnceAndReturnSessionMaker():
     result = await startEngine(connectionstring=connectionString, makeDrop=False, makeUp=True)
     
     print(f'initializing system structures')
-    await asyncio.gather( # concurency running :)
+
+    ###########################################################################################################################
+    #
+    # zde definujte do funkce asyncio.gather
+    # vlozte asynchronni funkce, ktere maji data uvest do prvotniho konzistentniho stavu
+   
+    # await asyncio.gather( # concurency running :)
     # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
     # musi byt asynchronniho typu (async def ...)
         # createSystemDataStructureRoleTypes(result),
         # createSystemDataStructureGroupTypes(result)
-        ####################################################################################
-    )
+    # )
+
+    ###########################################################################################################################
     print(f'all done')
     return result
 
@@ -70,7 +75,8 @@ class MyGraphQL(GraphQL):
             'user': self._user
             }
 
-from gql_survey.GraphTypeDefinitions import schema
+
+from gql_lessons.GraphTypeDefinitions import schema
 
 ## ASGI app, kterou "moutneme"
 graphql_app = MyGraphQL(
@@ -82,8 +88,19 @@ graphql_app = MyGraphQL(
 app = FastAPI()
 app.mount("/gql", graphql_app)
 
+@app.on_event("startup")
+async def startup_event():
+    initizalizedEngine = await RunOnceAndReturnSessionMaker()
+    return None
+    
 print('All initialization is done')
 
 #@app.get('/hello')
 #def hello():
 #    return {'hello': 'world'}
+
+###########################################################################################################################
+#
+# pokud jste pripraveni testovat GQL funkcionalitu, rozsirte apollo/server.js
+# 
+###########################################################################################################################

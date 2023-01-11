@@ -102,3 +102,77 @@ Resolvers should be taken from step 2.
 
 5. Do not forget to extend docker-compose.yml. Simply copy existing gql service and change context (and ports).
 Also server.js in apollo container must be extended.
+
+## Lessons learned
+## Naming convention
+Names should be composed according given naming convention. 
+DB table names should be in plural.
+Foreign keys should be in singular followed by undescore and id (aka user_id).
+Both table name and attribute name should not have capitalized letters otherwise there may be conficts in some db servers.
+SQLAlchemy models should be in singular followed by Model (aka UserModel).
+GraphQL models should be in singulart form folowed by GQLModel (aka UserGQLModel).
+
+### Hybrid development
+There are groups of tasks which can be developen and run isolated. 
+The first is development of db structure and sqlalchemy models.
+The second is development of resolvers and retrieving data from database
+The third is development of qraphQL models outside of federation.
+
+All those steps can be done in Jupyter which can help in most cases. To prepare this a user should be familiar with commands:
+
+`docker run -d --restart unless-stopped --name jupyterdevelop -p 8888:8888 -p 8999:9992 -v "C:\FULLPATH\TO\dirwithipnb\files":/home/jovyan/work jupyter/scipy-notebook`
+
+The new container will be named "jupyterdevelop".
+
+As the container will be out of docker stack, it must be connected to other containers (especially with postgres). To configure this, use the next command
+see (https://docs.docker.com/engine/reference/commandline/network_connect/)
+
+`docker network connect --alias jupyter uois_default jupyterdevelop`
+
+The container will be joined with network "uois_default" which is default network name for this project. Also the container will be available inside this network with host name "jupyter". Such connection allows to use same connection strings in jupyter environment as in the project.
+
+### DB 
+In asynchronous environment it should be used context managers creating sessions. If single session is created for call errors could occur.
+This is not deterministic behaviour. The problem appears more often if query trought multiple federation members is asked.
+
+As this project aim for distributed usage (API and  web UI), some concurency editing could happen. This must be detected.
+Timestamp as an attribute can play this role. For this project has been chosen
+
+`lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())`
+
+Use of UUID as primary key can help in many cases, especially when importing data. Unfortunately this is not supported by many DB systems.
+
+At some stage you can find usefull to drop all tables. It is possible to use next commands.
+
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO public;
+
+
+### Strawberry / GraphQL
+Strawberry has not support for multiple references resolution. This could slow down the response construction significantly.
+Dataloaders do not solve this problem. They can help only in some cases. Federation schema must be updated especially method resolve reference.
+
+Top on this, creation of Dataloaders working with Redis would make a miracle regarding the response time
+
+## Monitoring
+There are some libraries, included in Strawberry. Also Prometheus would be taken into account.
+
+
+## Proper initialization
+If the database is not initialized with SQL script, the containers should be run in this order:
+1. gql_ug
+2. gql_externalids
+3. gql_workflow
+4. gql_events
+5. gql_facilities
+6. gql_personalities
+7. gql_surveys
+8. gql_publications
+9. gql_forms
+10. gql_presences
+11. gql_lessons
+12. gql_projects
+
+some containers in the list can be run simultaneously

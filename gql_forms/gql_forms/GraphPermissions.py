@@ -34,7 +34,7 @@ class GroupEditorPermission(BasePermission):
         print('GroupEditorPermission', source)
         print('GroupEditorPermission', self)
         print('GroupEditorPermission', kwargs)
-        #_ = await self.canEditGroup(AsyncSessionFromInfo(info), source.id, ...)
+        #_ = await self.canEditGroup(session,  source.id, ...)
         print('GroupEditorPermission')
         return True
 

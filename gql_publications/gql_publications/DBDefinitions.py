@@ -25,6 +25,26 @@ def UUIDColumn(name=None):
 ###########################################################################################################################
 
 
+class PlanSubjectModel(BaseModel):
+    """Spravuje data spojena s predmetem
+    """
+    __tablename__ = 'plan_subjects'
+
+    id = UUIDColumn()
+
+
+class SubjectModel(BaseModel):
+    """Spojujici tabulka - predmet, publikace
+    """
+    __tablename__ = 'publication_subjects'
+    
+    id = UUIDColumn()
+    publication_id = Column(ForeignKey('publications.id'), primary_key=True)
+    subject_id = Column(ForeignKey('plan_subjects.id'), primary_key=True)
+
+    publication = relationship('PublicationModel')
+    subject =  relationship('PlanSubjectModel')
+
 class UserModel(BaseModel):
     """Spravuje data spojena s uzivatelem
     """
@@ -44,22 +64,22 @@ class PublicationModel(BaseModel):
     place = Column(String)
     published_date = Column(Date)
     reference = Column(String)
-    externalId = Column(String, index=True)
     valid = Column(Boolean)
+    lastchange = Column(DateTime,  default=datetime.datetime.now)
 
     author = relationship('AuthorModel', back_populates='publication')
     publication_type = relationship('PublicationTypeModel', back_populates='publication')
 
 
 class AuthorModel(BaseModel):
-    __tablename__ = 'authors'
+    __tablename__ = 'publication_authors'
 
     id = UUIDColumn()
     user_id = Column(ForeignKey('users.id'), primary_key=True)
     publication_id = Column(ForeignKey('publications.id'), primary_key=True)
     order = Column(Integer)
     share = Column(Float)
-    externalId = Column(String, index=True)
+    lastchange = Column(DateTime, default=datetime.datetime.now)
 
     user = relationship('UserModel', back_populates='author')
     publication = relationship('PublicationModel', back_populates='author')
@@ -69,9 +89,10 @@ class PublicationTypeModel(BaseModel):
     __tablename__= 'publication_types'
 
     id = UUIDColumn()
-    type = Column(String)
+    name = Column(String)
 
     publication = relationship('PublicationModel', back_populates='publication_type')
+
 
 
 from sqlalchemy import create_engine

@@ -4,13 +4,14 @@ import strawberry as strawberryA
 import uuid
 
 def AsyncSessionFromInfo(info):
+    print('obsolete function used AsyncSessionFromInfo, use withInfo context manager instead')
     return info.context['session']
 
 @strawberryA.federation.type(keys=["id"], description="""Entity graph of dataflow""")
 class WorkflowGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveWorkflowById(AsyncSessionFromInfo(info), id)
+        result = await resolveWorkflowById(session,  id)
         result._type_definition = cls._type_definition # little hack :)
         return result
 
@@ -22,7 +23,7 @@ class WorkflowGQLModel:
 class AuthorizationGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveAuthorizationById(AsyncSessionFromInfo(info), id)
+        result = await resolveAuthorizationById(session,  id)
         result._type_definition = cls._type_definition # little hack :)
         return result
 
@@ -39,12 +40,12 @@ class Query:
    
     @strawberryA.field(description="""Finds an workflow by their id""")
     async def workflow_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[WorkflowGQLModel, None]:
-        result = await resolveWorkflowById(AsyncSessionFromInfo(info), id)
+        result = await resolveWorkflowById(session,  id)
         return result
 
     @strawberryA.field(description="""Finds an authorization entity by its id""")
     async def authorization_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[AuthorizationGQLModel, None]:
-        result = await resolveAuthorizationById(AsyncSessionFromInfo(info), id)
+        result = await resolveAuthorizationById(session,  id)
         return result
 
     @strawberryA.field(description="""Finds an workflow by their id""")

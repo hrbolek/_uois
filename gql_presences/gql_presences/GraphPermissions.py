@@ -1,8 +1,8 @@
 from sqlalchemy.future import select
 import strawberry
 
-from gql_survey.DBDefinitions import BaseModel, UserModel, GroupModel, MembershipModel, RoleModel
-from gql_survey.DBDefinitions import GroupTypeModel, RoleTypeModel
+from gql_ug.DBDefinitions import BaseModel, UserModel, GroupModel, MembershipModel, RoleModel
+from gql_ug.DBDefinitions import GroupTypeModel, RoleTypeModel
 
 def AsyncSessionFromInfo(info):
     return info.context['session']
@@ -35,7 +35,7 @@ class GroupEditorPermission(BasePermission):
         print('GroupEditorPermission', source)
         print('GroupEditorPermission', self)
         print('GroupEditorPermission', kwargs)
-        #_ = await self.canEditGroup(AsyncSessionFromInfo(info), source.id, ...)
+        #_ = await self.canEditGroup(session,  source.id, ...)
         print('GroupEditorPermission')
         return True
 

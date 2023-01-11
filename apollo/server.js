@@ -27,14 +27,16 @@ const getENV = (name, defaultValue) => {
       subgraphs: [
         { name: "usersAndGroups", url: "http://gql_ug:8000/gql" },
        // { name: "workflows", url: "http://gql_workflow:8000/gql" },
-        { name: "externalids", url: "http://gql_externalids:8000/gql" },
         { name: "events", url: "http://gql_events:8000/gql" },
-        { name: "forms", url: "http://gql_forms:8000/gql" },
-        { name: "personalities", url: "http://gql_personalities:8000/gql" },
-        { name: "projects", url: "http://gql_projects:8000/gql" },
-        { name: "survey", url: "http://gql_survey:8000/gql" },
+        { name: "externalids", url: "http://gql_externalids:8000/gql" },
         { name: "facilities", url: "http://gql_facilities:8000/gql" },
+        { name: "forms", url: "http://gql_forms:8000/gql" },
+        { name: "lessons", url: "http://gql_lessons:8000/gql" },
+        { name: "presences", url: "http://gql_presences:8000/gql" },
+        { name: "projects", url: "http://gql_projects:8000/gql" },
         { name: "publications", url: "http://gql_publications:8000/gql" },
+        { name: "personalities", url: "http://gql_personalities:8000/gql" },
+        { name: "surveys", url: "http://gql_surveys:8000/gql" },
         
         /* 
         * ###########################################################################################################################

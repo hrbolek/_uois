@@ -3,8 +3,21 @@ import typing
 from unittest import result
 import strawberry as strawberryA
 import uuid
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def withInfo(info):
+    asyncSessionMaker = info.context['asyncSessionMaker']
+    async with asyncSessionMaker() as session:
+        try:
+            yield session
+        finally:
+            pass
+
+##TODO relations
 
 def AsyncSessionFromInfo(info):
+    print('obsolte function used AsyncSessionFromInfo, use withInfo context manager instead')
     return info.context['session']
 
 ###########################################################################################################################
@@ -29,50 +42,46 @@ class UserGQLModel:
 #     zde je rozsireni o dalsi resolvery
 #     @strawberryA.field(description="""Inner id""")
 #     async def external_ids(self, info: strawberryA.types.Info) -> List['ExternalIdGQLModel']:
-#         result = await resolveExternalIds(AsyncSessionFromInfo(info), self.id)
+#         result = await resolveExternalIds(session,  self.id)
 #         return result
 
 @strawberryA.federation.type(description="""Type for query root""")
 class FacilityGQLModel:
 
+
     # @classmethod
     # async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-    #     result = await resolveWorkflowById(AsyncSessionFromInfo(info), id)
+    #     result = await resolveWorkflowById(session,  id)
     #     result._type_definition = cls._type_definition # little hack :)
     #     return result
     #id
-    @strawberryA.field(description="""Finds an facility by their id""")
-    async def id(self, info: strawberryA.types.Info) -> Union[str, None]:#je jedno jestli async, když je to součástí entity
-        result = self.id
-        return result
-    # @strawberryA.field(description="""Entity primary key""")
-    # def id(self, info: strawberryA.types.Info) -> strawberryA.ID:
-    #     return self.id
-
+    @strawberryA.field(description="""primary key/facility id""")
+    def id(self) -> strawberryA.ID:
+        return self.id
     #name
-    # @strawberryA.field(description="""Facility's name""")
-    # def name(self) -> str:
-    #     return self.name
+    @strawberryA.field(description="""Facility name""")
+    def name(self) -> str:
+        return self.name
     #address
-    # @strawberryA.field(description="""Facility's name""")
-    # def address(self) -> str:
-    #     return self.address
+    @strawberryA.field(description="""Facility address""")
+    def address(self) -> str:
+        return self.address
     #valid
-    # @strawberryA.field(description="""is the membership is still valid""")
-    # def valid(self) -> bool:
+    @strawberryA.field(description="""is the facility still valid""")
+    def valid(self) -> bool:
+        return self.valid
+    # #startdate
+    # @strawberryA.field(description="""is the membership still valid""")
+    # def valid(self) -> datetime:
     #     return self.valid
-    #startdate-?????bool je špatně
-    #enddate
+    # #enddate
     #facilitytype_id
 
     #capacity
-    # @strawberryA.field(description="""Facility's name""")
-    # def capacity(self) -> int:
-    #     return self.capacity
+    @strawberryA.field(description="""Facility's name""")
+    def capacity(self) -> int:
+        return self.capacity
     #manager_id
-
-    #master_facility_id
-    #external_id
     
 ###########################################################################################################################
 #
@@ -90,8 +99,9 @@ class Query:
 
     @strawberryA.field(description="""Finds an workflow by their id""")
     async def facility_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> FacilityGQLModel:
-        result = await resolveFacilityById(AsyncSessionFromInfo(info), id )
-        return result
+        async with withInfo(info) as session:
+            result = await resolveFacilityById(session,  id )
+            return result
 
 ###########################################################################################################################
 #
