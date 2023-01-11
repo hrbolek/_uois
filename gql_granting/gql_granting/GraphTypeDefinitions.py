@@ -16,12 +16,14 @@ def AsyncSessionFromInfo(info):
 # - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
 #
 
+from gql_granting.gql_granting.GraphResolvers import resolveSemesterByID, resolveSubjectByID,resolveClassificationByID,resolveThemeTypeByID,resolveStudyThemeByID,resolveStudyProgramByID,resolveStudyLanguageByID,resolveStudyThemeItemByID,resolveStudyProgramEditorByID
+
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing premade study programs""")
 class StudyProgramGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
+        result = await resolveStudyProgramByID(AsyncSessionFromInfo(info), id)
         result._type_definition = cls._type_definition  # little hack :)
         return result
 
@@ -56,7 +58,7 @@ class StudyProgramGQLModel:
 class StudyProgramEditorGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
+        result = await resolveStudyProgramEditorByID(AsyncSessionFromInfo(info), id)
         result._type_definition = cls._type_definition  # little hack :)
         return result
 
@@ -67,12 +69,11 @@ class StudyProgramEditorGQLModel:
 
 
 ###########################################################################################################################
-@strawberryA.federation.type(keys=["id"],
-                             description="""Entity which connects programs and semesters, includes informations about subjects""")
+@strawberryA.federation.type(keys=["id"], description="""Entity which connects programs and semesters, includes informations about subjects""")
 class SubjectGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
+        result = await resolveSubjectByID(AsyncSessionFromInfo(info), id)
         result._type_definition = cls._type_definition  # little hack :)
         return result
 
@@ -84,20 +85,21 @@ class SubjectGQLModel:
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="""foreign key""")
-    def program_id(self) -> strawberryA.ID:
-        return self.program_id
+    @strawberryA.field(description="""StudyProgramID""")
+    async def study_program(self, info: strawberryA.types.Info) -> 'StudyProgramGQLModel':
+        result = await resolveStudyProgramByID(AsyncSessionFromInfo(info),self.studyProgram_id)
+        return result
 
-    @strawberryA.field(description="""foreign key""")
-    def language_id(self) -> strawberryA.ID:
-        return self.language_id
-
+    @strawberryA.field(description="""StudyProgramID""")
+    async def study_language(self, info: strawberryA.types.Info)->'StudyLanguageGQLModel':
+        result = await resolveStudyLanguageByID(AsyncSessionFromInfo(info),self.studyLanguage_id)
+        return result
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing each semester in study program""")
 class StudyLanguageGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
+        result = await resolveStudyLanguageByID(AsyncSessionFromInfo(info), id)
         result._type_definition = cls._type_definition  # little hack :)
         return result
 
@@ -112,7 +114,7 @@ class StudyLanguageGQLModel:
 class SemesterGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
+        result = await resolveSemesterByID(AsyncSessionFromInfo(info), id)
         result._type_definition = cls._type_definition  # little hack :)
         return result
 
@@ -125,18 +127,22 @@ class SemesterGQLModel:
     @strawberryA.field(description="""credits""")
     def credits(self) -> int:
         return self.credits
-    @strawberryA.field(description="""foreign key""")
-    def subject_id(self) -> strawberryA.ID:
-        return self.subject_id
-    @strawberryA.field(description="""foreign key""")
-    def classification_id(self) -> strawberryA.ID:
-        return self.classification_id
+
+    @strawberryA.field(description="""SubjectID""")
+    async def subject(self, info: strawberryA.types.Info) -> 'SubjectGQLModel':
+        result = await resolveSubjectByID(AsyncSessionFromInfo(info), self.Subject_id)
+        return result
+
+    @strawberryA.field(description="""ClassificationID""")
+    async def classification(self, info: strawberryA.types.Info) -> 'ClassificationGQLModel':
+        result = await resolveClassificationByID(AsyncSessionFromInfo(info), self.Classification_id)
+        return result
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing each semester in study program""")
 class ClassificationGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
+        result = await resolveClassificationByID(AsyncSessionFromInfo(info), id)
         result._type_definition = cls._type_definition  # little hack :)
         return result
 
@@ -151,7 +157,7 @@ class ClassificationGQLModel:
 class StudyThemeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
+        result = await resolveStudyThemeByID(AsyncSessionFromInfo(info), id)
         result._type_definition = cls._type_definition  # little hack :)
         return result
 
@@ -161,27 +167,33 @@ class StudyThemeGQLModel:
     @strawberryA.field(description="""name""")
     def name(self) -> str:
         return self.name
-    @strawberryA.field(description="""foreign key""")
-    def semester_id(self) -> strawberryA.ID:
-        return self.semester_id
+
+    @strawberryA.field(description="""SemesterID""")
+    async def semester(self, info: strawberryA.types.Info) -> 'SemesterGQLModel':
+        result = await resolveSemesterByID(AsyncSessionFromInfo(info), self.Semester_id)
+        return result
 
 @strawberryA.federation.type(keys=["id"], description="""Entity which represents all themes included in semester""")
 class StudyThemeItemGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
+        result = await resolveStudyThemeItemByID(AsyncSessionFromInfo(info), id)
         result._type_definition = cls._type_definition  # little hack :)
         return result
 
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
-    @strawberryA.field(description="""foreign key""")
-    def theme_id(self) -> strawberryA.ID:
-        return self.theme_id
-    @strawberryA.field(description="""foreign key""")
-    def type_id(self) -> strawberryA.ID:
-        return self.type_id
+
+    @strawberryA.field(description="""StudyThemeID""")
+    async def study_theme(self, info: strawberryA.types.Info) -> 'StudyLanguageGQLModel':
+        result = await resolveStudyThemeByID(AsyncSessionFromInfo(info), self.studyTheme_id)
+        return result
+
+    @strawberryA.field(description="""ThemeTypeID""")
+    async def theme_type(self, info: strawberryA.types.Info) -> 'ThemeTypeGQLModel':
+        result = await resolveThemeTypeByID(AsyncSessionFromInfo(info), self.themeType_id)
+        return result
     @strawberryA.field(description="""lessons""")
     def lessons(self) -> int:
         return self.lessons
@@ -191,7 +203,7 @@ class StudyThemeItemGQLModel:
 class ThemeTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveMembershipById(AsyncSessionFromInfo(info), id)
+        result = await resolveThemeTypeByID(AsyncSessionFromInfo(info), id)
         result._type_definition = cls._type_definition  # little hack :)
         return result
 

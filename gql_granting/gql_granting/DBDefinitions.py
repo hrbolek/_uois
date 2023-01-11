@@ -113,7 +113,7 @@ class ThemeTypeModel(BaseModel):
     name = Column(String)
     last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
-    items = relationship('StudyThemeModel', back_populates='type')
+    items = relationship('StudyThemeItemModel', back_populates='type')
 ##############################################
 
 
