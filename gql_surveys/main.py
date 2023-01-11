@@ -32,6 +32,7 @@ def singleCall(asyncFunc):
         return resultCache['result']
     return result
 
+from gql_surveys.DBFeeder import SystemInitialization
 @singleCall
 async def RunOnceAndReturnSessionMaker():
     """Provadi inicializaci asynchronniho db engine, inicializaci databaze a vraci asynchronni SessionMaker.
@@ -46,6 +47,7 @@ async def RunOnceAndReturnSessionMaker():
     # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
     # musi byt asynchronniho typu (async def ...)
         # createSystemDataStructureRoleTypes(result),
+        SystemInitialization(result)
         # createSystemDataStructureGroupTypes(result)
         ####################################################################################
     )

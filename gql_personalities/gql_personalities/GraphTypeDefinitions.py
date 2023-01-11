@@ -45,7 +45,7 @@ class UserGQLModel:
     async def studies(self, info: strawberryA.types.Info) -> typing.List['StudyGQLModel']:
         async with withInfo(info) as session:
             result = await resolveStudiesForUser(session, self.id)
-            return 
+            return result
         
     @strawberryA.field(description="""List of medals for the user""")
     async def medals(self, info: strawberryA.types.Info) -> typing.List['MedalGQLModel']:
@@ -88,6 +88,7 @@ class RankGQLModel:
     def end(self) -> strawberryA.ID:
         return self.end
 
+    #TODO RankTypeGQLModel
 
 from gql_personalities.GraphResolvers import resolveRankTypeAll, resolveRankTypeById
 from gql_personalities.GraphResolvers import resolveRankTypeByThreeLetters
@@ -107,6 +108,8 @@ class RankTypeGQLModel:
     @strawberryA.field(description="""name""")
     def name(self) -> strawberryA.ID:
         return self.name
+
+    #TODO Ranks Relation
 
 
 from gql_personalities.GraphResolvers import resolveStudyAll, resolveStudyById
@@ -186,6 +189,8 @@ class CertificateTypeGQLModel:
     @strawberryA.field(description="""name""")
     def name(self) -> strawberryA.ID:
         return self.name
+
+    #TODO Certificate Relation
 
 
 from gql_personalities.GraphResolvers import resolveCertificateTypeGroupAll, resolveCertificateTypeGroupById
@@ -294,7 +299,7 @@ class WorkHistoryGQLModel:
         return self.position
 
     @strawberryA.field(description="""ico""")
-    def ico(self) -> strawberryA.ID:
+    def ico(self) -> Union[strawberryA.ID, None]:
         return self.ico
 
 
@@ -363,7 +368,7 @@ class Query:
     async def rankType_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[RankTypeGQLModel]:
         async with withInfo(info) as session:
             result = await resolveRankTypeAll(session,  skip, limit)
-            return 
+            return result
         
     @strawberryA.field(description="""Finds a rankType by letters, letters should be atleast three""")
     async def rankType_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[RankTypeGQLModel]:
@@ -377,7 +382,7 @@ class Query:
     async def study_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[StudyGQLModel]:
         async with withInfo(info) as session:
             result = await resolveStudyAll(session,  skip, limit)
-            return
+            return result
     
     @strawberryA.field(description="""Finds a study by letters, letters should be atleast three""")
     async def study_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[StudyGQLModel]:
@@ -391,7 +396,7 @@ class Query:
     async def certificate_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[CertificateGQLModel]:
         async with withInfo(info) as session:
             result = await resolveCertificateAll(session,  skip, limit)
-            return
+            return result
 
 
 #certificateType
