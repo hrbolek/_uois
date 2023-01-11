@@ -52,12 +52,9 @@ def determineRequestNames():
 def determineSectionNames():
     """Definuje zakladni typy sekci pozadavku a udrzuje je v pameti"""
     sectionNames = [
-        'Student Information',
-        'Request Description',
-        'Head of Department Approval',
-        'Department Suggestion',
+        'Submission',
+        'Teacher Approval',
         'Dean Approval',
-        'Faculty Suggestion'
     ]
     return sectionNames
 
@@ -65,9 +62,9 @@ def determineSectionNames():
 def determinePartNames():
     """Definuje zakladni typy casti pozadavku a udrzuje je v pameti"""
     partNames = [
-        'Personal Information',
-        'Leave Details',
-        'Approvals'
+        'Student Part',
+        'Teacher Part',
+        'Dean Part'
     ]
     return partNames
 
@@ -77,12 +74,12 @@ def determineItemNames():
     itemNames = [
         'Name',
         'Group',
+        'Specialization',
         'Program',
+        'email',
         'Description',
-        'Name of Department',
-        'Head of Department',
-        'Name of Dean',
-        'Dean Approval'
+        'Status',
+        'Department'
     ]
     return itemNames
 
