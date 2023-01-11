@@ -38,14 +38,14 @@ from functools import cache
 limit = 10
 
 def randomUUID():
-    userIDs = [uuid.uuid4() for _ in range(limit) ]
-    return userIDs
+    uuids = [uuid.uuid4() for _ in range(limit) ]
+    return uuids
 
 
 def randomAuthor(id):
     return  {
         'id': id,
-        'user_id': random.choice(authorIDs),
+        'user_id': random.choice(userIDs),
         'publication_id': random.choice(publicationIDs),
         'order': randomOrder(),
         'share': randomShare(),

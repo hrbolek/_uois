@@ -7,7 +7,7 @@ import uuid
 import datetime
 
 
-from gql_publication.GraphResolvers import resolvePublicationById,resolvePublicationAll, resolveAuthorById, resolvePublicationTypeAll, resolvePublicationTypeById, resolvePublicationForPublicationType, resolveUpdatePublication, resolveAuthorsForPublication, resolvePublicationsForSubject, resolveAuthorByUser
+from gql_publication.GraphResolvers import resolvePublicationById,resolvePublicationAll, resolveAuthorById, resolvePublicationTypeAll, resolvePublicationTypeById, resolvePublicationForPublicationType, resolveUpdatePublication, resolveAuthorsForPublication, resolvePublicationsForSubject, resolveAuthorByUser, resolvePublicationsByUser
 
 
 # from gql_publication.GraphResolvers import resolvePublicationById
@@ -53,7 +53,7 @@ class UserGQLModel:
         return UserGQLModel(id=id)
 
     @strawberryA.field(description="""List of authors""")
-    async def author_publications(self, info: strawberryA.types.Info) -> typing.List['AuthorGQLModel']:
+    async def publications(self, info: strawberryA.types.Info) -> typing.List['AuthorGQLModel']:
         result = await resolveAuthorByUser(AsyncSessionFromInfo(info),self.id)
         
       
@@ -112,11 +112,11 @@ class PublicationGQLModel:
     def reference(self) -> str:
         return self.reference
     
-    @strawberryA.field(description="""If a publication is valid""")
+    @strawberryA.field(description="""if a publication is valid""")
     def valid(self) -> bool:
         return self.valid
     
-    @strawberryA.field(description="""last change""")
+    @strawberryA.field(description="""timestamp""")
     def lastchange(self) -> datetime.datetime:
             return self.lastchange
 
@@ -192,7 +192,7 @@ class PublicationEditorGQLModel:
         return result
     
     @strawberryA.field(description="""Updates the author data""")
-    async def set_author_order(self, info: strawberryA.types.Info, author_id: uuid.UUID, order) -> List['AuthorGQLModel']:
+    async def set_author_order(self, info: strawberryA.types.Info, author_id: uuid.UUID, order: int) -> List['AuthorGQLModel']:
         result = await resolveUpdateAuthorOrder(AsyncSessionFromInfo(info),self.id, author_id, order)
         return result
 
@@ -206,7 +206,7 @@ class PublicationEditorGQLModel:
 #######################
     
     @strawberryA.field(description="""Invalidate a publication""")
-    async def invalidate_publication(self, info: strawberryA.types.Info) -> PublicationGQLModel:
+    async def invalidate_publication(self, info: strawberryA.types.Info) -> 'PublicationGQLModel':
         session = AsyncSessionFromInfo(info)
         publication = await resolvePublicationById(session, self.id)
         publication.valid = False
@@ -229,22 +229,23 @@ class AuthorGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""""")
+    @strawberryA.field(description="""order based on author's share""")
     def order(self) -> int:
         return self.order
 
-    @strawberryA.field(description="""""")
+    @strawberryA.field(description="""author's percentage share""")
     def share(self) -> float:
         return self.share
     
-    @strawberryA.field(description="""user""")
-    async def user(self) -> 'UserGQLModel':
-        return self.user
+    # @strawberryA.field(description="""user""")
+    # async def user(self) -> 'UserGQLModel':
+    #     return UserGQLModel(id=self.user_id)
 
     @strawberryA.field(description="""publication""")
-    async def publication(self) -> 'PublicationGQLModel':
-        return self.publication
-   
+    async def publication(self, info: strawberryA.types.Info) -> List['PublicationGQLModel']:
+        result = await resolvePublicationsByUser(AsyncSessionFromInfo(info),self.id)
+        return result
+
     @strawberryA.field(description="""If an author is valid""")
     def valid(self) -> bool:
         return self.valid
@@ -257,12 +258,14 @@ class AuthorGQLModel:
 
 
 from gql_publication.DBFeeder import randomDataStructure
+from gql_publication.GraphResolvers import resolvePublicationsForAuthor
+
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
 
     @strawberryA.field(description="""Returns a list of publications (paged)""")
-    async def publication_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[PublicationGQLModel]:
+    async def publication_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List['PublicationGQLModel']:
         result = await resolvePublicationAll(AsyncSessionFromInfo(info), skip, limit)
         return result
 
@@ -278,18 +281,24 @@ class Query:
         return result
 
     @strawberryA.field(description="""Finds a publication by their id""")
-    async def publication_type_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[PublicationTypeGQLModel]:
+    async def publication_type_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List['PublicationTypeGQLModel']:
         result = await resolvePublicationTypeAll(AsyncSessionFromInfo(info), skip, limit)
         return result
 
     @strawberryA.field(description="""Finds a group type by its id""")
-    async def publication_type_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[PublicationTypeGQLModel, None]:
+    async def publication_type_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union['PublicationTypeGQLModel', None]:
         result = await resolvePublicationTypeById(AsyncSessionFromInfo(info), id)
         return result
 
 
-    @strawberryA.field(description="""Random publications""")
-    async def randomPublication(self, info: strawberryA.types.Info) -> List[PublicationGQLModel]:
+    @strawberryA.field(description="""Finds publications by author""")
+    async def publication_by_author(self, info: strawberryA.types.Info, id: uuid.UUID) -> List['PublicationGQLModel']:
+        result = await resolvePublicationsForAuthor(AsyncSessionFromInfo(info), id)
+        return result
+
+
+    @strawberryA.field(description="""Generate random publications""")
+    async def randomPublication(self, info: strawberryA.types.Info) -> List['PublicationGQLModel']:
         result = await randomDataStructure(AsyncSessionFromInfo(info))
         # print('random university id', newId)
         # result = await resolveGroupById(AsyncSessionFromInfo(info), newId)

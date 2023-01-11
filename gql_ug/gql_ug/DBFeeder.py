@@ -3,51 +3,52 @@ from functools import cache
 from gql_ug.DBDefinitions import BaseModel, UserModel, GroupModel, MembershipModel, RoleModel
 from gql_ug.DBDefinitions import GroupTypeModel, RoleTypeModel
 
-import uuid
-
 import random
 import itertools
 from functools import cache
 
-def uuidStr():
-    return f'{uuid.uuid1()}'
+
+
+
+def randomPublication():
+    pass
+
 
 @cache
 def determineRoleTypes():
     """Definuje zakladni typy roli a udrzuje je v pameti"""
     roleTypes = [
-        {'name': 'rektor', 'name_en': 'rector', 'id': 'ae3f0d74-6159-11ed-b753-0242ac120003'}, 
-        {'name': 'prorektor', 'name_en': 'vicerector', 'id': 'ae3f2886-6159-11ed-b753-0242ac120003'}, 
-        {'name': 'děkan', 'name_en': 'dean', 'id': 'ae3f2912-6159-11ed-b753-0242ac120003'}, 
-        {'name': 'proděkan', 'name_en': 'vicedean', 'id': 'ae3f2980-6159-11ed-b753-0242ac120003'}, 
-        {'name': 'vedoucí katedry', 'name_en': 'head of department', 'id': 'ae3f29ee-6159-11ed-b753-0242ac120003'}, 
-        {'name': 'vedoucí učitel', 'name_en': 'leading teacher', 'id': 'ae3f2a5c-6159-11ed-b753-0242ac120003'}
-    ]
+        {'name': 'rector'},
+        {'name': 'vicerector'},
+
+        {'name': 'dean'},
+        {'name': 'vicedean'},
+
+        {'name': 'head of department'},
+        {'name': 'leading teacher'}
+        ]
     return roleTypes
 
 @cache
 def determineGroupTypes():
     """Definuje zakladni typy skupin a udrzuje je v pameti"""
     groupTypes = [
-        {"name": "univerzita", "name_en": "university", "ex_type": "100", "id": "cd49e152-610c-11ed-9f29-001a7dda7110"},
-        {"name": "fakulta", "name_en": "faculty", "ex_type": "300", "id": "cd49e153-610c-11ed-bf19-001a7dda7110"},
-        {"name": "ústav", "name_en": "institute", "ex_type": "400", "id": "cd49e154-610c-11ed-bdbf-001a7dda7110"},
-        {"name": "centrum", "name_en": "centre", "ex_type": "410", "id": "cd49e155-610c-11ed-bdbf-001a7dda7110"},
-        {"name": "katedra", "name_en": "department", "ex_type": "500", "id": "cd49e155-610c-11ed-844e-001a7dda7110"},
-        {"name": "oddělení", "name_en": "section", "ex_type": "600", "id": "cd49e156-610c-11ed-87ef-001a7dda7110"},
-        {"name": "studijní skupina", "name_en": "study group", "ex_type": "001", "id": "cd49e157-610c-11ed-9312-001a7dda7110"},
-
-        {"name": "stalý stav", "name_en": "all teachers", "ex_type": "200", "id": "cd49e157-610c-11ed-9f29-001a7dda7110"},
-        {"name": "studenti", "name_en": "all students", "ex_type": "002", "id": "0eb35718-615b-11ed-b753-0242ac120003"},
+        {'name': 'university'},
+        {'name': 'faculty'},
+        {'name': 'centre'},
+        {'name': 'institute'},
+        {'name': 'department'},
+        {'name': 'study group'},
+        {'name': 'all teachers'},
+        {'name': 'all students'}
     ]
-
     return groupTypes
 
 def randomUniversity(name):
     """Generuje strukturu skupin na urovni univerzity (fakulty, katedry) a jejich akademicke pracovniky ve forme json"""
     result = {
         'name': f'University {name}', 
-        'grouptype': {'name': 'univerzita'},
+        'grouptype': {'name': 'university'},
         'subgroups': [
             randomFaculty(i+1) for i in range(random.randint(3, 5))
         ],
@@ -62,11 +63,11 @@ def randomUniversity(name):
     ]
 
     universityRoles = [
-        {'name': 'rektor'},
-        {'name': 'prorektor'},
-        {'name': 'prorektor'},
-        {'name': 'prorektor'},
-        {'name': 'prorektor'},
+        {'name': 'rector'},
+        {'name': 'vicerector'},
+        {'name': 'vicerector'},
+        {'name': 'vicerector'},
+        {'name': 'vicerector'},
     ]
 
     dbRoles = determineRoleTypes()
@@ -87,17 +88,14 @@ def randomFaculty(index):
     """Generuje """
     result = {
         'name': f'Faculty {index}', 
-        'grouptype': {'name': 'fakulta'},
+        'grouptype': {'name': 'faculty'},
         'subgroups': [
             randomDepartment(index, i + 1) for i in range(random.randint(8, 15))
         ],
         'roles': [],
         'users': []
     }
-    
-    studentGroups = [randomStudyGroup(dep) for dep in result['subgroups']]
-    result['subgroups'].extend(studentGroups)
-    
+
     result['users'] = [
         user 
         for subgroup in result['subgroups'] 
@@ -105,10 +103,10 @@ def randomFaculty(index):
     ]
 
     facultyRoles = [
-        {'name': 'děkan'},
-        {'name': 'proděkan'},
-        {'name': 'proděkan'},
-        {'name': 'proděkan'},
+        {'name': 'dean'},
+        {'name': 'vicedean'},
+        {'name': 'vicedean'},
+        {'name': 'vicedean'},
     ]
 
     dbRoles = determineRoleTypes()
@@ -125,23 +123,11 @@ def randomFaculty(index):
     #result['users'] = itertools.chain(map(result['subgroups'], lambda group: group['users']))
     return result
 
-def randomStudyGroup(department):
-    result = {
-        'name': department['name'].replace('Department', 'Studenti'), 
-        'grouptype': {'name': 'studijní skupina'},
-        'subgroups': [],
-        'roles': [],
-        'users': [
-            randomUser() for i in range(random.randint(15, 20))
-        ]
-    }
-    return result
-
 def randomDepartment(indexA, indexB):
     """"""
     result = {
         'name': f'Department {indexA}-{indexB}', 
-        'grouptype': {'name': 'katedra'},
+        'grouptype': {'name': 'department'},
         'subgroups': [],
         'roles': [],
         'users': [
@@ -150,7 +136,7 @@ def randomDepartment(indexA, indexB):
     }
     result['roles'].append(
         {
-            'roletype': {'name': 'vedoucí katedry'}, 
+            'roletype': {'name': 'head of department'}, 
             'user': random.choice(result['users']),
             'group': result
         })
@@ -206,7 +192,7 @@ async def createSystemDataStructureRoleTypes(asyncSessionMaker):
     print('roletypes not found in database')
     print(unsavedRoleTypes)
 
-    RoleTypeModelToAdd = [RoleTypeModel(name_en = roleType['name_en'], name = roleType['name'], id = roleType['id']) for roleType in unsavedRoleTypes]
+    RoleTypeModelToAdd = [RoleTypeModel(name = roleType['name']) for roleType in unsavedRoleTypes]
     print(RoleTypeModelToAdd)
     print(len(RoleTypeModelToAdd))
 
@@ -223,7 +209,7 @@ async def createSystemDataStructureRoleTypes(asyncSessionMaker):
     
     #extrakce dat z vysledku dotazu
     dbRoleTypes = [
-        {'name': role.name, 'name_en': role.name_en, 'id': role.id} for role in dbRoleTypes
+        {'name': role.name, 'id': role.id} for role in dbRoleTypes
         ]
 
     print('roletypes found in database')
@@ -245,7 +231,6 @@ async def createSystemDataStructureRoleTypes(asyncSessionMaker):
         dbRecords = list(filter(lambda item: (item['name'] == roleTypeName), dbRoleTypes))
         assert len(dbRecords) == 1, f'Nalezen {len(dbRecords)} pocet zaznamu :('
         roleType['id'] = dbRecords[0]['id']
-        roleType['name_en'] = dbRecords[0]['name_en']
 
     # test hacku
     print('Role types in database')
@@ -265,7 +250,7 @@ async def createSystemDataStructureGroupTypes(asyncSessionMaker):
     
     #extrakce dat z vysledku dotazu
     dbGroupTypes = [
-        {'name': groupType.name, 'name_en': groupType.name_en, 'id': groupType.id} for groupType in dbGroupTypes
+        {'name': groupType.name, 'id': groupType.id} for groupType in dbGroupTypes
         ]
 
     print('grouptypes found in database')
@@ -277,7 +262,7 @@ async def createSystemDataStructureGroupTypes(asyncSessionMaker):
     print('grouptypes not found in database')
     print(unsavedGroupTypes)
 
-    GroupTypeModelToAdd = [GroupTypeModel(name_en = groupType['name_en'], name = groupType['name'], id = groupType['id']) for groupType in unsavedGroupTypes]
+    GroupTypeModelToAdd = [GroupTypeModel(name = groupType['name']) for groupType in unsavedGroupTypes]
     print(GroupTypeModelToAdd)
     print(len(GroupTypeModelToAdd))
 
@@ -294,7 +279,7 @@ async def createSystemDataStructureGroupTypes(asyncSessionMaker):
     
     #extrakce dat z vysledku dotazu
     dbGroupTypes = [
-        {'name': groupType.name, 'name_en': groupType.name_en, 'id': groupType.id} for groupType in dbGroupTypes
+        {'name': groupType.name, 'id': groupType.id} for groupType in dbGroupTypes
         ]
 
     print('grouptypes found in database')
@@ -311,7 +296,6 @@ async def createSystemDataStructureGroupTypes(asyncSessionMaker):
         dbRecords = list(filter(lambda item: (item['name'] == groupTypeName), dbGroupTypes))
         assert len(dbRecords) == 1, f'Nalezen {len(dbRecords)} pocet zaznamu :('
         groupType['id'] = dbRecords[0]['id']
-        groupType['name_en'] = dbRecords[0]['name_en']
 
     # test hacku
     print('Group types in database')
@@ -415,6 +399,7 @@ async def randomDataStructure(session, name):
 
     return university['id']
 
+
 async def createUniversity(session, id, name):
     """Vytvori prazdnou univerzitu v databazi (session)"""
     
@@ -435,69 +420,3 @@ async def createUniversity(session, id, name):
     await session.commit()
     university['id'] = universityDbRecord.id
     return university['id']
-
-from gql_ug.GraphResolvers import resolveGroupById, resolveUserById, resolveMembershipById
-async def importUg(session, data):
-    ids = {}
-    for group in data['groups']:
-        id = group.get('id', None)
-        if id is None:
-            raise Exception(f'id must be defined on group {group}')
-        else:
-            groupRecord = await resolveGroupById(session, id)
-            if not groupRecord is None:
-                raise Exception(f'there already exists group with id {id}')
-            elif (id in ids):
-                raise Exception(f'this import has multiple use of id {id} see {ids[id]}')
-            else:
-                ids[id] = {"id": id, "type": "group", "name": group["name"]}
-
-    for user in data['users']:
-        id = user.get('id', None)
-        if id is None:
-            raise Exception(f'id must be defined on user {user}')
-        else:
-            userRecord = await resolveUserById(session, id)
-            if not userRecord is None:
-                raise Exception(f'there already exists user with id {id}')
-            elif (id in ids):
-                raise Exception(f'this import has multiple use of id {id} see {ids[id]}')
-            else:
-                ids[id] = {"id": id, "type": "user", "name": user["email"]}
-
-    for membership in data['memberships']:
-        id = membership.get('id', None)
-        if id is None:
-            raise Exception(f'id must be defined on membership {membership}')
-        else:
-            membershipRecord = await resolveMembershipById(session, id)
-            if not membershipRecord is None:
-                raise Exception(f'there already exists membership with id {id}')
-            elif (id in ids):
-                raise Exception(f'this import has multiple use of id {id} see {ids[id]}')
-            else:
-                ids[id] = {"id": id, "type": "membership", "name": membership["id"]}
-
-    def justThoseKeys(data, keys):
-        result = {}
-        for key in keys:
-            if key in data:
-                result[key] = data[key]
-        return result
-
-    groupKeys = ['id', 'name', 'grouptype_id', 'mastergroup_id']
-    groupsToAdd = [GroupModel(**justThoseKeys(group, groupKeys)) for group in data['groups']]
-
-    userKeys = ['id', 'name', 'surname', 'email']
-    usersToAdd = [UserModel(**justThoseKeys(user, userKeys)) for user in data['users']]
-    
-    membershipKeys = ['id', 'group_id', 'user_id']
-    membershipsToAdd = [MembershipModel(**justThoseKeys(membership, membershipKeys)) for membership in data['memberships']]
-    
-    allEntitites = groupsToAdd + usersToAdd + membershipsToAdd
-
-    async with session.begin():
-        session.add_all(allEntitites)
-    await session.commit()
-
-    pass

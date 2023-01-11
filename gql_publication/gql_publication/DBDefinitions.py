@@ -59,7 +59,7 @@ class PublicationModel(BaseModel):
     published_date = Column(Date)
     reference = Column(String)
     valid = Column(Boolean)
-    lastchange = Column(DateTime,  default=datetime.datetime.now)
+    lastchange = Column(DateTime,  server_default=sqlalchemy.sql.func.now())
 
     author = relationship('AuthorModel', back_populates='publication')
     publication_type = relationship('PublicationTypeModel', back_populates='publication')
