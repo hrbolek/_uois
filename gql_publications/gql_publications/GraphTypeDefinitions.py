@@ -37,7 +37,7 @@ from gql_publications.GraphResolvers import resolvePublicationById,resolvePublic
 from gql_publications.GraphResolvers import resolvePublicationTypeAll, resolvePublicationTypeById, resolvePublicationForPublicationType
 from gql_publications.GraphResolvers import resolveUpdatePublication, resolveAuthorsForPublication, resolvePublicationsForSubject, resolveAuthorsByUser
 
-@strawberryA.federation.type(extend=True, keys=["id"],description="""Entity representing a subject""")
+@strawberryA.federation.type(extend=True, keys=["id"])
 class PlanSubjectGQLModel:
 
     id: strawberryA.ID = strawberryA.federation.field(external=True)
@@ -46,7 +46,7 @@ class PlanSubjectGQLModel:
         return PlanSubjectGQLModel(id=id)
 
 
-@strawberryA.federation.type(extend=True, keys=["id"],description="""Entity representing a realition between Publication and Subject""")
+@strawberryA.federation.type(extend=True, keys=["id"])
 class SubjectGQLModel:
 
     id: strawberryA.ID = strawberryA.federation.field(external=True)
@@ -63,7 +63,7 @@ class SubjectGQLModel:
 
 
 
-@strawberryA.federation.type(extend=True, keys=["id"],description="""Entity representing a user""")
+@strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
 
     id: strawberryA.ID = strawberryA.federation.field(external=True)
@@ -94,8 +94,8 @@ class PublicationTypeGQLModel:
         return self.id
 
     @strawberryA.field(description="""type""")
-    def type(self) -> str:
-        return self.type
+    def name(self) -> str:
+        return self.name
 
     @strawberryA.field(description="""List of publications with this type""")
     async def publications(self, info: strawberryA.types.Info) -> typing.List['PublicationGQLModel']:
@@ -255,11 +255,11 @@ class AuthorGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""""")
+    @strawberryA.field(description="""order in author list""")
     def order(self) -> int:
         return self.order
 
-    @strawberryA.field(description="""""")
+    @strawberryA.field(description="""share on publication""")
     def share(self) -> float:
         return self.share
     
@@ -329,7 +329,7 @@ class Query:
     @strawberryA.field(description="""Random publications""")
     async def randomPublication(self, info: strawberryA.types.Info) -> List[PublicationGQLModel]:
         async with withInfo(info) as session:
-            result = await randomDataStructure(AsyncSessionFromInfo(info))
+            result = await randomDataStructure(session)
             # print('random university id', newId)
             # result = await resolveGroupById(session,  newId)
             # print('db response', result.name)

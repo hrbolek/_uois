@@ -30,17 +30,17 @@ def singleCall(asyncFunc):
 def determinePresenceTypes():
     """Definuje zakladni typy přítomnosti a udrzuje je v pameti"""
     presenceTypes = [
-        {'name': 'present', 'id': 'a6ca5364-7abd-11ed-a1eb-0242ac120002'},
+        {'name': 'přítomen', 'name_en': 'present', 'id': 'a6ca5364-7abd-11ed-a1eb-0242ac120002'},
 
         #doplnit zbytek UUID
-        {'name': 'absent', 'id': 'a6ca574c-7abd-11ed-a1eb-0242ac120002'},
-        {'name': 'sick leave','id': 'a6ca5b7a-7abd-11ed-a1eb-0242ac120002'},
+        {'name': 'absent', 'name_en': 'absent', 'id': 'a6ca574c-7abd-11ed-a1eb-0242ac120002'},
+        {'name': 'nemoc', 'name_en': 'sick leave', 'id': 'a6ca5b7a-7abd-11ed-a1eb-0242ac120002'},
 
-        {'name': 'official leave','id': 'a6ca5d0a-7abd-11ed-a1eb-0242ac120002'},
-        {'name': 'guard duty','id': 'a6ca5ee0-7abd-11ed-a1eb-0242ac120002'},
+        {'name': 'ŘD', 'name_en': 'official leave', 'id': 'a6ca5d0a-7abd-11ed-a1eb-0242ac120002'},
+        {'name': 'služba', 'name_en': 'guard duty', 'id': 'a6ca5ee0-7abd-11ed-a1eb-0242ac120002'},
         
 
-        {'name': 'compensatory leave','id': 'a6ca6264-7abd-11ed-a1eb-0242ac120002'},
+        {'name': 'NV', 'name_en': 'compensatory leave', 'id': 'a6ca6264-7abd-11ed-a1eb-0242ac120002'},
         ]
     return presenceTypes
 
@@ -81,6 +81,7 @@ def determineTasks():
         },
 
         ]
+    tasks = []
     return tasks
 
 @cache
@@ -108,19 +109,20 @@ def determineContents():
         },
 
     ]
-
+    contents = []
     return contents
 
-
+import datetime
 def randomDate():
 
     """Vytváří nám náhodný datum"""
 
-    day = random.randrange(1,32)
-    month = random.randrange(1,13)
-    year = '2022'
+    day = random.randrange(1, 28)
+    month = random.randrange(1, 13)
+    year = 2022
 
-    return {day,'/', month,'/', year}
+    #return {day,'/', month,'/', year}
+    return datetime.date(year, month, day)
 
 
 

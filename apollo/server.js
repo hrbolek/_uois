@@ -91,13 +91,16 @@ const getENV = (name, defaultValue) => {
                   }
               }  
           }
-          console.log('request')
-          console.log(JSON.stringify(Object.keys(request)))
-          console.log(JSON.stringify(Object.keys(request.http)))
-          console.log(JSON.stringify(request.query))
-          console.log(JSON.stringify(request.variables))
-          console.log(JSON.stringify(request.context))
-          console.log(JSON.stringify(typeof context))
+
+          //console.log(JSON.stringify(Object.keys(request)))
+          //console.log(JSON.stringify(Object.keys(request.http)))
+          console.log('request for ', JSON.stringify(request.http.url))
+          if (request.query) { console.log(JSON.stringify(request.query)) }
+          if (request.variables) { console.log(JSON.stringify(request.variables)) }
+          
+          //console.log(JSON.stringify(request.context))
+          //console.log(JSON.stringify(typeof context))
+
           //const headers = context.req.headers
           /*
           for (const key in headers) {
@@ -120,7 +123,9 @@ const getENV = (name, defaultValue) => {
   
   const server = new ApolloServer({ gateway });
 
+  console.log('server pre start')
   await server.start()
+  console.log('server post start')
 
   server.applyMiddleware({ app, path: '/api/gql' });
 

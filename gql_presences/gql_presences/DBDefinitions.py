@@ -56,6 +56,7 @@ class PresenceTypeModel(BaseModel):
 
     id = UUIDColumn()
     name = Column(String)
+    name_en = Column(String)
 
     presences = relationship('PresenceModel', back_populates='presenceType')
 

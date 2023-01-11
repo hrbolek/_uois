@@ -63,6 +63,7 @@ class Study(BaseModel):
 
     id = UUIDColumn()
     name = Column(String)
+    name_en = Column(String)
     program = Column(String)
     start = Column(DateTime)
     end = Column(DateTime)

@@ -22,7 +22,7 @@ def AsyncSessionFromInfo(info):
 from gql_surveys.GraphResolvers import resolveSurveyById, resolveQuestionById, resolveAnswerById, resolveUserById, resolveQuestionTypeById
 from gql_surveys.GraphResolvers import resolveAnswersForQuestion,resolveAnswersForUser#, resolveQuestionsForType
 
-@strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a relation between an user and a group""")
+@strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel: 
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 

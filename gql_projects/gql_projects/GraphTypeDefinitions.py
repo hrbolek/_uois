@@ -30,7 +30,7 @@ def AsyncSessionFromInfo(info):
 #GQL PROJECT
 import datetime
 from gql_projects.GraphResolvers import resolveProjectById, resolveProjectAll, resolveUpdateProject, resolveInsertProject
-@strawberryA.federation.type(keys=["id"],description="""Entity representing a project""")
+@strawberryA.federation.type(keys=["id"], description="""Entity representing a project""")
 class ProjectGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -84,7 +84,7 @@ class ProjectGQLModel:
 
 #GQL PROJECT TYPE
 from gql_projects.GraphResolvers import resolveProjectTypeById, resolveProjectTypeAll, resolveUpdateProjectType, resolveInsertProjectType, resolveProjectsForProjectType, resolveFinancesForProject, resolveMilestonesForProject
-@strawberryA.federation.type(keys=["id"],description="""Entity representing a project types""")
+@strawberryA.federation.type(keys=["id"], description="""Entity representing a project types""")
 class ProjectTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -110,7 +110,7 @@ class ProjectTypeGQLModel:
 
 #GQL FINANCE
 from gql_projects.GraphResolvers import resolveFinanceById, resolveFinanceAll, resolveUpdateFinance, resolveInsertFinance
-@strawberryA.federation.type(keys=["id"],description="""Entity representing a finance""")
+@strawberryA.federation.type(keys=["id"], description="""Entity representing a finance""")
 class FinanceGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -150,7 +150,7 @@ class FinanceGQLModel:
 
 #GQL FINANCE TYPE
 from gql_projects.GraphResolvers import resolveFinanceTypeById, resolveFinanceTypeAll, resolveUpdateFinanceType, resolveInsertFinanceType, resolveFinancesForFinanceType
-@strawberryA.federation.type(keys=["id"],description="""Entity representing a finance type""")
+@strawberryA.federation.type(keys=["id"], description="""Entity representing a finance type""")
 class FinanceTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -176,7 +176,7 @@ class FinanceTypeGQLModel:
 
 #GQL MILESTONE
 from gql_projects.GraphResolvers import resolveMilestoneById, resolveMilestoneAll, resolveUpdateMilestone, resolveInsertMilestone
-@strawberryA.federation.type(keys=["id"],description="""Entity representing a milestone""")
+@strawberryA.federation.type(keys=["id"], description="""Entity representing a milestone""")
 class MilestoneGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -210,7 +210,7 @@ class MilestoneGQLModel:
 
 #GQL GROUP
 from gql_projects.GraphResolvers import resolveProjectsForGroup
-@strawberryA.federation.type(extend=True, keys=["id"],description="""Entity representing a group""")
+@strawberryA.federation.type(extend=True, keys=["id"])
 class GroupGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
     @classmethod
