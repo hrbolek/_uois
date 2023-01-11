@@ -33,15 +33,15 @@ class StudyProgramGQLModel:
     def type(self) -> str:
         return self.type
 
-    @strawberryA.field(description="""type""")
+    @strawberryA.field(description="""study duration""")
     def study_duration(self) -> int:
         return self.study_duration
 
-    @strawberryA.field(description="""type""")
+    @strawberryA.field(description="""type of study""")
     def type_of_study(self) -> str:
         return self.type_of_study
 
-    @strawberryA.field(description="""type""")
+    @strawberryA.field(description="""name""")
     def name(self) -> str:
         return self.name
 
@@ -79,6 +79,18 @@ class SubjectGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+    
+    @strawberryA.field(description="""name""")
+    def name(self) -> str:
+        return self.name
+
+    @strawberryA.field(description="""foreign key""")
+    def program_id(self) -> strawberryA.ID:
+        return self.program_id
+
+    @strawberryA.field(description="""foreign key""")
+    def language_id(self) -> strawberryA.ID:
+        return self.language_id
 
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing each semester in study program""")
@@ -92,7 +104,9 @@ class StudyLanguageGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
-
+    @strawberryA.field(description="""name""")
+    def name(self) -> str:
+        return self.name
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing each semester in study program""")
 class SemesterGQLModel:
@@ -105,7 +119,18 @@ class SemesterGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
-
+    @strawberryA.field(description="""semester number""")
+    def semester_number(self) -> int:
+        return self.semester_number
+    @strawberryA.field(description="""credits""")
+    def credits(self) -> int:
+        return self.credits
+    @strawberryA.field(description="""foreign key""")
+    def subject_id(self) -> strawberryA.ID:
+        return self.subject_id
+    @strawberryA.field(description="""foreign key""")
+    def classification_id(self) -> strawberryA.ID:
+        return self.classification_id
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing each semester in study program""")
 class ClassificationGQLModel:
@@ -118,7 +143,9 @@ class ClassificationGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
-
+    @strawberryA.field(description="""name""")
+    def name(self) -> str:
+        return self.name
 
 @strawberryA.federation.type(keys=["id"], description="""Entity which represents all themes included in semester""")
 class StudyThemeGQLModel:
@@ -131,7 +158,12 @@ class StudyThemeGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
-
+    @strawberryA.field(description="""name""")
+    def name(self) -> str:
+        return self.name
+    @strawberryA.field(description="""foreign key""")
+    def semester_id(self) -> strawberryA.ID:
+        return self.semester_id
 
 @strawberryA.federation.type(keys=["id"], description="""Entity which represents all themes included in semester""")
 class StudyThemeItemGQLModel:
@@ -144,6 +176,15 @@ class StudyThemeItemGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+    @strawberryA.field(description="""foreign key""")
+    def theme_id(self) -> strawberryA.ID:
+        return self.theme_id
+    @strawberryA.field(description="""foreign key""")
+    def type_id(self) -> strawberryA.ID:
+        return self.type_id
+    @strawberryA.field(description="""lessons""")
+    def lessons(self) -> int:
+        return self.lessons
 
 
 @strawberryA.federation.type(keys=["id"], description="""Entity which represents all themes included in semester""")
@@ -157,6 +198,9 @@ class ThemeTypeGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+    @strawberryA.field(description="""name""")
+    def name(self) -> str:
+        return self.name
 
 
 ###########################################################################################################################
