@@ -10,11 +10,24 @@ import datetime
 from gql_publication.GraphResolvers import resolvePublicationById,resolvePublicationAll, resolveAuthorById, resolvePublicationTypeAll, resolvePublicationTypeById, resolvePublicationForPublicationType, resolveUpdatePublication, resolveAuthorsForPublication, resolvePublicationsForSubject, resolveAuthorByUser, resolvePublicationsByUser
 
 
-# from gql_publication.GraphResolvers import resolvePublicationById
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def withInfo(info):
+    asyncSessionMaker = info.context['asyncSessionMaker']
+    async with asyncSessionMaker() as session:
+        try:
+            yield session
+        finally:
+            pass
+
 
 def AsyncSessionFromInfo(info):
+    print('obsolete function used AsyncSessionFromInfo, use withInfo context manager instead')
     return info.context['session']
 
+def AsyncSessionMakerFromInfo(info):
+    return info.context['asyncSessionMaker']
 
 
 
@@ -64,17 +77,19 @@ class PublicationTypeGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolvePublicationTypeById(AsyncSessionFromInfo(info), id)
-        result._type_definition = cls._type_definition # little hack :)
-        return result
+        #result = await resolveMembershipById(session,  id)
+        async with withInfo(info) as session:
+            result = await resolvePublicationTypeById(session, id)
+            result._type_definition = cls._type_definition # little hack :)
+            return result
     
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
 
     @strawberryA.field(description="""type""")
-    def type(self) -> str:
-        return self.type
+    def name(self) -> str:
+        return self.name
 
     @strawberryA.field(description="""List of publications with this type""")
     async def publications(self, info: strawberryA.types.Info) -> typing.List['PublicationGQLModel']:
@@ -88,9 +103,11 @@ class PublicationGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolvePublicationById(AsyncSessionFromInfo(info), id)
-        result._type_definition = cls._type_definition # little hack :)
-        return result
+        #result = await resolveMembershipById(session,  id)
+        async with withInfo(info) as session:
+            result = await resolvePublicationById(session, id)
+            result._type_definition = cls._type_definition # little hack :)
+            return result
     
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
@@ -170,21 +187,54 @@ class PublicationEditorGQLModel:
     ##
     ## Mutace, obejiti problemu s federativnim API
     ##
+    id: strawberryA.ID = None
+    result: str = None
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolvePublicationById(AsyncSessionFromInfo(info), id)
-        result._type_definition = cls._type_definition # little hack :)
-        return result
+        #result = await resolveMembershipById(session,  id)
+        async with withInfo(info) as session:
+            result = await resolvePublicationById(session, id)
+            result._type_definition = cls._type_definition # little hack :)
+            return result
 
     @strawberryA.field(description="""Entity primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""Updates publication data""")
-    async def update(self, info: strawberryA.types.Info, data: PublicationUpdateGQLModel) -> 'PublicationGQLModel':
-        result = await resolveUpdatePublication(AsyncSessionFromInfo(info), id=self.id, data=data)
-        return result
+    @strawberryA.field(description="""Result of update operation""")
+    def result(self) -> str:
+        return self.result
+
+    @strawberryA.field(description="""Result of update operation""")
+    async def publication(self, info: strawberryA.types.Info) -> PublicationGQLModel:
+            #result = await resolveUserById(session,  self.id)
+        async with withInfo(info) as session:
+            result = await resolvePublicationById(session, self.id)
+            return result
+
+
+    @strawberryA.field(description="""Updates the user data""")
+    async def update(self, info: strawberryA.types.Info, data: PublicationUpdateGQLModel) -> 'PublicationEditorGQLModel':
+        lastchange = data.lastchange
+        #await resolverUpdateUser(session,  id=self.id, data=data)
+        async with withInfo(info) as session:
+            await resolveUpdatePublication(session, id=self.id, data=data)
+            if (lastchange == data.lastchange):
+                # no change
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = PublicationEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
+            return result
+
+
+    # @strawberryA.field(description="""Updates publication data""")
+    # async def update(self, info: strawberryA.types.Info, data: PublicationUpdateGQLModel) -> 'PublicationGQLModel':
+    #     result = await resolveUpdatePublication(AsyncSessionFromInfo(info), id=self.id, data=data)
+    #     return result
 
     @strawberryA.field(description="""Sets author a share""")
     async def set_author_share(self, info: strawberryA.types.Info, author_id: uuid.UUID, share: float) -> 'AuthorGQLModel':
@@ -221,10 +271,12 @@ class AuthorGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveAuthorById(AsyncSessionFromInfo(info), id)
-        result._type_definition = cls._type_definition # little hack :)
-        return result
-  
+        #result = await resolveMembershipById(session,  id)
+        async with withInfo(info) as session:
+            result = await resolveAuthorById(session, id)
+            result._type_definition = cls._type_definition # little hack :)
+            return result
+
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
@@ -292,13 +344,13 @@ class Query:
 
 
     @strawberryA.field(description="""Finds publications by author""")
-    async def publication_by_author(self, info: strawberryA.types.Info, id: uuid.UUID) -> List['PublicationGQLModel']:
+    async def publications_by_author(self, info: strawberryA.types.Info, id: uuid.UUID) -> List['PublicationGQLModel']:
         result = await resolvePublicationsForAuthor(AsyncSessionFromInfo(info), id)
         return result
 
 
     @strawberryA.field(description="""Generate random publications""")
-    async def randomPublication(self, info: strawberryA.types.Info) -> List['PublicationGQLModel']:
+    async def randomPublication(self, info: strawberryA.types.Info) -> 'PublicationGQLModel':
         result = await randomDataStructure(AsyncSessionFromInfo(info))
         # print('random university id', newId)
         # result = await resolveGroupById(AsyncSessionFromInfo(info), newId)

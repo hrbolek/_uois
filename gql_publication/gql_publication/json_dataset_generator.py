@@ -1,6 +1,7 @@
 import json
 import random
 import uuid
+import datetime
 from uuid import UUID
 
 
@@ -14,18 +15,18 @@ class UUIDEncoder(json.JSONEncoder):
 limit = 10
 
 def randomUUID():
-    userIDs = [uuid.uuid4() for _ in range(limit) ]
-    return userIDs
+    uuids = [uuid.uuid4() for _ in range(limit) ]
+    return uuids
 
 
 def randomAuthor(id):
     return  {
         'id': id,
-        'user_id': random.choice(authorIDs),
+        'user_id': random.choice(userIDs),
         'publication_id': random.choice(publicationIDs),
         'order': randomOrder(),
         'share': randomShare()
-    }
+        }
     
 
 def randomPublicationName():
@@ -44,9 +45,9 @@ def randomPlace():
     return random.choice(places)
     
 
-def randomPublishedYear():
-   return random.randint(1990,2020)
-
+def randomPublishedDate():
+    defualt_date = datetime.date(2015, 6, 3)
+    return defualt_date + datetime.timedelta(days=random.randint(1,100))
 
 def randomShare():
     return int(100/(random.randint(1,4)))
@@ -55,14 +56,15 @@ def randomOrder():
     return random.randint(1,2)
 
 def randomPublicationTypes(ids):
-   types = ["Skripta", "Clanek v odbornem periodiku", "Konferencni prispevek", "Clanek", "Recenze"]
+   names = ["Skripta", "Clanek v odbornem periodiku", "Konferencni prispevek", "Clanek", "Recenze"]
     
-   return [{"id": id, "type": type} for id, type in zip(ids,types)]
+   return [{"id": id, "name": name} for id, name in zip(ids,names)]
 
 
 def randomPublications(id):
     return {
-        "id": id, "name": randomPublicationName(), "publication_type_id": random.choice(publicationTypesIds), "place": randomPlace(), "published_year": randomPublishedYear(),"reference": randomReference()}
+            "id": id, "name": randomPublicationName(), "publication_type_id": random.choice(publicationTypesIds), "place": randomPlace(), "published_date": randomPublishedDate(),"reference": randomReference(), "valid": True}
+
 
 from sqlalchemy.future import select
 
@@ -80,6 +82,11 @@ def createDataStructurePublicationTypes():
     publicationsTypes = randomPublicationTypes(publicationTypesIds)
     return publicationsTypes
 
+
+def createDataStructureUsers():
+    users = [{"id":id }for id in userIDs]
+    return users
+
 userIDs = randomUUID()
 authorIDs = randomUUID()
 publicationIDs = randomUUID()
@@ -90,14 +97,19 @@ publicationTypesIds = randomUUID()
 publication_types = createDataStructurePublicationTypes()
 publications = createDataStructurePublications()
 authors =  createDataStructureAuthors()
+users = createDataStructureUsers()
 
 
 dataset = {
-    "publications": publications,
+    # "publications": publications,
     "authors": authors,
-    "publication_types": publication_types
+    "users": users
+    # "publication_types": publication_types
 }
 
+print(dataset)
 
-with open('publications_dataset.json', 'w') as outfile:
-    json.dump(dataset, outfile,cls=UUIDEncoder)
+
+
+# with open('publications_dataset.json', 'w') as outfile:
+#     json.dump(dataset, outfile,cls=UUIDEncoder)

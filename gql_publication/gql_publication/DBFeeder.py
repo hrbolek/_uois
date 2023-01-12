@@ -35,11 +35,16 @@ from functools import cache
 #             return obj.hex
 #         return json.JSONEncoder.default(self, obj)
 
-limit = 10
+limit = 5
 
 def randomUUID():
     uuids = [uuid.uuid4() for _ in range(limit) ]
     return uuids
+
+userIDs = randomUUID()
+authorIDs = randomUUID()
+publicationIDs = randomUUID()
+publicationTypesIds = randomUUID()
 
 
 def randomAuthor(id):
@@ -48,10 +53,9 @@ def randomAuthor(id):
         'user_id': random.choice(userIDs),
         'publication_id': random.choice(publicationIDs),
         'order': randomOrder(),
-        'share': randomShare(),
-        "externalId": ""
-    }
-    
+        'share': randomShare()
+        }
+      
 
 def randomPublicationName():
     publicationNames = [
@@ -79,15 +83,15 @@ def randomShare():
 def randomOrder():
     return random.randint(1,2)
 
-def randomPublicationTypes(ids):
-   types = ["Skripta", "Clanek v odbornem periodiku", "Konferencni prispevek", "Clanek", "Recenze"]
+def randomPublicationTypes():
+   names = ["Skripta", "Clanek v odbornem periodiku", "Konferencni prispevek", "Clanek", "Recenze"]
     
-   return [{"id": id, "type": type} for id, type in zip(ids,types)]
+   return [{"id": id, "name": name} for id, name in zip(publicationTypesIds,names)]
 
 
 def randomPublications(id):
     return {
-            "id": id, "name": randomPublicationName(), "publication_type_id": random.choice(publicationTypesIds), "place": randomPlace(), "published_date": randomPublishedDate(),"reference": randomReference(), "valid": True, "externalId": ""}
+            "id": id, "name": randomPublicationName(), "publication_type_id": random.choice(publicationTypesIds), "place": randomPlace(), "published_date": randomPublishedDate(),"reference": randomReference(), "valid": True}
 
 
 from sqlalchemy.future import select
@@ -102,14 +106,16 @@ def createDataStructureAuthors():
     authors = [randomAuthor(id) for id in authorIDs]
     return authors
 
+def createDataStructureUsers():
+    users = [{"id":id }for id in userIDs]
+    return users
+
+
+
 def createDataStructurePublicationTypes():
-    publicationsTypes = randomPublicationTypes(publicationTypesIds)
+    publicationsTypes = randomPublicationTypes()
     return publicationsTypes
 
-userIDs = randomUUID()
-authorIDs = randomUUID()
-publicationIDs = randomUUID()
-publicationTypesIds = randomUUID()
 
 
 # with open('publications_dataset.json', 'w') as outfile:
@@ -131,13 +137,22 @@ async def randomDataStructure(session):
     async with session.begin():
         session.add_all(publicationsToAdd)
     await session.commit()
-    
+
+
+    users = createDataStructureUsers()
+    usersToAdd = [UserModel(**record) for record in users]
+    async with session.begin():
+        session.add_all(usersToAdd)
+    await session.commit()
     
     authors =  createDataStructureAuthors()
     authorsToAdd = [AuthorModel(**record) for record in authors]
     async with session.begin():
         session.add_all(authorsToAdd)
     await session.commit()
+
+    return publicationsToAdd[0]
+
     
 
 
