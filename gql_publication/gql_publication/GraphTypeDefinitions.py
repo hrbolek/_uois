@@ -289,13 +289,13 @@ class AuthorGQLModel:
     def share(self) -> float:
         return self.share
     
-    # @strawberryA.field(description="""user""")
-    # async def user(self) -> 'UserGQLModel':
-    #     return UserGQLModel(id=self.user_id)
+    @strawberryA.field(description="""user""")
+    async def user(self) -> 'UserGQLModel':
+        return UserGQLModel(id=self.user_id)
 
     @strawberryA.field(description="""publication""")
     async def publication(self, info: strawberryA.types.Info) -> List['PublicationGQLModel']:
-        result = await resolvePublicationsByUser(AsyncSessionFromInfo(info),self.id)
+        result = await resolvePublicationsForAuthor(AsyncSessionFromInfo(info),self.id)
         return result
 
     @strawberryA.field(description="""If an author is valid""")
@@ -305,8 +305,6 @@ class AuthorGQLModel:
     @strawberryA.field(description="""last change""")
     def lastchange(self) -> datetime.datetime:
             return self.lastchange
-
-
 
 
 from gql_publication.DBFeeder import randomDataStructure
@@ -343,10 +341,16 @@ class Query:
         return result
 
 
-    @strawberryA.field(description="""Finds publications by author""")
-    async def publications_by_author(self, info: strawberryA.types.Info, id: uuid.UUID) -> List['PublicationGQLModel']:
-        result = await resolvePublicationsForAuthor(AsyncSessionFromInfo(info), id)
+    # @strawberryA.field(description="""Finds publications by author""")
+    # async def publications_by_author(self, info: strawberryA.types.Info, id: uuid.UUID) -> List['PublicationGQLModel']:
+    #     result = await resolvePublicationsForAuthor(AsyncSessionFromInfo(info), id)
+    #     return result
+
+    @strawberryA.field(description="""Finds publications by user""")
+    async def publications_by_user(self, info: strawberryA.types.Info, id: uuid.UUID) -> List['PublicationGQLModel']:
+        result = await resolvePublicationsByUser(AsyncSessionFromInfo(info), id)
         return result
+
 
 
     @strawberryA.field(description="""Generate random publications""")
