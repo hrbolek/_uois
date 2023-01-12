@@ -29,13 +29,13 @@ def UUIDColumn(name=None):
 class StudyProgramModel(BaseModel):
     __tablename__ = "plan_programs"
     id = UUIDColumn()
-    type = Column(String) #bachelor/master/doctor
+    type = Column(String)  # bachelor/master/doctor
     study_duration = Column(Integer)
-    type_of_study = Column(String) #milXciv
+    type_of_study = Column(String)  # milXciv
     name = Column(String)
     last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-# studiu kombinovane/dalkove
-    subjects = relationship('SubjectModel',back_populates='program')
+    # studiu kombinovane/dalkove
+    subjects = relationship('SubjectModel', back_populates='program')
 
 
 class SubjectModel(BaseModel):
@@ -50,6 +50,7 @@ class SubjectModel(BaseModel):
     semesters = relationship('SemesterModel', back_populates='subject')
     language = relationship('StudyLanguageModel', back_populates='subjects')
 
+
 ##############################################
 
 class StudyLanguageModel(BaseModel):
@@ -59,6 +60,8 @@ class StudyLanguageModel(BaseModel):
     last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
     subjects = relationship('SubjectModel', back_populates='language')
+
+
 #######################################
 
 class SemesterModel(BaseModel):
@@ -74,6 +77,7 @@ class SemesterModel(BaseModel):
     classifications = relationship('ClassificationModel', back_populates='classificationsemesters')
     themes = relationship('StudyThemesModel', back_populates='studysemesters')
 
+
 ##############################################
 class ClassificationModel(BaseModel):
     __tablename__ = "plan_classifications"
@@ -81,7 +85,9 @@ class ClassificationModel(BaseModel):
     name = Column(String)
     last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
-    classificationsemesters = relationship('SemesterModel',back_populates='classifications')
+    classificationsemesters = relationship('SemesterModel', back_populates='classifications')
+
+
 ##############################################
 class StudyThemeModel(BaseModel):
     __tablename__ = "plan_themes"
@@ -90,14 +96,14 @@ class StudyThemeModel(BaseModel):
     semester_id = Column(ForeignKey('plan_semesters.id'))
     last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
-
     studysemesters = relationship('SemesterModel', back_populates='themes')
     items = relationship('StudyThemeItemModel', back_populates='theme')
+
 
 ##############################################
 
 class StudyThemeItemModel(BaseModel):
-    __tablename__="plan_items"
+    __tablename__ = "plan_items"
     id = UUIDColumn()
     theme_id = Column(ForeignKey('plan_themes.id'))
     type_id = Column(ForeignKey('plan_item_types.id'))
@@ -107,13 +113,16 @@ class StudyThemeItemModel(BaseModel):
     type = relationship('ThemeTypeModel', back_populates='items')
     theme = relationship('StudyThemeModel', back_populates='items')
 
+
 class ThemeTypeModel(BaseModel):
-    __tablename__= "plan_item_types"
+    __tablename__ = "plan_item_types"
     id = UUIDColumn()
     name = Column(String)
     last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
     items = relationship('StudyThemeItemModel', back_populates='type')
+
+
 ##############################################
 
 

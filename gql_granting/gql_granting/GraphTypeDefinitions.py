@@ -16,7 +16,9 @@ def AsyncSessionFromInfo(info):
 # - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
 #
 
-from gql_granting.gql_granting.GraphResolvers import resolveSemesterByID, resolveSubjectByID,resolveClassificationByID,resolveThemeTypeByID,resolveStudyThemeByID,resolveStudyProgramByID,resolveStudyLanguageByID,resolveStudyThemeItemByID,resolveStudyProgramEditorByID
+from gql_granting.GraphResolvers import resolveSemesterByID, resolveSubjectByID, resolveClassificationByID, \
+    resolveThemeTypeByID, resolveStudyThemeByID, resolveStudyProgramByID, resolveStudyLanguageByID, \
+    resolveStudyThemeItemByID
 
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing premade study programs""")
@@ -47,14 +49,15 @@ class StudyProgramGQLModel:
     def name(self) -> str:
         return self.name
 
-    ###Ignoruj
     @strawberryA.field(description="""primary key""")
     def editor(self) -> 'StudyProgramEditorGQLModel':
         return self
     #################################################
 
+
 ###########################################################################################################################
-@strawberryA.federation.type(keys=["id"], description="""Entity representing premade study programs""")
+"""""
+@strawberryA.federation.type(keys=["id"], description="Study program editor")
 class StudyProgramEditorGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -62,14 +65,16 @@ class StudyProgramEditorGQLModel:
         result._type_definition = cls._type_definition  # little hack :)
         return result
 
-    @strawberryA.field(description="""primary key""")
+    @strawberryA.field(description="primary key")
     def id(self) -> strawberryA.ID:
         return self.id
     # change name, add subject, delete subject
-
-
+"""""
 ###########################################################################################################################
-@strawberryA.federation.type(keys=["id"], description="""Entity which connects programs and semesters, includes informations about subjects""")
+
+
+@strawberryA.federation.type(keys=["id"],
+                             description="""Entity which connects programs and semesters, includes informations about subjects""")
 class SubjectGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -80,21 +85,24 @@ class SubjectGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
-    
+
     @strawberryA.field(description="""name""")
     def name(self) -> str:
         return self.name
 
+    # FK###############################################################################################
     @strawberryA.field(description="""StudyProgramID""")
     async def study_program(self, info: strawberryA.types.Info) -> 'StudyProgramGQLModel':
-        result = await resolveStudyProgramByID(AsyncSessionFromInfo(info),self.studyProgram_id)
+        result = await resolveStudyProgramByID(AsyncSessionFromInfo(info), self.studyProgram_id)
         return result
 
-    @strawberryA.field(description="""StudyProgramID""")
-    async def study_language(self, info: strawberryA.types.Info)->'StudyLanguageGQLModel':
-        result = await resolveStudyLanguageByID(AsyncSessionFromInfo(info),self.studyLanguage_id)
+    @strawberryA.field(description="""StudyLanguageID""")
+    async def study_language(self, info: strawberryA.types.Info) -> 'StudyLanguageGQLModel':
+        result = await resolveStudyLanguageByID(AsyncSessionFromInfo(info), self.studyLanguage_id)
         return result
 
+
+##################################################################################################
 @strawberryA.federation.type(keys=["id"], description="""Entity representing each semester in study program""")
 class StudyLanguageGQLModel:
     @classmethod
@@ -106,9 +114,11 @@ class StudyLanguageGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
     @strawberryA.field(description="""name""")
     def name(self) -> str:
         return self.name
+
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing each semester in study program""")
 class SemesterGQLModel:
@@ -121,13 +131,16 @@ class SemesterGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
     @strawberryA.field(description="""semester number""")
     def semester_number(self) -> int:
         return self.semester_number
+
     @strawberryA.field(description="""credits""")
     def credits(self) -> int:
         return self.credits
 
+    # FK###############################################################################################
     @strawberryA.field(description="""SubjectID""")
     async def subject(self, info: strawberryA.types.Info) -> 'SubjectGQLModel':
         result = await resolveSubjectByID(AsyncSessionFromInfo(info), self.Subject_id)
@@ -138,6 +151,8 @@ class SemesterGQLModel:
         result = await resolveClassificationByID(AsyncSessionFromInfo(info), self.Classification_id)
         return result
 
+
+##################################################################################################
 @strawberryA.federation.type(keys=["id"], description="""Entity representing each semester in study program""")
 class ClassificationGQLModel:
     @classmethod
@@ -149,9 +164,11 @@ class ClassificationGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
     @strawberryA.field(description="""name""")
     def name(self) -> str:
         return self.name
+
 
 @strawberryA.federation.type(keys=["id"], description="""Entity which represents all themes included in semester""")
 class StudyThemeGQLModel:
@@ -164,6 +181,7 @@ class StudyThemeGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
     @strawberryA.field(description="""name""")
     def name(self) -> str:
         return self.name
@@ -172,6 +190,7 @@ class StudyThemeGQLModel:
     async def semester(self, info: strawberryA.types.Info) -> 'SemesterGQLModel':
         result = await resolveSemesterByID(AsyncSessionFromInfo(info), self.Semester_id)
         return result
+
 
 @strawberryA.federation.type(keys=["id"], description="""Entity which represents all themes included in semester""")
 class StudyThemeItemGQLModel:
@@ -185,6 +204,7 @@ class StudyThemeItemGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    # FK###############################################################################################
     @strawberryA.field(description="""StudyThemeID""")
     async def study_theme(self, info: strawberryA.types.Info) -> 'StudyLanguageGQLModel':
         result = await resolveStudyThemeByID(AsyncSessionFromInfo(info), self.studyTheme_id)
@@ -194,6 +214,8 @@ class StudyThemeItemGQLModel:
     async def theme_type(self, info: strawberryA.types.Info) -> 'ThemeTypeGQLModel':
         result = await resolveThemeTypeByID(AsyncSessionFromInfo(info), self.themeType_id)
         return result
+
+    ##################################################################################################
     @strawberryA.field(description="""lessons""")
     def lessons(self) -> int:
         return self.lessons
@@ -210,6 +232,7 @@ class ThemeTypeGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
     @strawberryA.field(description="""name""")
     def name(self) -> str:
         return self.name

@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uoishelpers.resolvers import create1NGetter, createEntityByIdGetter, createEntityGetter, createInsertResolver, createUpdateResolver
 from uoishelpers.resolvers import putSingleEntityToDb
 
-from gql_granting.DBDefinitions import BaseModel, StudyProgramModel, StudyProgramEditorModel, SubjectModel, StudyLanguageModel, SemesterModel, ClassificationModel, StudyThemeModel, StudyThemeItemModel, ThemeTypeModel
+from gql_granting.DBDefinitions import BaseModel, StudyProgramModel, SubjectModel, StudyLanguageModel, SemesterModel, ClassificationModel, StudyThemeModel, StudyThemeItemModel, ThemeTypeModel
 
 ###########################################################################################################################
 #
@@ -20,7 +20,6 @@ from gql_granting.DBDefinitions import BaseModel, StudyProgramModel, StudyProgra
 #StudyProgramModel
 resolveStudyProgramByID = createEntityByIdGetter(StudyProgramModel)
 #Study->Subject 1/N
-resolveSubject
 
 #StudyProgramEditorModel
 resolveStudyProgramEditorByID = createEntityByIdGetter(StudyProgramEditorModel)

@@ -1,6 +1,6 @@
 from doctest import master
 from functools import cache
-from gql_granting.DBDefinitions import BaseModel
+from gql_granting.gql_granting.DBDefinitions import BaseModel
 
 import random
 import itertools
