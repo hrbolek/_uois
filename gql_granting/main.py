@@ -12,7 +12,7 @@ from strawberry.fastapi import GraphQLRouter
 ## Definice DB typu (pomoci SQLAlchemy https://www.sqlalchemy.org/)
 ## SQLAlchemy zvoleno kvuli moznost komunikovat s DB asynchronne
 ## https://docs.sqlalchemy.org/en/14/core/future.html?highlight=select#sqlalchemy.future.select
-from gql_empty.DBDefinitions import startEngine, ComposeConnectionString
+from gql_granting.DBDefinitions import startEngine, ComposeConnectionString
 
 ## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
 #from gql_workflow.DBFeeder import createSystemDataStructureRoleTypes, createSystemDataStructureGroupTypes
@@ -76,7 +76,7 @@ class MyGraphQL(GraphQL):
             }
 
 
-from gql_empty.GraphTypeDefinitions import schema
+from gql_granting.GraphTypeDefinitions import schema
 
 ## ASGI app, kterou "moutneme"
 graphql_app = MyGraphQL(
