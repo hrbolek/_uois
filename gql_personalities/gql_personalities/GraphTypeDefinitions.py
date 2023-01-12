@@ -361,7 +361,7 @@ class Query:
 #certificateType
     @strawberryA.field(description="""Returns a list of certificateTypes (paged)""")
     async def certificateType_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[CertificateTypeGQLModel]:
-        result = await resolveCertificateTypeAll(AsyncSessionFromInfo(info), skip, limit)¨
+        result = await resolveCertificateTypeAll(AsyncSessionFromInfo(info), skip, limit)
         return result
 
     @strawberryA.field(description="""Finds a certificateType by letters, letters should be atleast three""")
