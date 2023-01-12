@@ -33,7 +33,7 @@ class UserGQLModel:
     @strawberryA.field(description="""List of studies for the user""")
     async def studies(self, info: strawberryA.types.Info) -> typing.List['StudyGQLModel']:
         result = await resolveStudiesForUser(AsyncSessionFromInfo(info), self.id)
-        return 
+        return result
         
     @strawberryA.field(description="""List of medals for the user""")
     async def medals(self, info: strawberryA.types.Info) -> typing.List['MedalGQLModel']:
@@ -331,7 +331,7 @@ class Query:
     @strawberryA.field(description="""Returns a list of rankTypes (paged)""")
     async def rankType_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[RankTypeGQLModel]:
         result = await resolveRankTypeAll(AsyncSessionFromInfo(info), skip, limit)
-        return 
+        return result
         
     @strawberryA.field(description="""Finds a rankType by letters, letters should be atleast three""")
     async def rankType_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[RankTypeGQLModel]:
@@ -343,7 +343,7 @@ class Query:
     @strawberryA.field(description="""Returns a list of studies (paged)""")
     async def study_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[StudyGQLModel]:
         result = await resolveStudyAll(AsyncSessionFromInfo(info), skip, limit)
-        return
+        return result
     
     @strawberryA.field(description="""Finds a study by letters, letters should be atleast three""")
     async def study_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[StudyGQLModel]:
@@ -355,13 +355,14 @@ class Query:
     @strawberryA.field(description="""Returns a list of certificates (paged)""")
     async def certificate_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[CertificateGQLModel]:
         result = await resolveCertificateAll(AsyncSessionFromInfo(info), skip, limit)
-        return
+        return result
 
 
 #certificateType
     @strawberryA.field(description="""Returns a list of certificateTypes (paged)""")
     async def certificateType_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[CertificateTypeGQLModel]:
-        result = await resolveCertificateTypeAll(AsyncSessionFromInfo(info), skip, limit)
+        result = await resolveCertificateTypeAll(AsyncSessionFromInfo(info), skip, limit)¨
+        return result
 
     @strawberryA.field(description="""Finds a certificateType by letters, letters should be atleast three""")
     async def certificateType_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[CertificateTypeGQLModel]:
@@ -373,7 +374,8 @@ class Query:
     @strawberryA.field(description="""Returns a list of certificateTypeGroups (paged)""")
     async def certificateTypeGroup_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[CertificateTypeGroupGQLModel]:
         result = await resolveCertificateTypeGroupAll(AsyncSessionFromInfo(info), skip, limit)
-        
+        return result
+
     @strawberryA.field(description="""Finds a certificateTypeGroup by letters, letters should be atleast three""")
     async def certificateTypeGroup_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[CertificateTypeGroupGQLModel]:
         result = await resolveCertificateTypeGroupByThreeLetters(AsyncSessionFromInfo(info), validity, letters)
@@ -384,13 +386,14 @@ class Query:
     @strawberryA.field(description="""Returns a list of medals (paged)""")
     async def medal_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[MedalGQLModel]:
         result = await resolveMedalAll(AsyncSessionFromInfo(info), skip, limit)
-
+        return result
 
 #medalType
     @strawberryA.field(description="""Returns a list of medalTypes (paged)""")
     async def medalType_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[MedalTypeGQLModel]:
         result = await resolveMedalTypeAll(AsyncSessionFromInfo(info), skip, limit)
-        
+        return result
+
     @strawberryA.field(description="""Finds a medalType by letters, letters should be atleast three""")
     async def medalType_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[MedalTypeGQLModel]:
         result = await resolveMedalTypeByThreeLetters(AsyncSessionFromInfo(info), validity, letters)
@@ -401,7 +404,8 @@ class Query:
     @strawberryA.field(description="""Returns a list of medalTypeGroups (paged)""")
     async def medalTypeGroup_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[MedalTypeGroupGQLModel]:
         result = await resolveMedalTypeGroupAll(AsyncSessionFromInfo(info), skip, limit)
-        
+        return result
+
     @strawberryA.field(description="""Finds a medalTypeGroup by letters, letters should be atleast three""")
     async def medalTypeGroup_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[MedalTypeGroupGQLModel]:
         result = await resolveMedalTypeGroupByThreeLetters(AsyncSessionFromInfo(info), validity, letters)
@@ -412,7 +416,8 @@ class Query:
     @strawberryA.field(description="""Returns a list of workHistories (paged)""")
     async def workHistory_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[WorkHistoryGQLModel]:
         result = await resolveWorkHistoryAll(AsyncSessionFromInfo(info), skip, limit)
-        
+        return result
+
     @strawberryA.field(description="""Finds a workHistory by letters, letters should be atleast three""")
     async def workHistory_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[WorkHistoryGQLModel]:
         result = await resolveWorkHistoryByThreeLetters(AsyncSessionFromInfo(info), validity, letters)
@@ -423,6 +428,6 @@ class Query:
     @strawberryA.field(description="""Returns a list of relatedDocs (paged)""")
     async def relatedDoc_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[RelatedDocGQLModel]:
         result = await resolveRelatedDocAll(AsyncSessionFromInfo(info), skip, limit)
-
+        return result
 
 schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, ))
