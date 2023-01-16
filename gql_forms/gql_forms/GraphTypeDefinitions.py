@@ -2,6 +2,7 @@ from typing import List, Union
 import typing
 import strawberry as strawberryA
 import uuid
+import datetime
 
 def AsyncSessionFromInfo(info):
     return info.context['session']
@@ -20,18 +21,50 @@ from gql_forms.GraphResolvers import resolvePartById, resolvePartAll, resolveIte
 from gql_forms.GraphResolvers import resolveItemById, resolveItemAll, resolverUpdateItem, resolveInsertItem
 from gql_forms.GraphResolvers import resolveUserById, resolveUserAll, resolverUpdateUser, resolveInsertUser
 
+
+# Editor 
+# Change data in database 
+# 	1. Have edtior foe changing value 
+# 	Some struture for write, how I can compose the data structure to
+# Creat one Editor---- GQLModel
+# change 
+
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
     
     id: strawberryA.ID = strawberryA.federation.field(external=True)
-
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        # result = await resolveUserById(AsyncSessionFromInfo(info), id)
+        # result._type_definition = cls._type_definition # little hack :)
         return UserGQLModel(id=id)
 
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    # @strawberryA.field(description="""Request's name (like Vacation)""")
+    # def name(self) -> str:
+    #     return self.name
+    
+    # @strawberryA.field(description="""Request's name (like Vacation)""")
+    # def email(self) -> str:
+    #     return self.name
+    
+    
+    # @strawberryA.field(description="""Request's time of creation""")
+    # def create_at(self) -> datetime.datetime:
+    #     return self.create_at
+    
+    # @strawberryA.field(description="""Request's time of last update""")
+    # def lastchange(self) -> datetime.datetime:
+    #     return self.lastchange
+    @strawberryA.field(description="""Request for a user""")
     async def requests(self, info: strawberryA.types.Info)-> List['RequestGQLModel']:
         result = await resolveRequestByUser(AsyncSessionFromInfo(info), self.id)
         return result
+
+
 
 
 #define the type help to get attribute name and name 
@@ -41,19 +74,6 @@ class RequestGQLModel:
     Type representing a request in the system.
     This class extends the base `RequestModel` from the database and adds additional fields and methods needed for use in GraphQL.
     """
-    # @strawberryA.field(description="""Finds an request by their id""")
-    # async def id(self, info: strawberryA.types.Info) -> Union[str, None]:
-    #     result = self.id
-    #     #resovle will be ask 
-    #     return result
-
-    # #for the name attribute
-    # @strawberryA.field(description="""Finds an request by their name""")
-    # async def name(self, info: strawberryA.types.Info) -> Union[str, None]:
-    #     result = self.name
-    #     #resovle will be ask 
-    #     return result
-    
      # Add more fields here using the @strawberryA.field decorator
      # and using resolvers from GraphResolvers.py to retrieve the data
 
@@ -72,16 +92,16 @@ class RequestGQLModel:
         return self.name
     
     @strawberryA.field(description="""Request's time of creation""")
-    def created_at(self) -> str:
-        return self.created_at
+    def create_at(self) -> datetime.datetime:
+        return self.create_at
     
     @strawberryA.field(description="""Request's time of last update""")
-    def lastchange(self) -> str:
+    def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
-    @strawberryA.field(description="""Request's valid status""")
-    def valid(self) -> bool:
-        return self.valid
+    @strawberryA.field(description="""Request's status""")
+    def status(self) -> str:
+        return self.status
         
     @strawberryA.field(description="Retrieves the sections related to this request")
     async def sections(self, info: strawberryA.types.Info) -> typing.List['SectionGQLModel']:
@@ -89,11 +109,10 @@ class RequestGQLModel:
         sections = await resolveSectionsForRequest(session, self.id)
         return sections
     
-    # @strawberryA.field(description="Retrieves the user related to this request")
-    # async def user(self, info: strawberryA.types.Info) -> typing.List['UserGQLModel']:
-    #     session = AsyncSessionFromInfo(info)
-    #     user = await resolveUserById(session, self.user_id)
-    #     return user
+    @strawberryA.field(description="Retrieves the user related to this request")
+    async def user(self, info: strawberryA.types.Info) -> typing.List['UserGQLModel']:
+        user = UserGQLModel(id = self.user_id)
+        return user
 
     
 @strawberryA.federation.type(keys = ["id"] ,description="""Type representing a section in the workflow""")
@@ -114,22 +133,32 @@ class SectionGQLModel:
         return self.name
     
     @strawberryA.field(description="""Section's time of creation""")
-    def created_at(self) -> str:
-        return self.created_at
+    def create_at(self) -> datetime.datetime:
+        return self.create_at
     
     @strawberryA.field(description="""Section's time of last update""")
-    def lastchange(self) -> str:
+    def lastchange(self) -> datetime.datetime:
         return self.lastchange
     
     @strawberryA.field(description="""Section's order""")
     def order(self) -> int:
         return self.order
+
+    @strawberryA.field(description="""Section's status""")
+    def status(self) -> str:
+        return self.status
     
     @strawberryA.field(description="Retrieves the parts related to this section")
     async def parts(self, info: strawberryA.types.Info) -> typing.List['PartGQLModel']:
         session = AsyncSessionFromInfo(info)
         parts = await resolvePartsForSection(session, self.id)
         return parts
+
+    @strawberryA.field(description="Retrieves the request related to this section")
+    async def request(self, info: strawberryA.types.Info) -> typing.List['RequestGQLModel']:
+        session = AsyncSessionFromInfo(info)
+        request = await resolveRequestById(session, self.request_id)
+        return request
 
 
 @strawberryA.federation.type(keys = ["id"] ,description="""Type representing a part in the workflow""")
@@ -150,11 +179,11 @@ class PartGQLModel:
         return self.name
     
     @strawberryA.field(description="""Part's time of creation""")
-    def created_at(self) -> str:
-        return self.created_at
+    def create_at(self) -> datetime.datetime:
+        return self.create_at
     
     @strawberryA.field(description="""Part's time of last update""")
-    def lastchange(self) -> str:
+    def lastchange(self) -> datetime.datetime:
         return self.lastchange
     
     @strawberryA.field(description="""Part's order""")
@@ -166,6 +195,12 @@ class PartGQLModel:
         session = AsyncSessionFromInfo(info)
         items = await resolveItemsForPart(session, self.id)
         return items
+    
+    @strawberryA.field(description="Retrieves the section related to this part")
+    async def section(self, info: strawberryA.types.Info) -> typing.List['SectionGQLModel']:
+        session = AsyncSessionFromInfo(info)
+        section = await resolveSectionById(session, self.section_id)
+        return section
 
 @strawberryA.federation.type(keys = ["id"] ,description="""Type representing an item in the workflow""")
 class ItemGQLModel:
@@ -185,12 +220,26 @@ class ItemGQLModel:
         return self.name
     
     @strawberryA.field(description="""Item's time of creation""")
-    def created_at(self) -> str:
-        return self.created_at
+    def create_at(self) -> datetime.datetime:
+        return self.create_at
     
     @strawberryA.field(description="""Item's time of last update""")
-    def lastchange(self) -> str:
+    def lastchange(self) -> datetime.datetime:
         return self.lastchange
+    
+    @strawberryA.field(description="""Item's order""")
+    def order(self) -> int:
+        return self.order
+    
+    @strawberryA.field(description="""Item's value""")
+    def value(self) -> str:
+        return self.value
+    
+    @strawberryA.field(description="Retrieves the part related to this item")
+    async def part(self, info: strawberryA.types.Info) -> typing.List['PartGQLModel']:
+        session = AsyncSessionFromInfo(info)
+        part = await resolvePartById(session, self.part_id)
+        return part
 
 
 ###########################################################################################################################
@@ -218,9 +267,9 @@ class Query:
         return result
 
     @strawberryA.field(description="Retrieves all requests")
-    async def all_requests(self, info: strawberryA.types.Info) -> List[RequestGQLModel]:
+    async def all_requests(self, info: strawberryA.types.Info, skip: int, limit: int) -> List[RequestGQLModel]:
         session = AsyncSessionFromInfo(info)
-        requests = await resolveRequestAll(session)
+        requests = await resolveRequestAll(session, skip = skip, limit = limit)
         return requests
 
     @strawberryA.field(description="Retrieves requests by three letters in their name")

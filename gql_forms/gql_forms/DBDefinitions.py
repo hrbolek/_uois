@@ -1,4 +1,5 @@
 import sqlalchemy
+from sqlalchemy.future import select
 import datetime
 
 from sqlalchemy import Column, String, BigInteger, Integer, DateTime, ForeignKey, Sequence, Table, Boolean
@@ -24,16 +25,32 @@ def UUIDColumn(name=None):
 #
 ###########################################################################################################################
 
+class UserModel(BaseModel):
+    __tablename__ = "users"
+
+    id = UUIDColumn()
+    # name = Column(String)
+    # email = Column(String)
+    # # create_at = Column(DateTime, server_default=sqlalchemy.sql.func.now().now)
+    # # lastchange  = Column(DateTime, server_default=sqlalchemy.sql.func.now().now)
+    # create_at = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    # lastchange  = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+
+    requests = relationship('RequestModel', back_populates='user')
+
 class RequestModel(BaseModel):
     __tablename__ = "forms"
 
     id = UUIDColumn()
     name = Column(String)
-    creator_id = Column(ForeignKey('users.id'))
-    create_at = Column(DateTime)
-    lastchange  = Column(DateTime)
+    creator_id = Column(ForeignKey("users.id"), primary_key=True)
+    #######user_id
+    create_at = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+
+    lastchange  = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     status = Column(String) 
 
+    user = relationship("UserModel", back_populates="requests")
     sections = relationship("SectionModel", back_populates="request")
 
     
@@ -47,8 +64,8 @@ class SectionModel(BaseModel):
     name = Column(String)
 
     request_id = Column(ForeignKey("forms.id"), primary_key=True)
-    create_at = Column(DateTime)
-    lastchange  = Column(DateTime)
+    create_at = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange  = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     order = Column(Integer)
     status = Column(String)
 
@@ -62,8 +79,8 @@ class PartModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    create_at = Column(DateTime)
-    lastchange  = Column(DateTime)
+    create_at = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange  = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     order = Column(Integer)
 
     section_id = Column(ForeignKey("formsections.id"), primary_key=True)
@@ -76,27 +93,14 @@ class ItemModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    create_at = Column(DateTime)
-    lastchange  = Column(DateTime)
+    create_at = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange  = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     order = Column(Integer)
 
     value = Column(String)
 
     part_id = Column(ForeignKey("formparts.id"), primary_key=True)
     part = relationship("PartModel", back_populates="items")
-
-class UserModel(BaseModel):
-    __tablename__ = "users"
-
-    id = UUIDColumn()
-    name = Column(String)
-    email = Column(String)
-    # created_at = Column(DateTime, default=datetime.datetime.now)
-    # lastchange  = Column(DateTime, default=datetime.datetime.now)
-    create_at = Column(DateTime)
-    lastchange  = Column(DateTime)
-
-    request = relationship('RequestModel', back_populates='user')
 
 
 
