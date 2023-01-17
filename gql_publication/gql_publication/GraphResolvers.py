@@ -4,6 +4,7 @@ from typing import Coroutine, Callable, Awaitable, Union, List
 import uuid
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload, joinedload
+from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from uoishelpers.resolvers import create1NGetter, createEntityByIdGetter, createEntityGetter, createInsertResolver, createUpdateResolver
@@ -23,7 +24,7 @@ resolvePublicationById = createEntityByIdGetter(PublicationModel)
 
 resolvePublicationAll = createEntityGetter(PublicationModel)
 
-resolveUpdatePublication = createUpdateResolver(PublicationModel)
+resolveUpdatePublication = createUpdateResolver(PublicationModel, safe=True)
 resolveInsertPublication = createInsertResolver(PublicationModel)
 
 
@@ -41,6 +42,25 @@ resolveAuthorsForPublication = create1NGetter(AuthorModel, foreignKeyName='publi
 resolvePublicationsForSubject = create1NGetter(SubjectModel, foreignKeyName='subject_id', options=joinedload(SubjectModel.publication))
 
 resolveSubjectsForPublication = create1NGetter(SubjectModel, foreignKeyName='publication_id', options=joinedload(SubjectModel.subject))
+
+
+# async def  resolveUpdateAuthor = createUpdateResolver(AuthorModel)
+
+async def resolveRemoveAuthor(session, publication_id, user_id):
+    stmt = delete(AuthorModel).where((AuthorModel.user_id==user_id) & (AuthorModel.publication_id == publication_id))
+    resultMsg= ""
+    response = {}
+    try:
+        response = await session.execute(stmt)
+        session.commit()
+        # if()
+        resultMsg = "ok"
+    except:
+        resultMsg = "fail"
+  
+    return 
+
+
 
 async def resolvePublicationsByUser(session, id):
     stmt = select(PublicationModel).join(AuthorModel)

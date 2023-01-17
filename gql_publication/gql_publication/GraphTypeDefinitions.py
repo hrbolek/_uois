@@ -7,7 +7,7 @@ import uuid
 import datetime
 
 
-from gql_publication.GraphResolvers import resolvePublicationById,resolvePublicationAll, resolveAuthorById, resolvePublicationTypeAll, resolvePublicationTypeById, resolvePublicationForPublicationType, resolveUpdatePublication, resolveAuthorsForPublication, resolvePublicationsForSubject, resolveAuthorByUser, resolvePublicationsByUser
+from gql_publication.GraphResolvers import resolvePublicationById,resolvePublicationAll, resolveAuthorById, resolvePublicationTypeAll, resolvePublicationTypeById, resolvePublicationForPublicationType, resolveUpdatePublication, resolveAuthorsForPublication, resolvePublicationsForSubject, resolveAuthorByUser, resolvePublicationsByUser,resolveRemoveAuthor
 
 
 from contextlib import asynccontextmanager
@@ -66,7 +66,7 @@ class UserGQLModel:
         return UserGQLModel(id=id)
 
     @strawberryA.field(description="""List of authors""")
-    async def publications(self, info: strawberryA.types.Info) -> typing.List['AuthorGQLModel']:
+    async def authorships(self, info: strawberryA.types.Info) -> typing.List['AuthorGQLModel']:
         result = await resolveAuthorByUser(AsyncSessionFromInfo(info),self.id)
         
       
@@ -237,9 +237,14 @@ class PublicationEditorGQLModel:
     #     return result
 
     @strawberryA.field(description="""Sets author a share""")
-    async def set_author_share(self, info: strawberryA.types.Info, author_id: uuid.UUID, share: float) -> 'AuthorGQLModel':
+    async def set_author_share(self, info: strawberryA.types.Info, author_id: uuid.UUID, share: float) -> str:
         result = await resolveUpdateAuthor(AsyncSessionFromInfo(info),author_id, data=None, extraAttributes={'share': share})
-        return result
+        resultMsg = ""
+        if(result["share"] == share):
+            resultMsg="ok"
+        else:
+            resultMsg="fail"
+        return resultMsg
     
     @strawberryA.field(description="""Updates the author data""")
     async def set_author_order(self, info: strawberryA.types.Info, author_id: uuid.UUID, order: int) -> List['AuthorGQLModel']:
@@ -253,8 +258,7 @@ class PublicationEditorGQLModel:
             extraAttributes={'user_id': user_id, 'publication_id': self.id})
         return result
         
-#######################
-    
+
     @strawberryA.field(description="""Invalidate a publication""")
     async def invalidate_publication(self, info: strawberryA.types.Info) -> 'PublicationGQLModel':
         session = AsyncSessionFromInfo(info)
@@ -263,6 +267,10 @@ class PublicationEditorGQLModel:
         await session.commit()
         return publication
 
+    @strawberryA.field(description="""Remove author""")
+    async def remove_author(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> str:
+        result = await resolveRemoveAuthor(AsyncSessionFromInfo(info),self.id, user_id)
+        return result
 
 
 
@@ -330,14 +338,20 @@ class Query:
         result = await resolveAuthorById (AsyncSessionFromInfo(info), id)
         return result
 
-    @strawberryA.field(description="""Finds a publication by their id""")
+    @strawberryA.field(description="""Returns a list of publication types( paged)""")
     async def publication_type_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List['PublicationTypeGQLModel']:
         result = await resolvePublicationTypeAll(AsyncSessionFromInfo(info), skip, limit)
         return result
 
-    @strawberryA.field(description="""Finds a group type by its id""")
+    @strawberryA.field(description="""Finds a publication type by its id""")
     async def publication_type_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union['PublicationTypeGQLModel', None]:
         result = await resolvePublicationTypeById(AsyncSessionFromInfo(info), id)
+        return result
+
+
+    @strawberryA.field(description="""Finds an authorship by user id""")
+    async def author_by_user(self, info: strawberryA.types.Info, id: uuid.UUID) -> List['AuthorGQLModel']:
+        result = await resolveAuthorByUser(AsyncSessionFromInfo(info), id)
         return result
 
 
