@@ -44,7 +44,7 @@ resolveSectionsForRequest = create1NGetter(SectionModel, foreignKeyName='request
 # #
 # resolveUserForRequest = createEntityByIdGetter(UserModel)
 # bith allow update request maske cration of request model 
-resolverUpdateRequest = createUpdateResolver(RequestModel)
+resolveUpdateRequest = createUpdateResolver(RequestModel)
 resolveInsertRequest = createInsertResolver(RequestModel)
 
 """Function for searching requests by three letters"""
@@ -63,7 +63,7 @@ resolveSectionById = createEntityByIdGetter(SectionModel)
 resolveSectionAll = createEntityGetter(SectionModel)
 resolvePartsForSection = create1NGetter(PartModel, foreignKeyName='section_id')
 
-resolverUpdateSection = createUpdateResolver(SectionModel)
+resolveUpdateSection = createUpdateResolver(SectionModel)
 resolveInsertSection = createInsertResolver(SectionModel)
 
 ## part resolvers
@@ -71,19 +71,24 @@ resolvePartById = createEntityByIdGetter(PartModel)
 resolvePartAll = createEntityGetter(PartModel)
 resolveItemsForPart = create1NGetter(ItemModel, foreignKeyName='part_id')
 
-resolverUpdatePart = createUpdateResolver(PartModel)
+resolveUpdatePart = createUpdateResolver(PartModel)
 resolveInsertPart = createInsertResolver(PartModel)
 
 ## item resolvers
 resolveItemById = createEntityByIdGetter(ItemModel)
 resolveItemAll = createEntityGetter(ItemModel)
 
-resolverUpdateItem = createUpdateResolver(ItemModel)
+resolveUpdateItem = createUpdateResolver(ItemModel)
 resolveInsertItem = createInsertResolver(ItemModel)
+
+async def resolveDeleteItem(session: AsyncSession, id: uuid.UUID):
+    deletedItem= session.get(ItemModel,id)
+    session.delete(deletedItem)
+    session.commit()
 
 ## user resolvers
 resolveUserById = createEntityByIdGetter(UserModel)
 resolveUserAll = createEntityGetter(UserModel)
 
-resolverUpdateUser = createUpdateResolver(UserModel)
+resolveUpdateUser = createUpdateResolver(UserModel)
 resolveInsertUser = createInsertResolver(UserModel)

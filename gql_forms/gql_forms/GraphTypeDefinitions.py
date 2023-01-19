@@ -4,6 +4,16 @@ import strawberry as strawberryA
 import uuid
 import datetime
 
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def withInfo(info):
+    asyncSessionMaker = info.context['asyncSessionMaker']
+    async with asyncSessionMaker() as session:
+        try:
+            yield session
+        finally:
+            pass
 def AsyncSessionFromInfo(info):
     return info.context['session']
 
@@ -14,12 +24,12 @@ def AsyncSessionFromInfo(info):
 # - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
 #
 ###########################################################################################################################
-from gql_forms.GraphResolvers import resolveRequestById, resolveRequestAll, resolveSectionsForRequest, resolverUpdateRequest, resolveInsertRequest, resolveRequestsByThreeLetters
+from gql_forms.GraphResolvers import resolveRequestById, resolveRequestAll, resolveSectionsForRequest, resolveUpdateRequest, resolveInsertRequest, resolveRequestsByThreeLetters
 # from gql_forms.GraphResolvers import resolveRequestsByThreeLetters
-from gql_forms.GraphResolvers import resolveSectionById, resolveSectionAll, resolvePartsForSection, resolverUpdateSection, resolveInsertSection
-from gql_forms.GraphResolvers import resolvePartById, resolvePartAll, resolveItemsForPart, resolverUpdatePart, resolveInsertPart
-from gql_forms.GraphResolvers import resolveItemById, resolveItemAll, resolverUpdateItem, resolveInsertItem
-from gql_forms.GraphResolvers import resolveUserById, resolveUserAll, resolverUpdateUser, resolveInsertUser
+from gql_forms.GraphResolvers import resolveSectionById, resolveSectionAll, resolvePartsForSection, resolveUpdateSection, resolveInsertSection
+from gql_forms.GraphResolvers import resolvePartById, resolvePartAll, resolveItemsForPart, resolveUpdatePart, resolveInsertPart
+from gql_forms.GraphResolvers import resolveItemById, resolveItemAll, resolveUpdateItem, resolveInsertItem, resolveDeleteItem
+from gql_forms.GraphResolvers import resolveUserById, resolveUserAll, resolveUpdateUser, resolveInsertUser
 
 
 # Editor 
@@ -241,6 +251,55 @@ class ItemGQLModel:
         part = await resolvePartById(session, self.part_id)
         return part
 
+from typing import Optional
+@strawberryA.input
+class ItemUpdateGQLModel:
+    name: Optional[str]= None
+    #create_at : Optional[datetime.datetime] =None
+    order : Optional[int]=None
+    value: Optional[str]= None
+
+@strawberryA.input
+class ItemInsertGQLModel:
+    id: Optional[uuid.UUID]= None
+    part_id: Optional[uuid.UUID]= None
+    name: Optional[str]= None
+    #create_at : Optional[datetime.datetime] =None
+    order : Optional[int]=None
+    value: Optional[str]= None
+
+@strawberryA.federation.type(keys=["id"],description="""Entity representing an editable item""")
+class ItemEditorGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        async with withInfo(info) as session:
+            result = await resolveUserById(session, id)
+            result._type_definition = cls._type_definition # little hack :)
+            return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+    
+    @strawberryA.field
+    async def insert_item(self,info: strawberryA.types.Info,data: ItemInsertGQLModel)->'ItemGQLModel':
+        async with withInfo(info) as session:
+            result = await resolveInsertItem(session, data=data)
+            return result
+    @strawberryA.field
+    async def update_item(self, info: strawberryA.types.Info, data: ItemUpdateGQLModel, id: strawberryA.ID)-> 'ItemGQLModel':
+        async with withInfo(info) as session:
+            result = await resolveUpdateItem(session, id=id, data=data)
+            return result
+    
+    #FAIL
+    @strawberryA.field
+    async def delete_item(self, info: strawberryA.types.Info, id: strawberryA.ID)-> str:
+        async with withInfo(info) as session:
+            await resolveDeleteItem(session, id=id)
+        return "Delete an item"
+            
+
 
 ###########################################################################################################################
 #
@@ -292,6 +351,12 @@ class Query:
         await randomData(info.context['asyncSessionMaker'])
         return 'ok'
 
+    @strawberryA.field(description="Retrieves all items")
+    async def all_items(self, info: strawberryA.types.Info, skip: int, limit: int) -> List[ItemGQLModel]:
+        session = AsyncSessionFromInfo(info)
+        items = await resolveItemAll(session, skip = skip, limit = limit)
+        return items
+
 
 
 ###########################################################################################################################
@@ -303,4 +368,4 @@ class Query:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, ))
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, ), mutation= ItemEditorGQLModel)

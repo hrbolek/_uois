@@ -112,7 +112,7 @@ def funcResultingRequests():
         {"id": "493aeecc-95d7-11ed-a1eb-0242ac120002", "name": "STC contest application form", "creator_id":"024aea76-1ee8-4fd3-9b62-17aad9d07dc6", "create_at": datetime.datetime.now(), "lastchange":datetime.datetime.now(),"status": "pending"}
     ]
 
-
+# order can be used in representing forms, sections, ...(UI)
 def funcResultingSections():
     return [
         {"request_id": "493aeecc-95d7-11ed-a1eb-0242ac120002", "id": "78fe6a49-3e4f-4aab-bd55-83b822ec140c", "name": "Submission", "order": 1, "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now(), "status":"submitted"},
@@ -129,25 +129,25 @@ def funcResultingParts():
 
 def funcResultingItems():
     return [
-        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "02727e57-412e-4986-965d-c369beebac48", "name": "Name", "value": "Dang Quy Tai", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "10815df6-ad4b-45ca-8957-3528a31bb67f", "name": "Specialization", "value": "Kyberneticka bezpecnost", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "f451e384-4e5b-40d6-a49f-59df996f3d66", "name": "Group", "value": "23-5KB-C", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "f9b5b5a5-5b1f-4b9f-9b1f-5b1f4b9f9b1f", "name": "Program", "value": "Mg", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "fe85ac55-b30c-4f15-bba5-9f020764779c", "name": "email", "value": "quytai.dang@unob.cz", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "d378df0f-f659-4b59-9e78-9d250c6496cf", "name": "Description", "value": "I send you my application for STC contest", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "f9b5b5a5-5b1f-4b9f-9b1f-5b1f4b9faadf", "name": "Status", "value": "submitted", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "02727e57-412e-4986-965d-c369beebac48", "name": "Name", "value": "Dang Quy Tai","order":1 ,"create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "10815df6-ad4b-45ca-8957-3528a31bb67f", "name": "Specialization", "value": "Kyberneticka bezpecnost","order":2 , "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "f451e384-4e5b-40d6-a49f-59df996f3d66", "name": "Group", "value": "23-5KB-C","order":3 , "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "f9b5b5a5-5b1f-4b9f-9b1f-5b1f4b9f9b1f", "name": "Program", "value": "Mg","order":4, "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "fe85ac55-b30c-4f15-bba5-9f020764779c", "name": "email", "value": "quytai.dang@unob.cz","order":5, "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "d378df0f-f659-4b59-9e78-9d250c6496cf", "name": "Description", "value": "I send you my application for STC contest", "order":6,"create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "6622876c-cf64-4e6d-a970-4ce63d95c393", "id": "f9b5b5a5-5b1f-4b9f-9b1f-5b1f4b9faadf", "name": "Status", "value": "submitted", "order":7,"create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
 
-        {"part_id": "ddceaf79-5637-49d0-b4f0-d88f4b8dcf9f", "id": "8df55c6f-3109-4b37-a1c7-3de1dfd1e404", "name": "Name", "value": "Petr Frantis", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "ddceaf79-5637-49d0-b4f0-d88f4b8dcf9f", "id": "b26dcf77-99d2-4d61-b811-e9b8d35ef2f7", "name": "Department", "value": "K209", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "ddceaf79-5637-49d0-b4f0-d88f4b8dcf9f", "id": "a0b5b5a5-5b1f-4b9f-9b1f-5b1f4b9f9b1f", "name": "email", "value": "petr.fratis@unob.cz", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "ddceaf79-5637-49d0-b4f0-d88f4b8dcf9f", "id": "c26dcf77-99d2-4d61-b811-e9b8d35ef2f7", "name": "Description", "value": "I have received your application. Application has been approved. I agree to be your supervisor", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "ddceaf79-5637-49d0-b4f0-d88f4b8dcf9f", "id": "d26dcf77-99d2-4d61-b811-e9b8d35ef2a7", "name": "Status", "value": "approved", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "ddceaf79-5637-49d0-b4f0-d88f4b8dcf9f", "id": "8df55c6f-3109-4b37-a1c7-3de1dfd1e404", "name": "Name", "value": "Petr Frantis","order":1, "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "ddceaf79-5637-49d0-b4f0-d88f4b8dcf9f", "id": "b26dcf77-99d2-4d61-b811-e9b8d35ef2f7", "name": "Department", "value": "K209", "order":2,"create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "ddceaf79-5637-49d0-b4f0-d88f4b8dcf9f", "id": "a0b5b5a5-5b1f-4b9f-9b1f-5b1f4b9f9b1f", "name": "email", "value": "petr.fratis@unob.cz","order":3, "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "ddceaf79-5637-49d0-b4f0-d88f4b8dcf9f", "id": "c26dcf77-99d2-4d61-b811-e9b8d35ef2f7", "name": "Description", "value": "I have received your application. Application has been approved. I agree to be your supervisor", "order":4,"create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "ddceaf79-5637-49d0-b4f0-d88f4b8dcf9f", "id": "d26dcf77-99d2-4d61-b811-e9b8d35ef2a7", "name": "Status", "value": "approved","order":5, "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
 
-        {"part_id": "44c685d6-04e1-4fff-9ce6-764b7bc11c93", "id": "cb84f761-1478-4cad-9196-e3c7242d89b2", "name": "Name", "value": "Frantisek Vojkovsky", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "44c685d6-04e1-4fff-9ce6-764b7bc11c93", "id": "d26dcf77-99d2-4d61-b811-e9b8d35ef2f7", "name": "Department", "value": "K111", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "44c685d6-04e1-4fff-9ce6-764b7bc11c93", "id": "d0b5b5a5-5b1f-4b9f-9b1f-5b1f4b9f9b1f", "name": "email", "value": "frantisek.vojkovsky@unob.cz", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "44c685d6-04e1-4fff-9ce6-764b7bc11c93", "id": "e26dcf77-99d2-4d61-b811-e9b8d35ef2f7", "name": "Description", "value": "From the dean's office: your application will be on a waiting list. The list of contestants will be announced on January 10, 2023", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
-        {"part_id": "44c685d6-04e1-4fff-9ce6-764b7bc11c93", "id": "f26dcf77-99d2-4d61-b811-e9b8d35ef2f7", "name": "Status", "value": "pending", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "44c685d6-04e1-4fff-9ce6-764b7bc11c93", "id": "cb84f761-1478-4cad-9196-e3c7242d89b2", "name": "Name", "value": "Frantisek Vojkovsky","order":1, "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "44c685d6-04e1-4fff-9ce6-764b7bc11c93", "id": "d26dcf77-99d2-4d61-b811-e9b8d35ef2f7", "name": "Department", "value": "K111", "order":2,"create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "44c685d6-04e1-4fff-9ce6-764b7bc11c93", "id": "d0b5b5a5-5b1f-4b9f-9b1f-5b1f4b9f9b1f", "name": "email", "value": "frantisek.vojkovsky@unob.cz","order":3, "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "44c685d6-04e1-4fff-9ce6-764b7bc11c93", "id": "e26dcf77-99d2-4d61-b811-e9b8d35ef2f7", "name": "Description", "value": "From the dean's office: your application will be on a waiting list. The list of contestants will be announced on January 10, 2023", "order":4,"create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
+        {"part_id": "44c685d6-04e1-4fff-9ce6-764b7bc11c93", "id": "f26dcf77-99d2-4d61-b811-e9b8d35ef2f7", "name": "Status", "value": "pending", "order":5,"create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()},
     ]
 
 async def randomData(asyncSessionMaker):
