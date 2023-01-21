@@ -9,12 +9,11 @@ It is also a model of an information systems which could be used for some admini
 ## Used technologies
 
 - Python
-    - SQLAlchemy for modelling the database entitied
+    - SQLAlchemy for modelling the database entitied (async queries)
     - FastAPI for API definition and run 
     - Uvicorn as executor of FastAPI
-    - Graphene for GaphQL endpoint
-    - Tornado for asynchronous HTTP router
-    - Pypeteer for data management
+    - Strawberry for GraphQL endpoint (federated GraphQL)
+    - Appolo federation for GraphQL federation queries
 
 - Javascript
     - ReactJS as a library for building bricks of user interface
@@ -24,19 +23,15 @@ It is also a model of an information systems which could be used for some admini
     - containerization of applications
     - inner connection of containers
     
-- Redis
-    - study of usage in IS
-
-- Keycloak
-    - autentization server
+- Postgres 
+    - and its compatible replacements
 
 ## Base concept
 
 The project has several docker containers 
-- `pyf` Python FastAPI is a container providing an API (GraphQL)
-- `js` javascript React is container for UI
-- `pyt` Python Tornado is a container which will route HTTP calls from outside of composition of containers
-- `nginx` is hardwired router for `pyf\api`, `pyf\gql` and `js\ui`
+- `apollo` master of federation
+- `gql_*` apollo federation member
+- `nginx` is hardwired router 
 - `prostgres` is database server
 - `pgadmin` is an interface for database server administration
 
@@ -44,23 +39,9 @@ The project has several docker containers
 
 | Person | Role | Project Job | Period |
 |:------:|:----:|:-----------:|:------:|
-| AS     |Teacher|                          | 2021/9 - 2022/2 |
-| MB     |Student| Redis                    | 2021/9 - 2022/2 |
-| JB     |Student| UI, React                | 2021/9 - 2022/2 |
-| EB     |Student| UI, React                | 2021/9 - 2022/2 |
-| VB     |Student| Router, Tornado          | 2021/9 - 2022/2 |
-| LH     |Student| UI, React                | 2021/9 - 2022/2 |
-| FH     |Student| Keycloak, Authentization | 2021/9 - 2022/2 |
-| JH     |Student| Keycloak, Authentization | 2021/9 - 2022/2 |
-| JJ     |Student| UI, React, Python        | 2021/9 - 2022/2 |
-| VM     |Student| API, SQLAlchemy, Graphene| 2021/9 - 2022/2 |
-| JN     |Student| Router, Tornado          | 2021/9 - 2022/2 |
-| DP     |Student| UI, React                | 2021/9 - 2022/2 |
-| MR     |Student| API, SQLAlchemy, Graphene| 2021/9 - 2022/2 |
-| MS     |Student| Redis                    | 2021/9 - 2022/2 |
-| DS     |Student| Datamanagement, Pypeteer | 2021/9 - 2022/2 |
-| PV     |Student| Datamanagement, Pypeteer | 2021/9 - 2022/2 |
-| JW     |Student| UI, React, Python        | 2021/9 - 2022/2 |
+| AS     |Teacher|                          | 2022/9 - 2023/2 |
+| AS     |Teacher| gql_ug                   | 2022/9 - 2023/2 |
+| AS     |Teacher| gql_workflows            | 2022/9 - 2023/2 |
 
 
 ## Current Notes

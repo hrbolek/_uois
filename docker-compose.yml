@@ -1,23 +1,48 @@
 version: "3.9"
 
 services:
-  python_fastapi:
-    image: python_fastapi
+  # frontend:
+  #   image: frontend
+  #   build:
+  #     context: ./frontend
+
+  apollo:
+    image: apollo
     build:
-      context: ./pyf
+      context: ./apollo
+    depends_on:
+      - gql_ug
+      - gql_publication
+    ports:
+      - 31121:3000
+
+  gql_ug:
+    image: gql_ug
+    build:
+      context: ./gql_ug
     environment: 
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
     depends_on:
       - postgres
+    ports:
+      - 31120:8000
 
-  js:
-    image: js
-    build: 
-      context: ./js
-    environment:
-      NODE_ENV: development
+
+  gql_publication:
+    image: gql_publication
+    build:
+      context: ./gql_publication
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    depends_on:
+      - postgres
+      - gql_ug
+    ports:
+      - 31128:8000
 
   postgres:
     image: postgres
@@ -26,12 +51,22 @@ services:
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
     
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=anoyne@anywhere.com
+      - PGADMIN_DEFAULT_PASSWORD=example
+    ports:
+      - 31122:80
+
   nginx:
     build:
       context: ./nginx
     ports:
-      - 50080:80
+      - 31180:80
     depends_on:
       - postgres
-      - js
-      - python_fastapi
+      - apollo
+
+
