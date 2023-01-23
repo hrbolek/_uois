@@ -49,17 +49,18 @@ resolveSubjectsForPublication = create1NGetter(SubjectModel, foreignKeyName='pub
 async def resolveRemoveAuthor(session, publication_id, user_id):
     stmt = delete(AuthorModel).where((AuthorModel.user_id==user_id) & (AuthorModel.publication_id == publication_id))
     resultMsg= ""
-    response = {}
     try:
         response = await session.execute(stmt)
-        session.commit()
-        # if()
-        resultMsg = "ok"
+        await session.commit()
+        if(response.rowcount == 1):
+            resultMsg = "ok"
+        else:
+            resultMsg = "fail"
+        
     except:
-        resultMsg = "fail"
+        resultMsg="error"
   
-    return 
-
+    return resultMsg
 
 
 async def resolvePublicationsByUser(session, id):
@@ -96,7 +97,7 @@ async def resolveUpdateAuthorOrder(session, id, author_id, order):
 
     await session.commit()
     return sortedAuthors
-
+    # return result 
 ## PublicationType resolvers
 resolvePublicationTypeById = createEntityByIdGetter(PublicationTypeModel)
 resolvePublicationTypeAll = createEntityGetter(PublicationTypeModel)

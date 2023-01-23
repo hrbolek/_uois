@@ -240,7 +240,7 @@ class PublicationEditorGQLModel:
     async def set_author_share(self, info: strawberryA.types.Info, author_id: uuid.UUID, share: float) -> str:
         result = await resolveUpdateAuthor(AsyncSessionFromInfo(info),author_id, data=None, extraAttributes={'share': share})
         resultMsg = ""
-        if(result["share"] == share):
+        if(result.share == share):
             resultMsg="ok"
         else:
             resultMsg="fail"
@@ -354,10 +354,9 @@ class Query:
         result = await resolveAuthorByUser(AsyncSessionFromInfo(info), id)
         return result
 
-
     # @strawberryA.field(description="""Finds publications by author""")
-    # async def publications_by_author(self, info: strawberryA.types.Info, id: uuid.UUID) -> List['PublicationGQLModel']:
-    #     result = await resolvePublicationsForAuthor(AsyncSessionFromInfo(info), id)
+    # async def authors_by_publication(self, info: strawberryA.types.Info, id: uuid.UUID) -> List['AuthorGQLModel']:
+    #     result = await resolveAuthorsForPublication(AsyncSessionFromInfo(info), id)
     #     return result
 
     @strawberryA.field(description="""Finds publications by user""")

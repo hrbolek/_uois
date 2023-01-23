@@ -73,7 +73,7 @@ class AuthorModel(BaseModel):
     publication_id = Column(ForeignKey('publications.id'), primary_key=True)
     order = Column(Integer)
     share = Column(Float)
-    lastchange = Column(DateTime, default=datetime.datetime.now)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
     user = relationship('UserModel', back_populates='author')
     publication = relationship('PublicationModel', back_populates='author')
