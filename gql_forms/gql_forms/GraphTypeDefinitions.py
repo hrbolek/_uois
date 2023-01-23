@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Optional
 import typing
 import strawberry as strawberryA
 import uuid
@@ -24,20 +24,8 @@ def AsyncSessionFromInfo(info):
 # - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
 #
 ###########################################################################################################################
-from gql_forms.GraphResolvers import resolveRequestById, resolveRequestAll, resolveSectionsForRequest, resolveUpdateRequest, resolveInsertRequest, resolveRequestsByThreeLetters
-# from gql_forms.GraphResolvers import resolveRequestsByThreeLetters
-from gql_forms.GraphResolvers import resolveSectionById, resolveSectionAll, resolvePartsForSection, resolveUpdateSection, resolveInsertSection
-from gql_forms.GraphResolvers import resolvePartById, resolvePartAll, resolveItemsForPart, resolveUpdatePart, resolveInsertPart
-from gql_forms.GraphResolvers import resolveItemById, resolveItemAll, resolveUpdateItem, resolveInsertItem, resolveDeleteItem
+
 from gql_forms.GraphResolvers import resolveUserById, resolveUserAll, resolveUpdateUser, resolveInsertUser
-
-
-# Editor 
-# Change data in database 
-# 	1. Have edtior foe changing value 
-# 	Some struture for write, how I can compose the data structure to
-# Creat one Editor---- GQLModel
-# change 
 
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
@@ -75,7 +63,7 @@ class UserGQLModel:
         return result
 
 
-
+from gql_forms.GraphResolvers import resolveRequestById, resolveRequestAll, resolveSectionsForRequest, resolveUpdateRequest, resolveInsertRequest, resolveRequestsByThreeLetters
 
 #define the type help to get attribute name and name 
 @strawberryA.federation.type(keys = ["id"] ,description="""Entity representing a request""")
@@ -125,7 +113,21 @@ class RequestGQLModel:
         user = UserGQLModel(id = self.user_id)
         return user
 
-    
+@strawberryA.input
+class RequestUpdateGQLModel:
+    id: strawberryA.ID
+    name: Optional[str]= None
+    status : Optional[str]=None
+   
+@strawberryA.input
+class RequestInsertGQLModel:
+    id: Optional[uuid.UUID]= None
+    name: Optional[str]= None
+    status : Optional[str]=None
+
+
+from gql_forms.GraphResolvers import resolveSectionById, resolveSectionAll, resolvePartsForSection, resolveUpdateSection, resolveInsertSection
+
 @strawberryA.federation.type(keys = ["id"] ,description="""Type representing a section in the workflow""")
 class SectionGQLModel:
 
@@ -172,6 +174,22 @@ class SectionGQLModel:
         request = await resolveRequestById(session, self.request_id)
         return request
 
+@strawberryA.input
+class SectionUpdateGQLModel:
+    id: strawberryA.ID
+    name: Optional[str]= None
+    order : Optional[int]=None
+    status : Optional[str]=None
+   
+@strawberryA.input
+class SectionInsertGQLModel:
+    id: Optional[uuid.UUID]= None
+    name: Optional[str]= None
+    order : Optional[int]=None
+    status : Optional[str]=None
+
+
+from gql_forms.GraphResolvers import resolvePartById, resolvePartAll, resolveItemsForPart, resolveUpdatePart, resolveInsertPart
 
 @strawberryA.federation.type(keys = ["id"] ,description="""Type representing a part in the workflow""")
 class PartGQLModel:
@@ -214,6 +232,20 @@ class PartGQLModel:
         session = AsyncSessionFromInfo(info)
         section = await resolveSectionById(session, self.section_id)
         return section
+@strawberryA.input
+class PartUpdateGQLModel:
+    id: strawberryA.ID
+    name: Optional[str]= None
+    order : Optional[int]=None
+   
+@strawberryA.input
+class PartInsertGQLModel:
+    id: Optional[uuid.UUID]= None
+    name: Optional[str]= None
+    order : Optional[int]=None
+
+
+from gql_forms.GraphResolvers import resolveItemById, resolveItemAll, resolveUpdateItem, resolveInsertItem, resolveDeleteItem
 
 @strawberryA.federation.type(keys = ["id"] ,description="""Type representing an item in the workflow""")
 class ItemGQLModel:
@@ -255,7 +287,6 @@ class ItemGQLModel:
         part = await resolvePartById(session, self.part_id)
         return part
 
-from typing import Optional
 @strawberryA.input
 class ItemUpdateGQLModel:
     id: strawberryA.ID
@@ -273,12 +304,19 @@ class ItemInsertGQLModel:
     order : Optional[int]=None
     value: Optional[str]= None
 
+
+########################################
+
+#                MUTATION
+
+########################################
+
 @strawberryA.federation.type(keys=["id"],description="""Entity representing an editable item""")
-class ItemEditorGQLModel:
+class EditorGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
-            result = await resolveUserById(session, id)
+            result = await resolveItemById(session, id)
             result._type_definition = cls._type_definition # little hack :)
             return result
 
@@ -286,15 +324,49 @@ class ItemEditorGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
     
+    @strawberryA.mutation
+    async def insert_request(self,info: strawberryA.types.Info, creator_id: strawberryA.ID, data: RequestInsertGQLModel)->'RequestGQLModel':
+        async with withInfo(info) as session: 
+            result = await resolveInsertRequest(session, data=data)
+            return result
+
+    @strawberryA.mutation
+    async def update_request(self, info: strawberryA.types.Info, data: RequestUpdateGQLModel)-> 'RequestGQLModel':
+        async with withInfo(info) as session:
+            result = await resolveUpdateRequest(session, id= data.id, data=data)
+            return result
+    @strawberryA.mutation
+    async def insert_section(self,info: strawberryA.types.Info, request_id: strawberryA.ID, data: SectionInsertGQLModel)->'SectionGQLModel':
+        async with withInfo(info) as session: 
+            result = await resolveInsertSection(session, data=data)
+            return result
+
+    @strawberryA.mutation
+    async def update_section(self, info: strawberryA.types.Info, data: SectionUpdateGQLModel)-> 'SectionGQLModel':
+        async with withInfo(info) as session:
+            result = await resolveUpdateSection(session, id= data.id, data=data)
+            return result
+    @strawberryA.mutation
+    async def insert_part(self,info: strawberryA.types.Info,section_id: strawberryA.ID, data: PartInsertGQLModel)->'PartGQLModel':
+        async with withInfo(info) as session: 
+            result = await resolveInsertPart(session, data=data)
+            return result
+
+    @strawberryA.mutation
+    async def update_part(self, info: strawberryA.types.Info, data: PartUpdateGQLModel)-> 'PartGQLModel':
+        async with withInfo(info) as session:
+            result = await resolveUpdatePart(session, id= data.id, data=data)
+            return result
+   
     #khi nào cần new item, cái part nào cần item , thế thì cái part id cần có
-    @strawberryA.field
+    @strawberryA.mutation
     async def insert_item(self,info: strawberryA.types.Info, part_id: strawberryA.ID, data: ItemInsertGQLModel)->'ItemGQLModel':
         async with withInfo(info) as session: 
             result = await resolveInsertItem(session, data=data)
             return result
 
     #the problem is overwriting ????? how to emplement it important things
-    @strawberryA.field
+    @strawberryA.mutation
     # async def update_item(self, info: strawberryA.types.Info, id: strawberryA.ID, data: ItemUpdateGQLModel)-> 'ItemGQLModel':
     async def update_item(self, info: strawberryA.types.Info, data: ItemUpdateGQLModel)-> 'ItemGQLModel':
         async with withInfo(info) as session:
@@ -310,11 +382,6 @@ class ItemEditorGQLModel:
     #         await resolveDeleteItem(session, id=id)
     #     return "Delete an item"
     
-#comment in code 5 point
-#documentation///
-#demonstration---- appolo
-#reading, creating new section,.... update tất cả để get10 point
-
 
 ###########################################################################################################################
 #
@@ -332,8 +399,6 @@ class Query:
         result = f'Hello {id}'
         return result
 
-
-    
     @strawberryA.field(description="""Finds an request by their id""")
     async def request_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[RequestGQLModel, None]:
         result = await resolveRequestById(AsyncSessionFromInfo(info) ,id)
@@ -352,19 +417,16 @@ class Query:
         requests = await resolveRequestsByThreeLetters(session, letters=letters)
         return requests
 
-
     @strawberryA.field(description="""returns all requests created by a user""")
     async def request_by_user(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[RequestGQLModel, None]:
         result = await resolveRequestByUser(AsyncSessionFromInfo(info) ,id)
         #u r getting the database sections , u srxtracting calling the function, returning the data from the table, able to extract , ask for it by Id there will be call the record 
         return result
 
-    
-
     @strawberryA.field(description="Fills the database with demo form")
     async def fill_request(self, info: strawberryA.types.Info) -> str:
         await randomData(info.context['asyncSessionMaker'])
-        return 'ok'
+        return 'fill request successfully'
 
     @strawberryA.field(description="Retrieves all items")
     async def all_items(self, info: strawberryA.types.Info, skip: int, limit: int) -> List[ItemGQLModel]:
@@ -383,4 +445,4 @@ class Query:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, ), mutation= ItemEditorGQLModel)
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, ), mutation= EditorGQLModel)
