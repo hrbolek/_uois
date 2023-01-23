@@ -120,7 +120,8 @@ class RequestGQLModel:
         return sections
     
     @strawberryA.field(description="Retrieves the user related to this request")
-    async def user(self, info: strawberryA.types.Info) -> typing.List['UserGQLModel']:
+    # async def user(self, info: strawberryA.types.Info) -> typing.List['UserGQLModel']:
+    async def user(self, info: strawberryA.types.Info) -> 'UserGQLModel': #it expect 1 entity
         user = UserGQLModel(id = self.user_id)
         return user
 
@@ -165,7 +166,8 @@ class SectionGQLModel:
         return parts
 
     @strawberryA.field(description="Retrieves the request related to this section")
-    async def request(self, info: strawberryA.types.Info) -> typing.List['RequestGQLModel']:
+    # async def request(self, info: strawberryA.types.Info) -> typing.List['RequestGQLModel']:
+    async def request(self, info: strawberryA.types.Info) -> 'RequestGQLModel':
         session = AsyncSessionFromInfo(info)
         request = await resolveRequestById(session, self.request_id)
         return request
@@ -207,7 +209,8 @@ class PartGQLModel:
         return items
     
     @strawberryA.field(description="Retrieves the section related to this part")
-    async def section(self, info: strawberryA.types.Info) -> typing.List['SectionGQLModel']:
+    # async def section(self, info: strawberryA.types.Info) -> typing.List['SectionGQLModel']:
+    async def section(self, info: strawberryA.types.Info) -> 'SectionGQLModel':
         session = AsyncSessionFromInfo(info)
         section = await resolveSectionById(session, self.section_id)
         return section
@@ -246,7 +249,8 @@ class ItemGQLModel:
         return self.value
     
     @strawberryA.field(description="Retrieves the part related to this item")
-    async def part(self, info: strawberryA.types.Info) -> typing.List['PartGQLModel']:
+    # async def part(self, info: strawberryA.types.Info) -> typing.List['PartGQLModel']:
+    async def part(self, info: strawberryA.types.Info) -> 'PartGQLModel':
         session = AsyncSessionFromInfo(info)
         part = await resolvePartById(session, self.part_id)
         return part
@@ -254,6 +258,7 @@ class ItemGQLModel:
 from typing import Optional
 @strawberryA.input
 class ItemUpdateGQLModel:
+    id: strawberryA.ID
     name: Optional[str]= None
     #create_at : Optional[datetime.datetime] =None
     order : Optional[int]=None
@@ -262,7 +267,7 @@ class ItemUpdateGQLModel:
 @strawberryA.input
 class ItemInsertGQLModel:
     id: Optional[uuid.UUID]= None
-    part_id: Optional[uuid.UUID]= None
+    # part_id: Optional[uuid.UUID]= None need to be attribute
     name: Optional[str]= None
     #create_at : Optional[datetime.datetime] =None
     order : Optional[int]=None
@@ -281,24 +286,34 @@ class ItemEditorGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
     
+    #khi nào cần new item, cái part nào cần item , thế thì cái part id cần có
     @strawberryA.field
-    async def insert_item(self,info: strawberryA.types.Info,data: ItemInsertGQLModel)->'ItemGQLModel':
-        async with withInfo(info) as session:
+    async def insert_item(self,info: strawberryA.types.Info, part_id: strawberryA.ID, data: ItemInsertGQLModel)->'ItemGQLModel':
+        async with withInfo(info) as session: 
             result = await resolveInsertItem(session, data=data)
             return result
+
+    #the problem is overwriting ????? how to emplement it important things
     @strawberryA.field
-    async def update_item(self, info: strawberryA.types.Info, data: ItemUpdateGQLModel, id: strawberryA.ID)-> 'ItemGQLModel':
+    # async def update_item(self, info: strawberryA.types.Info, id: strawberryA.ID, data: ItemUpdateGQLModel)-> 'ItemGQLModel':
+    async def update_item(self, info: strawberryA.types.Info, data: ItemUpdateGQLModel)-> 'ItemGQLModel':
         async with withInfo(info) as session:
-            result = await resolveUpdateItem(session, id=id, data=data)
+            result = await resolveUpdateItem(session, id= data.id, data=data)
             return result
     
+    #THẦY MUỐN NGHE TẤT CẢ NO DIỄN RA THẾ NÀO, CÁC THỨ...TRẢ LỜI CÂU hỎI
+    #Cái này rất khó, nó có thể gây ra lỗi vì nó liên quan đến keys, empty--remove, could be bad
     #FAIL
-    @strawberryA.field
-    async def delete_item(self, info: strawberryA.types.Info, id: strawberryA.ID)-> str:
-        async with withInfo(info) as session:
-            await resolveDeleteItem(session, id=id)
-        return "Delete an item"
-            
+    # @strawberryA.field
+    # async def delete_item(self, info: strawberryA.types.Info, id: strawberryA.ID)-> str:
+    #     async with withInfo(info) as session:
+    #         await resolveDeleteItem(session, id=id)
+    #     return "Delete an item"
+    
+#comment in code 5 point
+#documentation///
+#demonstration---- appolo
+#reading, creating new section,.... update tất cả để get10 point
 
 
 ###########################################################################################################################
