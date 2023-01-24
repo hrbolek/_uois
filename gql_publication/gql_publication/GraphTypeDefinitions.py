@@ -129,7 +129,7 @@ class PublicationGQLModel:
     def reference(self) -> str:
         return self.reference
     
-    @strawberryA.field(description="""if a publication is valid""")
+    @strawberryA.field(description="""check if a publication is valid""")
     def valid(self) -> bool:
         return self.valid
     
@@ -149,7 +149,7 @@ class PublicationGQLModel:
         result = await resolvePublicationTypeById(AsyncSessionFromInfo(info), self.publication_type_id)
         return result
     
-    @strawberryA.field(description="""returns the publication editor if possible""")
+    @strawberryA.field(description="""Returns the publication editor if possible""")
     async def editor(self, info: strawberryA.types.Info) -> Union['PublicationEditorGQLModel', None]:
         ## current user must be checked if has rights to get the editor
         ## if not, then None value must be returned
@@ -202,7 +202,7 @@ class PublicationEditorGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""Result of update operation""")
+    @strawberryA.field(description="""Result status of update operation""")
     def result(self) -> str:
         return self.result
 
@@ -236,7 +236,7 @@ class PublicationEditorGQLModel:
     #     result = await resolveUpdatePublication(AsyncSessionFromInfo(info), id=self.id, data=data)
     #     return result
 
-    @strawberryA.field(description="""Sets author a share""")
+    @strawberryA.field(description="""Sets author a share value""")
     async def set_author_share(self, info: strawberryA.types.Info, author_id: uuid.UUID, share: float) -> str:
         result = await resolveUpdateAuthor(AsyncSessionFromInfo(info),author_id, data=None, extraAttributes={'share': share})
         resultMsg = ""
@@ -246,7 +246,7 @@ class PublicationEditorGQLModel:
             resultMsg="fail"
         return resultMsg
     
-    @strawberryA.field(description="""Updates the author data""")
+    @strawberryA.field(description="""Sets author order value""")
     async def set_author_order(self, info: strawberryA.types.Info, author_id: uuid.UUID, order: int) -> List['AuthorGQLModel']:
         result = await resolveUpdateAuthorOrder(AsyncSessionFromInfo(info),self.id, author_id, order)
         return result
@@ -297,7 +297,7 @@ class AuthorGQLModel:
     def share(self) -> float:
         return self.share
     
-    @strawberryA.field(description="""user""")
+    @strawberryA.field(description="""fetch user model from ug_container via Federation(from ug)""")
     async def user(self) -> 'UserGQLModel':
         return UserGQLModel(id=self.user_id)
 
@@ -353,11 +353,6 @@ class Query:
     async def author_by_user(self, info: strawberryA.types.Info, id: uuid.UUID) -> List['AuthorGQLModel']:
         result = await resolveAuthorByUser(AsyncSessionFromInfo(info), id)
         return result
-
-    # @strawberryA.field(description="""Finds publications by author""")
-    # async def authors_by_publication(self, info: strawberryA.types.Info, id: uuid.UUID) -> List['AuthorGQLModel']:
-    #     result = await resolveAuthorsForPublication(AsyncSessionFromInfo(info), id)
-    #     return result
 
     @strawberryA.field(description="""Finds publications by user""")
     async def publications_by_user(self, info: strawberryA.types.Info, id: uuid.UUID) -> List['PublicationGQLModel']:
