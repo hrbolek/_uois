@@ -66,6 +66,13 @@ resolvePartsForSection = create1NGetter(PartModel, foreignKeyName='section_id')
 resolveUpdateSection = createUpdateResolver(SectionModel)
 resolveInsertSection = createInsertResolver(SectionModel)
 
+async def resolveRequestsByStatus(session: AsyncSession, status: str)->List[RequestModel]:
+    stmt = select(RequestModel)
+    stmtWithFilter = stmt.filter_by(status= status)
+    dbSet = await session.execute(stmtWithFilter)
+    result= dbSet.scalars()
+    return result
+    
 ## part resolvers
 resolvePartById = createEntityByIdGetter(PartModel)
 resolvePartAll = createEntityGetter(PartModel)
@@ -81,10 +88,10 @@ resolveItemAll = createEntityGetter(ItemModel)
 resolveUpdateItem = createUpdateResolver(ItemModel)
 resolveInsertItem = createInsertResolver(ItemModel)
 
-async def resolveDeleteItem(session: AsyncSession, id: uuid.UUID):
-    deletedItem= session.get(ItemModel,id)
-    session.delete(deletedItem)
-    session.commit()
+# async def resolveDeleteItem(session: AsyncSession, id: uuid.UUID):
+#     deletedItem= session.get(ItemModel,id)
+#     session.delete(deletedItem)
+#     session.commit()
 
 ## user resolvers
 resolveUserById = createEntityByIdGetter(UserModel)

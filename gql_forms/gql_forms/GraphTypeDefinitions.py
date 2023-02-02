@@ -63,7 +63,7 @@ class UserGQLModel:
         return result
 
 
-from gql_forms.GraphResolvers import resolveRequestById, resolveRequestAll, resolveSectionsForRequest, resolveUpdateRequest, resolveInsertRequest, resolveRequestsByThreeLetters
+from gql_forms.GraphResolvers import resolveRequestById, resolveRequestAll, resolveSectionsForRequest, resolveUpdateRequest, resolveInsertRequest 
 
 #define the type help to get attribute name and name 
 @strawberryA.federation.type(keys = ["id"] ,description="""Entity representing a request""")
@@ -245,7 +245,7 @@ class PartInsertGQLModel:
     order : Optional[int]=None
 
 
-from gql_forms.GraphResolvers import resolveItemById, resolveItemAll, resolveUpdateItem, resolveInsertItem, resolveDeleteItem
+from gql_forms.GraphResolvers import resolveItemById, resolveItemAll, resolveUpdateItem, resolveInsertItem
 
 @strawberryA.federation.type(keys = ["id"] ,description="""Type representing an item in the workflow""")
 class ItemGQLModel:
@@ -389,7 +389,7 @@ class EditorGQLModel:
 #
 ###########################################################################################################################
 from gql_forms.DBFeeder import randomData
-from gql_forms.GraphResolvers import resolveRequestByUser
+from gql_forms.GraphResolvers import resolveRequestByUser, resolveRequestsByStatus, resolveRequestsByThreeLetters
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
@@ -416,6 +416,12 @@ class Query:
         session = AsyncSessionFromInfo(info)
         requests = await resolveRequestsByThreeLetters(session, letters=letters)
         return requests
+    
+    @strawberryA.field(description="Retrieves requests by their status")
+    async def requests_by_status(self, info: strawberryA.types.Info, status: str) -> List[RequestGQLModel]:
+        async with withInfo(info) as session: 
+            result = await resolveRequestsByStatus(session, status= status)
+            return result
 
     @strawberryA.field(description="""returns all requests created by a user""")
     async def request_by_user(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[RequestGQLModel, None]:
