@@ -10,7 +10,7 @@ from uoishelpers.resolvers import create1NGetter, createEntityByIdGetter, create
 from uoishelpers.resolvers import putSingleEntityToDb
 
 from gql_personalities.DBDefinitions import BaseModel, UserModel, Rank, Study, Certificate, Medal, WorkHistory, RelatedDoc
-from gql_personalities.DBDefinitions import RankType, CertificateType, MedalType
+from gql_personalities.DBDefinitions import RankType, StudyType, CertificateType, MedalType
 from gql_personalities.DBDefinitions import CertificateTypeGroup, MedalTypeGroup
 
 #user resolvers
@@ -53,16 +53,31 @@ resolveStudyAll = createEntityGetter(Study)
 resolverUpdateStudy = createUpdateResolver(Study)
 resolveInsertStudy = createInsertResolver(Study)
 
-async def resolveStudyByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[Study]:
+#studyType resolvers
+resolveStudyTypeById = createEntityByIdGetter(StudyType)
+resolveStudyTypeAll = createEntityGetter(StudyType)
+resolverUpdateStudyType = createUpdateResolver(StudyType)
+resolveInsertStudyType = createInsertResolver(StudyType)
+
+async def resolveStudyTypeNameByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[Study]:
     if len(letters) < 3:
         return []
-    stmt = select(Study).where(Study.place.like(f'%{letters}%'))  #Study.place. ... kvůli názvu v entitě
+    stmt = select(StudyType).where(StudyType.name.like(f'%{letters}%'))
     if validity is not None:
         stmt = stmt.filter_by(valid=True)
 
     dbSet = await session.execute(stmt)
     return dbSet.scalars()
 
+async def resolveStudyTypeProgramByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[Study]:
+    if len(letters) < 3:
+        return []
+    stmt = select(StudyType).where(StudyType.program.like(f'%{letters}%'))
+    if validity is not None:
+        stmt = stmt.filter_by(valid=True)
+
+    dbSet = await session.execute(stmt)
+    return dbSet.scalars()
 
 #certificate resolvers
 resolveCertificateById = createEntityByIdGetter(Certificate)

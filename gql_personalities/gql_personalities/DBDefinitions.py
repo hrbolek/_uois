@@ -61,14 +61,25 @@ class Study(BaseModel):
     __tablename__ = 'personalitiesStudies'
 
     id = UUIDColumn()
-    place = Column(String)
-    program = Column(String)
     start = Column(DateTime)
     end = Column(DateTime)
     
     user_id = Column(ForeignKey('users.id'))
+    studyType_id = Column(ForeignKey('personalitiesStudyTypes.id'))
     
     user = relationship('UserModel', back_populates = 'Study')
+    studyType = relationship('StudyType', back_populates = 'Study')
+
+
+class StudyType(BaseModel):
+    __tablename__ = 'personalitiesStudyTypes'
+
+    id = UUIDColumn()
+    name = Column(String)
+    program = Column(String)
+
+    study = relationship('Study', back_populates = 'StudyTypes')
+
 
 class Certificate(BaseModel):
     __tablename__ = 'personalitiesCertificates'

@@ -106,14 +106,6 @@ class StudyGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""place""")
-    def place(self) -> strawberryA.ID:
-        return self.place
-
-    @strawberryA.field(description="""program""")
-    def program(self) -> strawberryA.ID:
-        return self.program
-
     @strawberryA.field(description="""start""")
     def start(self) -> strawberryA.ID:
         return self.start
@@ -121,6 +113,28 @@ class StudyGQLModel:
     @strawberryA.field(description="""end""")
     def end(self) -> strawberryA.ID:
         return self.end
+
+from gql_personalities.GraphResolvers import resolveStudyTypeAll, resolveStudyTypeById
+from gql_personalities.GraphResolvers import resolveStudyTypeNameByThreeLetters, resolveStudyTypeProgramByThreeLetters
+@strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a rankType""")
+class StudyTypeGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        result = await resolveStudyTypeById(AsyncSessionFromInfo(info), id)
+        result._type_definition = cls._type_definition # little hack :)
+        return result
+
+    @strawberryA.field(description="""primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""name""")
+    def name(self) -> strawberryA.ID:
+        return self.name
+
+    @strawberryA.field(description="""program""")
+    def program(self) -> strawberryA.ID:
+        return self.program
 
 
 from gql_personalities.GraphResolvers import resolveCertificateAll, resolveCertificateById
@@ -344,12 +358,22 @@ class Query:
     async def study_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[StudyGQLModel]:
         result = await resolveStudyAll(AsyncSessionFromInfo(info), skip, limit)
         return result
-    
-    @strawberryA.field(description="""Finds a study by letters, letters should be atleast three""")
-    async def study_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[StudyGQLModel]:
-        result = await resolveStudyByThreeLetters(AsyncSessionFromInfo(info), validity, letters)
+
+#studyTypes
+    @strawberryA.field(description="""Returns a list of studyTypes (paged)""")
+    async def studyType_page(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[StudyTypeGQLModel]:
+        result = await resolveStudyTypeAll(AsyncSessionFromInfo(info), skip, limit)
+        return result
+        
+    @strawberryA.field(description="""Finds a studyTypeName by letters, letters should be atleast three""")
+    async def studyTypeName_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[StudyTypeGQLModel]:
+        result = await resolveStudyTypeNameByThreeLetters(AsyncSessionFromInfo(info), validity, letters)
         return result
 
+    @strawberryA.field(description="""Finds a studyTypeProgram by letters, letters should be atleast three""")
+    async def studyTypeProgram_by_letters(self, info: strawberryA.types.Info, validity: Union[bool, None] = None, letters: str = '') -> List[StudyTypeGQLModel]:
+        result = await resolveStudyTypeProgramByThreeLetters(AsyncSessionFromInfo(info), validity, letters)
+        return result
 
 #certificate
     @strawberryA.field(description="""Returns a list of certificates (paged)""")

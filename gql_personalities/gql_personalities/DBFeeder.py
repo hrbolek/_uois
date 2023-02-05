@@ -1,7 +1,7 @@
 from doctest import master
 from functools import cache
 from gql_personalities.DBDefinitions import BaseModel, UserModel, Rank, Study, Certificate, Medal, WorkHistory, RelatedDoc
-from gql_personalities.DBDefinitions import RankType, CertificateType, MedalType
+from gql_personalities.DBDefinitions import RankType, StudyType, CertificateType, MedalType
 from gql_personalities.DBDefinitions import CertificateTypeGroup, MedalTypeGroup
 
 import random
@@ -261,38 +261,39 @@ def determineMedalTypeGroup():
     return medalTypeGroup
 
 
-@cache
-def determineWorkHistoryPosition():
-    workHistoryPosition = [
-        {'name': 'manažer',             'id': '3406c765-8454-4f3a-b3bb-76b74582be2e' },
-        {'name': 'účetní',              'id': 'd9a50a22-edf4-4264-98f0-5a9eced115c4'},
-        {'name': 'úředník',             'id': '203cb4d1-6d61-4dfd-8662-d7a352db739c'},
-        {'name': 'konzultant',          'id': '7925ca15-acd5-4af9-9731-2884c8225081'},
-        {'name': 'asistent',            'id': 'fd8ea6b7-4706-4537-8569-5dc8040519f8'},
-        {'name': 'právní zástupce',     'id': '242a84a8-f754-4136-b322-e20b0382dff4'},
-        {'name': 'administrátor',       'id': 'cc3f7106-f38c-48ee-89d9-d1a420e45df5'},
-        {'name': 'pokladní',            'id': '950d3466-af5b-4a59-b91f-14514bf693d0'},
-        {'name': 'uklízeč',             'id': 'c24dba24-b636-46d4-b0b2-2dc03e6af933'},
-        {'name': 'operátor',            'id': '02addd4f-ee6f-4141-bbc7-5a6ca9bc8647'},
-        {'name': 'analytik',            'id': 'aaea9b89-dbed-42a2-8f22-737ce913f803'},
-        {'name': 'správce',             'id': '87897e28-c92d-49be-8878-e9c39c9b8a5a'},
-        {'name': 'technická podpora',   'id': 'f60e38af-069b-4f8e-8cc9-b6cd077a7cee'},
-        {'name': 'řidič',               'id': 'c11f1606-bdd2-4973-89ca-1489e8249c0f'},
-        {'name': 'specialista',         'id': '8b18a1a2-f759-4441-a18b-0bee41e71519'},
-    ]
-    return workHistoryPosition
+#@cache
+#def determineWorkHistoryPosition():
+#    workHistoryPosition = [
+#        {'name': 'manažer',             'id': '3406c765-8454-4f3a-b3bb-76b74582be2e' },
+#        {'name': 'účetní',              'id': 'd9a50a22-edf4-4264-98f0-5a9eced115c4'},
+#        {'name': 'úředník',             'id': '203cb4d1-6d61-4dfd-8662-d7a352db739c'},
+#        {'name': 'konzultant',          'id': '7925ca15-acd5-4af9-9731-2884c8225081'},
+#        {'name': 'asistent',            'id': 'fd8ea6b7-4706-4537-8569-5dc8040519f8'},
+#        {'name': 'právní zástupce',     'id': '242a84a8-f754-4136-b322-e20b0382dff4'},
+#        {'name': 'administrátor',       'id': 'cc3f7106-f38c-48ee-89d9-d1a420e45df5'},
+#        {'name': 'pokladní',            'id': '950d3466-af5b-4a59-b91f-14514bf693d0'},
+#        {'name': 'uklízeč',             'id': 'c24dba24-b636-46d4-b0b2-2dc03e6af933'},
+#        {'name': 'operátor',            'id': '02addd4f-ee6f-4141-bbc7-5a6ca9bc8647'},
+#        {'name': 'analytik',            'id': 'aaea9b89-dbed-42a2-8f22-737ce913f803'},
+#        {'name': 'správce',             'id': '87897e28-c92d-49be-8878-e9c39c9b8a5a'},
+#        {'name': 'technická podpora',   'id': 'f60e38af-069b-4f8e-8cc9-b6cd077a7cee'},
+#        {'name': 'řidič',               'id': 'c11f1606-bdd2-4973-89ca-1489e8249c0f'},
+#        {'name': 'specialista',         'id': '8b18a1a2-f759-4441-a18b-0bee41e71519'},
+#    ]
+#    return workHistoryPosition
+
 
 import asyncio
 async def ensureAllTypes(asyncSessionMaker):
     done = await asyncio.gather(
         putPredefinedStructuresIntoTable(asyncSessionMaker, RankType, determineRankType),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, Study, determineStudyPlace),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, Study, determineStudyProgram),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, StudyType, determineStudyPlace),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, StudyType, determineStudyProgram),
         putPredefinedStructuresIntoTable(asyncSessionMaker, CertificateType, determineCertificateType),
         putPredefinedStructuresIntoTable(asyncSessionMaker, CertificateTypeGroup, determineCertificateTypeGroup),
         putPredefinedStructuresIntoTable(asyncSessionMaker, MedalType, determineMedalType),
         putPredefinedStructuresIntoTable(asyncSessionMaker, MedalTypeGroup, determineMedalTypeGroup),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, WorkHistory, determineWorkHistoryPosition),
+        #putPredefinedStructuresIntoTable(asyncSessionMaker, WorkHistory, determineWorkHistoryPosition),
     )
     return 
 
