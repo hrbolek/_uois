@@ -107,11 +107,6 @@ def createEntityGetterWithFilter(DBModel: BaseModel):
 
         return (DBModel.id == DBModel.id) # will this work?
 
-
-        
-
-
-
     def createWhereLambda(where):        
         pass
 
@@ -122,8 +117,6 @@ def createEntityGetterWithFilter(DBModel: BaseModel):
         return result
 
     return FullResolver
-
-
 
 def createEntityGetter(DBModel: BaseModel, options=None) -> Callable[[AsyncSession, int, int], Awaitable[Union[BaseModel, None]]]:
     """Předkonfiguruje dotaz do databáze na vektor entit
