@@ -37,9 +37,7 @@ class RequestModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
     creator_id = Column(ForeignKey("users.id"), primary_key=True)
-    #######user_id
     create_at = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-
     lastchange  = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     status = Column(String) 
 
@@ -49,9 +47,6 @@ class RequestModel(BaseModel):
     
 class SectionModel(BaseModel):
     __tablename__ = "formsections"
-    
-    # requestId = Column(ForeignKey("requests.id"), primary_key=True)
-    #key is st sys structure name pr as id, fk follpw by id in lower letter
 
     id = UUIDColumn()
     name = Column(String)

@@ -16,7 +16,6 @@ from gql_forms.DBDefinitions import BaseModel, RequestModel, SectionModel, PartM
 
 
 ## request resolvers
-
 # it will use for form the table if y know the id , u can extract it from the database
 resolveRequestById = createEntityByIdGetter(RequestModel)
 resolveRequestAll = createEntityGetter(RequestModel)
