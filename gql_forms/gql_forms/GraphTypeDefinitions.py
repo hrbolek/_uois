@@ -255,7 +255,7 @@ class ItemGQLModel:
 
 @strawberryA.input
 class ItemUpdateGQLModel:
-    lastchante : Optional[datetime.datetime]= datetime.datetime.now()
+    lastchange : Optional[datetime.datetime]= datetime.datetime.now()
     name: Optional[str]= None
     order : Optional[int]=None
     value: Optional[str]= None
