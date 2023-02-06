@@ -371,12 +371,12 @@ class ItemEditorGQLModel:
         lastchange = self.lastchange
         async with withInfo(info) as session:
             await resolveUpdateItem(session, id=self.id, data=data)
-            if (lastchange >= data.lastchange):
-                # updating is fail
-                resultMsg = "fail"
-            else:
+            if (lastchange < data.lastchange):
                 # updating is success
                 resultMsg = "ok"
+            else:
+                # updating is fail
+                resultMsg = "fail"
             result = ItemEditorGQLModel()
             result.id = self.id
             result.result = resultMsg
