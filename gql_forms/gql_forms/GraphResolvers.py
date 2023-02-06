@@ -23,8 +23,10 @@ resolveRequestByUser = create1NGetter(RequestModel, foreignKeyName='creator_id')
 
 # allow u to retrieves which are related to the request if i have the request id 
 resolveSectionsForRequest = create1NGetter(SectionModel, foreignKeyName='request_id')
-
-resolveUpdateRequest = createUpdateResolver(RequestModel)
+# #
+# resolveUserForRequest = createEntityByIdGetter(UserModel)
+# bith allow update request maske cration of request model 
+resolveUpdateRequest = createUpdateResolver(RequestModel, safe=True)
 resolveInsertRequest = createInsertResolver(RequestModel)
 
 """Function for searching requests by three letters"""
@@ -37,15 +39,6 @@ async def resolveRequestsByThreeLetters(session: AsyncSession, validity = None, 
 
     dbSet = await session.execute(stmt)
     return dbSet.scalars()
-
-## section resolvers
-resolveSectionById = createEntityByIdGetter(SectionModel)
-resolveSectionAll = createEntityGetter(SectionModel)
-
-resolvePartsForSection = create1NGetter(PartModel, foreignKeyName='section_id')
-
-resolveUpdateSection = createUpdateResolver(SectionModel)
-resolveInsertSection = createInsertResolver(SectionModel)
 
 async def resolveRequestsByStatus(session: AsyncSession, status: str)->List[RequestModel]:
     """ This function resolves requests from a database based on the status specified
@@ -60,20 +53,31 @@ Output:
     result= dbSet.scalars()
     return result
     
+## section resolvers
+resolveSectionById = createEntityByIdGetter(SectionModel)
+resolveSectionAll = createEntityGetter(SectionModel)
+
+resolvePartsForSection = create1NGetter(PartModel, foreignKeyName='section_id')
+
+resolveUpdateSection = createUpdateResolver(SectionModel, safe=True)
+resolveInsertSection = createInsertResolver(SectionModel)
+
+
+    
 ## part resolvers
 resolvePartById = createEntityByIdGetter(PartModel)
 resolvePartAll = createEntityGetter(PartModel)
 
 resolveItemsForPart = create1NGetter(ItemModel, foreignKeyName='part_id')
 
-resolveUpdatePart = createUpdateResolver(PartModel)
+resolveUpdatePart = createUpdateResolver(PartModel, safe=True)
 resolveInsertPart = createInsertResolver(PartModel)
 
 ## item resolvers
 resolveItemById = createEntityByIdGetter(ItemModel)
 resolveItemAll = createEntityGetter(ItemModel)
 
-resolveUpdateItem = createUpdateResolver(ItemModel)
+resolveUpdateItem = createUpdateResolver(ItemModel, safe=True)
 resolveInsertItem = createInsertResolver(ItemModel)
 
 # async def resolveDeleteItem(session: AsyncSession, id: uuid.UUID):
@@ -85,5 +89,5 @@ resolveInsertItem = createInsertResolver(ItemModel)
 resolveUserById = createEntityByIdGetter(UserModel)
 resolveUserAll = createEntityGetter(UserModel)
 
-resolveUpdateUser = createUpdateResolver(UserModel)
+resolveUpdateUser = createUpdateResolver(UserModel, safe=True)
 resolveInsertUser = createInsertResolver(UserModel)

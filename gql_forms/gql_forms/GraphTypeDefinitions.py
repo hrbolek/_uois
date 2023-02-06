@@ -234,7 +234,7 @@ class ItemGQLModel:
         return self.create_at
     
     @strawberryA.field(description="""Item's time of last update""")
-    def lastchange(self) -> datetime.datetime:
+    def lastchange(self) ->Union[datetime.datetime, None]:
         return self.lastchange
     
     @strawberryA.field(description="""Item's order""")
@@ -251,9 +251,13 @@ class ItemGQLModel:
         part = await resolvePartById(session, self.part_id)
         return part
 
+    @strawberryA.field(description="""Item's value""")
+    def editor(self, info: strawberryA.types.Info) ->'ItemEditorGQLModel':
+        return self
+
 @strawberryA.input
 class ItemUpdateGQLModel:
-    id: strawberryA.ID
+    lastchange : Optional[datetime.datetime]= datetime.datetime.now()
     name: Optional[str]= None
     order : Optional[int]=None
     value: Optional[str]= None
@@ -318,19 +322,66 @@ class EditorGQLModel:
             result = await resolveUpdatePart(session, id= data.id, data=data)
             return result
    
-    #khi nào cần new item, cái part nào cần item , thế thì cái part id cần có
-    @strawberryA.mutation
-    async def insert_item(self,info: strawberryA.types.Info, part_id: strawberryA.ID, data: ItemInsertGQLModel)->'ItemGQLModel':
-        async with withInfo(info) as session: 
-            result = await resolveInsertItem(session, data=data)
+    # #khi nào cần new item, cái part nào cần item , thế thì cái part id cần có
+    # @strawberryA.mutation
+    # async def insert_item(self,info: strawberryA.types.Info, part_id: strawberryA.ID, data: ItemInsertGQLModel)->'ItemGQLModel':
+    #     async with withInfo(info) as session: 
+    #         result = await resolveInsertItem(session, data=data)
+    #         return result
+
+    # #the problem is overwriting ????? how to emplement it important things
+    # @strawberryA.mutation
+    # # async def update_item(self, info: strawberryA.types.Info, id: strawberryA.ID, data: ItemUpdateGQLModel)-> 'ItemGQLModel':
+    # async def update_item(self, info: strawberryA.types.Info, data: ItemUpdateGQLModel)-> 'ItemGQLModel':
+    #     async with withInfo(info) as session:
+    #         result = await resolveUpdateItem(session, id= data.id, data=data)
+    #         return result
+@strawberryA.federation.type(keys=["id"],description="""Entity representing an editable item""")
+class ItemEditorGQLModel:
+    #  # vysledky opearace update
+    id: strawberryA.ID = None
+    result: str = None
+    lastchange: datetime.datetime= None
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        async with withInfo(info) as session:
+            result = await resolveUserById(session, id)
+            #result = await resolveUserById(session,  id)
+            result._type_definition = cls._type_definition # little hack :)
             return result
 
-    #the problem is overwriting ????? how to emplement it important things
-    @strawberryA.mutation
-    # async def update_item(self, info: strawberryA.types.Info, id: strawberryA.ID, data: ItemUpdateGQLModel)-> 'ItemGQLModel':
-    async def update_item(self, info: strawberryA.types.Info, data: ItemUpdateGQLModel)-> 'ItemGQLModel':
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Result of update operation""")
+    def result(self) -> str:
+        return self.result
+
+    @strawberryA.field(description="""Result of update operation""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+
+    @strawberryA.field(description="""Result of update operation""")
+    async def item(self, info: strawberryA.types.Info) -> ItemGQLModel:
         async with withInfo(info) as session:
-            result = await resolveUpdateItem(session, id= data.id, data=data)
+            result = await resolveItemById(session, self.id)
+            return result
+    
+    @strawberryA.field(description="""Updates the item""")
+    async def update(self, info: strawberryA.types.Info, data: ItemUpdateGQLModel) -> 'ItemEditorGQLModel':
+        lastchange = self.lastchange
+        async with withInfo(info) as session:
+            await resolveUpdateItem(session, id=self.id, data=data)
+            if (lastchange < data.lastchange):
+                # updating is success
+                resultMsg = "ok"
+            else:
+                # updating is fail
+                resultMsg = "fail"
+            result = ItemEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
             return result
     
 
@@ -349,6 +400,10 @@ class Query:
     async def request_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[RequestGQLModel, None]:
         result = await resolveRequestById(AsyncSessionFromInfo(info) ,id)
         #u r getting the database sections , u r extracting calling the function, returning the data from the table, able to extract , ask for it by Id there will be call the record 
+        return result
+    @strawberryA.field(description="""Finds an item by their id""")
+    async def item_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ItemGQLModel, None]:
+        result = await resolveItemById(AsyncSessionFromInfo(info) ,id)
         return result
 
     @strawberryA.field(description="Retrieves all requests")
@@ -381,9 +436,9 @@ class Query:
 
     @strawberryA.field(description="Retrieves all items")
     async def all_items(self, info: strawberryA.types.Info, skip: int, limit: int) -> List[ItemGQLModel]:
-        session = AsyncSessionFromInfo(info)
-        items = await resolveItemAll(session, skip = skip, limit = limit)
-        return items
+        async with withInfo(info) as session:
+            items = await resolveItemAll(session, skip = skip, limit = limit)
+            return items
 
 ###########################################################################################################################
 #
