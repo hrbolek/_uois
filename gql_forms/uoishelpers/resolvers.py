@@ -278,6 +278,9 @@ def createEntityGetterWithFilter(DBModel: BaseModel):
 
             return getattr(DBModel, methodMaps[key])(comparedItem)
 
+        return (DBModel.id == DBModel.id) # will this work?
+
+    def createWhereLambda(where):        
         return DBModel.id == DBModel.id  # will this work?
 
     def createWhereLambda(where):

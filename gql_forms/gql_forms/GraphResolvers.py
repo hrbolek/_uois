@@ -8,38 +8,21 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uoishelpers.resolvers import create1NGetter, createEntityByIdGetter, createEntityGetter, createInsertResolver, createUpdateResolver
 from uoishelpers.resolvers import putSingleEntityToDb
 
-
-
 ## Nasleduji funkce, ktere lze pouzit jako asynchronni resolvery
-
-###########################################################################################################################
-#
-# zde si naimportujte sve SQLAlchemy modely
-#
+# zde definujte sve resolvery s pomoci funkci vyse tyto pouzijete v GraphTypeDefinitions
 ###########################################################################################################################
 
-
-
-###########################################################################################################################
-#
-# zde definujte sve resolvery s pomoci funkci vyse
-# tyto pouzijete v GraphTypeDefinitions
-#
-###########################################################################################################################
 from gql_forms.DBDefinitions import BaseModel, RequestModel, SectionModel, PartModel, ItemModel, UserModel
 
 
-## request resolvers, 
+## request resolvers
+
 # it will use for form the table if y know the id , u can extract it from the database
-
 resolveRequestById = createEntityByIdGetter(RequestModel)
-# try to get from the database ..of request u can gert multiblae request 
 resolveRequestAll = createEntityGetter(RequestModel)
-
 resolveRequestByUser = create1NGetter(RequestModel, foreignKeyName='creator_id')
 
-# allow u to retry which are related to the request if i have the request id 
-# resolveSectionsForRequest = create1NGetter(SectionModel, foreignKeyName='request_id', options=joinedload(SectionModel.parts))
+# allow u to retrieves which are related to the request if i have the request id 
 resolveSectionsForRequest = create1NGetter(SectionModel, foreignKeyName='request_id')
 # #
 # resolveUserForRequest = createEntityByIdGetter(UserModel)
@@ -61,12 +44,19 @@ async def resolveRequestsByThreeLetters(session: AsyncSession, validity = None, 
 ## section resolvers
 resolveSectionById = createEntityByIdGetter(SectionModel)
 resolveSectionAll = createEntityGetter(SectionModel)
+
 resolvePartsForSection = create1NGetter(PartModel, foreignKeyName='section_id')
 
 resolveUpdateSection = createUpdateResolver(SectionModel, safe=True)
 resolveInsertSection = createInsertResolver(SectionModel)
 
 async def resolveRequestsByStatus(session: AsyncSession, status: str)->List[RequestModel]:
+    """ This function resolves requests from a database based on the status specified
+ Inputs: 
+   session: AsyncSession - an asynchronous session object for interacting with the database
+   status: str - a string specifying the status to filter the requests
+Output:
+    List[RequestModel] - a list of RequestModel objects representing the resolved requests"""
     stmt = select(RequestModel)
     stmtWithFilter = stmt.filter_by(status= status)
     dbSet = await session.execute(stmtWithFilter)
@@ -76,6 +66,7 @@ async def resolveRequestsByStatus(session: AsyncSession, status: str)->List[Requ
 ## part resolvers
 resolvePartById = createEntityByIdGetter(PartModel)
 resolvePartAll = createEntityGetter(PartModel)
+
 resolveItemsForPart = create1NGetter(ItemModel, foreignKeyName='part_id')
 
 resolveUpdatePart = createUpdateResolver(PartModel, safe=True)

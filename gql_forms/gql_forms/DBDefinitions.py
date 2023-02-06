@@ -29,13 +29,6 @@ class UserModel(BaseModel):
     __tablename__ = "users"
 
     id = UUIDColumn()
-    # name = Column(String)
-    # email = Column(String)
-    # # create_at = Column(DateTime, server_default=sqlalchemy.sql.func.now().now)
-    # # lastchange  = Column(DateTime, server_default=sqlalchemy.sql.func.now().now)
-    # create_at = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    # lastchange  = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-
     requests = relationship('RequestModel', back_populates='user')
 
 class RequestModel(BaseModel):

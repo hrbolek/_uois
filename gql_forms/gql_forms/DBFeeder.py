@@ -35,77 +35,11 @@ async def createBasicDataStructure():
     print()
 
 
-@cache
-def determineRequestNames():
-    """Definuje zakladni typy pozadavku a udrzuje je v pameti"""
-    requestNames = [
-        'Vacation',
-        'Sick Leave',
-        'Business Trip',
-        'Maternity Leave',
-        'Parental Leave',
-        'Study Leave',
-        'Other Leave'
-    ]
-    return requestNames
-
-# @cache
-# def determineRoleTypes():
-#     """Definuje zakladni typy roli a udrzuje je v pameti"""
-#     roleTypes = [
-#         {'name': 'rektor', 'name_en': 'rector', 'id': 'ae3f0d74-6159-11ed-b753-0242ac120003'}, 
-#         {'name': 'prorektor', 'name_en': 'vicerector', 'id': 'ae3f2886-6159-11ed-b753-0242ac120003'}, 
-#         {'name': 'děkan', 'name_en': 'dean', 'id': 'ae3f2912-6159-11ed-b753-0242ac120003'}, 
-#         {'name': 'proděkan', 'name_en': 'vicedean', 'id': 'ae3f2980-6159-11ed-b753-0242ac120003'}, 
-#         {'name': 'vedoucí katedry', 'name_en': 'head of department', 'id': 'ae3f29ee-6159-11ed-b753-0242ac120003'}, 
-#         {'name': 'vedoucí učitel', 'name_en': 'leading teacher', 'id': 'ae3f2a5c-6159-11ed-b753-0242ac120003'}
-#     ]
-#     return roleTypes
-@cache
-def determineSectionNames():
-    """Definuje zakladni typy sekci pozadavku a udrzuje je v pameti"""
-    sectionNames = [
-        'Student Information',
-        'Request Description',
-        'Head of Department Approval',
-        'Department Suggestion',
-        'Dean Approval',
-        'Faculty Suggestion'
-    ]
-    return sectionNames
-
-@cache
-def determinePartNames():
-    """Definuje zakladni typy casti pozadavku a udrzuje je v pameti"""
-    partNames = [
-        'Personal Information',
-        'Leave Details',
-        'Approvals'
-    ]
-    return partNames
-
-@cache
-def determineItemNames():
-    """Definuje zakladni typy polozek pozadavku a udrzuje je v pameti"""
-    itemNames = [
-        'Name',
-        'Group',
-        'Program',
-        'Description',
-        'Name of Department',
-        'Head of Department',
-        'Name of Dean',
-        'Dean Approval'
-    ]
-    return itemNames
-
-
 # def funcResultingUsers():
 #     return [
 #         {"id": "024aea76-1ee8-4fd3-9b62-17aad9d07dc6", "name": "Dang Quy Tai", "email": "quytai.dang@unob.cz", "create_at":datetime.datetime.now(), "lastchange":datetime.datetime.now()}
 #     ]
-
-#do it manual way
+#we did it manual way
 
 def funcResultingRequests():
     return [
@@ -157,20 +91,6 @@ async def randomData(asyncSessionMaker):
     await putPredefinedStructuresIntoTable(asyncSessionMaker, PartModel, funcResultingParts)
     await putPredefinedStructuresIntoTable(asyncSessionMaker, ItemModel, funcResultingItems)
 
-# def randomString(length=10, chars=string.ascii_lowercase):
-#     """Generuje nahodny retezec o zadane delce"""
-#     return ''.join(random.choice(chars) for _ in range(length))
-# def randomUser():
-#     """Generuje nahodneho uzivatele"""
-#     return {
-#         'name': randomString(),
-#         'surname': randomString(),
-#         'email': f'{randomString()}@{randomString()}.com',
-#     }
-
-# # generate 10 random users
-# # users = [randomUser() for _ in range(10)]
-# # print(users)
 
 async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structureFunction):
     """Zabezpeci prvotni inicicalizaci zaznamu v databazi
