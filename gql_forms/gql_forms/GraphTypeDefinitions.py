@@ -255,7 +255,7 @@ class ItemGQLModel:
 
 @strawberryA.input
 class ItemUpdateGQLModel:
-    id: strawberryA.ID
+    lastchante : Optional[datetime.datetime]= datetime.datetime.now()
     name: Optional[str]= None
     order : Optional[int]=None
     value: Optional[str]= None
@@ -364,6 +364,22 @@ class ItemEditorGQLModel:
     async def item(self, info: strawberryA.types.Info) -> ItemGQLModel:
         async with withInfo(info) as session:
             result = await resolveItemById(session, self.id)
+            return result
+    
+    @strawberryA.field(description="""Updates the item""")
+    async def update(self, info: strawberryA.types.Info, data: ItemUpdateGQLModel) -> 'ItemEditorGQLModel':
+        lastchange = self.lastchange
+        async with withInfo(info) as session:
+            await resolveUpdateItem(session, id=self.id, data=data)
+            if (lastchange >= data.lastchange):
+                # updating is fail
+                resultMsg = "fail"
+            else:
+                # updating is success
+                resultMsg = "ok"
+            result = ItemEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
             return result
     
 
