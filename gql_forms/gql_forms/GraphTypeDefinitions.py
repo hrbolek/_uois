@@ -25,6 +25,8 @@ class UserGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        #output: UserGQLModel(id='123') an instance of the UserGQLModel class with its id attribute set to the string '123'. 
+        #The data type of the output is UserGQLModel.
         return UserGQLModel(id=id)
 
     @strawberryA.field(description="""Entity primary key""")
@@ -382,8 +384,6 @@ class Query:
         session = AsyncSessionFromInfo(info)
         items = await resolveItemAll(session, skip = skip, limit = limit)
         return items
-
-
 
 ###########################################################################################################################
 #

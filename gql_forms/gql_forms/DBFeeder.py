@@ -1,22 +1,16 @@
 from doctest import master
 from functools import cache
-# from gql_workflow.DBDefinitions import BaseModel, UserModel, GroupModel, RoleTypeModel
-# import the base model, when appolo sever ask your container for the first time, gql will ask 
-# next step define some resolver, how to use resolver in the file graptype
-# check all data strcture in database if it have -- (work)
 from gql_forms.DBDefinitions import BaseModel, UserModel, RequestModel, SectionModel, PartModel, ItemModel
 import random
 import itertools
 from functools import cache
 from sqlalchemy.future import select
 import datetime
-
-
 from sqlalchemy.future import select
 
 def singleCall(asyncFunc):
-    """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
-       Dekorovana funkce je asynchronni.
+    """A decorator that allows the decorated function to be called (selected) only once. The return value is remembered and returned on subsequent calls.
+       The decorated function is asynchronous.
     """
     resultCache = {}
     async def result():
@@ -27,13 +21,12 @@ def singleCall(asyncFunc):
 
 ###########################################################################################################################
 #
-# zde definujte sve funkce, ktere naplni random data do vasich tabulek
+# CRUD Ops-Create: define functions, which fill data into your tables
 #
 ###########################################################################################################################
 
 async def createBasicDataStructure():
     print()
-
 
 # def funcResultingUsers():
 #     return [
@@ -93,9 +86,9 @@ async def randomData(asyncSessionMaker):
 
 
 async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structureFunction):
-    """Zabezpeci prvotni inicicalizaci zaznamu v databazi
-       DBModel zprostredkovava tabulku,
-       structureFunction() dava data, ktera maji byt ulozena, predpoklada se list of dicts, pricemz dict obsahuje elementarni datove typy
+    """Function to Secures the initial initialization of the record in the database
+       DBModel mediates the table,
+       structureFunction() gives the data to be stored, a list of dicts is assumed, where dict contains elementary data types
     """
 
     tableName = DBModel.__tablename__
@@ -103,7 +96,7 @@ async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structure
     cols = [col.name for col in DBModel.metadata.tables[tableName].columns]
 
     def mapToCols(item):
-        """z item vybere jen atributy, ktere jsou v DBModel, zbytek je ignorovan"""
+        """selects from item only the attributes that are in DBModel, the rest is ignored"""
         result = {}
         for col in cols:
             value = item.get(col, None)
@@ -112,71 +105,66 @@ async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structure
             result[col] = value
         return result
 
-    # ocekavane typy 
+    # valued types 
     externalIdTypes = structureFunction()
     
-    #dotaz do databaze
+    #query the database
     stmt = select(DBModel)
     async with asyncSessionMaker() as session:
         dbSet = await session.execute(stmt)
         dbRows = list(dbSet.scalars())
     
-    #extrakce dat z vysledku dotazu
-    #vezmeme si jen atribut id, id je typu uuid, tak jej zkovertujeme na string
+    #extracting data from query results
+    #we take only the id attribute, id is of uuid type, so we convert it to string
     idsInDatabase = [f'{row.id}' for row in dbRows]
 
-    # zjistime, ktera id nejsou v databazi
+    # find out which ids are not in the database
     unsavedRows = list(filter(lambda row: not(f'{row["id"]}' in idsInDatabase), externalIdTypes))
 
     async def saveChunk(rows):
-        # pro vsechna neulozena id vytvorime entity
-        # omezime se jen na atributy, ktere jsou definovane v modelu
+        # create entities for all unstored ids
+        # we limit the attributes that are defined in the model
         mappedUnsavedRows = list(map(mapToCols, rows))
         rowsToAdd = [DBModel(**row) for row in mappedUnsavedRows]
 
-        # a vytvorene entity jednou operaci vlozime do databaze
+        # and insert the created entities into the database with one operation
         async with asyncSessionMaker() as session:
             async with session.begin():
                 session.add_all(rowsToAdd)
             await session.commit()
 
     if len(unsavedRows) > 0:
-        # je co ukladat
+        #is what to store
         if '_chunk' in unsavedRows[0]:
-            # existuje informace o rozfazovani ukladani do tabulky
+            # there is information about saving into a table
             nextPhase =  [*unsavedRows]
             while len(nextPhase) > 0:
-                #zjistime nejmensi cislo poradi ukladani 
+                #find the smallest storage order number 
                 chunkNumber = min(map(lambda item: item['_chunk'], nextPhase))
-                #filtrujeme radky, ktere maji toto cislo
+                #filter rows that have this number
                 toSave = list(filter(lambda item: item['_chunk'] == chunkNumber, nextPhase))
-                #ostatni nechame na pozdeji
+                #others we'll leave for later
                 nextPhase = list(filter(lambda item: item['_chunk'] != chunkNumber, nextPhase))
                 #ulozime vybrane
                 await saveChunk(toSave)
         else:
-            # vsechny zaznamy mohou byt ulozeny soucasne
+            # all records can be saved at the same time
             await saveChunk(unsavedRows)
 
 
-    # jeste jednou se dotazeme do databaze
+    #query the database again
     stmt = select(DBModel)
     async with asyncSessionMaker() as session:
         dbSet = await session.execute(stmt)
         dbRows = dbSet.scalars()
     
-    #extrakce dat z vysledku dotazu
+    #extracting data from query results
     idsInDatabase = [f'{row.id}' for row in dbRows]
 
-    # znovu zaznamy, ktere dosud ulozeny nejsou, mely by byt ulozeny vsechny, takze prazdny list
+    # again records that are not yet saved should all be saved, so a empty list
     unsavedRows = list(filter(lambda row: not(f'{row["id"]}' in idsInDatabase), externalIdTypes))
 
-    # ted by melo byt pole prazdne
+    # now the field maybe empty
     if not(len(unsavedRows) == 0):
         print('SOMETHING is REALLY WRONG')
-
-    #print(structureFunction(), 'On the input')
-    #print(dbRowsDicts, 'Defined in database')
-    # nyni vsechny entity mame v pameti a v databazi synchronizovane
-    #print(structureFunction())
     pass
