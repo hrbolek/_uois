@@ -424,7 +424,7 @@ class Query:
             result = await resolveRequestsByStatus(session, status= status)
             return result
 
-    @strawberryA.field(description="""returns all requests created by a user""")
+    @strawberryA.field(description="""Returns all requests created by a user""")
     async def request_by_user(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[RequestGQLModel, None]:
         result = await resolveRequestByUser(AsyncSessionFromInfo(info) ,id)
         return result
