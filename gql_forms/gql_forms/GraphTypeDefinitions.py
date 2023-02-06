@@ -399,6 +399,10 @@ class Query:
         result = await resolveRequestById(AsyncSessionFromInfo(info) ,id)
         #u r getting the database sections , u r extracting calling the function, returning the data from the table, able to extract , ask for it by Id there will be call the record 
         return result
+    @strawberryA.field(description="""Finds an item by their id""")
+    async def item_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ItemGQLModel, None]:
+        result = await resolveItemById(AsyncSessionFromInfo(info) ,id)
+        return result
 
     @strawberryA.field(description="Retrieves all requests")
     async def all_requests(self, info: strawberryA.types.Info, skip: int, limit: int) -> List[RequestGQLModel]:
