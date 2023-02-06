@@ -41,15 +41,6 @@ async def resolveRequestsByThreeLetters(session: AsyncSession, validity = None, 
     dbSet = await session.execute(stmt)
     return dbSet.scalars()
 
-## section resolvers
-resolveSectionById = createEntityByIdGetter(SectionModel)
-resolveSectionAll = createEntityGetter(SectionModel)
-
-resolvePartsForSection = create1NGetter(PartModel, foreignKeyName='section_id')
-
-resolveUpdateSection = createUpdateResolver(SectionModel, safe=True)
-resolveInsertSection = createInsertResolver(SectionModel)
-
 async def resolveRequestsByStatus(session: AsyncSession, status: str)->List[RequestModel]:
     """ This function resolves requests from a database based on the status specified
  Inputs: 
@@ -62,6 +53,17 @@ Output:
     dbSet = await session.execute(stmtWithFilter)
     result= dbSet.scalars()
     return result
+    
+## section resolvers
+resolveSectionById = createEntityByIdGetter(SectionModel)
+resolveSectionAll = createEntityGetter(SectionModel)
+
+resolvePartsForSection = create1NGetter(PartModel, foreignKeyName='section_id')
+
+resolveUpdateSection = createUpdateResolver(SectionModel, safe=True)
+resolveInsertSection = createInsertResolver(SectionModel)
+
+
     
 ## part resolvers
 resolvePartById = createEntityByIdGetter(PartModel)
