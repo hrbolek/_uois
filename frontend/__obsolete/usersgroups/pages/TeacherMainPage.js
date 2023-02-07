@@ -31,10 +31,10 @@ export const TeacherMainPageComponent = (props) => {
         <div className="row flex-nowrap">
             <LeftFixedMenu>
                 <TeacherMenu {...props}/>
-            </LeftFixedMenu>            
+            </LeftFixedMenu>
             <LeftFloatMenu>
                 <TeacherMenu {...props}/>
-            </LeftFloatMenu>   
+            </LeftFloatMenu>
             <Col className="py-3">
                 <TeacherLarge {...props} />
             </Col>
@@ -54,7 +54,7 @@ const Visualisers = [
     {'type': 'requests', 'visualiser': TeacherMessagesPageComponent },
 
 
-    
+
 
 ]
 
@@ -105,7 +105,7 @@ export const TeacherTopMenuTemplate = (props) => {
                 </li>
             </ul>
         </nav>
-            
+
     )
 }
 
@@ -129,17 +129,17 @@ export const TeacherTopMenu = (props) => {
                     <a className="navbar-brand nav-link" href="#">Domů</a>
                 </li>
                 {FullPageItems.map(
-                    (item) =>                 
+                    (item) =>
                         <li key={item.id} className="nav-item">
                             <a className="nav-link" href={"#" + item.id}>{item.label}</a>
                         </li>
-    
+
                 )}
             </ul>
             <SearchSmall />
             </div>
         </nav>
-            
+
     )
 }
 

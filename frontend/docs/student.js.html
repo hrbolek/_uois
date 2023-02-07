@@ -19,11 +19,11 @@
 
     <h1 class="page-title">Source: student.js</h1>
 
-    
 
 
 
-    
+
+
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import { Link, useParams } from "react-router-dom";
@@ -49,7 +49,7 @@ import { ProgramSmall } from '../studyprogram/studyprogram';
 
 /**
  * Renders a link to a student's page
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - Student's name
  * @function
@@ -62,7 +62,7 @@ export function StudentSmall(props) {
 
 /**
  * Renders a medium set of student's data, it is compatible with {@link StudentLarge}
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - Student's name
  * @param {*} props.faculty - Student's faculty
@@ -79,7 +79,7 @@ export function StudentMedium(props) {
                 &lt;Card.Title>Student - &lt;StudentSmall {...props.person} />&lt;/Card.Title>
             &lt;/Card.Header>
             &lt;Card.Body>
-    
+
                 &lt;Card.Text>
                     &lt;b>Jméno  příjmení:&lt;/b> {props.person.name} {props.person.surname}&lt;br />
                     &lt;b>Titul:&lt;/b> {props.degreeRank} &lt;b>Ročník:&lt;/b> {props.grade} &lt;br />
@@ -101,7 +101,7 @@ export const StudentProgram = (props) => {
                 &lt;ProgramSmall {...props.program} />
             &lt;/Card.Body>
         &lt;/Card>
-        
+
     )
 }
 
@@ -212,7 +212,7 @@ export function StudentPage(props) {
 }
 */
 function RozvrhMedium() {
-    return ( 
+    return (
         &lt;TimeTableMedium type={'student'} id={1} />
     )
 }
@@ -270,7 +270,7 @@ export function StudentLarge(props) {
 
 /**
  * Renders a page with data representing a student
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {*} props.person - peronification fo student
  * @param {string} props.name - Student's name
@@ -283,7 +283,7 @@ export const StudentLargeStoryBook = (props) => {
             'id': 1,
             'name': 'Name',
             'surname': 'Lastname',
-            "email": 'name.lastname@unob.cz',   
+            "email": 'name.lastname@unob.cz',
         },
         'degreeRank': 'ing. por.',
         'grade': '3',
@@ -314,7 +314,7 @@ export const StudentLargeStoryBook = (props) => {
     return &lt;StudentLarge {...extendedProps} {...props} />;
 }
 
-export const StudentLargeQuery = (id) => 
+export const StudentLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -349,7 +349,7 @@ export const StudentLargeQuery = (id) =>
         }),
     })
 
-export const StudentMediumQuery = (id) => 
+export const StudentMediumQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -375,14 +375,14 @@ export const StudentMediumQuery = (id) =>
         }),
     })
 
-  
+
 export const StudentLargeFetching = (props) => {
 
     const Visualizer = props.as || StudentLargeStoryBook;
     const queryFunc = props.with || StudentLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.user, [props.id])
-    
+
     if (error != null) {
         return &lt;LoadingError error={error} />
     } else if (state != null) {
@@ -397,7 +397,7 @@ export const StudentPage = (props) => {
 
     return (
         &lt;StudentLargeFetching {...props} id={id} as={StudentLargeStoryBook}/>
-    )    
+    )
 }</code></pre>
         </article>
     </section>

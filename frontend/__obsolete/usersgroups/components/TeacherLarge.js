@@ -17,7 +17,7 @@ export const TeacherMembership = (props) => {
     return (
             <>
             {validMemberships.map((item, index) => {
-                
+
                 return (
                     <Row key={item.group.id}>
                         <Col><b>{item.group?.grouptype?.name}</b></Col>
@@ -100,7 +100,7 @@ export const TeacherName = (props) => {
 export const EditableTextAttribute = (props) => {
     const { attributeName, placeholder } = props
     const [attributeValue, setAttributeValue] = useState(props[attributeName])
-    
+
     useEffect( // a little hack
         () => {
             setAttributeValue(props[attributeName])
@@ -158,7 +158,7 @@ export const TeacherPersonalsEditable = (props) => {
                         </Row>
                         <Row>
                             <TeacherMembership user={user}/>
-                        </Row>                        
+                        </Row>
                         <Row>
                             <b>Role</b>
                             <hr />
@@ -203,7 +203,7 @@ export const TeacherPersonals = (props) => {
                         </Row>
                         <Row>
                             <TeacherMembership user={user}/>
-                        </Row>                        
+                        </Row>
                         <Row>
                             <b>Role</b>
                             <hr />
@@ -220,9 +220,9 @@ export const TeacherPersonals = (props) => {
         </Card>
     )
 }
-export function TeacherLarge(props) { 
+export function TeacherLarge(props) {
     return (
-        
+
 
         <Card>
             <Card.Header>

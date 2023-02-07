@@ -17,7 +17,7 @@ const groupTypes = {
 
 
 
-const createMaster = (group) => { 
+const createMaster = (group) => {
     //console.log('createMaster', group.mastergroup)
     const mastergroup = group.mastergroup
     if (mastergroup) {
@@ -44,7 +44,7 @@ const Masters = ({group, children}) => {
         <MasterComponent>
             {children}
         </MasterComponent>
-    )    
+    )
 }
 
 const validAndEnabledAcademic = (groupList) => {
@@ -55,10 +55,10 @@ const BuildAcademicMasterNode = ({group}) => {
     const validSubgroups = validAndEnabledAcademic(group.subgroups || [])
     const children = validSubgroups.map( g => <BuildTree key={g.id} group={g} />)
     return (
-        
+
         <Masters group={group}>
             {children}
-        </Masters>    
+        </Masters>
 
     )
 }
@@ -84,7 +84,7 @@ const BuildMasterNode = ({group}) => {
 
             <Masters group={group}>
                 {children}
-            </Masters>    
+            </Masters>
     )
 }
 
@@ -135,7 +135,7 @@ const BuildStudyGroupMasterNode = ({group}) => {
     const validSubgroups = group.subgroups
     //console.log(group.subgroups)
     const childrenMap = {}
-    validSubgroups.forEach(g => { 
+    validSubgroups.forEach(g => {
         const reMatch = studyGroupMatcher.exec(g.name)
         if (reMatch) {
             const signs = reMatch.filter(value => value)
@@ -156,10 +156,10 @@ const BuildStudyGroupMasterNode = ({group}) => {
     return(
 
         <Masters group={group}>
-            {signs.map( 
+            {signs.map(
                 (sign) => <KeyedGroups key={sign} sign={sign} groups={childrenMap[sign]} />
             )}
-        </Masters>    
+        </Masters>
     )
 }
 
@@ -178,7 +178,7 @@ export const GroupSchema = (props) => {
                 others.push(g)
             }
         }
-        
+
     )
     //const validSubgroups = validAndEnabled(group.subgroups || [])
     //const children = validSubgroups.map( g => <BuildTree key={g.id} group={g} />)

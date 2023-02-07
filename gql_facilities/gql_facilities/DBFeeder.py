@@ -10,16 +10,20 @@ from functools import cache
 
 from sqlalchemy.future import select
 
+
 def singleCall(asyncFunc):
     """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
-       Dekorovana funkce je asynchronni.
+    Dekorovana funkce je asynchronni.
     """
     resultCache = {}
+
     async def result():
-        if resultCache.get('result', None) is None:
-            resultCache['result'] = await asyncFunc()
-        return resultCache['result']
+        if resultCache.get("result", None) is None:
+            resultCache["result"] = await asyncFunc()
+        return resultCache["result"]
+
     return result
+
 
 ###########################################################################################################################
 #
@@ -27,44 +31,42 @@ def singleCall(asyncFunc):
 #
 ###########################################################################################################################
 
+
 @cache
 def types1():
     # krome id a name, lze mit i dalsi prvky, napriklad cizi klice...
     data = [
-        {'id': '282e67ec-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeA'},
-        {'id': '282e6e86-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeB'},
-        {'id': '282e7002-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeC'},
+        {"id": "282e67ec-6d9e-11ed-a1eb-0242ac120002", "name": "typeA"},
+        {"id": "282e6e86-6d9e-11ed-a1eb-0242ac120002", "name": "typeB"},
+        {"id": "282e7002-6d9e-11ed-a1eb-0242ac120002", "name": "typeC"},
     ]
     return data
+
 
 @cache
 def determineFacilityTypes():
     """Definuje zakladni typy facility a udrzuje je v pameti (campus/building/floor/room)"""
     facilityTypes = [
-        {'name':'campus', 'id': ""},
-        {'name':'building', 'id': ""},
-        {'name':'floor', 'id': ""},
-        {'name':'room', 'id': ""}
+        {"name": "campus", "id": ""},
+        {"name": "building", "id": ""},
+        {"name": "floor", "id": ""},
+        {"name": "room", "id": ""},
     ]
     return facilityTypes
-#generovvat id podobné uuid
+
+
+# generovvat id podobné uuid
 
 ##vymyslet struct která doplni id podle typu facility
 
 
-
 def randomFacility(name):
     """Genreruje strukturu facility a jejich hlavního fukcionáře ve formě JSON"""
-    result={
-        'name':f'{name}',
-        'adress':'RandAdress'+str(random.randint(1,10)),
-        'valid':'True',
-
-
-
+    result = {
+        "name": f"{name}",
+        "adress": "RandAdress" + str(random.randint(1, 10)),
+        "valid": "True",
     }
-
-
 
 
 ###########################################################################################################################
@@ -74,6 +76,8 @@ def randomFacility(name):
 ###########################################################################################################################
 
 import asyncio
+
+
 async def predefineAllDataStructures(asyncSessionMaker):
     #
     # asyncio.gather(
@@ -84,35 +88,38 @@ async def predefineAllDataStructures(asyncSessionMaker):
     #
     return
 
-async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structureFunction):
+
+async def putPredefinedStructuresIntoTable(
+    asyncSessionMaker, DBModel, structureFunction
+):
     """Zabezpeci prvotni inicicalizaci typu externích ids v databazi
-       DBModel zprostredkovava tabulku, je to sqlalchemy model
-       structureFunction() dava data, ktera maji byt ulozena
+    DBModel zprostredkovava tabulku, je to sqlalchemy model
+    structureFunction() dava data, ktera maji byt ulozena
     """
-    # ocekavane typy 
+    # ocekavane typy
     externalIdTypes = structureFunction()
-    
-    #dotaz do databaze
+
+    # dotaz do databaze
     stmt = select(DBModel)
     async with asyncSessionMaker() as session:
         dbSet = await session.execute(stmt)
         dbRows = list(dbSet.scalars())
-    
-    #extrakce dat z vysledku dotazu
-    #vezmeme si jen atributy name a id, id je typu uuid, tak jej zkovertujeme na string
-    dbRowsDicts = [
-        {'name': row.name, 'id': f'{row.id}'} for row in dbRows
-        ]
 
-    print(structureFunction, 'external id types found in database')
+    # extrakce dat z vysledku dotazu
+    # vezmeme si jen atributy name a id, id je typu uuid, tak jej zkovertujeme na string
+    dbRowsDicts = [{"name": row.name, "id": f"{row.id}"} for row in dbRows]
+
+    print(structureFunction, "external id types found in database")
     print(dbRowsDicts)
 
     # vytahneme si vektor (list) id, ten pouzijeme pro operator in nize
-    idsInDatabase = [row['id'] for row in dbRowsDicts]
+    idsInDatabase = [row["id"] for row in dbRowsDicts]
 
     # zjistime, ktera id nejsou v databazi
-    unsavedRows = list(filter(lambda row: not(row['id'] in idsInDatabase), externalIdTypes))
-    print(structureFunction, 'external id types not found in database')
+    unsavedRows = list(
+        filter(lambda row: not (row["id"] in idsInDatabase), externalIdTypes)
+    )
+    print(structureFunction, "external id types not found in database")
     print(unsavedRows)
 
     # pro vsechna neulozena id vytvorime entity
@@ -131,28 +138,28 @@ async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structure
     async with asyncSessionMaker() as session:
         dbSet = await session.execute(stmt)
         dbRows = dbSet.scalars()
-    
-    #extrakce dat z vysledku dotazu
-    dbRowsDicts = [
-        {'name': row.name, 'id': f'{row.id}'} for row in dbRows
-        ]
 
-    print(structureFunction, 'found in database')
+    # extrakce dat z vysledku dotazu
+    dbRowsDicts = [{"name": row.name, "id": f"{row.id}"} for row in dbRows]
+
+    print(structureFunction, "found in database")
     print(dbRowsDicts)
 
     # znovu id, ktera jsou uz ulozena
-    idsInDatabase = [row['id'] for row in dbRowsDicts]
+    idsInDatabase = [row["id"] for row in dbRowsDicts]
 
     # znovu zaznamy, ktere dosud ulozeny nejsou, mely by byt ulozeny vsechny, takze prazdny list
-    unsavedRows = list(filter(lambda row: not(row['id'] in idsInDatabase), externalIdTypes))
+    unsavedRows = list(
+        filter(lambda row: not (row["id"] in idsInDatabase), externalIdTypes)
+    )
 
     # ted by melo byt pole prazdne
-    print(structureFunction, 'not found in database')
+    print(structureFunction, "not found in database")
     print(unsavedRows)
-    if not(len(unsavedRows) == 0):
-        print('SOMETHING is REALLY WRONG')
+    if not (len(unsavedRows) == 0):
+        print("SOMETHING is REALLY WRONG")
 
-    print(structureFunction, 'Defined in database')
+    print(structureFunction, "Defined in database")
     # nyni vsechny entity mame v pameti a v databazi synchronizovane
     print(structureFunction())
     pass

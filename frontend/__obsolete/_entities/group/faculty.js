@@ -44,7 +44,7 @@ function SeznamProgramu(props) {
                 <Card.Title>Seznam uskutečňovaných programů</Card.Title>
             </Card.Header>
             <Card.Body>
-                <ProgramSmall name={'Kybernetická bezpečnost'} id={1} />                
+                <ProgramSmall name={'Kybernetická bezpečnost'} id={1} />
             </Card.Body>
         </Card>
     )
@@ -64,7 +64,7 @@ function SeznamProgramu(props) {
 */
 
 export function FacultyLarge(props) {
-    
+
     return (
         <Card>
             <Card.Header>
@@ -83,7 +83,7 @@ export function FacultyLarge(props) {
                         <SeznamProgramu {...props} />
                     </Col>
                 </Row>
-            </Card.Body> 
+            </Card.Body>
         </Card>
     )
 }
@@ -178,7 +178,7 @@ function SeznamKateder(props) {
             </Card.Header>
             <Card.Body>
                 <ul>
-                    {props.departments.map((item) => 
+                    {props.departments.map((item) =>
                         (<li key={item.id}><DepartmentSmall key={item.id} {...item} appRoot={props.appRoot} /></li>)
                     )}
                 </ul>
@@ -189,7 +189,7 @@ function SeznamKateder(props) {
 
 /**
  * Renders a page with data representing a faculty, contains predefined data which can are overrided by props
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - name
  * @function
@@ -220,7 +220,7 @@ export const FacultyLargeStoryBook = (props) => {
  * @param {*} id - identificator
  * @function
  */
-export const FacultyLargeQuery = (id) => 
+export const FacultyLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -261,7 +261,7 @@ export const FacultyLargeFetching = (props) => {
     const queryFunc = props.with || FacultyLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.group, [props.id])
-    
+
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
@@ -277,5 +277,5 @@ export const FacultyPage = (props) => {
 
     return (
         <FacultyLargeFetching {...props} id={id} />
-    )       
+    )
 }

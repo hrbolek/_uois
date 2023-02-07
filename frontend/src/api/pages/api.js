@@ -37,7 +37,7 @@ export const ApiPage = (props) => {
         (graphQLParams) => {
             // This example expects a GraphQL server at the path /graphql.
             // Change this to point wherever you host your GraphQL server.
-            
+
                 console.log('fetching')
                 return fetch(parameters.fetchURL, {
                     method: 'post',
@@ -63,7 +63,7 @@ export const ApiPage = (props) => {
     return (
         <div style={{height: "100vh", margin: "0",  overflow: "hidden" }}>
         <LoginButton /> <br/>
-        <GraphiQL 
+        <GraphiQL
             {...parameters}
             fetcher = {graphQLFetcher}
             onEditQuery = {onEditQuery}
@@ -71,7 +71,7 @@ export const ApiPage = (props) => {
             onEditOperationName = {onEditOperationName}
         />
         </div>
-    )       
+    )
 }
 
 

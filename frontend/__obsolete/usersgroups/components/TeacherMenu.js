@@ -27,11 +27,11 @@ export const TeacherMenu = (props) => {
     return (
         <ul className="text-white">
             {links.map(
-                (item, index) => 
+                (item, index) =>
                     <NavLink key={item.text} to={teacherRoot + item.path + (id)} className="nav-link align-middle px-0">
-                        <i className={"fs-4 bi " + item.icon}></i> 
+                        <i className={"fs-4 bi " + item.icon}></i>
                         <span className={spanClass}>{item.text}</span>
-                    </NavLink> 
+                    </NavLink>
             )}
 
         </ul>
@@ -40,21 +40,21 @@ export const TeacherMenu = (props) => {
 
 /***
             <NavLink to={teacherRoot + "/" + (id)} className="nav-link align-middle px-0">
-                <i className="fs-4 bi bi-house"></i> <span className={spanClass}> Home</span></NavLink> 
+                <i className="fs-4 bi bi-house"></i> <span className={spanClass}> Home</span></NavLink>
             <NavLink to={teacherRoot + "/timetable/" + (id)} className="nav-link align-middle px-0">
-                <i className="fs-4 bi bi-calendar-week"></i> <span className={spanClass}> Rozvrh</span></NavLink> 
+                <i className="fs-4 bi bi-calendar-week"></i> <span className={spanClass}> Rozvrh</span></NavLink>
             <NavLink to={teacherRoot + "/tasks/" + (id)} className="nav-link align-middle px-0">
-                <i className="fs-4 bi bi-card-checklist"></i> <span className={spanClass}> Úkoly</span></NavLink> 
+                <i className="fs-4 bi bi-card-checklist"></i> <span className={spanClass}> Úkoly</span></NavLink>
             <NavLink to={teacherRoot + "/requests/" + (id)} className="nav-link align-middle px-0">
-                <i className="fs-4 bi bi-envelope"></i> <span className={spanClass}> Zprávy</span></NavLink> 
+                <i className="fs-4 bi bi-envelope"></i> <span className={spanClass}> Zprávy</span></NavLink>
             <NavLink to={teacherRoot + "/groups/" + (id)} className="nav-link align-middle px-0">
-                <i className="fs-4 bi bi-book"></i> <span className={spanClass}> Výuka</span></NavLink> 
+                <i className="fs-4 bi bi-book"></i> <span className={spanClass}> Výuka</span></NavLink>
             <NavLink to={teacherRoot + "/supervisor/" + (id)} className="nav-link align-middle px-0">
-                <i className="fs-4 bi bi-people"></i> <span className={spanClass}> Školitel</span></NavLink> 
+                <i className="fs-4 bi bi-people"></i> <span className={spanClass}> Školitel</span></NavLink>
             <NavLink to={teacherRoot + "/grant/" + (id)} className="nav-link align-middle px-0">
-                <i className="fs-4 bi bi-collection"></i> <span className={spanClass}> Garance</span></NavLink> 
+                <i className="fs-4 bi bi-collection"></i> <span className={spanClass}> Garance</span></NavLink>
             <NavLink to={teacherRoot + "/timetable/" + (id)} className="nav-link align-middle px-0">
-                <i className="fs-4 bi bi-award"></i> <span className={spanClass}> Věda</span></NavLink> 
+                <i className="fs-4 bi bi-award"></i> <span className={spanClass}> Věda</span></NavLink>
 
- * 
+ *
  */

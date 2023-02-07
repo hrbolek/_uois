@@ -16,7 +16,7 @@ const Subgroup = (props) => {
 
 const SubgroupTableRow = (props) => {
     const { group, actions } = props
-    
+
     const setInvalid = useCallback( () => actions.updateGroupInTreeAsync({...group, valid: false}), [group])
     const setValid = useCallback( () => actions.updateGroupInTreeAsync({...group, valid: true}), [group])
 
@@ -42,7 +42,7 @@ const SubgroupTableRow = (props) => {
 export const GroupSubgroupsEditable = (props) => {
     const { group, grouptype, valid, title, actions } = props
     let subgroups = group.subgroups
-    
+
     //console.log('GroupSubgroupsEditable', props.group)
     return (
         <Card>

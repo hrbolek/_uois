@@ -5,7 +5,7 @@ import { authorizedFetch } from 'generals/authorizedfetch';
  * @param {*} id - identificator
  * @function
  */
- export const TeacherLargeQuery = (id) => 
+ export const TeacherLargeQuery = (id) =>
     authorizedFetch('/gql', {
      method: 'POST',
      headers: {

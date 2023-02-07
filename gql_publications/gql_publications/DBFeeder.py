@@ -9,16 +9,20 @@ from functools import cache
 
 from sqlalchemy.future import select
 
+
 def singleCall(asyncFunc):
     """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
-       Dekorovana funkce je asynchronni.
+    Dekorovana funkce je asynchronni.
     """
     resultCache = {}
+
     async def result():
-        if resultCache.get('result', None) is None:
-            resultCache['result'] = await asyncFunc()
-        return resultCache['result']
+        if resultCache.get("result", None) is None:
+            resultCache["result"] = await asyncFunc()
+        return resultCache["result"]
+
     return result
+
 
 ###########################################################################################################################
 #
@@ -26,23 +30,25 @@ def singleCall(asyncFunc):
 #
 ###########################################################################################################################
 
+
 @cache
 def types1():
     # krome id a name, lze mit i dalsi prvky, napriklad cizi klice...
     data = [
-        {'id': '282e67ec-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeA'},
-        {'id': '282e6e86-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeB'},
-        {'id': '282e7002-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeC'},
+        {"id": "282e67ec-6d9e-11ed-a1eb-0242ac120002", "name": "typeA"},
+        {"id": "282e6e86-6d9e-11ed-a1eb-0242ac120002", "name": "typeB"},
+        {"id": "282e7002-6d9e-11ed-a1eb-0242ac120002", "name": "typeC"},
     ]
     return data
+
 
 @cache
 def types2():
     # krome id a name, lze mit i dalsi prvky, napriklad cizi klice...
     data = [
-        {'id': '4b883614-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeX'},
-        {'id': '4b8838a8-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeY'},
-        {'id': '4b883a38-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeZ'},
+        {"id": "4b883614-6d9e-11ed-a1eb-0242ac120002", "name": "typeX"},
+        {"id": "4b8838a8-6d9e-11ed-a1eb-0242ac120002", "name": "typeY"},
+        {"id": "4b883a38-6d9e-11ed-a1eb-0242ac120002", "name": "typeZ"},
     ]
     return data
 
@@ -54,6 +60,8 @@ def types2():
 ###########################################################################################################################
 
 import asyncio
+
+
 async def predefineAllDataStructures(asyncSessionMaker):
     #
     # asyncio.gather(
@@ -64,35 +72,38 @@ async def predefineAllDataStructures(asyncSessionMaker):
     #
     return
 
-async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structureFunction):
+
+async def putPredefinedStructuresIntoTable(
+    asyncSessionMaker, DBModel, structureFunction
+):
     """Zabezpeci prvotni inicicalizaci typu externích ids v databazi
-       DBModel zprostredkovava tabulku, je to sqlalchemy model
-       structureFunction() dava data, ktera maji byt ulozena
+    DBModel zprostredkovava tabulku, je to sqlalchemy model
+    structureFunction() dava data, ktera maji byt ulozena
     """
-    # ocekavane typy 
+    # ocekavane typy
     externalIdTypes = structureFunction()
-    
-    #dotaz do databaze
+
+    # dotaz do databaze
     stmt = select(DBModel)
     async with asyncSessionMaker() as session:
         dbSet = await session.execute(stmt)
         dbRows = list(dbSet.scalars())
-    
-    #extrakce dat z vysledku dotazu
-    #vezmeme si jen atributy name a id, id je typu uuid, tak jej zkovertujeme na string
-    dbRowsDicts = [
-        {'name': row.name, 'id': f'{row.id}'} for row in dbRows
-        ]
 
-    print(structureFunction, 'external id types found in database')
+    # extrakce dat z vysledku dotazu
+    # vezmeme si jen atributy name a id, id je typu uuid, tak jej zkovertujeme na string
+    dbRowsDicts = [{"name": row.name, "id": f"{row.id}"} for row in dbRows]
+
+    print(structureFunction, "external id types found in database")
     print(dbRowsDicts)
 
     # vytahneme si vektor (list) id, ten pouzijeme pro operator in nize
-    idsInDatabase = [row['id'] for row in dbRowsDicts]
+    idsInDatabase = [row["id"] for row in dbRowsDicts]
 
     # zjistime, ktera id nejsou v databazi
-    unsavedRows = list(filter(lambda row: not(row['id'] in idsInDatabase), externalIdTypes))
-    print(structureFunction, 'external id types not found in database')
+    unsavedRows = list(
+        filter(lambda row: not (row["id"] in idsInDatabase), externalIdTypes)
+    )
+    print(structureFunction, "external id types not found in database")
     print(unsavedRows)
 
     # pro vsechna neulozena id vytvorime entity
@@ -111,88 +122,119 @@ async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structure
     async with asyncSessionMaker() as session:
         dbSet = await session.execute(stmt)
         dbRows = dbSet.scalars()
-    
-    #extrakce dat z vysledku dotazu
-    dbRowsDicts = [
-        {'name': row.name, 'id': f'{row.id}'} for row in dbRows
-        ]
 
-    print(structureFunction, 'found in database')
+    # extrakce dat z vysledku dotazu
+    dbRowsDicts = [{"name": row.name, "id": f"{row.id}"} for row in dbRows]
+
+    print(structureFunction, "found in database")
     print(dbRowsDicts)
 
     # znovu id, ktera jsou uz ulozena
-    idsInDatabase = [row['id'] for row in dbRowsDicts]
+    idsInDatabase = [row["id"] for row in dbRowsDicts]
 
     # znovu zaznamy, ktere dosud ulozeny nejsou, mely by byt ulozeny vsechny, takze prazdny list
-    unsavedRows = list(filter(lambda row: not(row['id'] in idsInDatabase), externalIdTypes))
+    unsavedRows = list(
+        filter(lambda row: not (row["id"] in idsInDatabase), externalIdTypes)
+    )
 
     # ted by melo byt pole prazdne
-    print(structureFunction, 'not found in database')
+    print(structureFunction, "not found in database")
     print(unsavedRows)
-    if not(len(unsavedRows) == 0):
-        print('SOMETHING is REALLY WRONG')
+    if not (len(unsavedRows) == 0):
+        print("SOMETHING is REALLY WRONG")
 
-    print(structureFunction, 'Defined in database')
+    print(structureFunction, "Defined in database")
     # nyni vsechny entity mame v pameti a v databazi synchronizovane
     print(structureFunction())
     pass
 
-from gql_publications.DBDefinitions import BaseModel, UserModel, PublicationModel, AuthorModel, PublicationTypeModel
+
+from gql_publications.DBDefinitions import (
+    BaseModel,
+    UserModel,
+    PublicationModel,
+    AuthorModel,
+    PublicationTypeModel,
+)
 
 limit = 10
 import uuid
 
+
 def randomUUID():
-    userIDs = [uuid.uuid4() for _ in range(limit) ]
+    userIDs = [uuid.uuid4() for _ in range(limit)]
     return userIDs
 
 
 def randomAuthor(id):
-    return  {
-        'id': id,
-        'user_id': random.choice(authorIDs),
-        'publication_id': random.choice(publicationIDs),
-        'order': randomOrder(),
-        'share': randomShare(),
-        "externalId": ""
+    return {
+        "id": id,
+        "user_id": random.choice(authorIDs),
+        "publication_id": random.choice(publicationIDs),
+        "order": randomOrder(),
+        "share": randomShare(),
+        "externalId": "",
     }
-    
+
 
 def randomPublicationName():
     publicationNames = [
-        "Database systems", "Data Mining", "Algorithms and Data Structures", "Web Data Mining",
-        "Zaklady siti", "Telekomunikacni technika"
+        "Database systems",
+        "Data Mining",
+        "Algorithms and Data Structures",
+        "Web Data Mining",
+        "Zaklady siti",
+        "Telekomunikacni technika",
     ]
     return random.choice(publicationNames)
 
+
 def randomReference():
 
-    return 'Monografie: FINKE, Manfred. Sulzbach im 17. Jahrhundert : zur Kulturgeschichte einer süddeutschen Residenz. Regensburg : Friedrich Pustet, 1998. 404 s. ISBN 3-7917-1596-8.'
+    return "Monografie: FINKE, Manfred. Sulzbach im 17. Jahrhundert : zur Kulturgeschichte einer süddeutschen Residenz. Regensburg : Friedrich Pustet, 1998. 404 s. ISBN 3-7917-1596-8."
+
 
 def randomPlace():
-    places = ["Brno", "Praha", "Ostrava","Plzen", "Olomouc"]
+    places = ["Brno", "Praha", "Ostrava", "Plzen", "Olomouc"]
     return random.choice(places)
-    
+
 
 def randomPublishedDate():
     defualt_date = date(2015, 6, 3)
-    return defualt_date + timedelta(days=random.randint(1,100))
+    return defualt_date + timedelta(days=random.randint(1, 100))
+
 
 def randomShare():
-    return int(100/(random.randint(1,4)))
+    return int(100 / (random.randint(1, 4)))
+
 
 def randomOrder():
-    return random.randint(1,2)
+    return random.randint(1, 2)
+
 
 def randomPublicationTypes(ids):
-   types = ["Skripta", "Clanek v odbornem periodiku", "Konferencni prispevek", "Clanek", "Recenze"]
-    
-   return [{"id": id, "type": type} for id, type in zip(ids,types)]
+    types = [
+        "Skripta",
+        "Clanek v odbornem periodiku",
+        "Konferencni prispevek",
+        "Clanek",
+        "Recenze",
+    ]
+
+    return [{"id": id, "type": type} for id, type in zip(ids, types)]
 
 
 def randomPublications(id):
     return {
-            "id": id, "name": randomPublicationName(), "publication_type_id": random.choice(publicationTypesIds), "place": randomPlace(), "published_date": randomPublishedDate(),"reference": randomReference(), "valid": True, "externalId": ""}
+        "id": id,
+        "name": randomPublicationName(),
+        "publication_type_id": random.choice(publicationTypesIds),
+        "place": randomPlace(),
+        "published_date": randomPublishedDate(),
+        "reference": randomReference(),
+        "valid": True,
+        "externalId": "",
+    }
 
 
 from sqlalchemy.future import select
@@ -207,9 +249,11 @@ def createDataStructureAuthors():
     authors = [randomAuthor(id) for id in authorIDs]
     return authors
 
+
 def createDataStructurePublicationTypes():
     publicationsTypes = randomPublicationTypes(publicationTypesIds)
     return publicationsTypes
+
 
 userIDs = randomUUID()
 authorIDs = randomUUID()
@@ -222,25 +266,26 @@ publicationTypesIds = randomUUID()
 
 from sqlalchemy.future import select
 
+
 async def randomDataStructure(session):
 
     publication_types = createDataStructurePublicationTypes()
-    publicationsTypesToAdd = [PublicationTypeModel(**record) for record in publication_types]
-    
+    publicationsTypesToAdd = [
+        PublicationTypeModel(**record) for record in publication_types
+    ]
+
     async with session.begin():
         session.add_all(publicationsTypesToAdd)
     await session.commit()
-    
+
     publications = createDataStructurePublications()
     publicationsToAdd = [PublicationModel(**record) for record in publications]
     async with session.begin():
         session.add_all(publicationsToAdd)
     await session.commit()
-    
-    
-    authors =  createDataStructureAuthors()
+
+    authors = createDataStructureAuthors()
     authorsToAdd = [AuthorModel(**record) for record in authors]
     async with session.begin():
         session.add_all(authorsToAdd)
     await session.commit()
-    

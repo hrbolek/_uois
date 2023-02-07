@@ -9,7 +9,7 @@ import { UserSmall } from 'users/components/links';
 export const EditableTextAttribute = (props) => {
     const { attributeName, placeholder } = props
     const [attributeValue, setAttributeValue] = useState(props[attributeName])
-    
+
     useEffect( // a little hack
         () => {
             setAttributeValue(props[attributeName])

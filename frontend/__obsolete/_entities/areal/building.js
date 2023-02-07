@@ -75,7 +75,7 @@ export const BuildingLarge = (props) => {
                         <BuildingRoomList {...props}/>
                     </Col>
                 </Row>
-                
+
             </Card.Body>
         </Card>
     )
@@ -83,7 +83,7 @@ export const BuildingLarge = (props) => {
 
 /**
  * Renders a page with data representing a building, contains predefined data which can are overrided by props
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - name
  * @function
@@ -103,7 +103,7 @@ export const BuildingLargeStoryBook = (props) => {
         'user' : {'id' : 1, 'name': 'John', 'surname': 'Nowick'}
     }
 
-   
+
     return <BuildingLarge {...extraProps} {...props} />
 }
 
@@ -112,7 +112,7 @@ export const BuildingLargeStoryBook = (props) => {
  * @param {*} id - identificator
  * @function
  */
-export const BuildingLargeQuery = (id) => 
+export const BuildingLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -127,12 +127,12 @@ export const BuildingLargeQuery = (id) =>
                     building(id:${id}) {
                       id
                       name
-                      
+
                       rooms {
                         id
                         name
                       }
-                      
+
                       areal: area {
                         id
                         name
@@ -156,7 +156,7 @@ export const BuildingFetching = (props) => {
     const queryFunc = props.with || BuildingLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.building, [props.id])
-    
+
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {

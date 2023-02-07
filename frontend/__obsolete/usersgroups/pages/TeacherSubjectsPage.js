@@ -17,10 +17,10 @@ export const TeacherSubjectsPageComponent = (props) => {
         <div className="row flex-nowrap">
             <LeftFloatMenu>
                 <TeacherMenu {...props}/>
-            </LeftFloatMenu>   
+            </LeftFloatMenu>
             <LeftFixedMenu>
                 <TeacherMenu {...props}/>
-            </LeftFixedMenu>            
+            </LeftFixedMenu>
             <Col className="py-3">
                 <TeacherGrant {...props} />
             </Col>
@@ -40,8 +40,8 @@ export const TeacherSubjectsPage = (props) => {
 
 */
     return (
-        
+
         <Fetching id={id} Visualiser={TeacherSubjectsPageComponent} selector={json => json.data.userById} query={TeacherLargeQuery}/>
-        
+
     )
 }

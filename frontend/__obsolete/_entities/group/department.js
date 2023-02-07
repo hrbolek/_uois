@@ -77,7 +77,7 @@ export const DepartmentVaV = (props) => {
                 <a href={'https://vav.unob.cz/department/index/114'}>VaV</a><br/>
                 <a href={'https://vav.unob.cz/results/department/114'}>VaV výsledky</a><br/>
                 <a href={'https://vav.unob.cz/department/projects/114'}>VaV projekty</a>
-                
+
             </Card.Body>
         </Card>
     )
@@ -191,7 +191,7 @@ export function DepartmentPage(props) {
 
 /**
  * Renders a page with data representing a department, contains predefined data which can are overrided by props
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - name
  * @function
@@ -228,7 +228,7 @@ export const DepartmentLargeStoryBook = (props) => {
  * @param {*} id - identificator
  * @function
  */
-export const DepartmentLargeQuery = (id) => 
+export const DepartmentLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -269,7 +269,7 @@ export const DepartmentLargeFetching = (props) => {
     const queryFunc = props.with || DepartmentLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.group, [props.id])
-    
+
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
@@ -284,5 +284,5 @@ export const DepartmentPage = (props) => {
 
     return (
         <DepartmentLargeFetching {...props} id={id} />
-    )       
+    )
 }

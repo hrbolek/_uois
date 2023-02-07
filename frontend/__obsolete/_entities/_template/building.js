@@ -11,24 +11,24 @@ const buildingRoot = root + '/areals/building';
 
 /**
  * Render link to the Building entity
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - id of the Building entity
  * @param {string} props.name - the Building's name
- * @returns 
+ * @returns
  */
 export const BuildingSmall = (props) => {
     return <Link to={buildingRoot + `${props.id}`}>{props.name}{props.children}</Link>
 }
 
 /**
- * 
- * @param {*} props 
+ *
+ * @param {*} props
  * @param {*} props.id - building's id
  * @param {string} props.name - building's name
  * @param {*} props.areal - data describing the areal where the building is located
  * @param {*} props.user - user responsible for the building
- * @param {*[]} props.rooms - rooms in the building 
- * @returns 
+ * @param {*[]} props.rooms - rooms in the building
+ * @returns
  */
 export const BuildingMedium = (props) => {
     return (
@@ -44,7 +44,7 @@ export const BuildingMedium = (props) => {
 }
 
 /**
- * 
+ *
  * @param {*} props - data describing the Building entity
  * @param {*[]} props.rooms - array containgin the rooms
  * @returns {React.Component}
@@ -62,7 +62,7 @@ export const BuildingRooms = (props) => {
 }
 
 /**
- * 
+ *
  * @param {*} props - data describing the Building entity
  * @param {*} props.name - building's name
  * @param {*} props.id - building's id
@@ -88,7 +88,7 @@ export const BuildingLarge = (props) => {
 }
 
 /**
- * Renders Building page with predefined data. 
+ * Renders Building page with predefined data.
  * @param {*} props - data to be displayed, overrides predefined data
  * @param {*} props.name - building's name
  * @param {*} props.id - building's id
@@ -113,7 +113,7 @@ export const BuildingLargeStoryBook = (props) => {
  * Large Query fetching data from GraphQLAPI
  * @param {*} id - identificator of Building entity
  */
-export const BuildingLargeQuery = (id) => 
+export const BuildingLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -134,7 +134,7 @@ export const BuildingLargeQuery = (id) =>
                       }
                       rooms {
                         id
-                        name                        
+                        name
                       }
                       user {
                         id
@@ -151,7 +151,7 @@ export const BuildingLargeQuery = (id) =>
  * Loads data from remote endpoint and renders the page for Building entity
  * @param {id} props.id - id of building entity
  * @param {React.Component} [props.as=BuildingLargeStoryBook] - a ReactJS component responsible for page rendering
- * @param {*} [props.with=BuildingLargeQuery] - function returning Promise 
+ * @param {*} [props.with=BuildingLargeQuery] - function returning Promise
  * @param {any} props - extra properties for rendering
  */
 export const BuildingFetching = (props) => {
@@ -160,7 +160,7 @@ export const BuildingFetching = (props) => {
     const queryFunc = props.with || BuildingLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.building, [props.id])
-    
+
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {

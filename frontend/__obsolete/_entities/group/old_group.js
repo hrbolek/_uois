@@ -19,7 +19,7 @@ import { Loading, LoadingError } from "../index";
 
 const groupRoot = root + '/groups'
 
-export const QueryGroupByIdLarge = (id) => 
+export const QueryGroupByIdLarge = (id) =>
     fetch(rootGQL, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
@@ -27,7 +27,7 @@ export const QueryGroupByIdLarge = (id) =>
         },
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         redirect: 'follow', // manual, *follow, error
-        body: JSON.stringify({"query": 
+        body: JSON.stringify({"query":
             `
             query {
                 group(id: ${id}) {
@@ -42,11 +42,11 @@ export const QueryGroupByIdLarge = (id) =>
                   }
                 }
               }
-            `        
+            `
         }) // body data type must match "Content-Type" header
 });
 
-export const QueryGroupByIdMedium = (id) => 
+export const QueryGroupByIdMedium = (id) =>
     fetch(rootGQL, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
@@ -54,7 +54,7 @@ export const QueryGroupByIdMedium = (id) =>
         },
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         redirect: 'follow', // manual, *follow, error
-        body: JSON.stringify({"query": 
+        body: JSON.stringify({"query":
             `
             query {
                 group(id: ${id}) {
@@ -63,7 +63,7 @@ export const QueryGroupByIdMedium = (id) =>
                   grouptypeId
                 }
               }
-            `        
+            `
         }) // body data type must match "Content-Type" header
 });
 
@@ -73,7 +73,7 @@ export const GroupSmall = (props) => {
         <Link to={groupRoot + `/${props.id}`}>{props.name}</Link>
     )
 }
-    
+
 export const GroupSmallWithFetching = (props) => {
     const [state, error] = useQueryGQL(props.id, QueryGroupByIdMedium, (response) => response.data.group, [props.id])
     if (state !== null) {
@@ -94,7 +94,7 @@ export const GroupMedium = (props) => {
                 <Card.Text>
                 </Card.Text>
             </Card.Body>
-        </Card>            
+        </Card>
     )
 }
 
@@ -139,7 +139,7 @@ export const GroupLarge = (props) => {
                     </Card.Body>
                 </Card>
             </Col>
-            
+
         </Row>
         <Row>
             <Col>
@@ -153,7 +153,7 @@ export const GroupLarge = (props) => {
                     </Card.Body>
                 </Card>
             </Col>
-            
+
         </Row>
         </>
     )

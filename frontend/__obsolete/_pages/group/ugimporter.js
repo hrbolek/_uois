@@ -14,7 +14,7 @@ export const CheckGroupExists = (id) => {
                     id
                 }
             }`,
-            variables: {id: id}        
+            variables: {id: id}
         })
     })
     .then(response => response.json()) //convert response into json format
@@ -30,7 +30,7 @@ export const AddGroup = (groupRecord) => {
                     id
                 }
             }`,
-            variables: {id: groupRecord.id}        
+            variables: {id: groupRecord.id}
         })
     })
 }
@@ -49,9 +49,9 @@ export const ImportPage = (props) => {
     const [json, setJson] = useState({})
 
     const openFile = (event) => {
-        
+
         const inputFiles = event.target.files;
-        
+
         const reader = new FileReader();
         reader.onload = () => {
           const text = reader.result;

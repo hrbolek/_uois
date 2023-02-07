@@ -16,7 +16,7 @@ export const CreateDelayer = (delay=300) => {
             oldTimer = -1;
             state = 0;
         }
-        
+
         //zabaleni funkce, pri volani je poznamenano, ze byl volan
         const encapsulatedFunc = () => {
             oldTimer = -1;
@@ -40,7 +40,7 @@ export const updateUserAsync = (user) => (dispatch, getState) => {
     const currentUser = state.user
     const limitedUser = {name: currentUser.name, surname: currentUser.surname, email: currentUser.email}
     const newAction = {lastchange: currentUser.lastchange, ...limitedUser, ...user}
-    
+
     dispatch(UserActions.updateUser(newAction))
     console.log('going to update on server')
     const updateGQL = () => userUpdateQuery(newAction)
@@ -49,7 +49,7 @@ export const updateUserAsync = (user) => (dispatch, getState) => {
             if (json.errors) {
                 dispatch(AlertActions.AddAlert({'main': 'Chyba uložení', 'explain': json.errors[0].message, 'type': 'alert-danger'}))
             } else {
-                const updateResult = json.data.userById.editor.update 
+                const updateResult = json.data.userById.editor.update
                 const changedUser = updateResult.user
                 const resultStatus = updateResult.result
 
@@ -76,13 +76,13 @@ export const updateUserAsync = (user) => (dispatch, getState) => {
                     }
                     dispatch(AlertActions.AddAlert(
                         {
-                            'main': 'Ok', 'explain': 'Někdo na serveru provedl změnu, chcete ji přepsat?', 'type': 'alert-danger', 
+                            'main': 'Ok', 'explain': 'Někdo na serveru provedl změnu, chcete ji přepsat?', 'type': 'alert-danger',
                             'extraButtons': [
                                 {'props': {'className': 'btn btn-warning'}, 'onClick': overwriteFunc, 'label': 'Vynutit přepsání'},
                                 {'props': {'className': 'btn btn-warning'}, 'onClick': acceptFunc, 'label': 'Převzít data ze serveru'}
                             ]
                         }
-                    ))                    
+                    ))
                 }
             }
             return json
@@ -93,9 +93,9 @@ export const updateUserAsync = (user) => (dispatch, getState) => {
 }
 
 //some notes fo async future development
-export const convertQueryIntoAsyncAction = (query1) => (payload, query=query1) => 
+export const convertQueryIntoAsyncAction = (query1) => (payload, query=query1) =>
     (dispatch, getState) => query(payload.id).then(response => response.json())
-export const extendAsyncActionWithThen = (asyncAction, thenCallback) => 
+export const extendAsyncActionWithThen = (asyncAction, thenCallback) =>
     (dispatch, getState) => asyncAction(dispatch, getState).then(thenCallback)
 
 export const encapsulateAsyncAction = (asyncAction, followUpAction) => async (dispatch, getState) => {

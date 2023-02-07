@@ -10,9 +10,7 @@ export const GroupSmall = (props) => {
     //<Link to={rootPath + "/groups/" + (group.id)}>{group.name} </Link>
     //<a href={rootPath + "/groups/" + (group.id)}>{group.name} </a>
     return (
-        
+
         <Link to={rootPath + "/groups/" + (group.id)}>{group.name} </Link>
     )
 }
-
-

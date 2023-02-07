@@ -19,11 +19,11 @@
 
     <h1 class="page-title">Source: studyprogram/studyprogram.js</h1>
 
-    
 
 
 
-    
+
+
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import {root} from "../index";
@@ -97,7 +97,7 @@ export const ProgramSmall = (props) => {
 //                     }
 //                   }
 //                 }
-//               }       
+//               }
 //                 `,
 //               variables: {
 //                 now: new Date().toISOString(),
@@ -106,9 +106,9 @@ export const ProgramSmall = (props) => {
 //           })
 //             .then((res) => res.json())
 //             .then((result) => setState(result.data));
-            
+
 //     }, [] )
-    
+
 //     //POTOM BUDE: [props.id] - závislost kdy se udělá fetch (vždy když změníme id)!
 //     //console.log("po fetchi:", state)
 //     return(
@@ -125,7 +125,7 @@ export const ProgramGrants = (props) => {
         &lt;Card>
             &lt;Card.Header>
                 &lt;Card.Title> Garanti &lt;/Card.Title>
-                
+
             &lt;/Card.Header>
             &lt;Card.Body>
                 &lt;TeacherSmall id={1} name={'Josef Marie'} surname={'Krejčí'} />
@@ -161,7 +161,7 @@ export const ProgramAppLink = (props) => {
 }
 
 export const ProgramLarge = (props) => {
-    return (        
+    return (
             &lt;Card>
                 &lt;Card.Header>
                     &lt;Card.Title>
@@ -172,22 +172,22 @@ export const ProgramLarge = (props) => {
                     &lt;Row>
                         &lt;Col md={3}>
                             &lt;ProgramGrants {...props} /> &lt;br/>
-                            &lt;ProgramAppLink {...props} />   
+                            &lt;ProgramAppLink {...props} />
                         &lt;/Col>
                         &lt;Col md={6}>
-                            &lt;ProgramSubjectList {...props} />        
+                            &lt;ProgramSubjectList {...props} />
                         &lt;/Col>
                         &lt;Col md={3}>
                             &lt;ProgramGroups {...props} />   &lt;br/>
-                        &lt;/Col>          
+                        &lt;/Col>
                     &lt;/Row>
                 &lt;/Card.Body>
                 &lt;Card.Body>
-                    
+
                 &lt;/Card.Body>
 
             &lt;/Card>
-            
+
     )
 }
 
@@ -205,7 +205,7 @@ export const ProgramLarge_ = (props) => {
         programy.push(&lt;ProgMedium name={sgItem.name} id={sgItem.id}/>);
     }
 */
-try{ 
+try{
     if(json.program.length>1){
         const programy = []
         for(var index = 0; index &lt; json.program.length; index++) {
@@ -217,13 +217,13 @@ try{
                 &lt;thead>
                     &lt;h3>Seznam studijních programů:&lt;/h3>
                 &lt;/thead>
-              {programy}                  
+              {programy}
             &lt;/Table>
-            
+
             {/*&lt;p>&lt;b>fetchnuty JSON soubor z GraphQL:&lt;/b> {JSON.stringify(json)}&lt;/p>*/}
 
         &lt;/div>)
-    
+
         }
         else{
             return(&lt;div>
@@ -231,42 +231,42 @@ try{
                     &lt;thead>
                         &lt;h3>Studijní program:&lt;/h3>
                     &lt;/thead>
-                        
-                  &lt;Card>&lt;ProgramMedium name={json.program.name} id={json.program.id}/>&lt;/Card>             
+
+                  &lt;Card>&lt;ProgramMedium name={json.program.name} id={json.program.id}/>&lt;/Card>
                 &lt;/Table>
-                
+
                 {/*&lt;p>&lt;b>fetchnuty JSON soubor z GraphQL:&lt;/b> {JSON.stringify(json)}&lt;/p>*/}
 
             &lt;/div>)
         }
 
-} catch(e) { 
-    console.error(e); 
+} catch(e) {
+    console.error(e);
     return(&lt;div>
         &lt;Table striped bordered hover>
             &lt;thead>
                 &lt;h3>Studijní program:&lt;/h3>
             &lt;/thead>
-              
-          &lt;Card>&lt;ProgramMedium name={json.programy.name} id={json.programy.id}/>&lt;/Card>             
+
+          &lt;Card>&lt;ProgramMedium name={json.programy.name} id={json.programy.id}/>&lt;/Card>
         &lt;/Table>
-        
+
         {/*&lt;p>&lt;b>fetchnuty JSON soubor z GraphQL:&lt;/b> {JSON.stringify(json)}&lt;/p>*/}
 
     &lt;/div>)
-    
+
 }
 
 
 //console.log("obsah program: ",programy)
-    
+
 }
 
 const tdStyle = {
     'colspan': "2",
     'align': "right",
-    
-    
+
+
     //'background-color': '#CCCCCC',
     };
 
@@ -275,7 +275,7 @@ const tableStyle = {
     width: '110%',
     border: '1px solid black',
     'border-collapse': 'collapse',
-        
+
     //'background-color': '#CCCCCC',
     };
 
@@ -303,7 +303,7 @@ export const ProgramSubjectList = (props) => {
         )
     }
 
-    // const subjects = props.subjects.map((subject, index) => (      
+    // const subjects = props.subjects.map((subject, index) => (
     //     &lt;Accordion.Item eventKey={index + ""}>
     //         &lt;Accordion.Header>{subject.name}&lt;/Accordion.Header>
     //         &lt;Accordion.Body>
@@ -319,13 +319,13 @@ export const ProgramSubjectList = (props) => {
     //                 {subject.name} ({subject.id})
     //             &lt;/Accordion.Toggle>
     //         &lt;/Card.Header>
-            
+
     //         &lt;Accordion.Collapse eventKey={subject.id}>
     //             &lt;Card.Body>
     //                 &lt;SubjectLarge {...subject}/>
     //             &lt;/Card.Body>
     //         &lt;/Accordion.Collapse>
-            
+
     //     &lt;/Card>
     //     &lt;/Accordion>
     // ))
@@ -335,7 +335,7 @@ export const ProgramSubjectList = (props) => {
         &lt;Card>
             &lt;Card.Header>
                 &lt;Card.Title> Předměty &lt;/Card.Title>
-                
+
             &lt;/Card.Header>
             &lt;Card.Body>
                 {props.subjects.map((subject, index) => (
@@ -349,7 +349,7 @@ export const ProgramSubjectList = (props) => {
         &lt;/Card>
     )
 }
-  
+
 
 
 export const ProgramMedium = (props) => {
@@ -415,7 +415,7 @@ export const ProgramMedium_ = (props) => {
 
 /**
  * Renders a page with data representing a study program, contains predefined data which can are overrided by props
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - name
  * @function
@@ -461,9 +461,9 @@ export const StudyProgramLargeQuery = (id) =>
                     subjects {
                     id
                     name
-                    
+
                   }
-                  
+
                   students {
                     person {
                       id
@@ -485,12 +485,12 @@ export const StudyProgramLargeQuery = (id) =>
  * @function
  */
 export const StudyProgramLargeFetching = (props) => {
-   
+
     const Visualizer = props.as || ProgramLargeStoryBook;
     const queryFunc = props.with || StudyProgramLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.program, [props.id])
-    
+
     if (error != null) {
         return &lt;LoadingError error={error} />
     } else if (state != null) {
@@ -498,7 +498,7 @@ export const StudyProgramLargeFetching = (props) => {
     } else {
         return &lt;Loading>program {props.id}&lt;/Loading>
     }
- 
+
 }
 
 /**

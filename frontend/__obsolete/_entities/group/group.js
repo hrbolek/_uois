@@ -238,7 +238,7 @@ export function GroupLarge(props) {
 
 /**
  * Renders a page with data representing a group, contains predefined data which can are overrided by props
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - name
  * @function
@@ -288,7 +288,7 @@ export const GroupLargeStoryBook = (props) => {
  * @param {*} id - identificator
  * @function
  */
-export const GroupLargeQuery = (id) => 
+export const GroupLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -329,7 +329,7 @@ export const GroupLargeFetching = (props) => {
     const queryFunc = props.with || GroupLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.group, [props.id])
-    
+
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
@@ -344,5 +344,5 @@ export const GroupPage = (props) => {
 
     return (
         <GroupLargeFetching {...props} id={id} />
-    )       
+    )
 }

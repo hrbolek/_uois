@@ -91,7 +91,7 @@ export const RoomLarge = (props) => {
 
 /**
  * Renders a page with data representing a room, contains predefined data which can are overrided by props
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - name
  * @function
@@ -150,7 +150,7 @@ export const RoomLargeQuery = (id) =>
                         id
                         name
                         building {
-                            id 
+                            id
                             name
 
                             areal {
@@ -176,7 +176,7 @@ export const RoomFetching = (props) => {
     const queryFunc = props.with || RoomLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.room, [props.id])
-    
+
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {

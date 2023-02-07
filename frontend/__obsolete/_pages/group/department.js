@@ -20,7 +20,7 @@ import { authorizedFetch } from '../../helpers/index'
  * @param {*} id - identificator
  * @function
  */
- export const UniversityLargeQuery = (id) => 
+ export const UniversityLargeQuery = (id) =>
  authorizedFetch('/gql', {
      method: 'POST',
      headers: {
@@ -76,7 +76,7 @@ import { authorizedFetch } from '../../helpers/index'
  * @param {*} id - identificator
  * @function
  */
- export const DepartmentLargeQuery = (id) => 
+ export const DepartmentLargeQuery = (id) =>
  authorizedFetch('/gql', {
      method: 'POST',
      headers: {
@@ -235,12 +235,12 @@ export const DepartmentTimeTableSmall = (props) => {
           </Card.Title>
       </Card.Header>
       <Card.Body>
-          
+
           <svg style={{"display": "inline-block",	"width": "100%"}} viewBox="0 0 1280 720" preserveAspectRatio="xMinYMid" width="1280" height="720" xmlns="http://www.w3.org/2000/svg" overflow="hidden">
               <rect x="1" y="1" width="1280" height="720" style={{"fill":"rgb(127,127,127)", "strokeWidth":"3", "stroke": "rgb(0,0,0)"}} />
               <rect x="50" y="20" width="300" height="100" style={{"fill":"rgb(127,127,255)", "strokeWidth":"3", "stroke": "rgb(0,0,0)"}} />
           </svg>
-          
+
       </Card.Body>
   </Card>
 )
@@ -551,7 +551,7 @@ export const DepartmentLargeStoryBook = (props) => {
     const queryFunc = props.with || DepartmentLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.groupById, [props.id])
-    
+
     //console.log(JSON.stringify(state))
 
     if (state != null) {
@@ -568,7 +568,7 @@ export const DepartmentPage = (props) => {
 
     return (
         <DepartmentLargeFetching {...props} id={id} />
-    )       
+    )
 }
 
 export const DepartmentLargeStore = (props) => {
@@ -589,7 +589,7 @@ export const DepartmentPageWithStore = (props) => {
         <Provider store={createStore}>
             <DepartmentLargeFetching {...props} id={id} />
         </Provider>
-    )       
+    )
 }
 
 const pageTypes = {
@@ -602,5 +602,5 @@ export const GroupPage = (props) => {
     const As = pageTypes[pageType] ? pageTypes[pageType] : DepartmentPage
     return (
         <DepartmentLargeFetching {...props} id={id} as={As}/>
-    )       
+    )
 }

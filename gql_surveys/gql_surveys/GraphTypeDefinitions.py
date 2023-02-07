@@ -4,9 +4,10 @@ import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
 
+
 @asynccontextmanager
 async def withInfo(info):
-    asyncSessionMaker = info.context['asyncSessionMaker']
+    asyncSessionMaker = info.context["asyncSessionMaker"]
     async with asyncSessionMaker() as session:
         try:
             yield session
@@ -14,16 +15,28 @@ async def withInfo(info):
             pass
 
 
-
 def AsyncSessionFromInfo(info):
-    print('obsolete function used AsyncSessionFromInfo, use withInfo context manager instead')
-    return info.context['session']
+    print(
+        "obsolete function used AsyncSessionFromInfo, use withInfo context manager instead"
+    )
+    return info.context["session"]
 
-from gql_surveys.GraphResolvers import resolveSurveyById, resolveQuestionById, resolveAnswerById, resolveUserById, resolveQuestionTypeById
-from gql_surveys.GraphResolvers import resolveAnswersForQuestion,resolveAnswersForUser#, resolveQuestionsForType
+
+from gql_surveys.GraphResolvers import (
+    resolveSurveyById,
+    resolveQuestionById,
+    resolveAnswerById,
+    resolveUserById,
+    resolveQuestionTypeById,
+)
+from gql_surveys.GraphResolvers import (
+    resolveAnswersForQuestion,
+    resolveAnswersForUser,
+)  # , resolveQuestionsForType
+
 
 @strawberryA.federation.type(extend=True, keys=["id"])
-class UserGQLModel: 
+class UserGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
@@ -31,24 +44,32 @@ class UserGQLModel:
         return UserGQLModel(id=id)
 
     @strawberryA.field(description="""List""")
-    async def answers(self, info: strawberryA.types.Info) -> typing.List['AnswerGQLModel']:
+    async def answers(
+        self, info: strawberryA.types.Info
+    ) -> typing.List["AnswerGQLModel"]:
         async with withInfo(info) as session:
-            result = await resolveAnswersForUser(session,  self.id)
+            result = await resolveAnswersForUser(session, self.id)
             return result
 
     @strawberryA.field(description="""List""")
-    async def assignSurvey(self, info: strawberryA.types.Info, survey_id: strawberryA.ID) -> typing.List['AnswerGQLModel']: ###############
+    async def assignSurvey(
+        self, info: strawberryA.types.Info, survey_id: strawberryA.ID
+    ) -> typing.List["AnswerGQLModel"]:  ###############
         async with withInfo(info) as session:
-            result = await resolveAnswersForUser(session,  self.id)
+            result = await resolveAnswersForUser(session, self.id)
             return result
 
-@strawberryA.federation.type(keys=["id"], description="""Entity representing a relation between an user and a group""")
-class QuestionTypeGQLModel: 
+
+@strawberryA.federation.type(
+    keys=["id"],
+    description="""Entity representing a relation between an user and a group""",
+)
+class QuestionTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
-            result = await resolveQuestionTypeById(session,  id)
-            result._type_definition = cls._type_definition 
+            result = await resolveQuestionTypeById(session, id)
+            result._type_definition = cls._type_definition
             return result
 
     @strawberryA.field(description="""primary key""")
@@ -58,16 +79,21 @@ class QuestionTypeGQLModel:
     @strawberryA.field(description="""Survey name""")
     def name(self) -> str:
         return self.name
+
 
 from gql_surveys.GraphResolvers import resolveQuestionForSurvey
-@strawberryA.federation.type(keys=["id"], description="""Entity representing a relation between an user and a group""")
-class SurveyGQLModel:   
 
+
+@strawberryA.federation.type(
+    keys=["id"],
+    description="""Entity representing a relation between an user and a group""",
+)
+class SurveyGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
-            result = await resolveSurveyById(session,  id)
-            result._type_definition = cls._type_definition 
+            result = await resolveSurveyById(session, id)
+            result._type_definition = cls._type_definition
             return result
 
     @strawberryA.field(description="""primary key""")
@@ -79,10 +105,13 @@ class SurveyGQLModel:
         return self.name
 
     @strawberryA.field(description="""List""")
-    async def questions(self, info: strawberryA.types.Info) -> typing.List['QuestionGQLModel']:
+    async def questions(
+        self, info: strawberryA.types.Info
+    ) -> typing.List["QuestionGQLModel"]:
         async with withInfo(info) as session:
-            result = await resolveQuestionForSurvey(session,  self.id)
+            result = await resolveQuestionForSurvey(session, self.id)
             return result
+
 
 #     @strawberryA.field(description="""List""")
 #     async def editor(self, info: strawberryA.types.Info) -> 'SurveyEditorGQLModel':
@@ -91,14 +120,16 @@ class SurveyGQLModel:
 # @strawberryA.federation.type(keys=["id"], description="""Editor""") ###############
 # class SurveyEditorGQLModel:
 #     pass
-    
 
-@strawberryA.federation.type(keys=["id"], description="""Entity representing an access to information""")
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Entity representing an access to information"""
+)
 class QuestionGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
-            result = await resolveQuestionById(session,  id)
+            result = await resolveQuestionById(session, id)
             result._type_definition = cls._type_definition
             return result
 
@@ -115,18 +146,22 @@ class QuestionGQLModel:
         return self.order
 
     @strawberryA.field(description="""List""")
-    async def answers(self, info: strawberryA.types.Info) -> typing.List['AnswerGQLModel']:
+    async def answers(
+        self, info: strawberryA.types.Info
+    ) -> typing.List["AnswerGQLModel"]:
         async with withInfo(info) as session:
-            result = await resolveAnswersForQuestion(session,  self.id)
+            result = await resolveAnswersForQuestion(session, self.id)
             return result
 
-@strawberryA.federation.type(keys=["id"], description="""Entity representing an access to information""")
-class AnswerGQLModel:
 
+@strawberryA.federation.type(
+    keys=["id"], description="""Entity representing an access to information"""
+)
+class AnswerGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
-            result = await resolveAnswerById(session,  id)
+            result = await resolveAnswerById(session, id)
             result._type_definition = cls._type_definition
             return result
 
@@ -146,53 +181,67 @@ class AnswerGQLModel:
     async def expired(self) -> bool:
         return self.expired
 
-    @strawberryA.field(description="""is the survey still available?""") #mimo náš kontejner
+    @strawberryA.field(
+        description="""is the survey still available?"""
+    )  # mimo náš kontejner
     async def user(self) -> UserGQLModel:
         return UserGQLModel(self.user_id)
 
-    @strawberryA.field(description="""is the survey still available?""") #v našem kontejneru
+    @strawberryA.field(
+        description="""is the survey still available?"""
+    )  # v našem kontejneru
     async def question(self, info: strawberryA.types.Info) -> QuestionGQLModel:
         async with withInfo(info) as session:
-            result = await resolveQuestionById(session,  self.question_id) 
+            result = await resolveQuestionById(session, self.question_id)
             return result
-
 
 
 from gql_surveys.DBFeeder import randomSurveyData
 
+
 @strawberryA.type(description="""Type for query root""")
 class Query:
-
     @strawberryA.field(description="""Finds a survey by its id""")
-    async def survey_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[SurveyGQLModel, None]:
+    async def survey_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[SurveyGQLModel, None]:
         async with withInfo(info) as session:
-            result = await resolveSurveyById(session,  id)
+            result = await resolveSurveyById(session, id)
             return result
 
     @strawberryA.field(description="""Question by id""")
-    async def question_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[QuestionGQLModel, None]:
+    async def question_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[QuestionGQLModel, None]:
         async with withInfo(info) as session:
-            result = await resolveQuestionById(session,  id)
+            result = await resolveQuestionById(session, id)
             return result
 
     @strawberryA.field(description="""Question type by id""")
-    async def question_type_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[QuestionTypeGQLModel, None]:
+    async def question_type_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[QuestionTypeGQLModel, None]:
         async with withInfo(info) as session:
-            result = await resolveQuestionTypeById(session,  id)
+            result = await resolveQuestionTypeById(session, id)
             return result
 
     @strawberryA.field(description="""Answer by id""")
-    async def answer_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[AnswerGQLModel, None]:
+    async def answer_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[AnswerGQLModel, None]:
         async with withInfo(info) as session:
-            result = await resolveAnswerById(session,  id)
+            result = await resolveAnswerById(session, id)
             return result
-    
+
     @strawberryA.field(description="""Answer by id""")
-    async def load_survey(self, info: strawberryA.types.Info) -> Union[SurveyGQLModel, None]:
+    async def load_survey(
+        self, info: strawberryA.types.Info
+    ) -> Union[SurveyGQLModel, None]:
         async with withInfo(info) as session:
             surveyID = await randomSurveyData(AsyncSessionFromInfo(info))
-            result = await resolveSurveyById(session,  surveyID)
+            result = await resolveSurveyById(session, surveyID)
             return result
+
 
 ###########################################################################################################################
 #
@@ -203,4 +252,4 @@ class Query:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, ))
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,))

@@ -1,7 +1,17 @@
 import sqlalchemy
 import datetime
 
-from sqlalchemy import Column, String, BigInteger, Integer, DateTime, ForeignKey, Sequence, Table, Boolean
+from sqlalchemy import (
+    Column,
+    String,
+    BigInteger,
+    Integer,
+    DateTime,
+    ForeignKey,
+    Sequence,
+    Table,
+    Boolean,
+)
 from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
@@ -9,13 +19,26 @@ from sqlalchemy.ext.declarative import declarative_base
 
 BaseModel = declarative_base()
 
+
 def UUIDColumn(name=None):
     if name is None:
-        return Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
+        return Column(
+            UUID(as_uuid=True),
+            primary_key=True,
+            server_default=sqlalchemy.text("gen_random_uuid()"),
+            unique=True,
+        )
     else:
-        return Column(name, UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
-    
-#id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
+        return Column(
+            name,
+            UUID(as_uuid=True),
+            primary_key=True,
+            server_default=sqlalchemy.text("gen_random_uuid()"),
+            unique=True,
+        )
+
+
+# id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
 ###########################################################################################################################
 #
@@ -24,51 +47,54 @@ def UUIDColumn(name=None):
 #
 ###########################################################################################################################
 
+
 class RequestModel(BaseModel):
     __tablename__ = "forms"
 
     id = UUIDColumn()
     name = Column(String)
-    creator_id = Column(ForeignKey('users.id'))
+    creator_id = Column(ForeignKey("users.id"))
     create_at = Column(DateTime)
-    lastchange  = Column(DateTime)
-    status = Column(String) 
-
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    status = Column(String)
+    valid = Column(Boolean, default=True)
     sections = relationship("SectionModel", back_populates="request")
 
-    
+
 class SectionModel(BaseModel):
     __tablename__ = "formsections"
-    
+
     # requestId = Column(ForeignKey("requests.id"), primary_key=True)
-    #key is st sys structure name pr as id, fk follpw by id in lower letter
+    # key is st sys structure name pr as id, fk follpw by id in lower letter
 
     id = UUIDColumn()
     name = Column(String)
 
     request_id = Column(ForeignKey("forms.id"), primary_key=True)
     create_at = Column(DateTime)
-    lastchange  = Column(DateTime)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     order = Column(Integer)
     status = Column(String)
 
     request = relationship("RequestModel", back_populates="sections")
     parts = relationship("PartModel", back_populates="section")
-    
+
 
 class PartModel(BaseModel):
     __tablename__ = "formparts"
-    
+
     id = UUIDColumn()
     name = Column(String)
 
     create_at = Column(DateTime)
-    lastchange  = Column(DateTime)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     order = Column(Integer)
 
     section_id = Column(ForeignKey("formsections.id"), primary_key=True)
     section = relationship("SectionModel", back_populates="parts")
     items = relationship("ItemModel", back_populates="part")
+
+
 class ItemModel(BaseModel):
     __tablename__ = "formitems"
 
@@ -76,7 +102,7 @@ class ItemModel(BaseModel):
     name = Column(String)
 
     create_at = Column(DateTime)
-    lastchange  = Column(DateTime)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     order = Column(Integer)
 
     value = Column(String)
@@ -84,22 +110,14 @@ class ItemModel(BaseModel):
     part_id = Column(ForeignKey("formparts.id"), primary_key=True)
     part = relationship("PartModel", back_populates="items")
 
+
 class UserModel(BaseModel):
     __tablename__ = "users"
 
     id = UUIDColumn()
-    name = Column(String)
-    email = Column(String)
-    # created_at = Column(DateTime, default=datetime.datetime.now)
-    # lastchange  = Column(DateTime, default=datetime.datetime.now)
-    create_at = Column(DateTime)
-    lastchange  = Column(DateTime)
-
-    request = relationship('RequestModel', back_populates='user')
 
 
-
-
+#    request = relationship('RequestModel', back_populates='user')
 
 
 from sqlalchemy import create_engine
@@ -108,21 +126,22 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 
+
 async def startEngine(connectionstring, makeDrop=False, makeUp=True):
-    """Provede nezbytne ukony a vrati asynchronni SessionMaker """
-    asyncEngine = create_async_engine(connectionstring) 
+    """Provede nezbytne ukony a vrati asynchronni SessionMaker"""
+    asyncEngine = create_async_engine(connectionstring)
 
     async with asyncEngine.begin() as conn:
         if makeDrop:
             await conn.run_sync(BaseModel.metadata.drop_all)
-            print('BaseModel.metadata.drop_all finished')
+            print("BaseModel.metadata.drop_all finished")
         if makeUp:
             try:
-                await conn.run_sync(BaseModel.metadata.create_all)    
-                print('BaseModel.metadata.create_all finished')
+                await conn.run_sync(BaseModel.metadata.create_all)
+                print("BaseModel.metadata.create_all finished")
             except sqlalchemy.exc.NoReferencedTableError as e:
                 print(e)
-                print('Unable automaticaly create tables')
+                print("Unable automaticaly create tables")
                 return None
 
     async_sessionMaker = sessionmaker(
@@ -131,19 +150,19 @@ async def startEngine(connectionstring, makeDrop=False, makeUp=True):
     return async_sessionMaker
 
 
-
-
 import os
+
+
 def ComposeConnectionString():
     """Odvozuje connectionString z promennych prostredi (nebo z Docker Envs, coz je fakticky totez).
-       Lze predelat na napr. konfiguracni file.
+    Lze predelat na napr. konfiguracni file.
     """
     user = os.environ.get("POSTGRES_USER", "postgres")
     password = os.environ.get("POSTGRES_PASSWORD", "example")
-    database =  os.environ.get("POSTGRES_DB", "data")
-    hostWithPort =  os.environ.get("POSTGRES_HOST", "postgres:5432")
-    
-    driver = "postgresql+asyncpg" #"postgresql+psycopg2"
+    database = os.environ.get("POSTGRES_DB", "data")
+    hostWithPort = os.environ.get("POSTGRES_HOST", "postgres:5432")
+
+    driver = "postgresql+asyncpg"  # "postgresql+psycopg2"
     connectionstring = f"{driver}://{user}:{password}@{hostWithPort}/{database}"
 
     return connectionstring

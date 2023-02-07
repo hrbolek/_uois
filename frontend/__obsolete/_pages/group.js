@@ -36,7 +36,7 @@ export const GroupPage = (props) => {
 
     console.log('pageType: ' + pageType)
     const pageAttrs = pageAttributes[pageType] ? pageAttributes[pageType] : pageAttributes.university
-    
+
     console.log(id)
 
     return (

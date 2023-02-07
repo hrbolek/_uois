@@ -49,7 +49,7 @@ export const GroupLargeQuery = (id) =>
                             id, user { id, name,surname, email }
                         }
                         memberships {
-                            id, valid, user { 
+                            id, valid, user {
                                 id, name, surname, email
                             }
                         }
@@ -80,7 +80,7 @@ export const DepartmentLargeQuery = (id) =>
                             id, user { id, name,surname, email }, roletype { id, name}
                         }
                         memberships {
-                            id, valid, user { 
+                            id, valid, user {
                                 id, name, surname, email
                             }
                         }
@@ -161,7 +161,7 @@ export const GroupUpdateQuery = (group) => {
                                     id, name, valid, lastchange
                                     grouptype { id, name }
                                     memberships {
-                                        id, valid, user { 
+                                        id, valid, user {
                                             id, name, surname, email
                                         }
                                     }

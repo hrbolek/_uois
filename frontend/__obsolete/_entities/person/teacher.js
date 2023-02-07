@@ -304,7 +304,7 @@ function SeznamPredmetu(props) {
  * @param {*} id - identificator
  * @function
  */
-export const TeacherLargeQuery = (id) => 
+export const TeacherLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -345,7 +345,7 @@ export const TeacherLargeQuery = (id) =>
 
 /**
  * Renders a page with data representing a teacher, contains predefined data which can are overrided by props
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - name
  * @function
@@ -392,7 +392,7 @@ export const TeacherLargeFetching = (props) => {
     const queryFunc = props.with || TeacherLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.user, [props.id])
-    
+
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
@@ -412,5 +412,5 @@ export const TeacherPage = (props) => {
 
     return (
         <TeacherLargeFetching {...props} id={id} />
-    )    
+    )
 }

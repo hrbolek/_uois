@@ -1,6 +1,6 @@
 import { authorizedFetch } from 'generals/authorizedfetch';
 
-export const queryAllByLetters = (letters) => 
+export const queryAllByLetters = (letters) =>
     authorizedFetch('/gql', {
         method: 'POST',
         headers: {

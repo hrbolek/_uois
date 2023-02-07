@@ -48,7 +48,7 @@ export const TeacherTasks = (props) => {
                                     <td><a className="btn btn-sm btn-outline-success">Splněno</a></td>
                                 </tr>
                             </tbody>
-                        </table>                    
+                        </table>
                         </Col>
                 </Row>
             </Card.Body>

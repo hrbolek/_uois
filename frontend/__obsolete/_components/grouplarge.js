@@ -15,7 +15,7 @@ export const UniversityLarge = (props) => {
                     </Col>
                     <Col md={9}>
                         <Row>
-                            {props?.subgroups.map(subgroup => <Col md={4}><FacultyMedium {...subgroup}/></Col>)}                    
+                            {props?.subgroups.map(subgroup => <Col md={4}><FacultyMedium {...subgroup}/></Col>)}
                         </Row>
                     </Col>
                 </Row>

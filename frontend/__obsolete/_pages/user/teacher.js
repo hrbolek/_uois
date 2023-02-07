@@ -201,29 +201,29 @@ export const SVGTimeTable = (props) => {
                 <SVGDate YDelta={400} DateValue={"12.11."} DayValue={"pá"}/>
 
                 <SVGEvent XDelta={780} YDelta={300} fillColor={"#f7b4b7"}
-                    lesson={{name: "konzultace", id: "1"}} 
-                    subject={{name: "", id: "1"}} 
-                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}} 
+                    lesson={{name: "konzultace", id: "1"}}
+                    subject={{name: "", id: "1"}}
+                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}}
                     room={{name: "", id: "1"}} />
                 <SVGEvent XDelta={220} YDelta={100} fillColor={"#b6bd82"}
-                    lesson={{name: "Letecké elektronické systémy", id: "1"}} 
-                    subject={{name: "3. Syntéza kmitočtu", id: "1"}} 
-                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}} 
+                    lesson={{name: "Letecké elektronické systémy", id: "1"}}
+                    subject={{name: "3. Syntéza kmitočtu", id: "1"}}
+                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}}
                     room={{name: "Č1/120", id: "1"}} />
                 <SVGEvent XDelta={220} YDelta={400} fillColor={"#b6bd82"}
-                    lesson={{name: "Letecké elektronické systémy", id: "1"}} 
-                    subject={{name: "3. Syntéza kmitočtu", id: "1"}} 
-                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}} 
+                    lesson={{name: "Letecké elektronické systémy", id: "1"}}
+                    subject={{name: "3. Syntéza kmitočtu", id: "1"}}
+                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}}
                     room={{name: "Č1/120", id: "1"}} />
                 <SVGEvent XDelta={0} YDelta={300} fillColor={"#859be9"}
-                    lesson={{name: "Mentoring studentů 1. ročníku", id: "1"}} 
-                    subject={{name: "", id: "1"}} 
-                    teacher={{name: "Jana", surname: "Svobodová", id: "1"}} 
+                    lesson={{name: "Mentoring studentů 1. ročníku", id: "1"}}
+                    subject={{name: "", id: "1"}}
+                    teacher={{name: "Jana", surname: "Svobodová", id: "1"}}
                     room={{name: "Č1/120", id: "1"}} />
 
-                
+
             </g>
-        </svg>        
+        </svg>
     )
 }
 
@@ -235,7 +235,7 @@ export const SheetA4Week = (props) => {
         <>
             <rect x={XDelta} y={YDelta} width="20" height={dayHeight * days.length} stroke="#000000" stroke-width="1" fill="#FFFFFF">
             </rect>
-            {days.map((item, index) => 
+            {days.map((item, index) =>
                 <SheetA4WeekDay XDelta={XDelta} YDelta={YDelta + index * dayHeight} DateValue={item}/>
             )}
         </>
@@ -286,7 +286,7 @@ export const SheetA4TimeTable = (props) => {
             <SheetA4Week XDelta={-30} YDelta={0} />
              {weeks.map((item, index) => <SheetA4Week XDelta={index * 20} YDelta={0} /> )}
          </g>
-        </svg> 
+        </svg>
     )
 }
 
@@ -298,7 +298,7 @@ export const TeacherSmallTimeTable = (props) => {
             <Card.Header>
                 <Card.Title>
                     <SmallHeader label="Malý rozvrh" {...props}>
-                        <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/timetable/" + (props.id)}><i className="bi bi-calendar-week"></i> Rozvrh</Link></span> 
+                        <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/timetable/" + (props.id)}><i className="bi bi-calendar-week"></i> Rozvrh</Link></span>
                     </SmallHeader>
                 </Card.Title>
             </Card.Header>
@@ -315,7 +315,7 @@ export const TeacherSmallPrograms = (props) => {
             <Card.Header>
                 <Card.Title>
                     <SmallHeader label="Garant programu" {...props}>
-                        <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/grant/" + (props.id)}><i className="bi bi-collection"></i> Garance</Link></span> 
+                        <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/grant/" + (props.id)}><i className="bi bi-collection"></i> Garance</Link></span>
                     </SmallHeader>
                 </Card.Title>
             </Card.Header>
@@ -332,7 +332,7 @@ export const TeacherSmallSubjects = (props) => {
             <Card.Header>
                 <Card.Title>
                     <SmallHeader label="Garant předmětů" {...props}>
-                        <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/grant/" + (props.id)}><i className="bi bi-collection"></i> Garance</Link></span> 
+                        <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/grant/" + (props.id)}><i className="bi bi-collection"></i> Garance</Link></span>
                     </SmallHeader>
                 </Card.Title>
 
@@ -350,10 +350,10 @@ export const TeacherSmallTeachingSubjects = (props) => {
             <Card.Header>
                 <Card.Title>
                     <SmallHeader label="Výuka předmětů" {...props}>
-                        <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/timetable/" + (props.id)}><i className="bi bi-book"></i> Výuka</Link></span> 
+                        <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/timetable/" + (props.id)}><i className="bi bi-book"></i> Výuka</Link></span>
                     </SmallHeader>
 
-    
+
                 </Card.Title>
             </Card.Header>
             <Card.Body>
@@ -369,7 +369,7 @@ export const TeacherSmallPhDs = (props) => {
             <Card.Header>
                 <Card.Title>
                     <SmallHeader label="Školitel" {...props}>
-                        <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/supervisor/" + (props.id)}><i className="bi bi-people"></i> Školitel</Link></span> 
+                        <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/supervisor/" + (props.id)}><i className="bi bi-people"></i> Školitel</Link></span>
                     </SmallHeader>
                 </Card.Title>
             </Card.Header>
@@ -386,10 +386,10 @@ export const TeacherSmallThesis = (props) => {
             <Card.Header>
                 <Card.Title>
                     <SmallHeader label="Vedoucí prací" {...props}>
-                        <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/supervisor/" + (props.id)}><i className="bi bi-people"></i> Školitel</Link></span> 
+                        <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/supervisor/" + (props.id)}><i className="bi bi-people"></i> Školitel</Link></span>
                     </SmallHeader>
 
-    
+
                 </Card.Title>
 
             </Card.Header>
@@ -441,13 +441,13 @@ export const TeacherLargeStoryBook = (props) => {
 export const TeacherPageLinks = (props) => {
     return (
         <>
-            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/timetable/" + (props.id)}><i className="bi bi-calendar-week"></i> Rozvrh</Link></span> 
-            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/tasks/" + (props.id)}><i className="bi bi-card-checklist"></i> Úkoly</Link></span> 
-            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/requests/" + (props.id)}><i className="bi bi-envelope"></i> Zprávy</Link></span> 
-            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/groups/" + (props.id)}><i className="bi bi-book"></i> Výuka</Link></span> 
-            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/supervisor/" + (props.id)}><i className="bi bi-people"></i> Školitel</Link></span> 
-            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/grant/" + (props.id)}><i className="bi bi-collection"></i> Garance</Link></span> 
-            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/timetable/" + (props.id)}><i className="bi bi-award"></i> Věda</Link></span> 
+            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/timetable/" + (props.id)}><i className="bi bi-calendar-week"></i> Rozvrh</Link></span>
+            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/tasks/" + (props.id)}><i className="bi bi-card-checklist"></i> Úkoly</Link></span>
+            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/requests/" + (props.id)}><i className="bi bi-envelope"></i> Zprávy</Link></span>
+            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/groups/" + (props.id)}><i className="bi bi-book"></i> Výuka</Link></span>
+            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/supervisor/" + (props.id)}><i className="bi bi-people"></i> Školitel</Link></span>
+            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/grant/" + (props.id)}><i className="bi bi-collection"></i> Garance</Link></span>
+            <span className="btn btn-sm btn-outline-info"><Link to={root + "/users/teacher/timetable/" + (props.id)}><i className="bi bi-award"></i> Věda</Link></span>
         </>
     )
 }
@@ -470,7 +470,7 @@ export const TeacherSupervisorPhDActive = (props) => {
         <Card>
             <Card.Header>
                 <Card.Title>
-                    Školitel - aktuální práce 
+                    Školitel - aktuální práce
                 </Card.Title>
             </Card.Header>
             <Card.Body>
@@ -486,7 +486,7 @@ export const TeacherSupervisorPhDFinished = (props) => {
         <Card>
             <Card.Header>
                 <Card.Title>
-                    Školitel - ukončené práce 
+                    Školitel - ukončené práce
                 </Card.Title>
             </Card.Header>
             <Card.Body>
@@ -708,7 +708,7 @@ export const TeacherTasks = (props) => {
                                     <td><a className="btn btn-sm btn-outline-success">Splněno</a></td>
                                 </tr>
                             </tbody>
-                        </table>                    
+                        </table>
                         </Col>
                 </Row>
             </Card.Body>
@@ -759,7 +759,7 @@ export const TeacherMessages = (props) => {
                                     <td><a className="btn btn-sm btn-outline-success">Odstranit</a></td>
                                 </tr>
                             </tbody>
-                        </table>                    
+                        </table>
                         </Col>
                 </Row>
             </Card.Body>
@@ -822,7 +822,7 @@ export const TeacherStudyGroups = (props) => {
  * @param {*} id - identificator
  * @function
  */
- export const UserLargeQuery = (id) => 
+ export const UserLargeQuery = (id) =>
     authorizedFetch('/gql', {
      method: 'POST',
      headers: {
@@ -888,7 +888,7 @@ export const TeacherStudyGroups = (props) => {
     const queryFunc = props.with || UserLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.userById, [props.id])
-    
+
     console.log(JSON.stringify(state))
 
     if (state != null) {
@@ -905,7 +905,7 @@ export const TeacherTimeTablePage = (props) => {
 
     return (
         <TeacherLargeFetching {...props} id={id} as={TeacherTimeTable}/>
-    )       
+    )
 }
 
 export const TeacherPage = (props) => {
@@ -913,7 +913,7 @@ export const TeacherPage = (props) => {
 
     return (
         <TeacherLargeFetching {...props} id={id} />
-    )       
+    )
 }
 
 
@@ -922,7 +922,7 @@ export const TeacherSupervisorPage = (props) => {
 
     return (
         <TeacherLargeFetching {...props} id={id} as={TeacherSupervisor}/>
-    )       
+    )
 }
 
 export const TeacherTasksPage = (props) => {
@@ -930,7 +930,7 @@ export const TeacherTasksPage = (props) => {
 
     return (
         <TeacherLargeFetching {...props} id={id} as={TeacherTasks}/>
-    )       
+    )
 }
 
 export const TeacherGrantPage = (props) => {
@@ -938,7 +938,7 @@ export const TeacherGrantPage = (props) => {
 
     return (
         <TeacherLargeFetching {...props} id={id} as={TeacherGrant}/>
-    )       
+    )
 }
 
 
@@ -947,7 +947,7 @@ export const TeacherStudyGroupsPage = (props) => {
 
     return (
         <TeacherLargeFetching {...props} id={id} as={TeacherStudyGroups}/>
-    )       
+    )
 }
 
 
@@ -956,5 +956,5 @@ export const TeacherMessagesPage = (props) => {
 
     return (
         <TeacherLargeFetching {...props} id={id} as={TeacherMessages}/>
-    )       
+    )
 }

@@ -46,7 +46,7 @@ export const FacultyLarge = (props) => {
                     </Col>
                 </Row>
                 <Row>
-                    
+
                 </Row>
             </Card.Body>
         </Card>

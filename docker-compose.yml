@@ -20,7 +20,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./apollo
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - PORT=3000
     depends_on:
@@ -53,7 +53,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./gql_ug
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -80,7 +80,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./gql_lessons
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -88,6 +88,33 @@ services:
     depends_on:
       # kontejnery, kter musi byt spusteny drive
       - postgres
+      - gql_ug
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    #ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+      #- 31120:8000
+
+  gql_granting:
+    image: gql_granting
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_granting
+    environment:
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    depends_on:
+      # kontejnery, kter musi byt spusteny drive
+      - postgres
+      - gql_ug
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
@@ -105,7 +132,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./gql_presences
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -130,7 +157,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./gql_externalids
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -139,9 +166,9 @@ services:
       # kontejnery, ktere musi byt spusteny drive
       postgres:
         condition: service_started
-      gql_ug: 
+      gql_ug:
         condition: service_started
-        
+
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
@@ -159,7 +186,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./gql_facilities
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -168,7 +195,7 @@ services:
     depends_on:
       postgres:
         condition: service_started
-      gql_ug: 
+      gql_ug:
         condition: service_started
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
@@ -187,7 +214,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./gql_workflow
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -195,7 +222,7 @@ services:
     depends_on:
       postgres:
         condition: service_started
-      gql_ug: 
+      gql_ug:
         condition: service_started
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
@@ -214,7 +241,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./gql_empty
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -222,7 +249,7 @@ services:
     depends_on:
       postgres:
         condition: service_started
-      gql_ug: 
+      gql_ug:
         condition: service_started
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
@@ -241,7 +268,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./gql_events
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -257,7 +284,7 @@ services:
     depends_on:
       postgres:
         condition: service_started
-      gql_ug: 
+      gql_ug:
         condition: service_started
 
   gql_forms:
@@ -265,7 +292,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./gql_forms
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -281,7 +308,7 @@ services:
     depends_on:
       postgres:
         condition: service_started
-      gql_ug: 
+      gql_ug:
         condition: service_started
 
   gql_personalities:
@@ -289,7 +316,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./gql_personalities
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -303,9 +330,9 @@ services:
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
     depends_on:
-      postgres: 
+      postgres:
         condition: service_started
-      gql_ug: 
+      gql_ug:
         condition: service_started
 
   gql_projects:
@@ -313,7 +340,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./gql_projects
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -329,7 +356,7 @@ services:
     depends_on:
       postgres:
         condition: service_started
-      gql_ug: 
+      gql_ug:
         condition: service_started
 
   gql_publications:
@@ -337,7 +364,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./gql_publications
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -353,7 +380,7 @@ services:
     depends_on:
       postgres:
         condition: service_started
-      gql_ug: 
+      gql_ug:
         condition: service_started
 
   gql_surveys:
@@ -361,7 +388,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./gql_surveys
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -377,7 +404,7 @@ services:
     depends_on:
       postgres:
         condition: service_started
-      gql_ug: 
+      gql_ug:
         condition: service_started
 
   nogql:
@@ -385,7 +412,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./nogql_api
-    environment: 
+    environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -415,6 +442,8 @@ services:
       timeout: 10s
       retries: 5
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    ports:
+      - 5432:5432
 
   pgadmin:
     image: dpage/pgadmin4
@@ -435,7 +464,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./nginx
-    ports: 
+    ports:
       # vnejsi port : port, kde sluzbu poskytuje kontejner
       - 31180:80
     depends_on:
@@ -448,4 +477,3 @@ services:
     image: redis/redis-stack:6.2.4-v4
     ports:
       - 31188:8001
-    

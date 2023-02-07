@@ -23,9 +23,9 @@ export const UserPage_ = (props) => {
 
 */
     return (
-        
+
         <Fetching id={id} Visualiser={TeacherLarge} selector={json => json.data.userById} query={TeacherLargeQuery}/>
-        
+
     )
 }
 

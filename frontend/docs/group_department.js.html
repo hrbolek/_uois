@@ -19,11 +19,11 @@
 
     <h1 class="page-title">Source: group/department.js</h1>
 
-    
 
 
 
-    
+
+
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import { Link, useParams } from "react-router-dom";
@@ -105,7 +105,7 @@ export const DepartmentVaV = (props) => {
                 &lt;a href={'https://vav.unob.cz/department/index/114'}>VaV&lt;/a>&lt;br/>
                 &lt;a href={'https://vav.unob.cz/results/department/114'}>VaV výsledky&lt;/a>&lt;br/>
                 &lt;a href={'https://vav.unob.cz/department/projects/114'}>VaV projekty&lt;/a>
-                
+
             &lt;/Card.Body>
         &lt;/Card>
     )
@@ -219,7 +219,7 @@ export function DepartmentPage(props) {
 
 /**
  * Renders a page with data representing a department, contains predefined data which can are overrided by props
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - name
  * @function
@@ -256,7 +256,7 @@ export const DepartmentLargeStoryBook = (props) => {
  * @param {*} id - identificator
  * @function
  */
-export const DepartmentLargeQuery = (id) => 
+export const DepartmentLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -297,7 +297,7 @@ export const DepartmentLargeFetching = (props) => {
     const queryFunc = props.with || DepartmentLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.group, [props.id])
-    
+
     if (error != null) {
         return &lt;LoadingError error={error} />
     } else if (state != null) {
@@ -312,7 +312,7 @@ export const DepartmentPage = (props) => {
 
     return (
         &lt;DepartmentLargeFetching {...props} id={id} />
-    )       
+    )
 }</code></pre>
         </article>
     </section>

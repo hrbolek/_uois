@@ -2,7 +2,17 @@ from email.policy import default
 import sqlalchemy
 import datetime
 
-from sqlalchemy import Column, String, BigInteger, Integer, DateTime, ForeignKey, Sequence, Table, Boolean
+from sqlalchemy import (
+    Column,
+    String,
+    BigInteger,
+    Integer,
+    DateTime,
+    ForeignKey,
+    Sequence,
+    Table,
+    Boolean,
+)
 from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
@@ -10,35 +20,101 @@ from sqlalchemy.ext.declarative import declarative_base
 
 BaseModel = declarative_base()
 
+
 def UUIDColumn(name=None):
     if name is None:
-        return Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
+        return Column(
+            UUID(as_uuid=True),
+            primary_key=True,
+            server_default=sqlalchemy.text("gen_random_uuid()"),
+            unique=True,
+        )
     else:
-        return Column(name, UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
-    
-#id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
+        return Column(
+            name,
+            UUID(as_uuid=True),
+            primary_key=True,
+            server_default=sqlalchemy.text("gen_random_uuid()"),
+            unique=True,
+        )
+
+
+# id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
 ###########################################################################################################################
 #
 ###########################################################################################################################
 
+
 class EventOrganizerModel(BaseModel):
     __tablename__ = "events_organizers"
     id = UUIDColumn()
-    event_id = Column(ForeignKey('events.id'))
-    user_id = Column(ForeignKey('users.id'))
+    event_id = Column(ForeignKey("events.id"))
+    user_id = Column(ForeignKey("users.id"))
 
-    event = relationship('EventModel')
-    user = relationship('UserModel')
+    event = relationship("EventModel")
+    user = relationship("UserModel")
+
+
+class EventParticipantModel(BaseModel):
+    __tablename__ = "events_participants"
+    id = UUIDColumn()
+    event_id = Column(ForeignKey("events.id"))
+    user_id = Column(ForeignKey("users.id"))
+
+    event = relationship("EventModel")
+    user = relationship("UserModel")
+
+
+##########################################################
+#
+# Zmena
+#
+##########################################################
+class PresenceModel(BaseModel):
+    __tablename__ = "presences"
+    id = UUIDColumn()
+
+    event_id = Column(ForeignKey("events.id"))
+    user_id = Column(ForeignKey("users.id"))
+    presencetype_id = Column(ForeignKey("invitationtypes.id"))
+    invitation_id = Column(ForeignKey("presencetypes.id"))
+
+
+class PresenceTypeModel(BaseModel):
+    __tablename__ = "presencetypes"
+    id = UUIDColumn()
+
+    name = Column(String)
+    name_en = Column(String)
+    # present, vacantion, ...
+
+
+class InvitationTypeModel(BaseModel):
+    __tablename__ = "invitationtypes"
+    id = UUIDColumn()
+
+    name = Column(String)
+    name_en = Column(String)
+    # initiator, invited mandatory, invited voluntary, accepted, tentatively accepted, rejected,
+
+
+##########################################################
+#
+# Konec - Zmena
+#
+##########################################################
+
 
 class EventGroupModel(BaseModel):
     __tablename__ = "events_groups"
     id = UUIDColumn()
-    event_id = Column(ForeignKey('events.id'))
-    group_id = Column(ForeignKey('groups.id'))
+    event_id = Column(ForeignKey("events.id"))
+    group_id = Column(ForeignKey("groups.id"))
 
-    event = relationship('EventModel')
-    group = relationship('GroupModel')
+    event = relationship("EventModel")
+    group = relationship("GroupModel")
+
 
 ###########################################################################################################################
 #
@@ -48,39 +124,49 @@ class EventGroupModel(BaseModel):
 ###########################################################################################################################
 class EventModel(BaseModel):
 
-    __tablename__ = 'events'
+    __tablename__ = "events"
 
     id = UUIDColumn()
     name = Column(String)
     start = Column(DateTime)
     end = Column(DateTime)
-    capacity = Column(Integer)
-    comment = Column(String)
+    # capacity = Column(Integer)
+    # comment = Column(String)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
-    eventtype_id = Column(ForeignKey('eventtypes.id'))
-    location_id = Column(ForeignKey('facilities.id'))
-    
+    eventtype_id = Column(ForeignKey("eventtypes.id"))
 
-    eventtype = relationship('EventTypeModel', back_populates='events')
-    #locations = relationship('LocationModel', back_populates='event')
-    #lesson = relationship('LessonModel', back_populates='event')
-    #subject = relationship('SubjectModel', back_populates='event')
-    #grouplinks = relationship('EventGroupModel', back_populates='event')
-    #userlinks = relationship('EventOrganizerModel', back_populates='event')
+    eventtype = relationship("EventTypeModel", back_populates="events")
+    # locations = relationship('LocationModel', back_populates='event')
+    # lesson = relationship('LessonModel', back_populates='event')
+    # subject = relationship('SubjectModel', back_populates='event')
+    # grouplinks = relationship('EventGroupModel', back_populates='event')
+    # userlinks = relationship('EventOrganizerModel', back_populates='event')
+
 
 class EventTypeModel(BaseModel):
-    __tablename__ = 'eventtypes'
+    __tablename__ = "eventtypes"
 
     id = UUIDColumn()
     name = Column(String)
 
-    events = relationship('EventModel', back_populates='eventtype')
+    events = relationship("EventModel", back_populates="eventtype")
+
+
+class EventLocationModel(BaseModel):
+    __tablename__ = "eventrooms"
+
+    id = UUIDColumn()
+    event_id = Column(ForeignKey("events.id"))
+    facility_id = Column(ForeignKey("facilities.id"))
+
 
 class LocationModel(BaseModel):
-    __tablename__ = 'facilities'
+    __tablename__ = "facilities"
 
     id = UUIDColumn()
     name = Column(String)
+
 
 #     events = relationship('EventModel', back_populates='location')
 
@@ -104,23 +190,23 @@ class LocationModel(BaseModel):
 #     events = relationship('EventModel', back_populates='Subject')
 #     lesson = relationship('LessonModel', back_populates='subjects') ##########################################
 
+
 class GroupModel(BaseModel):
-    __tablename__ = 'groups'
+    __tablename__ = "groups"
 
     id = UUIDColumn()
     name = Column(String)
 
-    #events = relationship('EventModel', back_populates='group')
+    # events = relationship('EventModel', back_populates='group')
+
 
 class UserModel(BaseModel):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = UUIDColumn()
     name = Column(String)
 
-    #events = relationship('EventModel', back_populates='user')
-
-
+    # events = relationship('EventModel', back_populates='user')
 
 
 from sqlalchemy import create_engine
@@ -129,21 +215,22 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 
+
 async def startEngine(connectionstring, makeDrop=False, makeUp=True):
-    """Provede nezbytne ukony a vrati asynchronni SessionMaker """
-    asyncEngine = create_async_engine(connectionstring) 
+    """Provede nezbytne ukony a vrati asynchronni SessionMaker"""
+    asyncEngine = create_async_engine(connectionstring)
 
     async with asyncEngine.begin() as conn:
         if makeDrop:
             await conn.run_sync(BaseModel.metadata.drop_all)
-            print('BaseModel.metadata.drop_all finished')
+            print("BaseModel.metadata.drop_all finished")
         if makeUp:
             try:
-                await conn.run_sync(BaseModel.metadata.create_all)    
-                print('BaseModel.metadata.create_all finished')
+                await conn.run_sync(BaseModel.metadata.create_all)
+                print("BaseModel.metadata.create_all finished")
             except sqlalchemy.exc.NoReferencedTableError as e:
                 print(e)
-                print('Unable automaticaly create tables')
+                print("Unable automaticaly create tables")
                 return None
 
     async_sessionMaker = sessionmaker(
@@ -152,18 +239,19 @@ async def startEngine(connectionstring, makeDrop=False, makeUp=True):
     return async_sessionMaker
 
 
-
 import os
+
+
 def ComposeConnectionString():
     """Odvozuje connectionString z promennych prostredi (nebo z Docker Envs, coz je fakticky totez).
-       Lze predelat na napr. konfiguracni file.
+    Lze predelat na napr. konfiguracni file.
     """
     user = os.environ.get("POSTGRES_USER", "postgres")
     password = os.environ.get("POSTGRES_PASSWORD", "example")
-    database =  os.environ.get("POSTGRES_DB", "data")
-    hostWithPort =  os.environ.get("POSTGRES_HOST", "postgres:5432")
-    
-    driver = "postgresql+asyncpg" #"postgresql+psycopg2"
+    database = os.environ.get("POSTGRES_DB", "data")
+    hostWithPort = os.environ.get("POSTGRES_HOST", "postgres:5432")
+
+    driver = "postgresql+asyncpg"  # "postgresql+psycopg2"
     connectionstring = f"{driver}://{user}:{password}@{hostWithPort}/{database}"
 
     return connectionstring

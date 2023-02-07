@@ -37,12 +37,12 @@ const getENV = (name, defaultValue) => {
         { name: "publications", url: "http://gql_publications:8000/gql" },
         { name: "personalities", url: "http://gql_personalities:8000/gql" },
         { name: "surveys", url: "http://gql_surveys:8000/gql" },
-        
-        /* 
+
+        /*
         * ###########################################################################################################################
         *
         * sem vlozte odkazy na svuj endpoint
-        * 
+        *
         * ###########################################################################################################################
         */
 
@@ -89,7 +89,7 @@ const getENV = (name, defaultValue) => {
                     const [key, value] = headerItem.split(' ')
                     request.http?.headers.set(key, String(value));
                   }
-              }  
+              }
           }
 
           //console.log(JSON.stringify(Object.keys(request)))
@@ -97,7 +97,7 @@ const getENV = (name, defaultValue) => {
           console.log('request for ', JSON.stringify(request.http.url))
           if (request.query) { console.log(JSON.stringify(request.query)) }
           if (request.variables) { console.log(JSON.stringify(request.variables)) }
-          
+
           //console.log(JSON.stringify(request.context))
           //console.log(JSON.stringify(typeof context))
 
@@ -108,7 +108,7 @@ const getENV = (name, defaultValue) => {
               if (value) {
                   request.http?.headers.set(key, String(value));
               }
-          }  
+          }
           //request.http.headers.set("Authorization", "Bearer ABCDE");
           //*/
 
@@ -120,7 +120,7 @@ const getENV = (name, defaultValue) => {
 
   const app = express();
   //const httpServer = http.createServer(app);
-  
+
   const server = new ApolloServer({ gateway });
 
   console.log('server pre start')

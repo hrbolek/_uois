@@ -21,7 +21,7 @@ export const SubjectSemesterSmall = (props) => {
     //const ProgID=props.ProgID
     return (
         <Link to={lessonRoot + `/${props.id}`}>{props.name}{props.children}</Link>
-    )   
+    )
 }
 
 const tableStyle = {
@@ -29,7 +29,7 @@ const tableStyle = {
     width: '70%',
     border: '1px solid black',
     'border-collapse': 'collapse',
-        
+
     //'background-color': '#CCCCCC',
     };
 
@@ -39,10 +39,10 @@ export const LessonMed = (props) => {
         <Card.Body>
                 <Table striped bordered hover style={tableStyle}>
                     <thead>
-                    <tr>                                    
+                    <tr>
                         <td align="left">Název předmětu: </td>
                         <td colSpan="3" align="center"><SubjectSemesterSmall name={props.name} lessonid={props.lessonid} ProgID={props.ProgID}/></td>
-                        <td colSpan="2" align="right">id (id): <b>{props.lessonid}</b> </td>                        
+                        <td colSpan="2" align="right">id (id): <b>{props.lessonid}</b> </td>
                     </tr>
                     </thead>
                     <tbody>
@@ -52,7 +52,7 @@ export const LessonMed = (props) => {
                     </tr>
                     </tbody>
                 </Table>
-  
+
         </Card.Body>
 
     )
@@ -86,7 +86,7 @@ export const LessonsListLargeAPI = (props) => {
                     }
                   }
                 }
-              }             
+              }
                 `,
               variables: {
                 now: new Date().toISOString(),
@@ -96,11 +96,11 @@ export const LessonsListLargeAPI = (props) => {
             .then((res) => res.json())
             .then((result) => setState(result.data.program));
     }, [id] )
-    
+
     //console.log("State je : ", state)
     console.log("STATE je : ", state)
     return(                                                        //předání testing-->vrácení se zpět na seznam arealů
-    <div>   
+    <div>
         <LessonsListLarge json={state} ProgID={id}/>
     </div>)
 }
@@ -111,7 +111,7 @@ export const LessonsListLarge = (props) => {
     const json=props.json
     const arealName=props.json.name
     const ProgID=props.ProgID
-    
+
     /*
     const [state, setState] = useState(
         {
@@ -119,7 +119,7 @@ export const LessonsListLarge = (props) => {
             'countries' : [{'name':'budova', 'code': 'id'}]
         });
     */
-    
+
     const subjects = []
     for(var index = 0; index < json.subjects.length; index++) {
       const semesters = []
@@ -132,11 +132,11 @@ export const LessonsListLarge = (props) => {
     }
     //console.log("buldings = ", state)
     return(                                                        //předání testing-->vrácení se zpět na seznam arealů
-    <div>   
+    <div>
       <Card>
       <Card.Header><h1>Seznam předmětů ve studijním programu <i>{arealName}</i>: </h1></Card.Header>
             {subjects}
-      </Card>   
+      </Card>
             {/*<p><b>fetchnuty JSON soubor z GraphQL:</b> {JSON.stringify(json)}</p>*/}
     </div>)
 }
@@ -179,7 +179,7 @@ export const LessonLargeAPI = (props) => {
                     }
                   }
                 }
-              }              
+              }
                 `,
               variables: {
                 now: new Date().toISOString(),
@@ -189,11 +189,11 @@ export const LessonLargeAPI = (props) => {
             .then((res) => res.json())
             .then((result) => setState(result.data.program));
     }, [id] )
-    
+
     //console.log("State je : ", state)
     console.log("STATE je : ", state)
     return(                                                        //předání testing-->vrácení se zpět na seznam arealů
-    <div>   
+    <div>
         <LessonLarge json={state} ProgID={studyprog} lessonid={lesson}/>
     </div>)
 }
@@ -205,7 +205,7 @@ export const LessonLarge = (props) => {
     const json=props.json
     const programName=props.json.name
     var temaname="empty"
-    
+
     /*
     const [state, setState] = useState(
         {
@@ -213,7 +213,7 @@ export const LessonLarge = (props) => {
             'countries' : [{'name':'budova', 'code': 'id'}]
         });
     */
-    
+
         const subjects = []
         const semesters = []
         for(var index = 0; index < json.subjects.length; index++) {
@@ -232,28 +232,28 @@ export const LessonLarge = (props) => {
           subjects.push(topics);
           temaname=sgItem.name
           }
-                
+
         }
-        
-    return(                                                       
-    <Card>   
+
+    return(
+    <Card>
       <Card.Header><h1>Informace o předmětu <i><SubjectSemesterSmall name={temaname} ProgID={props.ProgID} lessonid={props.lessonid}/></i>: </h1></Card.Header>
       <Card>
             <Table>
             <Card.Body>
-                
+
                     <td>Garant pro studijní program "{programName}" : </td>
                     <td><h3>*<PersonSmall id={props.id} name={"*garant*"}/>*</h3></td>
-                
+
             </Card.Body>
             <Card.Body>
-                
+
                     <td>Semestry: </td>
                     <td><b>{semesters}  (filtr podle semestru)</b></td>
-                    
-                
+
+
                 <br/>
-          </Card.Body>    
+          </Card.Body>
             </Table>
       </Card>
       <Card>
@@ -268,26 +268,26 @@ export const LessonSelectedMed = (props) => {
 
     return(
         <Card>
-          
+
                 <Table striped bordered hover style={tableStyle}>
                     <thead>
-                    <tr>                                    
+                    <tr>
                         <td align="left">Název tématu: </td>
                         <td colSpan="3" align="left"> {props.name} </td>
-                        <td colSpan="2" align="right">id (id): <b>{props.topicid}</b> </td>                        
+                        <td colSpan="2" align="right">id (id): <b>{props.topicid}</b> </td>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>                                    
+                    <tr>
                         <td align="left">Vyučující: </td>
-                        <td colSpan="5" align="left"> {/*props.name*/}  -  
+                        <td colSpan="5" align="left"> {/*props.name*/}  -
                         <PersonSmall id={props.topicid+"/1"} name={"vyučující1 "}/> -||-
                         <PersonSmall id={props.topicid+"/2"} name={"vyučující2 "}/> -||-
-                        <PersonSmall id={props.topicid+"/3"} name={"vyučující3 "}/> </td>                      
+                        <PersonSmall id={props.topicid+"/3"} name={"vyučující3 "}/> </td>
                     </tr>
                     </tbody>
                 </Table>
-  
+
         </Card>
 
     )
@@ -314,7 +314,7 @@ export const SubjectSemesterTopicLarge = (props) => {
 
 /**
  * Renders a page with data representing a lesson, contains predefined data which can are overrided by props
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - name
  * @function
@@ -338,7 +338,7 @@ export const SubjectSemesterTopicLargeStoryBook = (props) => {
  * @param {*} id - identificator
  * @function
  */
-export const SubjectSemesterTopicLargeQuery = (id) => 
+export const SubjectSemesterTopicLargeQuery = (id) =>
     fetch('/gql', {
       method: 'POST',
       headers: {
@@ -351,7 +351,7 @@ export const SubjectSemesterTopicLargeQuery = (id) =>
             id
             topic
           }
-        }              
+        }
           `,
       variables: {
           now: new Date().toISOString(),
@@ -372,7 +372,7 @@ export const SubjectSemesterTopicLargeFetching = (props) => {
     const queryFunc = props.with || SubjectSemesterTopicLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.subject, [props.id])
-    
+
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {

@@ -22,14 +22,22 @@ export const GroupDebug = (props) => {
                 </Card.Title>
             </Card.Header>
             <Card.Body>
-                <SVGTimeTableG {...props} /> <br />
+                <GroupSchema {...props} /> <br />
+            </Card.Body>
+            <Card.Body>
+                <Row>
+                    <Col>
+                        <GroupRoles {...props} /> <br />
+                        <GroupMembers {...props} /> <br />
+                    </Col>
+                    <Col>
+                        <SVGTimeTableG {...props} /> <br />
+                    </Col>
+                </Row>
             </Card.Body>
             <Card.Body>
                 <StudentGroupEventList {...props} /> <br />
-                <GroupRoles {...props} /> <br />
-                <GroupSchema {...props} /> <br />
                 <GroupSubgroupsEditable {...props} /> <br />
-                <GroupMembers {...props} /> <br />
             </Card.Body>
         </Card>
     )

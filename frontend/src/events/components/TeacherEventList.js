@@ -5,7 +5,7 @@ import Col from "react-bootstrap/Col";
 import { useState, useEffect } from 'react'
 
 import { TeacherEvents } from "events/queries/teacherevents"
-import { GroupSmall } from "groups/components/links"; 
+import { GroupSmall } from "groups/components/links";
 import { UserSmall } from "users/components/links";
 
 //const startDate = new Date("2022-11-01")

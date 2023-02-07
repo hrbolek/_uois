@@ -26,6 +26,6 @@ export const SearchPage = (props) => {
             </Col>
             <Col></Col>
         </Row>
-        
+
     )
 }

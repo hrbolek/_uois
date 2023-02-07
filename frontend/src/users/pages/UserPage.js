@@ -38,7 +38,7 @@ const UserPageDispatcher = (props) => {
         return (<>Loading
             <div style={{'position': 'fixed', 'top': '0', 'right': '0', 'width': '100%', 'zIndex': '2180'}}>
                 <AlertsBox alerts={alerts} onClose={actions.dismissAlert} />
-            </div>        
+            </div>
         </>)
     }
 
@@ -72,7 +72,7 @@ export const UserPage = (props) => {
     console.log('UserPage', id)
     return (
         <Provider store={store}>
-            <TeacherTopMenu />      
+            <TeacherTopMenu />
             <UserPageDispatcher id={id} pageType={pageType}/>
         </Provider>
     )

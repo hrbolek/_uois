@@ -21,7 +21,7 @@ import { ProgramSmall } from '../studyprogram/studyprogram';
 
 /**
  * Renders a link to a student's page
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - Student's name
  * @function
@@ -34,7 +34,7 @@ export function StudentSmall(props) {
 
 /**
  * Renders a medium set of student's data, it is compatible with {@link StudentLarge}
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - Student's name
  * @param {*} props.faculty - Student's faculty
@@ -51,7 +51,7 @@ export function StudentMedium(props) {
                 <Card.Title>Student - <StudentSmall {...props.person} /></Card.Title>
             </Card.Header>
             <Card.Body>
-    
+
                 <Card.Text>
                     <b>Jméno  příjmení:</b> {props.person.name} {props.person.surname}<br />
                     <b>Titul:</b> {props.degreeRank} <b>Ročník:</b> {props.grade} <br />
@@ -65,7 +65,7 @@ export function StudentMedium(props) {
 
 /**
  * Renders a program student is studying
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {*} props.program - the program
  * @function
@@ -80,13 +80,13 @@ export const StudentProgram = (props) => {
                 <ProgramSmall {...props.program} />
             </Card.Body>
         </Card>
-        
+
     )
 }
 
 /**
  * Renders a student's subject list
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {*} props.subjects - identification
  * @function
@@ -111,19 +111,19 @@ function SeznamPredmetuUStudenta(props) {
 
 /**
  * Renders a student's timetable
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @function
  */
 function RozvrhMedium(props) {
-    return ( 
+    return (
         <TimeTableMedium type={'student'} id={props.id} />
     )
 }
 
 /**
  * Renders a page with data representing a student contacts
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {*} props.email - student's email
  * @param {string} props.name - Student's name
@@ -155,7 +155,7 @@ function RozvrhMedium(props) {
 
 /**
  * Renders a page with data representing a student
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {*} props.person - peronification fo student
  * @function
@@ -189,7 +189,7 @@ function RozvrhMedium(props) {
 
 /**
  * Renders a page with data representing a student
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {*} props.person - peronification fo student
  * @param {string} props.name - Student's name
@@ -202,7 +202,7 @@ export const StudentLargeStoryBook = (props) => {
             'id': 1,
             'name': 'Name',
             'surname': 'Lastname',
-            "email": 'name.lastname@unob.cz',   
+            "email": 'name.lastname@unob.cz',
         },
         'degreeRank': 'ing. por.',
         'grade': '3',
@@ -238,7 +238,7 @@ export const StudentLargeStoryBook = (props) => {
  * @param {*} id - identificator
  * @function
  */
-export const StudentLargeQuery = (id) => 
+export const StudentLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -278,7 +278,7 @@ export const StudentLargeQuery = (id) =>
  * @param {*} id - identificator
  * @function
  */
-export const StudentMediumQuery = (id) => 
+export const StudentMediumQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -304,7 +304,7 @@ export const StudentMediumQuery = (id) =>
         }),
     })
 
-  
+
 /**
  * Fetch the data from API endpoint and renders a page representing a student
  * @param {*} props - extra props for encapsulated components / visualisers
@@ -318,7 +318,7 @@ export const StudentLargeFetching = (props) => {
     const queryFunc = props.with || StudentLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.user, [props.id])
-    
+
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {
@@ -338,5 +338,5 @@ export const StudentPage = (props) => {
 
     return (
         <StudentLargeFetching {...props} id={id} as={StudentLargeStoryBook}/>
-    )    
+    )
 }

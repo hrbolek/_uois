@@ -61,8 +61,8 @@ export const ArealLargeSUM = () => {
                         <area shape="rect" coords="359,160,419,287" href={arealRoot+"/šumák9"} target="_self" alt="Š9"/>
                         <area shape="rect" coords="359,288,419,404" href={arealRoot+"/šumák9A"} target="_self" alt="Š9A"/>
                     </map>
-                    <img useMap="#sumavska" src={MapaSumavska} alt="mapa Sumavska" />              
-                </Card.Body>           
+                    <img useMap="#sumavska" src={MapaSumavska} alt="mapa Sumavska" />
+                </Card.Body>
             </Card>
         )
 
@@ -80,7 +80,7 @@ export const ArealLargeCP = () => {
                 <area shape="rect" coords="193,437,250,487" href={arealRoot+"/..."} target="_self" alt="."/>
                 <area shape="poly" coords="102,422,102,488,185,488,185,445,162,445,162,465,129,465,129,423,103,423" href={arealRoot+"/..."} target="_self" alt="." />
             </map>
-            <img usemap="#cernapole" src={MapaCP} alt="mapa Cerna Pole" />              
+            <img usemap="#cernapole" src={MapaCP} alt="mapa Cerna Pole" />
 
         </div>
 
@@ -92,8 +92,8 @@ export const ArealLargeCP = () => {
 export const ArealLargeKOU = () => {
 const arealRoot = root + "areals/7"
     return(
-        <div>    
-    
+        <div>
+
         <div>
             <map name="kounicova">
                 <area shape="rect" coords="276,613,400,649" href={arealRoot+"/..."} target="_self" alt="."/>
@@ -101,19 +101,19 @@ const arealRoot = root + "areals/7"
                 <area shape="rect" coords="193,437,250,487" href={arealRoot+"/..."} target="_self" alt="."/>
                 <area shape="poly" coords="102,422,102,488,185,488,185,445,162,445,162,465,129,465,129,423,103,423" href={arealRoot+"/..."} target="_self" alt="." />
             </map>
-            <img usemap="#kounicova" src={MapaKOU} alt="mapa Kounicova a Soudni" />              
+            <img usemap="#kounicova" src={MapaKOU} alt="mapa Kounicova a Soudni" />
         </div>
-    
+
         </div>
     )
-    
+
 }
 
 export const ArealLargeBAB = () => {
 const arealRoot = root + "areals/6"
     return(
-        <div>        
-        
+        <div>
+
         <div>
             <map name="babak">
                 <area shape="rect" coords="276,613,400,649" href={arealRoot+"/..."} target="_self" alt="."/>
@@ -121,13 +121,13 @@ const arealRoot = root + "areals/6"
                 <area shape="rect" coords="193,437,250,487" href={arealRoot+"/..."} target="_self" alt="."/>
                 <area shape="poly" coords="102,422,102,488,185,488,185,445,162,445,162,465,129,465,129,423,103,423" href={arealRoot+"/..."} target="_self" alt="." />
             </map>
-            <img usemap="#babak" src={MapaBAB} alt="mapa Jana Babaka" />              
-        
+            <img usemap="#babak" src={MapaBAB} alt="mapa Jana Babaka" />
+
         </div>
-        
+
         </div>
     )
-        
+
 }
 
 //---------------------------------Nové, správné provedení pomocí FETCH (GraphQL)-----------------------------
@@ -137,7 +137,7 @@ const tableStyle = {
     width: '70%',
     border: '1px solid black',
     'border-collapse': 'collapse',
-        
+
     //'background-color': '#CCCCCC',
     };
 
@@ -162,10 +162,10 @@ export const ArealLarge = (props) => {
                             <BuildingsCondition {...props} />
                         </Col>
                     </Row>
-                    
+
                 </Card.Body>
             </Card>
-        
+
         )
 }
 
@@ -194,7 +194,7 @@ export const ArealMedium = (props) => {
     // };
     //console.log("ArealMedium state: ", state)
     //useEffect(()=>{})
-    
+
     //<ArealSmall name={" budovy v arealu - " + props.name} id={props.id}/>
     //<BuildingMulti buildings={props.buildings} />
 
@@ -207,7 +207,7 @@ export const ArealMedium = (props) => {
 
             </Card.Title>
             <BuildingMulti buildings={props.buildings} />
-            </Card.Body> 
+            </Card.Body>
         {/*<Link to={arealRoot + `/${props.code}`}>{props.name}{props.children}</Link>*/}
         </Card>
     )
@@ -226,7 +226,7 @@ export const BuildingMedium = (props) => {
                 <Card.Body>
                         {props.rooms.map((room, index) => <><RoomSmall {...room} /><br/></>)}
                 </Card.Body>
-                
+
         </Card>
         </CardGroup>
 
@@ -235,7 +235,7 @@ export const BuildingMedium = (props) => {
 
 
 //Accordion
-export const BuildingsCondition = (props) => { 
+export const BuildingsCondition = (props) => {
     return (
         <Card>
             <Card.Header>
@@ -261,7 +261,7 @@ export const BuildingsCondition = (props) => {
 
 /**
  * Renders a page with data representing an areal, contains predefined data which can are overrided by props
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - name
  * @function
@@ -314,7 +314,7 @@ export const ArealLargeStoryBook = (props) => {
  * @param {*} id - identificator
  * @function
  */
-export const ArealLargeQuery = (id) => 
+export const ArealLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -356,7 +356,7 @@ export const ArealFetching = (props) => {
     const queryFunc = props.with || ArealLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.areal, [props.id])
-    
+
     if (error != null) {
         return <LoadingError error={error} />
     } else if (state != null) {

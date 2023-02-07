@@ -9,59 +9,69 @@ from fastapi import FastAPI
 ## SQLAlchemy zvoleno kvuli moznost komunikovat s DB asynchronne
 ## https://docs.sqlalchemy.org/en/14/core/future.html?highlight=select#sqlalchemy.future.select
 
-from nogql_api.DBDefinitions import ComposeConnectionString, startEngine, createBasicDataStructure
+from nogql_api.DBDefinitions import (
+    ComposeConnectionString,
+    startEngine,
+    createBasicDataStructure,
+)
 
 connectionString = ComposeConnectionString()
 
+
 def singleCall(asyncFunc):
     """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
-       Dekorovana funkce je asynchronni.
+    Dekorovana funkce je asynchronni.
     """
     resultCache = {}
+
     async def result():
-        if resultCache.get('result', None) is None:
-            resultCache['result'] = await asyncFunc()
-        return resultCache['result']
+        if resultCache.get("result", None) is None:
+            resultCache["result"] = await asyncFunc()
+        return resultCache["result"]
+
     return result
+
 
 @singleCall
 async def RunOnceAndReturnSessionMaker():
     """Provadi inicializaci asynchronniho db engine, inicializaci databaze a vraci asynchronni SessionMaker.
-       Protoze je dekorovana, volani teto funkce se provede jen jednou a vystup se zapamatuje a vraci se pri dalsich volanich.
+    Protoze je dekorovana, volani teto funkce se provede jen jednou a vystup se zapamatuje a vraci se pri dalsich volanich.
     """
     print(f'starting engine for "{connectionString}"')
 
-    result = await startEngine(connectionstring=connectionString, makeDrop=False, makeUp=True)
-    
-    print(f'initializing system structures')
+    result = await startEngine(
+        connectionstring=connectionString, makeDrop=False, makeUp=True
+    )
+
+    print(f"initializing system structures")
 
     ###########################################################################################################################
     #
     # zde definujte do funkce asyncio.gather
     # vlozte asynchronni funkce, ktere maji data uvest do prvotniho konzistentniho stavu
-   
-    await asyncio.gather( # concurency running :)
-    # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
-    # musi byt asynchronniho typu (async def ...)
+
+    await asyncio.gather(  # concurency running :)
+        # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
+        # musi byt asynchronniho typu (async def ...)
         createBasicDataStructure(result)
         # createSystemDataStructureRoleTypes(result),
         # createSystemDataStructureGroupTypes(result)
-
     )
 
     ###########################################################################################################################
-    print(f'all done')
+    print(f"all done")
     return result
-
 
 
 apiApp = FastAPI()
 
-print('All initialization is done')
+print("All initialization is done")
 
-@apiApp.get('/hello') # do not remove, healthchecks are based no this
+
+@apiApp.get("/hello")  # do not remove, healthchecks are based no this
 def hello():
-    return {'hello': 'world'}
+    return {"hello": "world"}
+
 
 from fastapi import UploadFile
 from fastapi.responses import HTMLResponse
@@ -69,9 +79,11 @@ from typing import List
 
 from nogql_api.resolvers import create_upload_files
 
-@apiApp.post('/nogql/utils/vykazy')
+
+@apiApp.post("/nogql/utils/vykazy")
 async def utils_vykazy_post(files: List[UploadFile]):
     return await create_upload_files(files)
+
 
 @apiApp.get("/nogql/utils/vykazy")
 async def utils_vykazy_get():
@@ -85,11 +97,14 @@ async def utils_vykazy_get():
     """
     return HTMLResponse(content=content)
 
+
 from nogql_api.resolvers import exportSchema
+
 
 @apiApp.get("/nogql/utils/umlschema")
 async def utils_umlschema_get():
     return await exportSchema()
+
 
 app = FastAPI()
 app.mount("/api", apiApp)

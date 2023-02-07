@@ -47,7 +47,7 @@ export const TeacherMessages = (props) => {
                                     <td><a className="btn btn-sm btn-outline-success">Odstranit</a></td>
                                 </tr>
                             </tbody>
-                        </table>                    
+                        </table>
                         </Col>
                 </Row>
             </Card.Body>

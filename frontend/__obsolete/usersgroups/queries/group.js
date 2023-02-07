@@ -21,7 +21,7 @@ export const GroupLargeQuery = (id) =>
                             id, name, surname, email
                           }
                         }
-                        
+
                     }
                 }`,
             "variables": {"id": id}

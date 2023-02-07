@@ -19,11 +19,11 @@
 
     <h1 class="page-title">Source: studyprogram/subject.js</h1>
 
-    
 
 
 
-    
+
+
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>
@@ -57,7 +57,7 @@ export const SubjectSmall = (props) => {
     //const ProgID=props.ProgID
     return (
         &lt;Link to={subjectsRoot + `/${props.id}`}>{props.name}{props.children}&lt;/Link>
-    )   
+    )
 }
 
 const tableStyle = {
@@ -65,7 +65,7 @@ const tableStyle = {
     width: '70%',
     border: '1px solid black',
     'border-collapse': 'collapse',
-        
+
     //'background-color': '#CCCCCC',
     };
 
@@ -75,7 +75,7 @@ export const SubjectLargeAPI = (props) => {
     const lesson=id.split(',')[1]
     const semestr=id.split(',')[2]
       console.log("id v ClassroomLargeAPI je : ", id)
-  
+
       const [state, setState] = useState(
         {'name': "StudyProgName",
         'subjects' : [{'name':"name", 'id':"id", 'semesters':[{'name':'name','id':'id','topics':[{'name':'name','id':'id'}]}]}]}
@@ -104,7 +104,7 @@ export const SubjectLargeAPI = (props) => {
                       }
                     }
                   }
-                }              
+                }
                   `,
                 variables: {
                   now: new Date().toISOString(),
@@ -114,15 +114,15 @@ export const SubjectLargeAPI = (props) => {
               .then((res) => res.json())
               .then((result) => setState(result.data.program));
       }, [id] )
-      
+
       //console.log("State je : ", state)
       console.log("STATE je : ", state)
       return(                                                        //předání testing-->vrácení se zpět na seznam arealů
-      &lt;div>   
+      &lt;div>
           &lt;SubjectLarge json={state} ProgID={studyprog} lessonid={lesson} semesterid={semestr}/>
       &lt;/div>)
   }
-  
+
 export const SubjectMedium = (props) => {
     return (
         &lt;Card>
@@ -165,14 +165,14 @@ export const SemesterList = (props) => {
           &lt;/Card>
         &lt;/Accordion>
       ))
-    
+
     return (
         &lt;>
             {semesters}
         &lt;/>
     )
 }
-  
+
 export const SubjectTopicList = (props) => {
     return (
         &lt;Card>
@@ -274,19 +274,19 @@ export const SubjectLarge = (props) => {
                     &lt;Col md={3} xs={12}>
                         &lt;SubjectProgram {...props} /> &lt;br/>
                         &lt;SubjectGrants {...props} /> &lt;br/>
-                    &lt;/Col> 
+                    &lt;/Col>
                     &lt;Col md={6} xs={12}>
                         &lt;SubjectTopicList {...props} />
-                    &lt;/Col> 
+                    &lt;/Col>
                     &lt;Col md={3} xs={12}>
                         &lt;SubjectMasters {...props} /> &lt;br/>
                         &lt;SubjectGroupList {...props} /> &lt;br/>
                         &lt;SubjectTerms {...props} />
-                    &lt;/Col> 
+                    &lt;/Col>
                 &lt;/Row>
                 &lt;Row>
                     &lt;Col>
-                        &lt;SubjectTimeTable {...props} /> 
+                        &lt;SubjectTimeTable {...props} />
                     &lt;/Col>
                 &lt;/Row>
             &lt;/Card.Body>
@@ -300,7 +300,7 @@ export const SubjectLarge = (props) => {
       const json=props.json
       const programName=props.json.name
       var temaname="empty"
-      
+
       /*
       const [state, setState] = useState(
           {
@@ -308,7 +308,7 @@ export const SubjectLarge = (props) => {
               'countries' : [{'name':'budova', 'code': 'id'}]
           });
       */
-      
+
           const subjects = []
           const semesters = []
           for(var index = 0; index &lt; json.subjects.length; index++) {
@@ -322,19 +322,19 @@ export const SubjectLarge = (props) => {
                         const sgItem3 = json.subjects[index].semesters[index2].topics[index3]
                         topics.push(&lt;i>&lt;SubjectSelectedMed name={sgItem3.name} semesterid={sgItem2.id} lessonid={sgItem.id} ProgID={props.ProgID} topicid={sgItem3.id}/>&lt;/i>);
                     }
-                }                
+                }
               //topics.push(&lt;b>------------------------------------------------další---semestr---------------------------------------------------&lt;/b>)
                 semesters.push(&lt;i>&lt;SubjectSmall name={sgItem2.name} semesterid={sgItem2.id} lessonid={sgItem.id} ProgID={props.ProgID}/> -||- &lt;/i>);
             }
             subjects.push(topics);
             temaname=sgItem.name
             }
-                  
+
           }
-          
-      return(                                                       
-      
-      &lt;Card>   
+
+      return(
+
+      &lt;Card>
       &lt;Card.Header>&lt;h1>Informace o předmětu &lt;i>&lt;SubjectSemesterSmall name={temaname} ProgID={props.ProgID} lessonid={props.lessonid}/>&lt;/i>: &lt;/h1>&lt;/Card.Header>
       &lt;Card>
             &lt;Table>
@@ -346,7 +346,7 @@ export const SubjectLarge = (props) => {
                     &lt;td>Semestry: &lt;/td>
                     &lt;td>&lt;b>{semesters}  (filtr podle semestru)&lt;/b>&lt;/td>
                 &lt;br/>
-          &lt;/Card.Body>    
+          &lt;/Card.Body>
             &lt;/Table>
       &lt;/Card>
       &lt;Card>
@@ -355,40 +355,40 @@ export const SubjectLarge = (props) => {
       &lt;/Card>
             {/*&lt;p>&lt;b>fetchnuty JSON soubor z GraphQL:&lt;/b> {JSON.stringify(json)}&lt;/p>*/}
     &lt;/Card>
-      
+
       )
   }
-  
+
   export const SubjectSelectedMed = (props) => {
         return(
         &lt;Card>
                   &lt;Table striped bordered hover style={tableStyle}>
                   &lt;thead>
-                      &lt;tr>                                    
+                      &lt;tr>
                           &lt;td align="left">Název tématu: &lt;/td>
                           &lt;td colSpan="3" align="left"> {props.name} &lt;/td>
-                          &lt;td colSpan="2" align="right">id (id): &lt;b>{props.topicid}&lt;/b> &lt;/td>                        
+                          &lt;td colSpan="2" align="right">id (id): &lt;b>{props.topicid}&lt;/b> &lt;/td>
                       &lt;/tr>
                   &lt;/thead>
                   &lt;tbody>
-                      &lt;tr>                                    
+                      &lt;tr>
                           &lt;td align="left">Vyučující: &lt;/td>
-                          &lt;td colSpan="5" align="left"> {/*props.name*/}  -  
+                          &lt;td colSpan="5" align="left"> {/*props.name*/}  -
                           &lt;PersonSmall id={props.topicid+"/1"} name={"vyučující1 "}/> -||-
                           &lt;PersonSmall id={props.topicid+"/2"} name={"vyučující2 "}/> -||-
-                          &lt;PersonSmall id={props.topicid+"/3"} name={"vyučující3 "}/> &lt;/td>                      
+                          &lt;PersonSmall id={props.topicid+"/3"} name={"vyučující3 "}/> &lt;/td>
                       &lt;/tr>
                   &lt;/tbody>
                   &lt;/Table>
-    
+
         &lt;/Card>
-  
+
       )
   }
 
 /**
  * Renders a page with data representing a subject, contains predefined data which can are overrided by props
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - name
  * @function
@@ -422,7 +422,7 @@ export const SubjectLargeStoryBook = (props) => {
  * @param {*} id - identificator
  * @function
  */
-export const SubjectLargeQuery = (id) => 
+export const SubjectLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -443,14 +443,14 @@ export const SubjectLargeQuery = (id) =>
                   name
                 }
               }
-        }              
+        }
             `,
         variables: {
             now: new Date().toISOString(),
         },
         }),
     })
-    
+
 /**
  * Fetch the data from API endpoint and renders a page representing a subject
  * @param {*} props - extra props for encapsulated components / visualisers
@@ -464,7 +464,7 @@ export const SubjectPageFetching = (props) => {
     const queryFunc = props.with || SubjectLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.subject, [props.id])
-    
+
     if (error != null) {
         return &lt;LoadingError error={error} />
     } else if (state != null) {

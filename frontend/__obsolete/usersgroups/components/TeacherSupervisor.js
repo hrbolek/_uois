@@ -10,7 +10,7 @@ export const TeacherSupervisorPhDActive = (props) => {
         <Card>
             <Card.Header>
                 <Card.Title>
-                    Školitel - aktuální práce 
+                    Školitel - aktuální práce
                 </Card.Title>
             </Card.Header>
             <Card.Body>
@@ -26,7 +26,7 @@ export const TeacherSupervisorPhDFinished = (props) => {
         <Card>
             <Card.Header>
                 <Card.Title>
-                    Školitel - ukončené práce 
+                    Školitel - ukončené práce
                 </Card.Title>
             </Card.Header>
             <Card.Body>

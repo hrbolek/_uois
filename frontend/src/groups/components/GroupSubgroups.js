@@ -17,9 +17,9 @@ export const GroupSubgroups = (props) => {
     if (grouptype) {
         subgroups = subgroups.filter(s => s.grouptype.id === grouptype) || []
     }
-    
+
     subgroups = subgroups.filter(s => s.valid === valid)
-    
+
     return (
         <Card>
             <Card.Header>

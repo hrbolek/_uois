@@ -8,7 +8,7 @@ import { useQueryGQL } from 'generals/useQuery';
  * @param props.query query (async) fetching data from API
  * @param props.responseToJson func for transformation of API response (json) into state data
  * @param props.Visualiser ReactJS component capable to receive selected data and visualise them
- * 
+ *
  * if loading is in process, the Loading is displayed
  * if an error occured the LoadingError is displayed
 */

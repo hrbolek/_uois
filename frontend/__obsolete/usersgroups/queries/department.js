@@ -21,7 +21,7 @@ export const DepartmentLargeQuery = (id) =>
                             id, name, surname, email
                           }
                         }
-                        
+
                         memberships {
                           valid
                           user {
@@ -31,7 +31,7 @@ export const DepartmentLargeQuery = (id) =>
                             email
                           }
                         }
-                    
+
 
                         subgroups {
                           id, name
@@ -61,7 +61,7 @@ export const DepartmentLargeQuery = (id) =>
                               id, name
                             }
                           }
-  
+
                         }
                     }
                 }`,

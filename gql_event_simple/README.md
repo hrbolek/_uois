@@ -23,10 +23,10 @@ docker build -t gql_core .
 - (optional) you can run the container standalone on any port you want by using: docker run -p your_port:8001 gql_core
 - use docker-compose.yml file to set up postgres database and gql_core using this command:
 docker-compose up
-- docker will use given compose file to create two containers (isdatabase_gql_entry_point and isdatabase_database) 
+- docker will use given compose file to create two containers (isdatabase_gql_entry_point and isdatabase_database)
 - gql_entry_point is based on the gql_core image and provides the GraphQL endpoint (contains all our code)
 - database container is based on postgres 13.2 image and provides a database (image will be downloaded if necessary)
-- postgres is automatically set up by docker-compose.yml - there you can edit variables such as database name, username and password - these will be used by gql to acess the database 
+- postgres is automatically set up by docker-compose.yml - there you can edit variables such as database name, username and password - these will be used by gql to acess the database
 - these two containers are able to exchange data between each other on closed docker network
 - only gql endpoint is available for other device outside of docker network - to access the GraphQL UI open http://localhost:82/gql on your device
 <br/><br/>

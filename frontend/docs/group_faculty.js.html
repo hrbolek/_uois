@@ -19,11 +19,11 @@
 
     <h1 class="page-title">Source: group/faculty.js</h1>
 
-    
 
 
 
-    
+
+
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import { Link, useParams } from "react-router-dom";
@@ -72,7 +72,7 @@ function SeznamProgramu(props) {
                 &lt;Card.Title>Seznam uskutečňovaných programů&lt;/Card.Title>
             &lt;/Card.Header>
             &lt;Card.Body>
-                &lt;ProgramSmall name={'Kybernetická bezpečnost'} id={1} />                
+                &lt;ProgramSmall name={'Kybernetická bezpečnost'} id={1} />
             &lt;/Card.Body>
         &lt;/Card>
     )
@@ -92,7 +92,7 @@ function SeznamProgramu(props) {
 */
 
 export function FacultyLarge(props) {
-    
+
     return (
         &lt;Card>
             &lt;Card.Header>
@@ -111,7 +111,7 @@ export function FacultyLarge(props) {
                         &lt;SeznamProgramu {...props} />
                     &lt;/Col>
                 &lt;/Row>
-            &lt;/Card.Body> 
+            &lt;/Card.Body>
         &lt;/Card>
     )
 }
@@ -206,7 +206,7 @@ function SeznamKateder(props) {
             &lt;/Card.Header>
             &lt;Card.Body>
                 &lt;ul>
-                    {props.departments.map((item) => 
+                    {props.departments.map((item) =>
                         (&lt;li key={item.id}>&lt;DepartmentSmall key={item.id} {...item} appRoot={props.appRoot} />&lt;/li>)
                     )}
                 &lt;/ul>
@@ -217,7 +217,7 @@ function SeznamKateder(props) {
 
 /**
  * Renders a page with data representing a faculty, contains predefined data which can are overrided by props
- * @param {*} props 
+ * @param {*} props
  * @param {*} props.id - identification
  * @param {string} props.name - name
  * @function
@@ -248,7 +248,7 @@ export const FacultyLargeStoryBook = (props) => {
  * @param {*} id - identificator
  * @function
  */
-export const FacultyLargeQuery = (id) => 
+export const FacultyLargeQuery = (id) =>
     fetch('/gql', {
         method: 'POST',
         headers: {
@@ -289,7 +289,7 @@ export const FacultyLargeFetching = (props) => {
     const queryFunc = props.with || FacultyLargeQuery;
 
     const [state, error] = useQueryGQL(props.id, queryFunc, (response) => response.data.group, [props.id])
-    
+
     if (error != null) {
         return &lt;LoadingError error={error} />
     } else if (state != null) {
@@ -305,7 +305,7 @@ export const FacultyPage = (props) => {
 
     return (
         &lt;FacultyLargeFetching {...props} id={id} />
-    )       
+    )
 }</code></pre>
         </article>
     </section>

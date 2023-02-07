@@ -111,18 +111,18 @@ export const SVGTimeTable = (props) => {
                         console.log(YDelta, YDelta)
                         return (
                             <SVGEvent key={event.id} XDelta={XDelta} YDelta={YDelta} Width={Width} Height={dayHeight} fillColor={"#ff7f7f"}
-                                lesson={{name: "fsd", id: "1"}} 
-                                subject={{name: "", id: "1"}} 
-                                teacher={event.organizers[0]} 
-                                room={{name: "", id: "1"}} 
+                                lesson={{name: "fsd", id: "1"}}
+                                subject={{name: "", id: "1"}}
+                                teacher={event.organizers[0]}
+                                room={{name: "", id: "1"}}
                                 group={event.groups[0]}/>
                         )
                     }
 
                 )}
-               
+
             </g>
-        </svg>        
+        </svg>
     )
 }
 
@@ -149,7 +149,7 @@ export const SheetA4Week = (props) => {
     const mondayDate = beginOfWeek(startDate)
     const splitedEvents = useMemo(() => {
         const days = {0:[], 1:[], 2:[], 3: [], 4: []};
-        
+
         for (const property in days) {
             const startDate = addDays(mondayDate, property)
             const endDate = addDays(mondayDate, property+1)
@@ -158,15 +158,15 @@ export const SheetA4Week = (props) => {
 
         return days
     }, [startDate, events])
-    
+
     const days = [0, 1, 2, 3, 4]
     const dayHeight = 200
     return (
         <>
             <rect x={XDelta} y={YDelta} width="20" height={dayHeight * days.length} stroke="#000000" strokeWidth="1" fill="#FFFFFF">
             </rect>
-            {days.map((item, index) => 
-                <SheetA4WeekDay key={index} XDelta={XDelta} YDelta={YDelta + index * dayHeight} 
+            {days.map((item, index) =>
+                <SheetA4WeekDay key={index} XDelta={XDelta} YDelta={YDelta + index * dayHeight}
                     DateValue={item} events={splitedEvents[item]} startDate={addDays(mondayDate, item)}/>
             )}
         </>
@@ -208,7 +208,7 @@ export const SheetA4WeekDayEvent = (props) => {
             <rect x={XDelta} y={YDelta+startYDelta} width="20" height={endYDelta-startYDelta}></rect>
             </clipPath>
             <rect x={XDelta} y={YDelta+startYDelta} width="20" height={endYDelta-startYDelta} stroke="#000000" strokeWidth="1" fill="#FFFFFF"></rect>
-            <text fontFamily="Calibri,Calibri_MSFontService,sans-serif" fontWeight="600" fontSize="5" 
+            <text fontFamily="Calibri,Calibri_MSFontService,sans-serif" fontWeight="600" fontSize="5"
                 transform={"translate(" + (XDelta + 1) + " " + (YDelta + 5) +")"}
                 clipPath={`url(${event.id})`}
                 >
@@ -261,13 +261,13 @@ const createInitializer = (list) => {
 
 export const SheetA4TimeTable = (props) => {
     const { startDate, events } = props
-    
+
     const weeks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     const mondayDate = beginOfWeek(startDate)
     const splitedEvents = useMemo(() => {
-        
+
         const weeksSplited = createInitializer(weeks);
-        
+
         for (const property in weeksSplited) {
             const startDate = addDays(mondayDate, property)
             const endDate = addDays(mondayDate, property + 7)
@@ -282,9 +282,9 @@ export const SheetA4TimeTable = (props) => {
                 <SheetA4Week XDelta={-50} YDelta={0} startDate={mondayDate}  events={[]}/>
                 <SheetA4Week XDelta={-30} YDelta={0} startDate={mondayDate}  events={[]}/>
                 {weeks.map(
-                    (item, index) => <SheetA4Week XDelta={index * 20} YDelta={0} startDate={addDays(mondayDate, index * 7)} events={splitedEvents[item]}/> 
+                    (item, index) => <SheetA4Week XDelta={index * 20} YDelta={0} startDate={addDays(mondayDate, index * 7)} events={splitedEvents[item]}/>
                 )}
             </g>
-        </svg> 
+        </svg>
     )
 }

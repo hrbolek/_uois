@@ -84,7 +84,7 @@ const updateGroup = async (group) => {
                     groupById(id: $id) {
                         editor {
                             update(group: $group) {
-                                id 
+                                id
                                 name
                                 grouptype {
                                     id

@@ -72,7 +72,7 @@ export const Loading = (props) => (
  * @param props.query query (async) fetching data from API
  * @param props.responseToJson func for transformation of API response (json) into state data
  * @param props.Visualiser ReactJS component capable to receive selected data and visualise them
- * 
+ *
  * if loading is in process, the Loading is displayed
  * if an error occured the LoadingError is displayed
 */
@@ -122,10 +122,10 @@ const getPublicKey = async () => {
         const text = await response.text()
         publicKey = text.replaceAll('\\n', '\n').replaceAll('"', '')
         pseudoStorage.publicKey = publicKey
-    } 
+    }
     return publicKey
-  } 
-  
+  }
+
 export const useJWTToken = () => {
     const [token, setToken] = useState(pseudoStorage?.token | localStorage.getItem('token'))
 
@@ -138,13 +138,13 @@ export const useJWTToken = () => {
                 localStorage.setItem('token', newToken)
             }
             setToken(newToken)
-        }, 
+        },
         [token]
     )
 
     return [token, wrappedSetToken]
 
-}  
+}
 
 export const refreshToken = async () => {
     const refresh_token = localStorage.getItem(refreshToken) | pseudoStorage.refreshToken
@@ -154,7 +154,7 @@ export const refreshToken = async () => {
     };
     const formBody = Object.keys(details).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key])).join('&');
 
-    const response = await fetch('/oauth/token', { 
+    const response = await fetch('/oauth/token', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -187,12 +187,12 @@ export const IncommingLogin = (props) => {
                 'code': code,
                 'grant_type': 'authorization_code'
             };
-            
+
             const formBody = Object.keys(details).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key])).join('&');
             let jwtToken = null;
 
             try {
-                const response = await fetch('/oauth/token', { 
+                const response = await fetch('/oauth/token', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -213,7 +213,7 @@ export const IncommingLogin = (props) => {
 
             //*
             //const jwtTokenF = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiQmVhcmVyIiwiYWNjZXNzX3Rva2VuIjoiQUNDVC1XTk1wM1U5NTZtMjRiSEEwaHFHdm81aGc5QW9FOHA2dSIsImV4cGlyZXNfaW4iOjM2MDAsInJlZnJlc2hfdG9rZW4iOiJSRUZULWJPY2xkS1lic0FxUW5UQUs5YWxOR0pUWkN0YzBWVXNPIn0.LN7gZP0z2f975UzrE4Hx5mocA7LGMMMhcbfVvO_GJdEiOZqBgcXqbFDELdUvkWaYTv2vRaBHScJottIXkU_WMbPR0l5NiPrvkkXfOxz_rPzE2UvLtdanFL0CmHXFGhBsNZCuVgwe3LUTEbS7ut65jlzqZDR7BsJZewg_l3ziU6Qbhmtw97RKh9kOm6rQ-zlT0DNRjdLqcujjSCOPXG84V7HVHY3A-q490S1JHfFn_iYvTtw92_xpGu8JlVA0PpzeN-ACwYYND_oc2iinlEwYvcRm9i7n5keppt0h4J4zA8RAmk2D_ygfyk_hxoUZGV4yfdn_SzOFaZ9n4DiadhIzGA"
-            //const publicKeyF = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAowso+zTvN9zUbSefa+dU\nIu1gumwOvutgq1t44ewkHAPgLmHvUUyUMVQ2O/qVjj1javSdbSC5+v2k8lZYrxvt\nAetznGGmc4iGBF4AUv3xbga4yCethbWZN5wzAyj+ABIluY9iWh5HglcGNymohvOB\nhCci/MMNP5cSRH0JpgW8q/LyVuaH8gQ9ZWQNTIInCstMA1ZVf7ftNc7OHI4qU8gV\nLaoGTqhk7XawnDeinXTUznH8OhXucOvbzW8Uhf3vuoNpaVTygm5GIbMn84D0gU2r\nnZYOWaqQXMgSOe4zF+nzxD+g9lsfqWd7LoATsc+EZ7BLKjULgmXH5EyrgXv6kAd1\n6QIDAQAB\n-----END PUBLIC KEY-----\n" 
+            //const publicKeyF = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAowso+zTvN9zUbSefa+dU\nIu1gumwOvutgq1t44ewkHAPgLmHvUUyUMVQ2O/qVjj1javSdbSC5+v2k8lZYrxvt\nAetznGGmc4iGBF4AUv3xbga4yCethbWZN5wzAyj+ABIluY9iWh5HglcGNymohvOB\nhCci/MMNP5cSRH0JpgW8q/LyVuaH8gQ9ZWQNTIInCstMA1ZVf7ftNc7OHI4qU8gV\nLaoGTqhk7XawnDeinXTUznH8OhXucOvbzW8Uhf3vuoNpaVTygm5GIbMn84D0gU2r\nnZYOWaqQXMgSOe4zF+nzxD+g9lsfqWd7LoATsc+EZ7BLKjULgmXH5EyrgXv6kAd1\n6QIDAQAB\n-----END PUBLIC KEY-----\n"
             //*/
 
             //console.log('got token: ' + (jwtToken === jwtTokenF))
@@ -226,18 +226,18 @@ export const IncommingLogin = (props) => {
             //console.log('got publicKey: ' + (publicKeyF))
             //const claims = jose.decodeJwt(token)
             //console.log(claims)
-            
+
             const publicKeyObject = await jose.importSPKI(publicKey, "RS256")
             //const verifyResult = jose.verify(jose.deserialize_compact(jwt), jwk, 'HS256')
             //const verifyResult = await jose.compactVerify(jwtToken, publicKey, {algorithm:  ["RS256"]})
             //console.log(JSON.stringify(verifyResult))
-            
+
             try {
                 const { payload, protectedHeader } = await jose.jwtVerify(jwtToken, publicKeyObject, {algorithm:  ["RS256"]})
 
                 pseudoStorage.accessToken = payload.access_token
                 pseudoStorage.refreshToken = payload.refresh_token
-    
+
                 localStorage.setItem('accessToken', payload.access_token)
                 localStorage.setItem('refreshToken', payload.refresh_token)
 
@@ -245,7 +245,7 @@ export const IncommingLogin = (props) => {
                 error = 'token has not been validated'
             }
 
-            
+
             console.log('accessToken')
             console.log(JSON.stringify(localStorage.getItem('accessToken')))
 
@@ -289,13 +289,13 @@ export const LogoutButton = (props) => {
 
 export const AuthentizationContext = React.createContext({logged: false, user: {}});
 export const Authentization = (props) => {
-    
+
     //const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken'))
     const [loggedUser, setLoggedUser] = useState(
-        {   
-            logged: false, 
+        {
+            logged: false,
             code: null,
-            user: {}, 
+            user: {},
             accessToken: localStorage.getItem('accessToken')
     })
 

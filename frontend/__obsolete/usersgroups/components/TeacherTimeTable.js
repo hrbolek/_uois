@@ -33,7 +33,7 @@ export const TeacherTimeTable = (props) => {
         <Card>
             <Card.Header>
                 <Card.Title>
-                    Rozvrh <TeacherSmall user={user} />  
+                    Rozvrh <TeacherSmall user={user} />
                 </Card.Title>
             </Card.Header>
             <Card.Body>

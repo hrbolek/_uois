@@ -21,16 +21,16 @@ export const GroupTopMenu = (props) => {
                     <a className="navbar-brand nav-link" href="#">Domů</a>
                 </li>
                 {FullPageItems.map(
-                    (item) =>                 
+                    (item) =>
                         <li key={item.id} className="nav-item">
                             <a className="nav-link" href={"#" + item.id}>{item.label}</a>
                         </li>
-    
+
                 )}
             </ul>
             <SearchSmall />
             </div>
         </nav>
-            
+
     )
 }

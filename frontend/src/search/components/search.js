@@ -74,7 +74,7 @@ export const SearchSmall = (props) => {
                 if (hints) {
                     const {userByLetters, groupByLetters} = hints
                     setUserRecords(() => userByLetters)
-                    setGroupRecords(() => groupByLetters)    
+                    setGroupRecords(() => groupByLetters)
                 }
             })
         }
@@ -102,10 +102,10 @@ export const SearchSmall = (props) => {
             <div className="input-group mb-3">
                 <span className="input-group-text" id="basic-addon1"><i className="bi bi-search"></i></span>
                 <input className='form-control' placeholder="Vyhledávání" aria-label="Vyhledávání" onChange={onChange} value={inputValue}/>
-                <span className="input-group-text" id="basic-addon2" onClick={closeSearch}><i className="bi bi-x-lg"></i></span>                
+                <span className="input-group-text" id="basic-addon2" onClick={closeSearch}><i className="bi bi-x-lg"></i></span>
             </div>
             <Suggestions userRecords={userRecords} groupRecords={groupRecords}/>
-            
+
         </div>
     )
 }

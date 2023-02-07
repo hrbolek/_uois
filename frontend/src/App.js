@@ -36,10 +36,9 @@ export function App() {
 
                 </Route>
             </Route>
-           
+
           </Routes>
-      
+
       </Router>
        );
   }
-

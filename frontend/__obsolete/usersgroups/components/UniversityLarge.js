@@ -25,7 +25,7 @@ export const UniversityLarge = (props) => {
                     </Col>
                     <Col md={9}>
                         <Row>
-                            {faculties.map(subgroup => <Col md={12}><FacultyMedium {...subgroup}/></Col>)}                    
+                            {faculties.map(subgroup => <Col md={12}><FacultyMedium {...subgroup}/></Col>)}
                         </Row>
                     </Col>
                 </Row>
@@ -34,7 +34,7 @@ export const UniversityLarge = (props) => {
                     </Col>
                     <Col md={9}>
                         <Row>
-                            {institutes.map(subgroup => <Col md={12}><FacultyMedium {...subgroup}/></Col>)}                    
+                            {institutes.map(subgroup => <Col md={12}><FacultyMedium {...subgroup}/></Col>)}
                         </Row>
                     </Col>
                 </Row>
@@ -43,7 +43,7 @@ export const UniversityLarge = (props) => {
                     </Col>
                     <Col md={9}>
                         <Row>
-                            {centers.map(subgroup => <Col md={12}><FacultyMedium {...subgroup}/></Col>)}                    
+                            {centers.map(subgroup => <Col md={12}><FacultyMedium {...subgroup}/></Col>)}
                         </Row>
                     </Col>
                 </Row>

@@ -28,7 +28,7 @@ export const CreateDelayer = (delay=300) => {
             oldTimer = -1;
             state = 0;
         }
-        
+
         //zabaleni funkce, pri volani je poznamenano, ze byl volan
         const encapsulatedFunc = () => {
             oldTimer = -1;
@@ -53,7 +53,7 @@ const findGroupInState = (state, group) => {
         const result = state.subgroups.find(sg => findGroupInState(sg, group))
         //console.log('findGroupInState', result)
         return result
-    } 
+    }
     return undefined
 }
 
@@ -61,7 +61,7 @@ const invalidateGroupDelayer = CreateDelayer()
 export const updateGroupInTreeAsync = (group) => (dispatch, getState) => {
     const state = getState()
     const currentGroup = findGroupInState(state.group, group)
-    
+
     if (currentGroup === undefined) {
         dispatch(AlertActions.AddAlert({'main': 'Chyba', 'explain': `${JSON.stringify(group)} nenalezena v ulozisti`, 'type': 'alert-danger'}))
     } else {
@@ -109,13 +109,13 @@ export const updateGroupInTreeAsync = (group) => (dispatch, getState) => {
                     }
                     dispatch(AlertActions.AddAlert(
                         {
-                            'main': 'Ok', 'explain': 'Někdo na serveru provedl změnu, chcete ji přepsat?', 'type': 'alert-danger', 
+                            'main': 'Ok', 'explain': 'Někdo na serveru provedl změnu, chcete ji přepsat?', 'type': 'alert-danger',
                             'extraButtons': [
                                 {'props': {'className': 'btn btn-warning'}, 'onClick': overwriteFunc, 'label': 'Vynutit přepsání'},
                                 {'props': {'className': 'btn btn-warning'}, 'onClick': acceptFunc, 'label': 'Převzít data ze serveru'}
                             ]
                         }
-                    ))                    
+                    ))
                 }
             }
             return json
@@ -171,13 +171,13 @@ export const updateGroupAsync = (group) => (dispatch, getState) => {
                     }
                     dispatch(AlertActions.AddAlert(
                         {
-                            'main': 'Ok', 'explain': 'Někdo na serveru provedl změnu, chcete ji přepsat?', 'type': 'alert-danger', 
+                            'main': 'Ok', 'explain': 'Někdo na serveru provedl změnu, chcete ji přepsat?', 'type': 'alert-danger',
                             'extraButtons': [
                                 {'props': {'className': 'btn btn-warning'}, 'onClick': overwriteFunc, 'label': 'Vynutit přepsání'},
                                 {'props': {'className': 'btn btn-warning'}, 'onClick': acceptFunc, 'label': 'Převzít data ze serveru'}
                             ]
                         }
-                    ))                    
+                    ))
                 }
             }
             return json
@@ -253,7 +253,7 @@ const updateGroup = (state, action) => {
     } else {
         return ({...state, ...action.payload})
     }
-    
+
 }
 
 const updateGroupMember = (state, action) => {

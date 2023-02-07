@@ -21,7 +21,7 @@ export const UniversityLargeQuery = (id) =>
                             id, name, surname, email
                           }
                         }
-                        
+
                         subgroups {
                           id, name
                           grouptype {

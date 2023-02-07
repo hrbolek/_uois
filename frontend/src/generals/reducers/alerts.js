@@ -8,7 +8,7 @@ function uuidv4() {
     );
   }
 
-export const AddAlert = (state, action) => { 
+export const AddAlert = (state, action) => {
     console.log('AddAlert')
     return[...state, {id: uuidv4(), ...action.payload}]
 }

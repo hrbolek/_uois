@@ -14,15 +14,15 @@ export const userUpdateItem = (itemName) => (id, itemValue) => {
             "query":
                 `query ($id: UUID!) {
                 userById(id: $id) {
-                    editor { 
+                    editor {
                         result
-                        user 
-                        id 
+                        user
+                        id
                         update(name: $name) {
                             result
                             user { id, name, surname, email, valid }
                         }
-                        
+
                     }
                 }
             }`,
@@ -34,7 +34,7 @@ export const userUpdateItem = (itemName) => (id, itemValue) => {
 const variablesToUpdate = ['name', 'surname', 'email', 'lastchange']
 export const userUpdateQuery = (user) => {
     let limitedUser = {}
-    
+
     for(const variable of variablesToUpdate) {
         if (variable in user) {
             limitedUser[variable] = user[variable]
@@ -52,8 +52,8 @@ export const userUpdateQuery = (user) => {
             "query":
                 `query ($id: UUID!, $data: UserUpdateGQLModel!) {
                     userById(id: $id) {
-                        editor { 
-                            id 
+                        editor {
+                            id
                             update(data: $data) {
                                 id, name, surname, email, lastchange
                             }
@@ -70,7 +70,7 @@ export const userUpdateQuery = (user) => {
  * @param {*} id - identificator
  * @function
  */
- export const userLargeQuery = (id) => 
+ export const userLargeQuery = (id) =>
     authorizedFetch('/gql', {
      method: 'POST',
      headers: {

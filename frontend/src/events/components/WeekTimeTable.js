@@ -60,28 +60,28 @@ export const WeekTimeTable = (props) => {
                 <SVGDate YDelta={400} DateValue={"12.11."} DayValue={"pá"}/>
 
                 <SVGEvent XDelta={780} YDelta={300} fillColor={"#f7b4b7"}
-                    lesson={{name: "konzultace", id: "1"}} 
-                    subject={{name: "", id: "1"}} 
-                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}} 
+                    lesson={{name: "konzultace", id: "1"}}
+                    subject={{name: "", id: "1"}}
+                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}}
                     room={{name: "", id: "1"}} />
                 <SVGEvent XDelta={220} YDelta={100} fillColor={"#b6bd82"}
-                    lesson={{name: "Letecké elektronické systémy", id: "1"}} 
-                    subject={{name: "3. Syntéza kmitočtu", id: "1"}} 
-                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}} 
+                    lesson={{name: "Letecké elektronické systémy", id: "1"}}
+                    subject={{name: "3. Syntéza kmitočtu", id: "1"}}
+                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}}
                     room={{name: "Č1/120", id: "1"}} />
                 <SVGEvent XDelta={220} YDelta={400} fillColor={"#b6bd82"}
-                    lesson={{name: "Letecké elektronické systémy", id: "1"}} 
-                    subject={{name: "3. Syntéza kmitočtu", id: "1"}} 
-                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}} 
+                    lesson={{name: "Letecké elektronické systémy", id: "1"}}
+                    subject={{name: "3. Syntéza kmitočtu", id: "1"}}
+                    teacher={{name: "Michal", surname: "Svoboda", id: "1"}}
                     room={{name: "Č1/120", id: "1"}} />
                 <SVGEvent XDelta={0} YDelta={300} fillColor={"#859be9"}
-                    lesson={{name: "Mentoring studentů 1. ročníku", id: "1"}} 
-                    subject={{name: "", id: "1"}} 
-                    teacher={{name: "Jana", surname: "Svobodová", id: "1"}} 
+                    lesson={{name: "Mentoring studentů 1. ročníku", id: "1"}}
+                    subject={{name: "", id: "1"}}
+                    teacher={{name: "Jana", surname: "Svobodová", id: "1"}}
                     room={{name: "Č1/120", id: "1"}} />
 
-                
+
             </g>
-        </svg>        
+        </svg>
     )
 }

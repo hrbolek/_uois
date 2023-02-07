@@ -1,7 +1,7 @@
 import Container from 'react-bootstrap/Container';
 import {
     Link,
-    useParams, useLocation, useNavigate 
+    useParams, useLocation, useNavigate
   } from "react-router-dom";
 
 import React, { useState, useEffect } from 'react';
@@ -29,7 +29,7 @@ export const TimeTableSmall = (props) => {
 //<Card.Title>Rozvrh <Link to={`${root}/svg/${props.type}/${props.id}/?start=2021-11-10`}> velký </Link> (<Link to={`${root}/A4/${props.type}/${props.id}/`}> A4 </Link> )</Card.Title>
 //<SVG src={`/svg/${props.type}/${props.id}/?start=2021-11-10`} width={'100%'} height={'100%'} viewBox='10 20 1400 550' />
 export const TimeTableMedium = (props) => {
-    
+
     return (
         <Card>
             <Card.Header>
@@ -95,7 +95,7 @@ export const TimeTablePage = (props) => {
                 <Col>
                     <div className="d-grid gap-2">
                         <Button variant="outline-success"> {id}</Button>
-                    </div>                
+                    </div>
                 </Col>
                 <Col>
                     <div className="d-grid gap-2">

@@ -10,7 +10,7 @@ export const TeacherGrantProgramsActual = (props) => {
         <Card>
             <Card.Header>
                 <Card.Title>
-                    Garant - Platné programy 
+                    Garant - Platné programy
                 </Card.Title>
             </Card.Header>
             <Card.Body>
@@ -41,7 +41,7 @@ const garanceB = [
     {'name': 'Ekonomika obrany státu - EKOS', 'id': 62904, 'teachers': [
         {'role': 'Garant', 'teacher': {'name': 'Jakub', 'surname': 'Odehnal', 'id': 8776}},
         {'role': 'Zastupce garanta', 'teacher': {'name': 'Aleš', 'surname': 'Olejníček', 'id': 5509}},
-        {'role': 'Vyučující', 'teacher': {'name': 'Vladan', 'surname': 'Holcner ', 'id': 1232}},             
+        {'role': 'Vyučující', 'teacher': {'name': 'Vladan', 'surname': 'Holcner ', 'id': 1232}},
         {'role': 'Vyučující', 'teacher': {'name': 'Miroslav', 'surname': 'Krč', 'id': 9306}},
         {'role': 'Vyučující', 'teacher': {'name': 'Jiří', 'surname': 'Neubauer', 'id': 5485}},
         {'role': 'Vyučující', 'teacher': {'name': 'Aleš', 'surname': 'Olejníček', 'id': 8776}},
@@ -51,7 +51,7 @@ const garanceB = [
     {'name': 'Řízení obranných zdrojů - ROZ', 'id': 1054, 'teachers': [
         {'role': 'Garant', 'teacher': {'name': 'Jakub', 'surname': 'Odehnal', 'id': 8776}},
         {'role': 'Zastupce garanta', 'teacher': {'name': 'Aleš', 'surname': 'Olejníček', 'id': 5509}},
-        {'role': 'Vyučující', 'teacher': {'name': 'Vladan', 'surname': 'Holcner ', 'id': 1232}},             
+        {'role': 'Vyučující', 'teacher': {'name': 'Vladan', 'surname': 'Holcner ', 'id': 1232}},
         {'role': 'Vyučující', 'teacher': {'name': 'Miroslav', 'surname': 'Krč', 'id': 9306}},
         {'role': 'Vyučující', 'teacher': {'name': 'Jiří', 'surname': 'Neubauer', 'id': 5485}},
         {'role': 'Vyučující', 'teacher': {'name': 'Aleš', 'surname': 'Olejníček', 'id': 8776}},
@@ -61,7 +61,7 @@ const garanceB = [
     {'name': 'Základy ekonomických vztahů - ZEV', 'id': 316, 'teachers': [
         {'role': 'Garant', 'teacher': {'name': 'Jakub', 'surname': 'Odehnal', 'id': 8776}},
         {'role': 'Zastupce garanta', 'teacher': {'name': 'Aleš', 'surname': 'Olejníček', 'id': 5509}},
-        {'role': 'Vyučující', 'teacher': {'name': 'Vladan', 'surname': 'Holcner ', 'id': 1232}},             
+        {'role': 'Vyučující', 'teacher': {'name': 'Vladan', 'surname': 'Holcner ', 'id': 1232}},
         {'role': 'Vyučující', 'teacher': {'name': 'Miroslav', 'surname': 'Krč', 'id': 9306}},
         {'role': 'Vyučující', 'teacher': {'name': 'Jiří', 'surname': 'Neubauer', 'id': 5485}},
         {'role': 'Vyučující', 'teacher': {'name': 'Aleš', 'surname': 'Olejníček', 'id': 8776}},

@@ -1,4 +1,3 @@
-
 from ast import Call
 from typing import Coroutine, Callable, Awaitable, Union, List
 import uuid
@@ -6,7 +5,13 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from uoishelpers.resolvers import create1NGetter, createEntityByIdGetter, createEntityGetter, createInsertResolver, createUpdateResolver
+from uoishelpers.resolvers import (
+    create1NGetter,
+    createEntityByIdGetter,
+    createEntityGetter,
+    createInsertResolver,
+    createUpdateResolver,
+)
 from uoishelpers.resolvers import putSingleEntityToDb
 
 from gql_facilities.DBDefinitions import BaseModel
@@ -18,6 +23,7 @@ from gql_facilities.DBDefinitions import BaseModel
 ###########################################################################################################################
 
 from gql_facilities.DBDefinitions import FacilityTypeModel, FacilityModel
+from gql_facilities.DBDefinitions import GroupModel
 
 ###########################################################################################################################
 #
@@ -27,5 +33,10 @@ from gql_facilities.DBDefinitions import FacilityTypeModel, FacilityModel
 ###########################################################################################################################
 
 resolveFacilityById = createEntityByIdGetter(FacilityModel)
-
 resolveFacilityPage = createEntityGetter(FacilityModel)
+resolveFacilitiesByGroup = create1NGetter(FacilityModel, foreignKeyName="group_id")
+resolveFacilitiesByFacility = create1NGetter(
+    FacilityModel, foreignKeyName="master_facility_id"
+)
+
+resolveFacityTypeById = createEntityByIdGetter(FacilityTypeModel)

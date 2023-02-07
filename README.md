@@ -10,7 +10,7 @@ It is also a model of an information systems which could be used for some admini
 
 - Python
     - SQLAlchemy for modelling the database entitied (async queries)
-    - FastAPI for API definition and run 
+    - FastAPI for API definition and run
     - Uvicorn as executor of FastAPI
     - Strawberry for GraphQL endpoint (federated GraphQL)
     - Appolo federation for GraphQL federation queries
@@ -22,17 +22,17 @@ It is also a model of an information systems which could be used for some admini
 - Docker
     - containerization of applications
     - inner connection of containers
-    
-- Postgres 
+
+- Postgres
     - and its compatible replacements
 
 ## Base concept
 
-The project has several docker containers 
+The project has several docker containers
 - `apollo` master of federation
 - `frontend` provides static files = REACT compiled items (including GQL interface)
 - `gql_*` apollo federation member
-- `nginx` is hardwired router 
+- `nginx` is hardwired router
 - `prostgres` is database server
 - `pgadmin` is an interface for database server administration
 
@@ -59,13 +59,13 @@ The project has several docker containers
 ## Current Notes
 To run this docker stack in some alpha mode you can run the docker-compose.yml. Be careful as it uses host volumes.
 
-There is problem with sessions and persistence of SQLAlchemy memory objects which has been solved with introduction of derived class. 
+There is problem with sessions and persistence of SQLAlchemy memory objects which has been solved with introduction of derived class.
 This class open a session, store it and allow to access it trought context
 
-A healthcheck has been added to docker-compose. It is based on QGL endpoint. The query retrieves list of entities. 
+A healthcheck has been added to docker-compose. It is based on QGL endpoint. The query retrieves list of entities.
 Unfortunatelly unhealthy containers are not restarted.
 
-The federation uses resolve_reference class method to instantiate a class. 
+The federation uses resolve_reference class method to instantiate a class.
 This must be solved in federation member which is responsible for the type (class) but also in federation member which extends this type
 Both methods are implemented by different way.
 
@@ -76,17 +76,17 @@ Apollo must be started after all federation members are alive and ready to serve
 
 During initialization is possible to store type lists (as is used) which acts as a system data.
 
-gql_ug provides data structures for users, groups, their relations and types. 
+gql_ug provides data structures for users, groups, their relations and types.
 There are also roles which allow to define a member which plays a special role in a group.
 
-gql_externalids is probably the simplest federation member. 
+gql_externalids is probably the simplest federation member.
 It allows to link external ids, from other information systems to internal ids.
 A user can have several ids. In IS this can be used for visualisation of link to other IS.
 This federation member extends users and groups.
 
 gql_workflow manages a statefull machine on processed data structures.
 
-gql_empty is template for a federation member. 
+gql_empty is template for a federation member.
 It allows to quite fast implement a new federation member.
 It is expected that this order is followed:
 
@@ -105,7 +105,7 @@ Also server.js in apollo container must be extended.
 
 ## Lessons learned
 ## Naming convention
-Names should be composed according given naming convention. 
+Names should be composed according given naming convention.
 DB table names should be in plural.
 Foreign keys should be in singular followed by undescore and id (aka user_id).
 Both table name and attribute name should not have capitalized letters otherwise there may be conficts in some db servers.
@@ -113,7 +113,7 @@ SQLAlchemy models should be in singular followed by Model (aka UserModel).
 GraphQL models should be in singulart form folowed by GQLModel (aka UserGQLModel).
 
 ### Hybrid development
-There are groups of tasks which can be developen and run isolated. 
+There are groups of tasks which can be developen and run isolated.
 The first is development of db structure and sqlalchemy models.
 The second is development of resolvers and retrieving data from database
 The third is development of qraphQL models outside of federation.
@@ -131,7 +131,7 @@ see (https://docs.docker.com/engine/reference/commandline/network_connect/)
 
 The container will be joined with network "uois_default" which is default network name for this project. Also the container will be available inside this network with host name "jupyter". Such connection allows to use same connection strings in jupyter environment as in the project.
 
-### DB 
+### DB
 In asynchronous environment it should be used context managers creating sessions. If single session is created for call errors could occur.
 This is not deterministic behaviour. The problem appears more often if query trought multiple federation members is asked.
 
