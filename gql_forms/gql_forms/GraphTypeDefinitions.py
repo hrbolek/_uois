@@ -89,7 +89,8 @@ class RequestGQLModel:
 
 @strawberryA.input
 class RequestUpdateGQLModel:
-    lastchange : Optional[datetime.datetime]= datetime.datetime.now()
+    # lastchange like input token for access update process
+    lastchange : datetime.datetime
     name: Optional[str]= None
     status : Optional[str]=None
    
@@ -103,7 +104,6 @@ class RequestInsertGQLModel:
 class RequestEditorGQLModel:
     id: strawberryA.ID = None
     result: str = None
-    lastchange: datetime.datetime= None
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -119,10 +119,6 @@ class RequestEditorGQLModel:
     def result(self) -> str:
         return self.result
 
-    @strawberryA.field(description="""lastchange of data entity""")
-    def lastchange(self) -> datetime.datetime:
-        return self.lastchange
-
     @strawberryA.field(description="""Result of update operation""")
     async def request(self, info: strawberryA.types.Info) -> RequestGQLModel:
         async with withInfo(info) as session:
@@ -136,10 +132,10 @@ class RequestEditorGQLModel:
 
     @strawberryA.field(description="""Updates the request""")
     async def update(self, info: strawberryA.types.Info, data: RequestUpdateGQLModel) -> 'RequestEditorGQLModel':
-        lastchange = self.lastchange
+        lastchange = data.lastchange
         async with withInfo(info) as session:
             await resolveUpdateRequest(session, id=self.id, data=data)
-            if (lastchange < data.lastchange):
+            if (lastchange != data.lastchange):
                 # updating is success
                 resultMsg = "ok"
             else:
@@ -205,7 +201,7 @@ class SectionGQLModel:
 
 @strawberryA.input
 class SectionUpdateGQLModel:
-    lastchange : Optional[datetime.datetime]= datetime.datetime.now()
+    lastchange : datetime.datetime
     name: Optional[str]= None
     order : Optional[int]=None
     status : Optional[str]=None
@@ -221,7 +217,6 @@ class SectionInsertGQLModel:
 class SectionEditorGQLModel:
     id: strawberryA.ID = None
     result: str = None
-    lastchange: datetime.datetime= None
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -237,10 +232,6 @@ class SectionEditorGQLModel:
     def result(self) -> str:
         return self.result
 
-    @strawberryA.field(description="""lastchange of data entity""")
-    def lastchange(self) -> datetime.datetime:
-        return self.lastchange
-
     @strawberryA.field(description="""Result of update operation""")
     async def section(self, info: strawberryA.types.Info) -> SectionGQLModel:
         async with withInfo(info) as session:
@@ -254,10 +245,10 @@ class SectionEditorGQLModel:
 
     @strawberryA.field(description="""Updates the item""")
     async def update(self, info: strawberryA.types.Info, data: SectionUpdateGQLModel) -> 'SectionEditorGQLModel':
-        lastchange = self.lastchange
+        lastchange = data.lastchange
         async with withInfo(info) as session:
             await resolveUpdateSection(session, id=self.id, data=data)
-            if (lastchange < data.lastchange):
+            if (lastchange != data.lastchange):
                 # updating is success
                 resultMsg = "ok"
             else:
@@ -319,7 +310,7 @@ class PartGQLModel:
 
 @strawberryA.input
 class PartUpdateGQLModel:
-    lastchange : Optional[datetime.datetime]= datetime.datetime.now()
+    lastchange : datetime.datetime
     name: Optional[str]= None
     order : Optional[int]=None
    
@@ -333,7 +324,6 @@ class PartInsertGQLModel:
 class PartEditorGQLModel:
     id: strawberryA.ID = None
     result: str = None
-    lastchange: datetime.datetime= None
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -349,10 +339,6 @@ class PartEditorGQLModel:
     def result(self) -> str:
         return self.result
 
-    @strawberryA.field(description="""lastchange of data entity""")
-    def lastchange(self) -> datetime.datetime:
-        return self.lastchange
-
     @strawberryA.field(description="""Result of update operation""")
     async def part(self, info: strawberryA.types.Info) -> PartGQLModel:
         async with withInfo(info) as session:
@@ -366,10 +352,10 @@ class PartEditorGQLModel:
 
     @strawberryA.field(description="""Updates the item""")
     async def update(self, info: strawberryA.types.Info, data: PartUpdateGQLModel) -> 'PartEditorGQLModel':
-        lastchange = self.lastchange
+        lastchange = data.lastchange
         async with withInfo(info) as session:
             await resolveUpdatePart(session, id=self.id, data=data)
-            if (lastchange < data.lastchange):
+            if (lastchange != data.lastchange):
                 # updating is success
                 resultMsg = "ok"
             else:
@@ -429,7 +415,7 @@ class ItemGQLModel:
 
 @strawberryA.input
 class ItemUpdateGQLModel:
-    lastchange : Optional[datetime.datetime]= datetime.datetime.now()
+    lastchange : datetime.datetime
     name: Optional[str]= None
     order : Optional[int]=None
     value: Optional[str]= None
@@ -444,7 +430,6 @@ class ItemInsertGQLModel:
 class ItemEditorGQLModel:
     id: strawberryA.ID = None
     result: str = None
-    lastchange: datetime.datetime= None
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -461,10 +446,6 @@ class ItemEditorGQLModel:
         return self.result
 
     @strawberryA.field(description="""Result of update operation""")
-    def lastchange(self) -> datetime.datetime:
-        return self.lastchange
-
-    @strawberryA.field(description="""Result of update operation""")
     async def item(self, info: strawberryA.types.Info) -> ItemGQLModel:
         async with withInfo(info) as session:
             result = await resolveItemById(session, self.id)
@@ -477,10 +458,10 @@ class ItemEditorGQLModel:
 
     @strawberryA.field(description="""Updates the item""")
     async def update(self, info: strawberryA.types.Info, data: ItemUpdateGQLModel) -> 'ItemEditorGQLModel':
-        lastchange = self.lastchange
+        lastchange = data.lastchange
         async with withInfo(info) as session:
             await resolveUpdateItem(session, id=self.id, data=data)
-            if (lastchange < data.lastchange):
+            if (lastchange != data.lastchange):
                 # updating is success
                 resultMsg = "ok"
             else:
@@ -498,12 +479,14 @@ class ItemEditorGQLModel:
 @strawberryA.input
 class OneEditorRequestUpdateGQLModel:
     id: strawberryA.ID
+    lastchange : datetime.datetime
     name: Optional[str]= None
     status : Optional[str]=None
 
 @strawberryA.input
 class OneEditorSectionUpdateGQLModel:
     id: strawberryA.ID
+    lastchange : datetime.datetime
     name: Optional[str]= None
     order : Optional[int]=None
     status : Optional[str]=None
@@ -511,12 +494,14 @@ class OneEditorSectionUpdateGQLModel:
 @strawberryA.input
 class OneEditorPartUpdateGQLModel:
     id: strawberryA.ID
+    lastchange : datetime.datetime
     name: Optional[str]= None
     order : Optional[int]=None
 
 @strawberryA.input
 class OneEditorItemUpdateGQLModel:
     id: strawberryA.ID
+    lastchange : datetime.datetime
     name: Optional[str]= None
     order : Optional[int]=None
     value: Optional[str]= None

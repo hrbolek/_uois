@@ -723,7 +723,7 @@ def createUpdateResolver(
         dbSet = await session.execute(stmt)
         dbRecord = dbSet.scalars().first()
 
-        if dbRecord.lastchange < data.lastchange:
+        if dbRecord.lastchange == data.lastchange:
             data.lastchange = datetime.datetime.now()
             result = update(dbRecord, data, extraAttributes)
             await session.commit()
