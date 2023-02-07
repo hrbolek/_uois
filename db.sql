@@ -49,7 +49,7 @@ ALTER TABLE public.aclessons OWNER TO postgres;
 -- TOC entry 232 (class 1259 OID 57135)
 -- Name: aclessontypes; Type: TABLE; Schema: public; Owner: postgres
 --
-                            
+
 CREATE TABLE public.aclessontypes (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     name character varying,
@@ -110,45 +110,45 @@ ALTER TABLE public.acprogramlanguages OWNER TO postgres;
 
 CREATE TABLE public.acprogramlevels (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
-    name character varying, 
+    name character varying,
     name_en character varying,
-    length integer,         
-    priority integer        
-);                          
-                            
-                            
+    length integer,
+    priority integer
+);
+
+
 ALTER TABLE public.acprogramlevels OWNER TO postgres;
-                            
---                          
+
+--
 -- TOC entry 270 (class 1259 OID 57762)
 -- Name: acprograms; Type: TABLE; Schema: public; Owner: postgres
---                          
-                            
+--
+
 CREATE TABLE public.acprograms (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
-    name character varying, 
+    name character varying,
     name_en character varying,
-    type_id uuid,           
+    type_id uuid,
     last_change timestamp without time zone DEFAULT now()
-);                          
-                            
-                            
+);
+
+
 ALTER TABLE public.acprograms OWNER TO postgres;
-                            
---                          
+
+--
 -- TOC entry 226 (class 1259 OID 57080)
 -- Name: acprogramtitles; Type: TABLE; Schema: public; Owner: postgres
---                          
-                            
+--
+
 CREATE TABLE public.acprogramtitles (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
-    name character varying, 
+    name character varying,
     name_en character varying
-);                          
-                            
-                            
+);
+
+
 ALTER TABLE public.acprogramtitles OWNER TO postgres;
-                            
+
 --
 -- TOC entry 250 (class 1259 OID 57406)
 -- Name: acprogramtypes; Type: TABLE; Schema: public; Owner: postgres
@@ -207,7 +207,7 @@ ALTER TABLE public.acsubjects OWNER TO postgres;
 
 CREATE TABLE public.actopics (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
-    name character varying, 
+    name character varying,
     name_en character varying,
     "order" integer,
     last_change timestamp without time zone DEFAULT now(),
@@ -325,7 +325,7 @@ ALTER TABLE public.events OWNER TO postgres;
 -- TOC entry 254 (class 1259 OID 57477)
 -- Name: events_groups; Type: TABLE; Schema: public; Owner: postgres
 --
-                            
+
 CREATE TABLE public.events_groups (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     event_id uuid,
@@ -384,7 +384,7 @@ ALTER TABLE public.eventtypes OWNER TO postgres;
 CREATE TABLE public.externalids (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     typeid_id uuid,
-    inner_id uuid,           
+    inner_id uuid,
     outer_id character varying
 );
 
@@ -443,7 +443,7 @@ CREATE TABLE public.facilities_events (
 
 
 ALTER TABLE public.facilities_events OWNER TO postgres;
-                             
+
 --
 -- TOC entry 284 (class 1259 OID 66206)
 -- Name: facilityeventstatetypes; Type: TABLE; Schema: public; Owner: postgres
@@ -502,7 +502,7 @@ CREATE TABLE public.formparts (
     "order" integer,
     section_id uuid NOT NULL
 );
-                             
+
 
 ALTER TABLE public.formparts OWNER TO postgres;
 
@@ -561,7 +561,7 @@ CREATE TABLE public.groups (
 
 ALTER TABLE public.groups OWNER TO postgres;
 
---                           
+--
 -- TOC entry 212 (class 1259 OID 56969)
 -- Name: grouptypes; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -620,7 +620,7 @@ CREATE TABLE public."personalitiesCertificateTypeGroups" (
 
 ALTER TABLE public."personalitiesCertificateTypeGroups" OWNER TO postgres;
 
---                           
+--
 -- TOC entry 242 (class 1259 OID 57285)
 -- Name: personalitiesCertificateTypes; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -915,7 +915,7 @@ ALTER TABLE public."projectFinances" OWNER TO postgres;
 -- TOC entry 276 (class 1259 OID 57896)
 -- Name: projectMilestones; Type: TABLE; Schema: public; Owner: postgres
 --
-                             
+
 CREATE TABLE public."projectMilestones" (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     name character varying,
@@ -1092,7 +1092,7 @@ ALTER TABLE public.surveyquestions OWNER TO postgres;
 -- TOC entry 214 (class 1259 OID 56985)
 -- Name: surveyquestiontypes; Type: TABLE; Schema: public; Owner: postgres
 --
-                             
+
 CREATE TABLE public.surveyquestiontypes (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     name character varying
@@ -1269,7 +1269,7 @@ ALTER TABLE ONLY public.acprogramforms
     ADD CONSTRAINT acprogramforms_pkey PRIMARY KEY (id);
 
 
---                           
+--
 -- TOC entry 3730 (class 2606 OID 57754)
 -- Name: acprogramgroups acprogramgroups_ac_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
@@ -1564,7 +1564,7 @@ ALTER TABLE ONLY public.facilityeventstatetypes
 
 ALTER TABLE ONLY public.facilitytypes
     ADD CONSTRAINT facilitytypes_pkey PRIMARY KEY (id);
-                             
+
 
 --
 -- TOC entry 3762 (class 2606 OID 57935)
@@ -1623,7 +1623,7 @@ ALTER TABLE ONLY public.formsections
 --
 -- TOC entry 3712 (class 2606 OID 57647)
 -- Name: formsections formsections_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---                           
+--
 
 ALTER TABLE ONLY public.formsections
     ADD CONSTRAINT formsections_pkey PRIMARY KEY (id, request_id);
@@ -1682,7 +1682,7 @@ ALTER TABLE ONLY public.memberships
 ALTER TABLE ONLY public."personalitiesCertificateTypeGroups"
     ADD CONSTRAINT "personalitiesCertificateTypeGroups_pkey" PRIMARY KEY (id);
 
-                             
+
 --
 -- TOC entry 3648 (class 2606 OID 57292)
 -- Name: personalitiesCertificateTypes personalitiesCertificateTypes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -1741,7 +1741,7 @@ ALTER TABLE ONLY public."personalitiesRankTypes"
 -- TOC entry 3646 (class 2606 OID 57274)
 -- Name: personalitiesRanks personalitiesRanks_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
-                             
+
 ALTER TABLE ONLY public."personalitiesRanks"
     ADD CONSTRAINT "personalitiesRanks_pkey" PRIMARY KEY (id);
 
@@ -1800,7 +1800,7 @@ ALTER TABLE ONLY public.plan_lessons
     ADD CONSTRAINT plan_lessons_pkey PRIMARY KEY (id);
 
 
---                           
+--
 -- TOC entry 3670 (class 2606 OID 57395)
 -- Name: plan_lessons_users plan_lessons_users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
@@ -2095,7 +2095,7 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.workflows
     ADD CONSTRAINT workflows_id_key UNIQUE (id);
-                             
+
 
 --
 -- TOC entry 3640 (class 2606 OID 57235)
@@ -2154,7 +2154,7 @@ ALTER TABLE ONLY public.workflowstateusers
 --
 -- TOC entry 3742 (class 2606 OID 57821)
 -- Name: workflowstateusers workflowstateusers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---                           
+--
 
 ALTER TABLE ONLY public.workflowstateusers
     ADD CONSTRAINT workflowstateusers_pkey PRIMARY KEY (id, workflowstate_id, user_id, group_id);
@@ -2213,7 +2213,7 @@ ALTER TABLE ONLY public.aclessons
 -- TOC entry 3864 (class 2606 OID 57984)
 -- Name: aclessons aclessons_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
-                             
+
 ALTER TABLE ONLY public.aclessons
     ADD CONSTRAINT aclessons_type_id_fkey FOREIGN KEY (type_id) REFERENCES public.aclessontypes(id);
 
@@ -2272,7 +2272,7 @@ ALTER TABLE ONLY public.acprogramtypes
     ADD CONSTRAINT acprogramtypes_title_id_fkey FOREIGN KEY (title_id) REFERENCES public.acprogramtitles(id);
 
 
---                           
+--
 -- TOC entry 3860 (class 2606 OID 57948)
 -- Name: acsemesters acsemesters_classificationtype_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
@@ -2567,7 +2567,7 @@ ALTER TABLE ONLY public.groups
 
 ALTER TABLE ONLY public.memberships
     ADD CONSTRAINT memberships_group_id_fkey FOREIGN KEY (group_id) REFERENCES public.groups(id);
-                             
+
 
 --
 -- TOC entry 3829 (class 2606 OID 57597)
@@ -2626,7 +2626,7 @@ ALTER TABLE ONLY public."personalitiesMedals"
 --
 -- TOC entry 3834 (class 2606 OID 57634)
 -- Name: personalitiesMedals personalitiesMedals_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---                           
+--
 
 ALTER TABLE ONLY public."personalitiesMedals"
     ADD CONSTRAINT "personalitiesMedals_user_id_fkey" FOREIGN KEY (user_id) REFERENCES public.users(id);
@@ -2685,7 +2685,7 @@ ALTER TABLE ONLY public."personalitiesWorkHistories"
 ALTER TABLE ONLY public.plan_lessons_facilities
     ADD CONSTRAINT plan_lessons_facilities_planlesson_id_fkey FOREIGN KEY (planlesson_id) REFERENCES public.plan_lessons(id);
 
-                             
+
 --
 -- TOC entry 3844 (class 2606 OID 57736)
 -- Name: plan_lessons_groups plan_lessons_groups_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
@@ -2744,7 +2744,7 @@ ALTER TABLE ONLY public.presences
 -- TOC entry 3805 (class 2606 OID 57385)
 -- Name: presences presences_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
-                             
+
 ALTER TABLE ONLY public.presences
     ADD CONSTRAINT presences_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
@@ -2803,7 +2803,7 @@ ALTER TABLE ONLY public.publication_authors
     ADD CONSTRAINT publication_authors_publication_id_fkey FOREIGN KEY (publication_id) REFERENCES public.publications(id);
 
 
---                           
+--
 -- TOC entry 3841 (class 2606 OID 57704)
 -- Name: publication_authors publication_authors_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --

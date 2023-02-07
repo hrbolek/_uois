@@ -1,19 +1,35 @@
 from uoishelpers.dataloaders import createIdLoader, createFkeyLoader
 
-from gql_ug.DBDefinitions import UserModel, MembershipModel, GroupModel, GroupTypeModel, RoleModel, RoleTypeModel
+from gql_ug.DBDefinitions import (
+    UserModel,
+    MembershipModel,
+    GroupModel,
+    GroupTypeModel,
+    RoleModel,
+    RoleTypeModel,
+)
+
 
 async def createLoaders(
     asyncSessionMaker,
-    DBModels = [UserModel, MembershipModel, GroupModel, GroupTypeModel, RoleModel, RoleTypeModel]
-    ):
-    
+    DBModels=[
+        UserModel,
+        MembershipModel,
+        GroupModel,
+        GroupTypeModel,
+        RoleModel,
+        RoleTypeModel,
+    ],
+):
+
     modelIndex = dict((DBModel.__tablename__, DBModel) for DBModel in DBModels)
 
     result = {}
     for tableName, DBModel in modelIndex.items():  # iterate over all models
         result[tableName] = createIdLoader(asyncSessionMaker, DBModel)
-    #result['memberships'].max_batch_size = 20
+    # result['memberships'].max_batch_size = 20
     return result
+
 
 from functools import cache
 
@@ -55,8 +71,7 @@ from functools import cache
 
 
 async def createLoaders_3(asyncSessionMaker):
-    class Loaders():
-        
+    class Loaders:
         @property
         @cache
         def users(self):
@@ -90,16 +105,22 @@ async def createLoaders_3(asyncSessionMaker):
         @property
         @cache
         def memberships_user_id(self):
-            return createFkeyLoader(asyncSessionMaker, MembershipModel, foreignKeyName='user_id')
+            return createFkeyLoader(
+                asyncSessionMaker, MembershipModel, foreignKeyName="user_id"
+            )
 
         @property
         @cache
         def memberships_group_id(self):
-            return createFkeyLoader(asyncSessionMaker, MembershipModel, foreignKeyName='group_id')
+            return createFkeyLoader(
+                asyncSessionMaker, MembershipModel, foreignKeyName="group_id"
+            )
 
         @property
         @cache
         def groups_mastergroup_id(self):
-            return createFkeyLoader(asyncSessionMaker, GroupModel, foreignKeyName='mastergroup_id')
+            return createFkeyLoader(
+                asyncSessionMaker, GroupModel, foreignKeyName="mastergroup_id"
+            )
 
     return Loaders()
