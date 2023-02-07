@@ -40,26 +40,10 @@ async def RunOnceAndReturnSessionMaker():
        Protoze je dekorovana, volani teto funkce se provede jen jednou a vystup se zapamatuje a vraci se pri dalsich volanich.
     """
     print(f'starting engine for "{connectionString}"')
-
     result = await startEngine(connectionstring=connectionString, makeDrop=False, makeUp=True)
-    
     print(f'initializing system structures')
-
-    ###########################################################################################################################
-    #
-    # zde definujte do funkce asyncio.gather
-    # vlozte asynchronni funkce, ktere maji data uvest do prvotniho konzistentniho stavu
-   
-    await asyncio.gather( # concurency running :)
-    # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
-    # musi byt asynchronniho typu (async def ...)
-        createBasicDataStructure()
-        # createSystemDataStructureRoleTypes(result),
-        # createSystemDataStructureGroupTypes(result)
-
-    )
-
-    ###########################################################################################################################
+    # await asyncio.gather( # concurency running :)
+    #     createBasicDataStructure()
     print(f'all done')
     return result
 
