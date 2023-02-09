@@ -2,8 +2,6 @@ from doctest import master
 from functools import cache
 from gql_presences.DBDefinitions import (
     BaseModel,
-    PresenceModel,
-    PresenceTypeModel,
     ContentModel,
     TaskModel,
 )
@@ -155,22 +153,13 @@ def randomDate():
 
 
 import asyncio
-from gql_presences.DBDefinitions import PresenceTypeModel
-
 
 async def predefineAllDataStructures(asyncSessionMaker):
-    #
-    asyncio.gather(
-        putPredefinedStructuresIntoTable(
-            asyncSessionMaker, PresenceTypeModel, determinePresenceTypes
-        ),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, TaskModel, determineTasks),
-        putPredefinedStructuresIntoTable(
+
+    await putPredefinedStructuresIntoTable(asyncSessionMaker, TaskModel, determineTasks)
+    await putPredefinedStructuresIntoTable(
             asyncSessionMaker, ContentModel, determineContents
-        ),
-    )
-    #
-    #
+        )
 
     return
 

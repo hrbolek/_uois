@@ -17,26 +17,21 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+import uuid
 
 BaseModel = declarative_base()
 ###
 
+def newUuidAsString():
+    return f"{uuid.uuid1()}"
+
 
 def UUIDColumn(name=None):
     if name is None:
-        return Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
-        )
+        return Column(String, primary_key=True, unique=True, default=newUuidAsString)
     else:
         return Column(
-            name,
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
+            name, String, primary_key=True, unique=True, default=newUuidAsString
         )
 
 
@@ -47,11 +42,6 @@ def UUIDColumn(name=None):
 # zde definujte sve SQLAlchemy modely
 # je-li treba, muzete definovat modely obsahujici jen id polozku, na ktere se budete odkazovat
 #
-
-
-""" class MembershipModel(BaseModel):
-    """
-
 
 class FacilityModel(BaseModel):
     """Spravuje data spojena s objektem daneho typu"""
@@ -71,10 +61,14 @@ class FacilityModel(BaseModel):
 
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
-    group_id = Column(ForeignKey("groups.id"), primary_key=True)
-    facilitytype_id = Column(ForeignKey("facilitytypes.id"))
+    group_id = Column(ForeignKey("groups.id"), index=True)
+    facilitytype_id = Column(ForeignKey("facilitytypes.id"), index=True)
     master_facility_id = Column(ForeignKey("facilities.id"), index=True, nullable=True)
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class FacilityTypeModel(BaseModel):
     """Urcuje typ objektu (areal, budova, patro, mistnost)"""
@@ -82,18 +76,27 @@ class FacilityTypeModel(BaseModel):
     __tablename__ = "facilitytypes"
     id = UUIDColumn()
     name = Column(String)
+    name_en = Column(String)
 
     facilities = relationship("FacilityModel", back_populates="facilitytype")
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class EventFacilityModel(BaseModel):
     __tablename__ = "facilities_events"
 
     id = UUIDColumn()
-    event_id = Column(ForeignKey("events.id"))
-    facility_id = Column(ForeignKey("facilities.id"))
-    state_id = Column(ForeignKey("facilityeventstatetypes.id"))
+    event_id = Column(ForeignKey("events.id"), index=True)
+    facility_id = Column(ForeignKey("facilities.id"), index=True)
+    state_id = Column(ForeignKey("facilityeventstatetypes.id"), index=True)
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class EventFacilityStateType(BaseModel):
     __tablename__ = "facilityeventstatetypes"
@@ -105,6 +108,22 @@ class EventFacilityStateType(BaseModel):
     # rozvrh, naplánováno, žádost, schváleno, zrušeno, ...
     # planned, requested, accepted, canceled, priority0, priority1, ...
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+class FacilityManagement(BaseModel):
+    __tablename__ = "facilitymanagementgroups"
+
+    id = UUIDColumn()
+    facility_id = Column(ForeignKey("facilities.id"), index=True)
+    group_id = Column(ForeignKey("groups.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class EventModel(BaseModel):
     __tablename__ = "events"
@@ -116,7 +135,6 @@ class GroupModel(BaseModel):
     """Spravuje data spojena se skupinou"""
 
     __tablename__ = "groups"
-
     id = UUIDColumn()
 
 
@@ -124,15 +142,7 @@ class UserModel(BaseModel):
     """Spravuje data spojena s uzivatelem"""
 
     __tablename__ = "users"
-
     id = UUIDColumn()
-
-
-# name = Column(String)
-# surname = Column(String)
-
-# externalId = Column(BigInteger, index=True)
-
 
 ###########################################################################################################################
 

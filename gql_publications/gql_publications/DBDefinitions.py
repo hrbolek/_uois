@@ -18,26 +18,23 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+import uuid
 
 BaseModel = declarative_base()
+
+def newUuidAsString():
+    return f"{uuid.uuid1()}"
 
 
 def UUIDColumn(name=None):
     if name is None:
-        return Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
-        )
+        return Column(String, primary_key=True, unique=True, default=newUuidAsString)
     else:
         return Column(
-            name,
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
+            name, String, primary_key=True, unique=True, default=newUuidAsString
         )
+
+
 
 
 # id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
@@ -64,12 +61,16 @@ class SubjectModel(BaseModel):
     __tablename__ = "publication_subjects"
 
     id = UUIDColumn()
-    publication_id = Column(ForeignKey("publications.id"), primary_key=True)
-    subject_id = Column(ForeignKey("plan_subjects.id"), primary_key=True)
+    publication_id = Column(ForeignKey("publications.id"), index=True)
+    subject_id = Column(ForeignKey("plan_subjects.id"), index=True)
 
     publication = relationship("PublicationModel")
     subject = relationship("PlanSubjectModel")
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class UserModel(BaseModel):
     """Spravuje data spojena s uzivatelem"""
@@ -87,12 +88,16 @@ class PublicationModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    publication_type_id = Column(ForeignKey("publication_types.id"), primary_key=True)
+    publication_type_id = Column(ForeignKey("publicationtypes.id"), index=True)
     place = Column(String)
     published_date = Column(Date)
     reference = Column(String)
     valid = Column(Boolean)
-    lastchange = Column(DateTime, default=datetime.datetime.now)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
     author = relationship("AuthorModel", back_populates="publication")
     publication_type = relationship(
@@ -104,24 +109,45 @@ class AuthorModel(BaseModel):
     __tablename__ = "publication_authors"
 
     id = UUIDColumn()
-    user_id = Column(ForeignKey("users.id"), primary_key=True)
-    publication_id = Column(ForeignKey("publications.id"), primary_key=True)
+    user_id = Column(ForeignKey("users.id"), index=True)
+    publication_id = Column(ForeignKey("publications.id"), index=True)
     order = Column(Integer)
     share = Column(Float)
-    lastchange = Column(DateTime, default=datetime.datetime.now)
 
     user = relationship("UserModel", back_populates="author")
     publication = relationship("PublicationModel", back_populates="author")
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class PublicationTypeModel(BaseModel):
-    __tablename__ = "publication_types"
+    __tablename__ = "publicationtypes"
 
     id = UUIDColumn()
     name = Column(String)
+    name_en = Column(String)
 
+    category_id = Column(ForeignKey("publicationcategories.id"), index=True, nullable=True)
     publication = relationship("PublicationModel", back_populates="publication_type")
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+class PublicationCategoryModel(BaseModel):
+    __tablename__ = "publicationcategories"
+
+    id = UUIDColumn()
+    name = Column(String)
+    name_en = Column(String)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

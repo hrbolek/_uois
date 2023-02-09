@@ -28,9 +28,8 @@ from gql_events.DBDefinitions import (
     EventModel,
     EventGroupModel,
     EventTypeModel,
-    EventOrganizerModel,
 )
-from gql_events.DBDefinitions import UserModel, GroupModel, EventParticipantModel
+from gql_events.DBDefinitions import UserModel, GroupModel
 
 ###########################################################################################################################
 #
@@ -41,28 +40,12 @@ from gql_events.DBDefinitions import UserModel, GroupModel, EventParticipantMode
 
 resolveEventById = createEntityByIdGetter(EventModel)
 resolveEventPage = createEntityGetter(EventModel)
-resolveUsersForEvent = create1NGetter(
-    EventOrganizerModel,
-    foreignKeyName="event_id",
-    options=joinedload(EventOrganizerModel.user),
-)
 resolveGroupsForEvent = create1NGetter(
     EventGroupModel,
     foreignKeyName="event_id",
     options=joinedload(EventGroupModel.group),
 )
 
-resolveParticipantsForEvent = create1NGetter(
-    EventParticipantModel,
-    foreignKeyName="event_id",
-    options=joinedload(EventOrganizerModel.user),
-)
-
-resolveEventsForUser_ = create1NGetter(
-    EventOrganizerModel,
-    foreignKeyName="user_id",
-    options=joinedload(EventOrganizerModel.event),
-)
 resolveEventsForGroup_ = create1NGetter(
     EventGroupModel,
     foreignKeyName="group_id",
@@ -86,12 +69,12 @@ async def resolveEventsForGroup(session, id, startdate=None, enddate=None):
 
 
 async def resolveEventsForParticipant(session, id, startdate=None, enddate=None):
-    statement = select(EventModel).join(EventParticipantModel)
+    statement = select(EventModel)#.join(EventParticipantModel)
     if startdate is not None:
         statement = statement.filter(EventModel.start >= startdate)
     if enddate is not None:
         statement = statement.filter(EventModel.end <= enddate)
-    statement = statement.filter(EventParticipantModel.user_id == id)
+    #statement = statement.filter(EventParticipantModel.user_id == id)
 
     response = await session.execute(statement)
     result = response.scalars()
@@ -99,12 +82,12 @@ async def resolveEventsForParticipant(session, id, startdate=None, enddate=None)
 
 
 async def resolveEventsForUser(session, id, startdate=None, enddate=None):
-    statement = select(EventModel).join(EventOrganizerModel)
+    statement = select(EventModel)#.join(EventOrganizerModel)
     if startdate is not None:
         statement = statement.filter(EventModel.start >= startdate)
     if enddate is not None:
         statement = statement.filter(EventModel.end <= enddate)
-    statement = statement.filter(EventOrganizerModel.user_id == id)
+    #statement = statement.filter(EventOrganizerModel.user_id == id)
 
     response = await session.execute(statement)
     result = response.scalars()

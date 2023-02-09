@@ -1,10 +1,8 @@
 from typing import List, Union
 import typing
-from warnings import filters
 import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
-
 
 @asynccontextmanager
 async def withInfo(info):
@@ -55,8 +53,88 @@ class UserGQLModel:
             return result
 
 
-from gql_events.GraphResolvers import resolveEventsForGroup
+@strawberryA.federation.type(keys=["id"])
+class EventUserGQLModel:
 
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        async with withInfo(info) as session:
+            result = await resolveEventById(session, id)
+            # result._type_definition = UserGQLModel()._type_definition # little hack :)
+            result._type_definition = cls._type_definition  # little hack :)
+            return result
+
+    @strawberryA.field(description="""Primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Present, Vacation etc.""")
+    async def presence_type(self) -> 'PresenceTypeGQLModel':
+        result = await resolvePresenceTypeById(self.presencetype_id)
+        return result
+
+    @strawberryA.field(description="""Present, Vacation etc.""")
+    async def invitation_type(self) -> 'InvitationTypeGQLModel':
+        result = await resolveInvitationTypeById(self.invitation_id)
+        return result
+
+    @strawberryA.field(description="""Present, Vacation etc.""")
+    def user(self) -> 'UserGQLModel':
+        result = UserGQLModel(id=self.user_id)
+        return result
+
+    @strawberryA.field(description="""Present, Vacation etc.""")
+    async def event(self, info: strawberryA.types.Info) -> 'EventGQLModel':
+        result = await EventGQLModel.resolve_reference(info, id=self.event_id)
+        return result
+
+@strawberryA.federation.type(keys=["id"])
+class PresenceTypeGQLModel:
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        async with withInfo(info) as session:
+            result = await resolveEventById(session, id)
+            # result._type_definition = UserGQLModel()._type_definition # little hack :)
+            result._type_definition = cls._type_definition  # little hack :)
+            return result
+
+    @strawberryA.field(description="""Primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Name of type (cze)""")
+    def name(self) -> str:
+        return self.name
+
+    @strawberryA.field(description="""Name of type (en)""")
+    def name_en(self) -> str:
+        return self.name_en
+
+@strawberryA.federation.type(keys=["id"])
+class InvitationTypeGQLModel:
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        async with withInfo(info) as session:
+            result = await resolveEventById(session, id)
+            # result._type_definition = UserGQLModel()._type_definition # little hack :)
+            result._type_definition = cls._type_definition  # little hack :)
+            return result
+
+    @strawberryA.field(description="""Primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Name of type (cze)""")
+    def name(self) -> str:
+        return self.name
+
+    @strawberryA.field(description="""Name of type (en)""")
+    def name_en(self) -> str:
+        return self.name_en
+
+from gql_events.GraphResolvers import resolveEventsForGroup
 
 @strawberryA.federation.type(extend=True, keys=["id"])
 class GroupGQLModel:
@@ -78,14 +156,11 @@ class GroupGQLModel:
             result = await resolveEventsForGroup(session, self.id, startdate, enddate)
             return result
 
-
 import datetime
 from gql_events.GraphResolvers import (
     resolveEventById,
-    resolveUsersForEvent,
     resolveGroupsForEvent,
 )
-from gql_events.GraphResolvers import resolveParticipantsForEvent
 
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing events""")

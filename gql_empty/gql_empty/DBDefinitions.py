@@ -16,26 +16,23 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+import uuid
 
 BaseModel = declarative_base()
 
 
+def newUuidAsString():
+    return f"{uuid.uuid1()}"
+
+
 def UUIDColumn(name=None):
     if name is None:
-        return Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
-        )
+        return Column(String, primary_key=True, unique=True, default=newUuidAsString)
     else:
         return Column(
-            name,
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
+            name, String, primary_key=True, unique=True, default=newUuidAsString
         )
+
 
 
 # id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)

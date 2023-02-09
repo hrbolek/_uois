@@ -16,26 +16,22 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+import uuid
 
 BaseModel = declarative_base()
+
+def newUuidAsString():
+    return f"{uuid.uuid1()}"
 
 
 def UUIDColumn(name=None):
     if name is None:
-        return Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
-        )
+        return Column(String, primary_key=True, unique=True, default=newUuidAsString)
     else:
         return Column(
-            name,
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
+            name, String, primary_key=True, unique=True, default=newUuidAsString
         )
+
 
 
 # id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
@@ -53,12 +49,15 @@ class RequestModel(BaseModel):
 
     id = UUIDColumn()
     name = Column(String)
-    creator_id = Column(ForeignKey("users.id"))
-    create_at = Column(DateTime)
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     status = Column(String)
     valid = Column(Boolean, default=True)
     sections = relationship("SectionModel", back_populates="request")
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class SectionModel(BaseModel):
@@ -70,11 +69,16 @@ class SectionModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    request_id = Column(ForeignKey("forms.id"), primary_key=True)
+    request_id = Column(ForeignKey("forms.id"), index=True)
     create_at = Column(DateTime)
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     order = Column(Integer)
     status = Column(String)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
     request = relationship("RequestModel", back_populates="sections")
     parts = relationship("PartModel", back_populates="section")
@@ -90,7 +94,13 @@ class PartModel(BaseModel):
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     order = Column(Integer)
 
-    section_id = Column(ForeignKey("formsections.id"), primary_key=True)
+    section_id = Column(ForeignKey("formsections.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
     section = relationship("SectionModel", back_populates="parts")
     items = relationship("ItemModel", back_populates="part")
 
@@ -107,7 +117,13 @@ class ItemModel(BaseModel):
 
     value = Column(String)
 
-    part_id = Column(ForeignKey("formparts.id"), primary_key=True)
+    part_id = Column(ForeignKey("formparts.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
     part = relationship("PartModel", back_populates="items")
 
 

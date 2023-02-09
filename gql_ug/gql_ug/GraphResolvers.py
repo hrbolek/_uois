@@ -335,7 +335,26 @@ async def putPredefinedStructuresIntoTable(
     # print(structureFunction())
     pass
 
+async def complexDBImport(sessionMaker, jsonData, modelIndex):
+    try:
+        for tableName, DBModel in modelIndex.items():  # iterate over all models
+            # get the appropriate data
+            DBModel.__tablename__ = tableName  # reflexe tento atribut nema :(
+            listData = jsonData.get(tableName, None)
+            if listData is None:
+                # data does not exists for current model
+                continue
+            # save data - all rows into a table, if a row with same id exists, do not save it nor update it
+            try:
+                await putPredefinedStructuresIntoTable(
+                    sessionMaker, DBModel, lambda: listData
+                )
+            except Exception as e:
+                print("Exception", e, f"on table {tableName}")
 
+    except Exception as e:
+        print(e)
+    
 async def ImportModels(sessionMaker, DBModels, jsonData):
     """imports all data from json structure
     DBModels contains a list of sqlalchemy models

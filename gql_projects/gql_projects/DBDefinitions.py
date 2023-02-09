@@ -17,25 +17,20 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+import uuid
 
 BaseModel = declarative_base()
+
+def newUuidAsString():
+    return f"{uuid.uuid1()}"
 
 
 def UUIDColumn(name=None):
     if name is None:
-        return Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
-        )
+        return Column(String, primary_key=True, unique=True, default=newUuidAsString)
     else:
         return Column(
-            name,
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
+            name, String, primary_key=True, unique=True, default=newUuidAsString
         )
 
 
@@ -56,41 +51,68 @@ class ProjectModel(BaseModel):
     name = Column(String)
     startdate = Column(DateTime)
     enddate = Column(DateTime)
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
-    projectType_id = Column(ForeignKey("projectTypes.id"), primary_key=True)
+    projectType_id = Column(ForeignKey("projecttypes.id"), index=True)
     projectType = relationship("ProjectTypeModel", back_populates="projects")
 
-    group_id = Column(ForeignKey("groups.id"), primary_key=True)
+    group_id = Column(ForeignKey("groups.id"), index=True)
     group = relationship("groupModel")
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class ProjectTypeModel(BaseModel):
-    __tablename__ = "projectTypes"
+    __tablename__ = "projecttypes"
 
     id = UUIDColumn()
     name = Column(String)
     name_en = Column(String)
 
+    category_id = Column(ForeignKey("projectcategories.id"), index=True, nullable=True)
     projects = relationship("ProjectModel", back_populates="projectType")
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+
+class ProjectCategoryModel(BaseModel):
+    __tablename__ = "projectcategories"
+
+    id = UUIDColumn()
+    name = Column(String)
+    name_en = Column(String)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class FinanceModel(BaseModel):
-    __tablename__ = "projectFinances"
+    __tablename__ = "projectfinances"
 
     id = UUIDColumn()
     name = Column(String)
     amount = Column(sqlalchemy.types.DECIMAL(precision=13, scale=3))
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
-    project_id = Column(ForeignKey("projects.id"), primary_key=True)
+    project_id = Column(ForeignKey("projects.id"), index=True)
 
-    financeType_id = Column(ForeignKey("projectFinanceTypes.id"), primary_key=True)
+    financeType_id = Column(ForeignKey("projectfinancetypes.id"), index=True)
     financeType = relationship("FinanceTypeModel", back_populates="finances")
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class FinanceTypeModel(BaseModel):
-    __tablename__ = "projectFinanceTypes"
+    __tablename__ = "projectfinancetypes"
 
     id = UUIDColumn()
     name = Column(String)
@@ -98,17 +120,51 @@ class FinanceTypeModel(BaseModel):
 
     finances = relationship("FinanceModel", back_populates="financeType")
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+class FinanceCategory(BaseModel):
+    __tablename__ = "projectfinancecategories"
+
+    id = UUIDColumn()
+    name = Column(String)
+    name_en = Column(String)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
 
 class MilestoneModel(BaseModel):
-    __tablename__ = "projectMilestones"
+    __tablename__ = "projectmilestones"
 
     id = UUIDColumn()
     name = Column(String)
     startdate = Column(DateTime)
     enddate = Column(DateTime)
 
-    project_id = Column(ForeignKey("projects.id"), primary_key=True)
+    project_id = Column(ForeignKey("projects.id"), index=True)
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+class MilestoneModel(BaseModel):
+    __tablename__ = "projectmilestonelinks"
+
+    id = UUIDColumn()
+
+    previous_id = Column(ForeignKey("projectmilestones.id"), index=True, nullable=True)
+    next_id = Column(ForeignKey("projectmilestones.id"), index=True, nullable=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class GroupModel(BaseModel):
     """Spravuje data spojena se skupinou"""
@@ -117,6 +173,10 @@ class GroupModel(BaseModel):
 
     id = UUIDColumn()
 
+class UserModel(BaseModel):
+    __tablename__ = "users"
+
+    id = UUIDColumn()
 
 ###########################################################################################################################
 

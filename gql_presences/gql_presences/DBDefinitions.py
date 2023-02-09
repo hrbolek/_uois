@@ -18,26 +18,22 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+import uuid
 
 BaseModel = declarative_base()
+
+def newUuidAsString():
+    return f"{uuid.uuid1()}"
 
 
 def UUIDColumn(name=None):
     if name is None:
-        return Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
-        )
+        return Column(String, primary_key=True, unique=True, default=newUuidAsString)
     else:
         return Column(
-            name,
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
+            name, String, primary_key=True, unique=True, default=newUuidAsString
         )
+
 
 
 # id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
@@ -50,43 +46,8 @@ def UUIDColumn(name=None):
 ###########################################################################################################################
 
 
-class PresenceModel(BaseModel):
-
-    """Spravuje data spojené s účasti na události"""
-
-    __tablename__ = "presences"
-
-    id = UUIDColumn()  # uuid
-    # date = Column(DateTime)
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-
-    presenceType_id = Column(ForeignKey("presencetypes.id"), primary_key=True)
-    presenceType = relationship("PresenceTypeModel", back_populates="presences")
-
-    # definovat foreign key user_id
-    user_id = Column(ForeignKey("users.id"), primary_key=True)
-    users = relationship("UserModel", back_populates="presences")
-
-    event_id = Column(ForeignKey("events.id"), primary_key=True)
-    events = relationship("EventModel", back_populates="presences")
-
-
-class PresenceTypeModel(BaseModel):
-    """ "
-    Urcuje typ pritomnosti
-    """
-
-    __tablename__ = "presencetypes"
-
-    id = UUIDColumn()
-    name = Column(String)
-    name_en = Column(String)
-
-    presences = relationship("PresenceModel", back_populates="presenceType")
-
 
 class UserModel(BaseModel):
-
     """
     Spravuje usera
     """
@@ -95,8 +56,7 @@ class UserModel(BaseModel):
 
     id = UUIDColumn()
 
-    presences = relationship("PresenceModel", back_populates="users")
-    tasks = relationship("TaskModel", back_populates="users")
+    tasks = relationship("TaskModel", back_populates="users", foreign_keys="TaskModel.user_id")
 
 
 class EventModel(BaseModel):
@@ -106,10 +66,8 @@ class EventModel(BaseModel):
 
     # tablename v množném čísle
     __tablename__ = "events"
-
     id = UUIDColumn()
 
-    presences = relationship("PresenceModel", back_populates="events")
 
     # může být tasks relationship
 
@@ -129,20 +87,33 @@ class TaskModel(BaseModel):
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
     user_id = Column(ForeignKey("users.id"), index=True)
-    users = relationship("UserModel", back_populates="tasks")
+    users = relationship("UserModel", back_populates="tasks", foreign_keys=[user_id])
 
     event_id = Column(ForeignKey("events.id"), index=True, nullable=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+
     # nemusí být relationship
 
 
 class ContentModel(BaseModel):
-    __tablename__ = "contents"
+    __tablename__ = "taskcontents"
 
     id = UUIDColumn()
     brief_des = Column(String)
     detailed_des = Column(String)
 
-    event_id = Column(ForeignKey("events.id"), primary_key=True)
+    event_id = Column(ForeignKey("events.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
     # events = relationship('EventModel', back_populates='contents')
 
 

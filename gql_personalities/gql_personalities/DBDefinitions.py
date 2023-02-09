@@ -16,26 +16,22 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+import uuid
 
 BaseModel = declarative_base()
+
+def newUuidAsString():
+    return f"{uuid.uuid1()}"
 
 
 def UUIDColumn(name=None):
     if name is None:
-        return Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
-        )
+        return Column(String, primary_key=True, unique=True, default=newUuidAsString)
     else:
         return Column(
-            name,
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
+            name, String, primary_key=True, unique=True, default=newUuidAsString
         )
+
 
 
 # id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
@@ -53,40 +49,51 @@ class UserModel(BaseModel):
 
     id = UUIDColumn()
 
-    ranks = relationship("Rank", back_populates="user")
-    studies = relationship("Study", back_populates="user")
-    certificates = relationship("Certificate", back_populates="user")
-    medals = relationship("Medal", back_populates="user")
-    workHistories = relationship("WorkHistory", back_populates="user")
-    relatedDocs = relationship("RelatedDoc", back_populates="user")
+    ranks = relationship("Rank", back_populates="user", foreign_keys="Rank.user_id")
+    studies = relationship("Study", back_populates="user", foreign_keys="Study.user_id")
+    certificates = relationship("Certificate", back_populates="user", foreign_keys="Certificate.user_id")
+    medals = relationship("Medal", back_populates="user", foreign_keys="Medal.user_id")
+    workHistories = relationship("WorkHistory", back_populates="user", foreign_keys="WorkHistory.user_id")
+    relatedDocs = relationship("RelatedDoc", back_populates="user", foreign_keys="RelatedDoc.user_id")
 
 
 class Rank(BaseModel):
-    __tablename__ = "personalitiesRanks"
+    __tablename__ = "personalitiesranks"
 
     id = UUIDColumn()
     start = Column(DateTime)
     end = Column(DateTime)
 
-    user_id = Column(ForeignKey("users.id"))
-    rankType_id = Column(ForeignKey("personalitiesRankTypes.id"))
+    user_id = Column(ForeignKey("users.id"), index=True)
+    rankType_id = Column(ForeignKey("personalitiesranktypes.id"), index=True)
 
-    user = relationship("UserModel", back_populates="ranks")
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+
+    user = relationship("UserModel", back_populates="ranks", foreign_keys=[user_id])
     rankType = relationship("RankType", back_populates="rank")
 
 
 class RankType(BaseModel):
-    __tablename__ = "personalitiesRankTypes"
+    __tablename__ = "personalitiesranktypes"
 
     id = UUIDColumn()
     name = Column(String)
     name_en = Column(String)
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
     rank = relationship("Rank", back_populates="rankType")
 
 
 class Study(BaseModel):
-    __tablename__ = "personalitiesStudies"
+    __tablename__ = "personalitiesstudies"
 
     id = UUIDColumn()
     name = Column(String)
@@ -95,35 +102,45 @@ class Study(BaseModel):
     start = Column(DateTime)
     end = Column(DateTime)
 
-    user_id = Column(ForeignKey("users.id"))
+    user_id = Column(ForeignKey("users.id"), index=True)
 
-    user = relationship("UserModel", back_populates="studies")
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    user = relationship("UserModel", back_populates="studies", foreign_keys=[user_id])
 
 
 class Certificate(BaseModel):
-    __tablename__ = "personalitiesCertificates"
+    __tablename__ = "personalitiescertificates"
 
     id = UUIDColumn()
     level = Column(String)
     validity_start = Column(DateTime)
     validity_end = Column(DateTime)
 
-    user_id = Column(ForeignKey("users.id"))
-    certificateType_id = Column(ForeignKey("personalitiesCertificateTypes.id"))
+    user_id = Column(ForeignKey("users.id"), index=True)
+    certificateType_id = Column(ForeignKey("personalitiescertificatetypes.id"), index=True)
 
-    user = relationship("UserModel", back_populates="certificates")
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    user = relationship("UserModel", back_populates="certificates", foreign_keys=[user_id])
     certificateType = relationship("CertificateType", back_populates="certificates")
 
 
 class CertificateType(BaseModel):
-    __tablename__ = "personalitiesCertificateTypes"
+    __tablename__ = "personalitiescertificatetypes"
 
     id = UUIDColumn()
     name = Column(String)
     name_en = Column(String)
 
     certificateTypeGroup_id = Column(
-        ForeignKey("personalitiesCertificateTypeGroups.id")
+        ForeignKey("personalitiescertificatecategories.id")
     )
 
     certificates = relationship("Certificate", back_populates="certificateType")
@@ -131,13 +148,22 @@ class CertificateType(BaseModel):
         "CertificateTypeGroup", back_populates="certificateType"
     )
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class CertificateTypeGroup(BaseModel):
-    __tablename__ = "personalitiesCertificateTypeGroups"
+    __tablename__ = "personalitiescertificatecategories"
 
     id = UUIDColumn()
     name = Column(String)
     name_en = Column(String)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
     certificateType = relationship(
         "CertificateType", back_populates="certificateTypeGroup"
@@ -145,43 +171,58 @@ class CertificateTypeGroup(BaseModel):
 
 
 class Medal(BaseModel):
-    __tablename__ = "personalitiesMedals"
+    __tablename__ = "personalitiesmedals"
 
     id = UUIDColumn()
     year = Column(Integer)
 
-    user_id = Column(ForeignKey("users.id"))
-    medalType_id = Column(ForeignKey("personalitiesMedalTypes.id"))
+    user_id = Column(ForeignKey("users.id"), index=True)
+    medalType_id = Column(ForeignKey("personalitiesmedaltypes.id"), index=True)
 
-    user = relationship("UserModel", back_populates="medals")
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    user = relationship("UserModel", back_populates="medals", foreign_keys=[user_id])
     medalType = relationship("MedalType", back_populates="medal")
 
 
 class MedalType(BaseModel):
-    __tablename__ = "personalitiesMedalTypes"
+    __tablename__ = "personalitiesmedaltypes"
 
     id = UUIDColumn()
     name = Column(String)
     name_en = Column(String)
 
-    medalTypeGroup_id = Column(ForeignKey("personalitiesMedalTypeGroups.id"))
+    medalTypeGroup_id = Column(ForeignKey("personalitiesmedalcategories.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
     medal = relationship("Medal", back_populates="medalType")
     medalTypeGroup = relationship("MedalTypeGroup", back_populates="medalTypes")
 
 
 class MedalTypeGroup(BaseModel):
-    __tablename__ = "personalitiesMedalTypeGroups"
+    __tablename__ = "personalitiesmedalcategories"
 
     id = UUIDColumn()
     name = Column(String)
     name_en = Column(String)
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
     medalTypes = relationship("MedalType", back_populates="medalTypeGroup")
 
 
 class WorkHistory(BaseModel):
-    __tablename__ = "personalitiesWorkHistories"
+    __tablename__ = "personalitiesworkhistories"
 
     id = UUIDColumn()
     start = Column(DateTime)
@@ -191,11 +232,16 @@ class WorkHistory(BaseModel):
 
     user_id = Column(ForeignKey("users.id"))
 
-    user = relationship("UserModel", back_populates="workHistories")
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    user = relationship("UserModel", back_populates="workHistories", foreign_keys=[user_id])
 
 
 class RelatedDoc(BaseModel):
-    __tablename__ = "personalitiesRelatedDocs"
+    __tablename__ = "personalitiesrelateddocs"
 
     id = UUIDColumn()
     name = Column(String)
@@ -203,7 +249,12 @@ class RelatedDoc(BaseModel):
 
     user_id = Column(ForeignKey("users.id"))
 
-    user = relationship("UserModel", back_populates="relatedDocs")
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    user = relationship("UserModel", back_populates="relatedDocs", foreign_keys=[user_id])
 
 
 from sqlalchemy import create_engine

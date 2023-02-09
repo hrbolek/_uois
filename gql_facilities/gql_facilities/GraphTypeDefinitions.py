@@ -141,6 +141,12 @@ class FacilityGQLModel:
             result = await resolveFacityTypeById(session, self.facilitytype_id)
             return result
 
+    @strawberryA.field(description="""Facility address""")
+    async def state(self, info: strawberryA.types.Info) -> "FacilityStateTypeGQLModel":
+        async with withInfo(info) as session:
+            result = await resolveFacityTypeById(session, self.facilitytype_id)
+            return result
+
     @strawberryA.field(description="""Facility above this""")
     async def master_facility(self, info: strawberryA.types.Info) -> "FacilityGQLModel":
         async with withInfo(info) as session:
@@ -181,6 +187,29 @@ class FacilityTypeGQLModel:
     def name(self) -> str:
         return self.name
 
+@strawberryA.federation.type(
+    keys=["id"], description="""Entity representing a facility type"""
+)
+class FacilityStateTypeGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        async with withInfo(info) as session:
+            result = await resolveFacilityStateTypeById(session, id)
+            result._type_definition = cls._type_definition  # little hack :)
+            return result
+
+    # id
+    @strawberryA.field(description="""primary key/facility id""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Facility state type name""")
+    def name(self) -> str:
+        return self.name
+
+    @strawberryA.field(description="""Facility state type name""")
+    def name_en(self) -> str:
+        return self.name_en
 
 ###########################################################################################################################
 #

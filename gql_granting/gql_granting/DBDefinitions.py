@@ -15,26 +15,22 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+import uuid
 
 BaseModel = declarative_base()
+
+def newUuidAsString():
+    return f"{uuid.uuid1()}"
 
 
 def UUIDColumn(name=None):
     if name is None:
-        return Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
-        )
+        return Column(String, primary_key=True, unique=True, default=newUuidAsString)
     else:
         return Column(
-            name,
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
+            name, String, primary_key=True, unique=True, default=newUuidAsString
         )
+
 
 
 # id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
@@ -48,6 +44,10 @@ def UUIDColumn(name=None):
 
 class GroupModel(BaseModel):
     __tablename__ = "groups"
+    id = UUIDColumn()
+
+class UserModel(BaseModel):
+    __tablename__ = "users"
     id = UUIDColumn()
 
 
@@ -69,6 +69,11 @@ class ProgramFormTypeModel(BaseModel):
     name_en = Column(String)
     # present, distant, hybrid
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
 
 class ProgramLanguageTypeModel(BaseModel):
     __tablename__ = "acprogramlanguages"
@@ -77,6 +82,10 @@ class ProgramLanguageTypeModel(BaseModel):
     name_en = Column(String)
     # czech, english
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class ProgramLevelTypeModel(BaseModel):
     __tablename__ = "acprogramlevels"
@@ -87,6 +96,10 @@ class ProgramLevelTypeModel(BaseModel):
     priority = Column(Integer)  # 1 for Bc., 2 for Mgr. or NMgr., 3 for Ph.D.
     # bachelor, magister, doctoral
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class ProgramTitleTypeModel(BaseModel):
     __tablename__ = "acprogramtitles"
@@ -95,28 +108,38 @@ class ProgramTitleTypeModel(BaseModel):
     name_en = Column(String)
     # Bc., Mgr., Ing, ...
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class ProgramTypeModel(BaseModel):
     __tablename__ = "acprogramtypes"
     id = UUIDColumn()
     name = Column(String)
     name_en = Column(String)
-    form_id = Column(ForeignKey("acprogramforms.id"))
-    language_id = Column(ForeignKey("acprogramlanguages.id"))
-    level_id = Column(ForeignKey("acprogramlevels.id"))
-    title_id = Column(ForeignKey("acprogramtitles.id"))
+    form_id = Column(ForeignKey("acprogramforms.id"), index=True)
+    language_id = Column(ForeignKey("acprogramlanguages.id"), index=True)
+    level_id = Column(ForeignKey("acprogramlevels.id"), index=True)
+    title_id = Column(ForeignKey("acprogramtitles.id"), index=True)
     # combination
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class ProgramModel(BaseModel):
     __tablename__ = "acprograms"
     id = UUIDColumn()
     name = Column(String)
     name_en = Column(String)
-    type_id = Column(ForeignKey("acprogramtypes.id"))
+    type_id = Column(ForeignKey("acprogramtypes.id"), index=True)
 
-    last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class SubjectModel(BaseModel):
     """Aka Mathematics"""
@@ -125,8 +148,12 @@ class SubjectModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
     name_en = Column(String)
-    program_id = Column(ForeignKey("acprograms.id"))
-    last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    program_id = Column(ForeignKey("acprograms.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
     # language_id = Column(ForeignKey('plan_subject_languages.id'))
     # program = relationship('StudyProgramModel', back_populates='subjects')
@@ -155,9 +182,13 @@ class SemesterModel(BaseModel):
     id = UUIDColumn()
     order = Column(Integer)
     credits = Column(Integer)
-    subject_id = Column(ForeignKey("acsubjects.id"))
-    classificationtype_id = Column(ForeignKey("acclassificationtypes.id"))
-    last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    subject_id = Column(ForeignKey("acsubjects.id"), index=True)
+    classificationtype_id = Column(ForeignKey("acclassificationtypes.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
     # subject = relationship('SubjectModel', back_populates='semesters')
     # classifications = relationship('ClassificationModel', back_populates='classificationsemesters')
@@ -170,9 +201,13 @@ class ClassificationTypeModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
     name_en = Column(String)
-    last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     # Z, KZ, Z+Zk, Zk, ...
     # classificationsemesters = relationship('SemesterModel', back_populates='classifications')
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 ##############################################
@@ -184,9 +219,13 @@ class TopicModel(BaseModel):
     name = Column(String)
     name_en = Column(String)
     order = Column(Integer)
-    last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
-    semester_id = Column(ForeignKey("acsemesters.id"))
+    semester_id = Column(ForeignKey("acsemesters.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
     # studysemesters = relationship('SemesterModel', back_populates='themes')
     # items = relationship('StudyThemeItemModel', back_populates='theme')
@@ -200,10 +239,14 @@ class LessonModel(BaseModel):
 
     __tablename__ = "aclessons"
     id = UUIDColumn()
-    topic_id = Column(ForeignKey("actopics.id"))
-    type_id = Column(ForeignKey("aclessontypes.id"))
+    topic_id = Column(ForeignKey("actopics.id"), index=True)
+    type_id = Column(ForeignKey("aclessontypes.id"), index=True)
     count = Column(Integer)
-    last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
     # type = relationship('ThemeTypeModel', back_populates='items')
     # theme = relationship('StudyThemeModel', back_populates='items')
@@ -215,7 +258,11 @@ class LessonTypeModel(BaseModel):
     name = Column(String)
     name_en = Column(String)
     abbr = Column(String)
-    last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
     # lectures, excersise, laboratory, ...
 
     # items = relationship('StudyThemeItemModel', back_populates='type')

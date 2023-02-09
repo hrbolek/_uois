@@ -46,15 +46,21 @@ class MembershipModel(BaseModel):
     __tablename__ = "memberships"
 
     id = UUIDColumn()
-    user_id = Column(ForeignKey("users.id"), primary_key=True)
-    group_id = Column(ForeignKey("groups.id"), primary_key=True)
+    user_id = Column(ForeignKey("users.id"), index=True)
+    group_id = Column(ForeignKey("groups.id"), index=True)
 
     startdate = Column(DateTime)
     enddate = Column(DateTime)
     valid = Column(Boolean, default=True)
 
-    user = relationship("UserModel", back_populates="memberships")
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    user = relationship("UserModel", back_populates="memberships", foreign_keys=[user_id])
     group = relationship("GroupModel", back_populates="memberships")
+
 
 
 class UserModel(BaseModel):
@@ -70,10 +76,13 @@ class UserModel(BaseModel):
     startdate = Column(DateTime)
     enddate = Column(DateTime)
 
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    memberships = relationship("MembershipModel", back_populates="user", foreign_keys="MembershipModel.user_id")
+    roles = relationship("RoleModel", back_populates="user", foreign_keys="RoleModel.user_id")
 
-    memberships = relationship("MembershipModel", back_populates="user")
-    roles = relationship("RoleModel", back_populates="user")
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class GroupModel(BaseModel):
@@ -90,13 +99,19 @@ class GroupModel(BaseModel):
     endDate = Column(DateTime)
     valid = Column(Boolean, default=True)
 
-    grouptype_id = Column(ForeignKey("grouptypes.id"))
+    grouptype_id = Column(ForeignKey("grouptypes.id"), index=True)
     grouptype = relationship("GroupTypeModel", back_populates="groups")
 
-    mastergroup_id = Column(ForeignKey("groups.id"))
+    mastergroup_id = Column(ForeignKey("groups.id"), index=True)
 
     memberships = relationship("MembershipModel", back_populates="group")
     roles = relationship("RoleModel", back_populates="group")
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
 
 
 class GroupTypeModel(BaseModel):
@@ -110,6 +125,11 @@ class GroupTypeModel(BaseModel):
 
     groups = relationship("GroupModel", back_populates="grouptype")
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
 
 class RoleTypeModel(BaseModel):
     """Urcuje typ role (Vedouci katedry, dekan apod.)"""
@@ -120,7 +140,29 @@ class RoleTypeModel(BaseModel):
     name = Column(String)
     name_en = Column(String)
 
+    category_id = Column(ForeignKey("rolecategories.id"), index=True, nullable=True)
+
     roles = relationship("RoleModel", back_populates="roletype")
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+class RoleCategoryModel(BaseModel):
+    """Urcuje kategorii role (akademická, projektová, apod.)"""
+
+    __tablename__ = "rolecategories"
+
+    id = UUIDColumn()
+    name = Column(String)
+    name_en = Column(String)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
 
 
 class RoleModel(BaseModel):
@@ -129,16 +171,22 @@ class RoleModel(BaseModel):
     __tablename__ = "roles"
 
     id = UUIDColumn()
-    user_id = Column(ForeignKey("users.id"))
-    group_id = Column(ForeignKey("groups.id"))
-    roletype_id = Column(ForeignKey("roletypes.id"))
+    user_id = Column(ForeignKey("users.id"), index=True)
+    group_id = Column(ForeignKey("groups.id"), index=True)
+    roletype_id = Column(ForeignKey("roletypes.id"), index=True)
 
     startdate = Column(DateTime)
     enddate = Column(DateTime)
     valid = Column(Boolean)
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+
     roletype = relationship("RoleTypeModel", back_populates="roles")
-    user = relationship("UserModel", back_populates="roles")
+    user = relationship("UserModel", back_populates="roles", foreign_keys=[user_id])
     group = relationship("GroupModel", back_populates="roles")
 
 

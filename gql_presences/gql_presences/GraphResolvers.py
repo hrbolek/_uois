@@ -16,8 +16,6 @@ from uoishelpers.resolvers import putSingleEntityToDb
 
 from gql_presences.DBDefinitions import (
     BaseModel,
-    PresenceModel,
-    PresenceTypeModel,
     UserModel,
     TaskModel,
     ContentModel,
@@ -29,20 +27,6 @@ from gql_presences.DBDefinitions import (
 #
 ###########################################################################################################################
 
-# presence
-resolvePresenceModelPage = createEntityGetter(PresenceModel)
-resolvePresenceModelById = createEntityByIdGetter(PresenceModel)
-# přejmenovat
-resolvePresencesForUser = create1NGetter(PresenceModel, foreignKeyName="user_id")
-resolvePresencesOnEvent = create1NGetter(PresenceModel, foreignKeyName="event_id")
-
-# presence type
-
-resolvePresenceTypeModelPage = createEntityGetter(PresenceTypeModel)
-resolvePresenceTypeModelById = createEntityByIdGetter(PresenceTypeModel)
-resolvePresencesForPresenceType = create1NGetter(
-    PresenceModel, foreignKeyName="presenceType_id"
-)
 # user
 
 resolveUserModelPage = createEntityGetter(UserModel)

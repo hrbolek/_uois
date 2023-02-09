@@ -17,25 +17,20 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+import uuid
 
 BaseModel = declarative_base()
+
+def newUuidAsString():
+    return f"{uuid.uuid1()}"
 
 
 def UUIDColumn(name=None):
     if name is None:
-        return Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
-        )
+        return Column(String, primary_key=True, unique=True, default=newUuidAsString)
     else:
         return Column(
-            name,
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
+            name, String, primary_key=True, unique=True, default=newUuidAsString
         )
 
 
@@ -53,6 +48,27 @@ class SurveyModel(BaseModel):
     name = Column(String)
     name_en = Column(String)
 
+    type_id = Column(ForeignKey("surveytypes.id"), index=True, nullable=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+
+class SurveyTypeModel(BaseModel):
+    __tablename__ = "surveytypes"
+
+    id = UUIDColumn()
+    name = Column(String)
+    name_en = Column(String)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+
+
 
 class QuestionModel(BaseModel):
     __tablename__ = "surveyquestions"
@@ -61,8 +77,13 @@ class QuestionModel(BaseModel):
     name = Column(String)  # kompletní znění otázky
     name_en = Column(String)
     order = Column(Integer)
-    survey_id = Column(ForeignKey("surveys.id"), primary_key=True)
-    type_id = Column(ForeignKey("surveyquestiontypes.id"), primary_key=True)
+    survey_id = Column(ForeignKey("surveys.id"), index=True)
+    type_id = Column(ForeignKey("surveyquestiontypes.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class QuestionValueModel(BaseModel):
@@ -72,13 +93,23 @@ class QuestionValueModel(BaseModel):
     name = Column(String)  # possible answer for selection (scale, or closed question)
     name_en = Column(String)
     order = Column(Integer)
-    question_id = Column(ForeignKey("surveyquestions.id"), primary_key=True)
+    question_id = Column(ForeignKey("surveyquestions.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class QuestionTypeModel(BaseModel):
     __tablename__ = "surveyquestiontypes"
     id = UUIDColumn()
     name = Column(String)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class AnswerModel(BaseModel):
@@ -88,8 +119,13 @@ class AnswerModel(BaseModel):
     value = Column(String)
     aswered = Column(Boolean)
     expired = Column(Boolean)
-    user_id = Column(ForeignKey("users.id"), primary_key=True)
+    user_id = Column(ForeignKey("users.id"), index=True)
     question_id = Column(ForeignKey("surveyquestions.id"), primary_key=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 from sqlalchemy import create_engine

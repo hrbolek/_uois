@@ -16,26 +16,23 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+import uuid
 
 BaseModel = declarative_base()
+
+def newUuidAsString():
+    return f"{uuid.uuid1()}"
 
 
 def UUIDColumn(name=None):
     if name is None:
-        return Column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
-        )
+        return Column(String, primary_key=True, unique=True, default=newUuidAsString)
     else:
         return Column(
-            name,
-            UUID(as_uuid=True),
-            primary_key=True,
-            server_default=sqlalchemy.text("gen_random_uuid()"),
-            unique=True,
+            name, String, primary_key=True, unique=True, default=newUuidAsString
         )
+
+
 
 
 # id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
@@ -92,38 +89,54 @@ class PlannedLessonModel(BaseModel):
     name = Column(String)
     length = Column(Integer)
     startproposal = Column(DateTime)
+
+    linkedlesson_id = Column(ForeignKey("plan_lessons.id"), index=True, nullable=True)
+    topic_id = Column(ForeignKey("actopics.id"), index=True, nullable=True)
+    lessontype_id = Column(ForeignKey("aclessontypes.id"), index=True)
+    semester_id = Column(ForeignKey("acsemesters.id"), index=True, nullable=True)
+    event_id = Column(ForeignKey("events.id"), index=True, nullable=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-
-    linkedlesson_id = Column(ForeignKey("plan_lessons.id"), nullable=True)
-    topic_id = Column(ForeignKey("actopics.id"), nullable=True)
-    lessontype_id = Column(ForeignKey("aclessontypes.id"))
-    semester_id = Column(ForeignKey("acsemesters.id"), nullable=True)
-    event_id = Column(ForeignKey("events.id"), nullable=True)
-
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class UserPlan(BaseModel):
     __tablename__ = "plan_lessons_users"
 
     id = UUIDColumn()
-    user_id = Column(ForeignKey("users.id"))
-    planlesson_id = Column(ForeignKey("plan_lessons.id"))
+    user_id = Column(ForeignKey("users.id"), index=True)
+    planlesson_id = Column(ForeignKey("plan_lessons.id"), index=True)
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class GroupPlan(BaseModel):
     __tablename__ = "plan_lessons_groups"
 
     id = UUIDColumn()
-    group_id = Column(ForeignKey("groups.id"))
-    planlesson_id = Column(ForeignKey("plan_lessons.id"))
+    group_id = Column(ForeignKey("groups.id"), index=True)
+    planlesson_id = Column(ForeignKey("plan_lessons.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class FacilityPlan(BaseModel):
     __tablename__ = "plan_lessons_facilities"
 
     id = UUIDColumn()
-    facility_id = Column(ForeignKey("facilities.id"))
-    planlesson_id = Column(ForeignKey("plan_lessons.id"))
+    facility_id = Column(ForeignKey("facilities.id"), index=True)
+    planlesson_id = Column(ForeignKey("plan_lessons.id"), index=True)
 
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
 
 ###########################################################
 
