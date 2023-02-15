@@ -39,7 +39,7 @@ export const SingleEvent = ({event}) => {
             <td>{event.startdate.toLocaleString(undefined, options)}</td>
             <td>{event.enddate.toLocaleString(undefined, options)}</td>
             <td>{event.groups.map(g => <span key={g.id}><GroupSmall group={g} /><br/></span>)}</td>
-            <td>{event.organizers.map(u => <span key={u.id}><UserSmall user={u} /><br/></span>)}</td>
+            <td>{event.participants.map(u => <span key={u.id}><UserSmall user={u} /><br/></span>)}</td>
         </tr>
     )
 }

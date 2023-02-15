@@ -39,6 +39,9 @@ def singleCall(asyncFunc):
 # 
 # 
 # 
+def get_demodata(asyncSessionMaker):
+    pass
+
 
 def EventPresenceTypes():
     result = [

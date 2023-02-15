@@ -37,6 +37,8 @@ def singleCall(asyncFunc):
 # zde definujte sve funkce, ktere naplni random data do vasich tabulek
 #
 ###########################################################################################################################
+def get_demodata(asyncSessionMaker):
+    pass
 
 
 def determineProjectTypes():

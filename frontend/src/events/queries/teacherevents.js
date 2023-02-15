@@ -10,11 +10,11 @@ export const TeacherEvents = (id, startdate, enddate) =>
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!, $startdate: DateTime!, $enddate: DateTime!) {
-                    events: eventByOrganizer(id: $id, startdate: $startdate, enddate: $enddate) {
+                `query ($id: ID!, $startdate: DateTime!, $enddate: DateTime!) {
+                    events: eventByUser(id: $id, startdate: $startdate, enddate: $enddate) {
                             id, startdate, enddate
                             groups { id, name }
-                            organizers { id, name, surname, email }
+                            participants { id, name, surname, email }
                     }
                 }`,
             "variables": {"id": id, "startdate": startdate.toISOString().replace('Z', ''), "enddate": enddate.toISOString().replace('Z', '')}

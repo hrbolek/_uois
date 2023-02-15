@@ -10,7 +10,7 @@ export const GroupBaseQuery = (id) =>
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!) {
+                `query ($id: ID!) {
                     groupById(id: $id) {
                         id, name, valid, lastchange
                         grouptype { id, name }
@@ -41,7 +41,7 @@ export const GroupLargeQuery = (id) =>
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!) {
+                `query ($id: ID!) {
                     groupById(id: $id) {
                         id, name, valid, lastchange
                         grouptype { id, name }
@@ -72,7 +72,7 @@ export const DepartmentLargeQuery = (id) =>
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!) {
+                `query ($id: ID!) {
                     groupById(id: $id) {
                         id, name, valid, lastchange
                         grouptype { id, name }
@@ -112,7 +112,7 @@ export const FacultyLargeQuery = (id) =>
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!) {
+                `query ($id: ID!) {
                     groupById(id: $id) {
                         id, name, valid, lastchange
                         grouptype { id, name }
@@ -152,7 +152,7 @@ export const GroupUpdateQuery = (group) => {
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!, $data: GroupUpdateGQLModel!) {
+                `query ($id: ID!, $data: GroupUpdateGQLModel!) {
                     groupById(id: $id) {
                         editor {
                             update(group: $data) {
@@ -185,7 +185,7 @@ export const GroupAddRoleQuery = (group, role, user) => {
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!, $role_id: UUID!, $user_id: UUID!) {
+                `query ($id: ID!, $role_id: ID!, $user_id: ID!) {
                     groupById(id: $id) {
                         editor {
                             add_role(role_id: $role_id, user_id: $user_id) {
@@ -209,7 +209,7 @@ export const GroupAssignSubgroupQuery = (group, subgroup) => {
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!, $subgroup_id: UUID!) {
+                `query ($id: ID!, $subgroup_id: ID!) {
                     groupById(id: $id) {
                         editor {
                             assign_subgroup(subgroup_id: $subgroup_id) {
@@ -233,7 +233,7 @@ export const GroupAddMembershipQuery = (group, user) => {
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!, $user_id: UUID!) {
+                `query ($id: ID!, $user_id: ID!) {
                     groupById(id: $id) {
                         editor {
                             add_membership(user_id: $user_id) {
@@ -257,7 +257,7 @@ export const GroupInvalidateMembershipQuery = (group, membership) => {
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!, $user_id: UUID!) {
+                `query ($id: ID!, $user_id: ID!) {
                     groupById(id: $id) {
                         editor {
                             invalidate_membership(membership_id: $membership_id) {

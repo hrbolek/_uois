@@ -80,7 +80,7 @@ const updateGroup = async (group) => {
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!, $group: GroupUpdateGQLModel!) {
+                `query ($id: ID!, $group: GroupUpdateGQLModel!) {
                     groupById(id: $id) {
                         editor {
                             update(group: $group) {
@@ -111,7 +111,7 @@ const fetchDepartment = async (id) => {
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!) {
+                `query ($id: ID!) {
                     groupById(id: $id) {
                       id
                       name
@@ -173,7 +173,7 @@ const fetchGroup = async (id) => {
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!) {
+                `query ($id: ID!) {
                     groupById(id: $id) {
                       id
                       name
@@ -228,7 +228,7 @@ const fetchGroupMembers = async (id) => {
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!) {
+                `query ($id: ID!) {
                     groupById(id: $id) {
                       memberships {
                         user {

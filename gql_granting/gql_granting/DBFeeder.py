@@ -52,6 +52,8 @@ def types2():
     ]
     return data
 
+def get_demodata(asyncSessionMaker):
+    pass
 
 @cache
 def prgforms():

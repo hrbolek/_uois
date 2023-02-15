@@ -30,7 +30,7 @@ import { authorizedFetch } from '../../helpers/index'
      redirect: 'follow', // manual, *follow, error
      body: JSON.stringify({
          "query":
-             `query ($id: UUID!) {
+             `query ($id: ID!) {
                 groupById(id: $id) {
                   id
                   name
@@ -86,7 +86,7 @@ import { authorizedFetch } from '../../helpers/index'
      redirect: 'follow', // manual, *follow, error
      body: JSON.stringify({
          "query":
-             `query ($id: UUID!) {
+             `query ($id: ID!) {
                 groupById(id: $id) {
                   id
                   name

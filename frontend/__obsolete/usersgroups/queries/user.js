@@ -12,7 +12,7 @@ const userUpdateItem = (itemName) => (id, itemValue) => {
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!) {
+                `query ($id: ID!) {
                 userById(id: $id) {
                     editor {
                         id
@@ -36,7 +36,7 @@ export const userUpdateNameQuery = (id, name) =>
      redirect: 'follow', // manual, *follow, error
      body: JSON.stringify({
          "query":
-             `query ($id: UUID!) {
+             `query ($id: ID!) {
                 userById(id: $id) {
                     editor {
                         id
@@ -58,7 +58,7 @@ export const userUpdateNameQuery = (id, name) =>
      redirect: 'follow', // manual, *follow, error
      body: JSON.stringify({
          "query":
-             `query ($id: UUID!) {
+             `query ($id: ID!) {
                 userById(id: $id) {
                     editor {
                         id
@@ -90,7 +90,7 @@ export const userUpdateQuery = (user) => {
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!, $data: UserUpdateGQLModel!) {
+                `query ($id: ID!, $data: UserUpdateGQLModel!) {
                     userById(id: $id) {
                         editor {
                             update(data: $data) {
@@ -120,7 +120,7 @@ export const userUpdateQuery = (user) => {
      redirect: 'follow', // manual, *follow, error
      body: JSON.stringify({
          "query":
-             `query ($id: UUID!) {
+             `query ($id: ID!) {
                 userById(id: $id) {
                     editor { id }
                     id, name, surname, email, lastchange

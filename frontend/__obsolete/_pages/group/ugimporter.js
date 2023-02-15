@@ -9,7 +9,7 @@ export const CheckGroupExists = (id) => {
     authorizedFetch('/gql', {
         body: JSON.stringify({
             query: `
-            query ($id: UUID!) {
+            query ($id: ID!) {
                 groupById(id: $id) {
                     id
                 }
@@ -25,7 +25,7 @@ export const AddGroup = (groupRecord) => {
     authorizedFetch('/gql', {
         body: JSON.stringify({
             query: `
-            query ($id: UUID!) {
+            query ($id: ID!) {
                 groupById(id: $id) {
                     id
                 }

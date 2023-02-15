@@ -222,9 +222,9 @@ class Query:
     async def internal_id(
         self,
         info: strawberryA.types.Info,
-        external_type_id: uuid.UUID,
+        external_type_id: strawberryA.ID,
         external_id: str,
-    ) -> Union[uuid.UUID, None]:
+    ) -> Union[strawberryA.ID, None]:
         async with withInfo(info) as session:
             result = await resolveExternalIdIntoInnerId(
                 session, externalid=external_id, typeid=external_type_id
@@ -237,8 +237,8 @@ class Query:
     async def external_ids(
         self,
         info: strawberryA.types.Info,
-        internal_id: uuid.UUID,
-        external_type_id: Optional[uuid.UUID] = None,
+        internal_id: strawberryA.ID,
+        external_type_id: Optional[strawberryA.ID] = None,
     ) -> List[ExternalIdGQLModel]:
         async with withInfo(info) as session:
             result = await resolveInnerIdIntoExternalIds(

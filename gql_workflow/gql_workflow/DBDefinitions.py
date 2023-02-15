@@ -93,8 +93,8 @@ class AuthorizationUserModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 
@@ -111,8 +111,8 @@ class AuthorizationGroupModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 class AuthorizationRoleTypeModel(BaseModel):
@@ -129,8 +129,8 @@ class AuthorizationRoleTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 class WorkflowModel(BaseModel):
@@ -149,8 +149,8 @@ class WorkflowModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 
@@ -170,8 +170,8 @@ class WorkflowStateModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 class WorkflowStateRoleTypeModel(BaseModel):
@@ -190,8 +190,8 @@ class WorkflowStateRoleTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 class WorkflowStateUserModel(BaseModel):
@@ -211,8 +211,8 @@ class WorkflowStateUserModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 from sqlalchemy import create_engine

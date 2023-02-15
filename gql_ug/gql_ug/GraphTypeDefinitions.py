@@ -145,7 +145,7 @@ class UserGQLModel:
         description="""List of groups given type, where the user is member"""
     )
     async def member_of(
-        self, grouptype_id: uuid.UUID, info: strawberryA.types.Info
+        self, grouptype_id: strawberryA.ID, info: strawberryA.types.Info
     ) -> typing.List["GroupGQLModel"]:
         """type hinting pouziva strawberry ke spravne deserializaci, vysledek deserializace ma vliv na operatory (napr. __EQ__)
         v tomto pripade je mozne primo srovnavat, pokud by jako hint typ u grouptype_id byl str, muselo by se srovnavat jinak
@@ -179,7 +179,7 @@ class UserUpdateGQLModel:
 
 @strawberryA.input
 class UserInsertGQLModel:
-    id: Optional[uuid.UUID] = None
+    id: Optional[strawberryA.ID] = None
     name: Optional[str] = None
     surname: Optional[str] = None
     email: Optional[str] = None
@@ -372,15 +372,15 @@ from typing import Optional
 class GroupUpdateGQLModel:
     lastchange: datetime.datetime
     name: Optional[str] = None
-    type_id: Optional[uuid.UUID] = None
+    type_id: Optional[strawberryA.ID] = None
     valid: Optional[bool] = None
 
 
 @strawberryA.input
 class GroupInsertGQLModel:
-    id: Optional[uuid.UUID] = None
+    id: Optional[strawberryA.ID] = None
     name: Optional[str] = None
-    type_id: Optional[uuid.UUID] = None
+    type_id: Optional[strawberryA.ID] = None
     valid: Optional[bool] = None
 
 
@@ -458,7 +458,7 @@ class GroupEditorGQLModel:
     async def add_role(
         self,
         info: strawberryA.types.Info,
-        user_id: uuid.UUID,
+        user_id: strawberryA.ID,
         roletype_id: strawberryA.ID,
     ) -> "RoleGQLModel":
         # result = await resolveInsertRole(session,  None,

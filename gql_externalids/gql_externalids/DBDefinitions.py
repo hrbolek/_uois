@@ -57,8 +57,8 @@ class ExternalIdModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 class ExternalIdTypeModel(BaseModel):
     __tablename__ = "externalidtypes"
@@ -71,8 +71,8 @@ class ExternalIdTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 class ExternalIdCategoryModel(BaseModel):
@@ -84,8 +84,8 @@ class ExternalIdCategoryModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 

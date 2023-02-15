@@ -28,6 +28,9 @@ from gql_events.DBDefinitions import (
     EventModel,
     EventGroupModel,
     EventTypeModel,
+    PresenceModel,
+    PresenceTypeModel,
+    InvitationTypeModel
 )
 from gql_events.DBDefinitions import UserModel, GroupModel
 
@@ -68,27 +71,26 @@ async def resolveEventsForGroup(session, id, startdate=None, enddate=None):
     return result
 
 
-async def resolveEventsForParticipant(session, id, startdate=None, enddate=None):
-    statement = select(EventModel)#.join(EventParticipantModel)
-    if startdate is not None:
-        statement = statement.filter(EventModel.start >= startdate)
-    if enddate is not None:
-        statement = statement.filter(EventModel.end <= enddate)
-    #statement = statement.filter(EventParticipantModel.user_id == id)
-
-    response = await session.execute(statement)
-    result = response.scalars()
-    return result
-
-
 async def resolveEventsForUser(session, id, startdate=None, enddate=None):
-    statement = select(EventModel)#.join(EventOrganizerModel)
+    statement = select(EventModel).join(PresenceModel)
     if startdate is not None:
         statement = statement.filter(EventModel.start >= startdate)
     if enddate is not None:
         statement = statement.filter(EventModel.end <= enddate)
-    #statement = statement.filter(EventOrganizerModel.user_id == id)
+    statement = statement.filter(PresenceModel.user_id == id)
 
     response = await session.execute(statement)
     result = response.scalars()
     return result
+
+async def resolveParticipants(session, id, invitationtypelist=[]):
+    statement = select(PresenceModel)
+    if len(invitationtypelist) > 0:
+        statement = statement.filter(PresenceModel.invitation_id.in_invitationtypelist())
+    response = await session.execute(statement)
+    result = response.scalars()
+    return result
+
+resolvePresenceTypeById = createEntityByIdGetter(PresenceTypeModel)
+resolveInvitationTypeById = createEntityByIdGetter(InvitationTypeModel)
+

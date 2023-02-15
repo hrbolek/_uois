@@ -52,8 +52,8 @@ class SurveyModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 class SurveyTypeModel(BaseModel):
@@ -65,8 +65,8 @@ class SurveyTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 
@@ -82,8 +82,8 @@ class QuestionModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 class QuestionValueModel(BaseModel):
@@ -97,8 +97,8 @@ class QuestionValueModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 class QuestionTypeModel(BaseModel):
@@ -108,8 +108,8 @@ class QuestionTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 class AnswerModel(BaseModel):
@@ -124,8 +124,8 @@ class AnswerModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 from sqlalchemy import create_engine

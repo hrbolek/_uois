@@ -55,8 +55,8 @@ class MembershipModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
     user = relationship("UserModel", back_populates="memberships", foreign_keys=[user_id])
     group = relationship("GroupModel", back_populates="memberships")
@@ -81,8 +81,8 @@ class UserModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 class GroupModel(BaseModel):
@@ -95,8 +95,8 @@ class GroupModel(BaseModel):
 
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
-    startDate = Column(DateTime)
-    endDate = Column(DateTime)
+    startdate = Column(DateTime)
+    enddate = Column(DateTime)
     valid = Column(Boolean, default=True)
 
     grouptype_id = Column(ForeignKey("grouptypes.id"), index=True)
@@ -109,8 +109,8 @@ class GroupModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 
@@ -127,8 +127,8 @@ class GroupTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 class RoleTypeModel(BaseModel):
@@ -146,8 +146,8 @@ class RoleTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 class RoleCategoryModel(BaseModel):
     """Urcuje kategorii role (akademická, projektová, apod.)"""
@@ -160,8 +160,8 @@ class RoleCategoryModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 
@@ -181,8 +181,8 @@ class RoleModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
     roletype = relationship("RoleTypeModel", back_populates="roles")

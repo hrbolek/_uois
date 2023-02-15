@@ -3,6 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import { UserSmall } from 'users/components/links'
+import { GroupSmall } from 'groups/components/links'
 
 export const UserRoles = (props) => {
     const { user } = props
@@ -22,7 +23,7 @@ export const UserRoles = (props) => {
                     return (
                         <Row key={item.id}>
                             <Col><b>{item.roletype?.name}</b></Col>
-                            <Col>{item.group?.name}</Col>
+                            <Col>{item.group? <GroupSmall group={item.group} /> :""}</Col>
                         </Row>
                     )
                 }

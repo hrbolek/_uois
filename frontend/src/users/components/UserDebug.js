@@ -18,10 +18,10 @@ export const UserDebug = (props) => {
             <Card.Body>
                 <UserPersonalEdit user={props.user} actions={props.actions} /> <br/>
                 <UserPersonal user={props.user} /> <br/>
+                <UserRoles user={props.user} />  <br />
                 <TeacherEventList user={props.user} /> <br />
                 <TeacherTimeTable user={props.user} /> <br/>
                 <UserMembership user={props.user} /> <br />
-                <UserRoles user={props.user} />  <br />
 
             </Card.Body>
             <Card.Footer>

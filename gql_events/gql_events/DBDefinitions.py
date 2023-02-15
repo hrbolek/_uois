@@ -55,10 +55,11 @@ class EventModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
     eventtype_id = Column(ForeignKey("eventtypes.id"), index=True)
+    eventtype = relationship("EventTypeModel", back_populates="events")
 
 class EventTypeModel(BaseModel):
     __tablename__ = "eventtypes"
@@ -68,8 +69,8 @@ class EventTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
     events = relationship("EventModel", back_populates="eventtype")
 
@@ -90,8 +91,8 @@ class EventGroupModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
     event = relationship("EventModel")
     group = relationship("GroupModel")
@@ -112,8 +113,8 @@ class PresenceModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 class PresenceTypeModel(BaseModel):
     __tablename__ = "eventpresencetypes"
@@ -125,8 +126,8 @@ class PresenceTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 class InvitationTypeModel(BaseModel):
     __tablename__ = "eventinvitationtypes"
@@ -138,8 +139,8 @@ class InvitationTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 ##########################################################
 #

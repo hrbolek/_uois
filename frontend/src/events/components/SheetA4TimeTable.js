@@ -113,7 +113,7 @@ export const SVGTimeTable = (props) => {
                             <SVGEvent key={event.id} XDelta={XDelta} YDelta={YDelta} Width={Width} Height={dayHeight} fillColor={"#ff7f7f"}
                                 lesson={{name: "fsd", id: "1"}}
                                 subject={{name: "", id: "1"}}
-                                teacher={event.organizers[0]}
+                                teacher={event.participants[0]}
                                 room={{name: "", id: "1"}}
                                 group={event.groups[0]}/>
                         )

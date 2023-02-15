@@ -12,7 +12,7 @@ export const userUpdateItem = (itemName) => (id, itemValue) => {
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!) {
+                `query ($id: ID!) {
                 userById(id: $id) {
                     editor {
                         result
@@ -50,7 +50,7 @@ export const userUpdateQuery = (user) => {
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!, $data: UserUpdateGQLModel!) {
+                `query ($id: ID!, $data: UserUpdateGQLModel!) {
                     userById(id: $id) {
                         editor {
                             id
@@ -80,7 +80,7 @@ export const userUpdateQuery = (user) => {
      redirect: 'follow', // manual, *follow, error
      body: JSON.stringify({
          "query":
-             `query ($id: UUID!) {
+             `query ($id: ID!) {
                 userById(id: $id) {
                     editor { id }
                     id, name, surname, email, lastchange
@@ -116,7 +116,7 @@ export const TeacherEvents = (id, startdate, enddate) =>
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!, $startdate: DateTime!, enddate: DateTime!) {
+                `query ($id: ID!, $startdate: DateTime!, enddate: DateTime!) {
                     userById(id: $id) {
                         id,
                         events(startdate: $startdate, enddate: $enddate) {
@@ -124,7 +124,7 @@ export const TeacherEvents = (id, startdate, enddate) =>
                             startdate
                             enddate
                             groups { id, name }
-                            organizers { id, name, surname, email }
+                            participants { id, name, surname, email }
                         }
                 }
             }`,

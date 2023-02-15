@@ -70,12 +70,12 @@ class GroupModel(BaseModel):
     id = UUIDColumn()
 
 
-class Event(BaseModel):
+class EventModel(BaseModel):
     __tablename__ = "events"
     id = UUIDColumn()
 
 
-class Facility(BaseModel):
+class FacilityModel(BaseModel):
     __tablename__ = "facilities"
     id = UUIDColumn()
 
@@ -93,15 +93,17 @@ class PlannedLessonModel(BaseModel):
     linkedlesson_id = Column(ForeignKey("plan_lessons.id"), index=True, nullable=True)
     topic_id = Column(ForeignKey("actopics.id"), index=True, nullable=True)
     lessontype_id = Column(ForeignKey("aclessontypes.id"), index=True)
+
+    # neni nadbytecne, topic_id muze byt null, pak je nutne mit semester_id, jedna-li se o akreditovanou vyuku
     semester_id = Column(ForeignKey("acsemesters.id"), index=True, nullable=True)
     event_id = Column(ForeignKey("events.id"), index=True, nullable=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
-class UserPlan(BaseModel):
+class UserPlanModel(BaseModel):
     __tablename__ = "plan_lessons_users"
 
     id = UUIDColumn()
@@ -110,10 +112,10 @@ class UserPlan(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
-class GroupPlan(BaseModel):
+class GroupPlanModel(BaseModel):
     __tablename__ = "plan_lessons_groups"
 
     id = UUIDColumn()
@@ -122,11 +124,11 @@ class GroupPlan(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
-class FacilityPlan(BaseModel):
+class FacilityPlanModel(BaseModel):
     __tablename__ = "plan_lessons_facilities"
 
     id = UUIDColumn()
@@ -135,8 +137,8 @@ class FacilityPlan(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 ###########################################################
 

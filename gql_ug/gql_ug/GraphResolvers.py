@@ -190,7 +190,7 @@ import datetime
 
 class ExportEncoder(json.JSONEncoder):
     def default(self, obj):
-        if isinstance(obj, uuid.UUID):
+        if isinstance(obj, strawberryA.ID):
             return f"{obj}"
         if isinstance(obj, datetime.datetime):
             return f"{obj}"
@@ -308,8 +308,12 @@ async def putPredefinedStructuresIntoTable(
                 # ulozime vybrane
                 await saveChunk(toSave)
         else:
-            # vsechny zaznamy mohou byt ulozeny soucasne
-            await saveChunk(unsavedRows)
+            # vsechny zaznamy mohou byt ulozeny soucasne, 
+            # ukladame po blocich
+            while (len(unsavedRows) > 0):
+                rowsToSave = unsavedRows[:30]
+                await saveChunk(rowsToSave)
+                unsavedRows = unsavedRows[30:]
 
     # jeste jednou se dotazeme do databaze
     stmt = select(DBModel)

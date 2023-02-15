@@ -45,6 +45,9 @@ def determineQuestionTypes():
 
 import datetime
 
+def get_demodata(asyncSessionMaker):
+    pass
+
 
 async def randomSurveyData(session):
     userID1 = "8188a23c-8fd4-11ed-a6d4-0242ac110002"

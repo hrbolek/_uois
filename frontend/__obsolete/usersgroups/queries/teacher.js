@@ -15,7 +15,7 @@ import { authorizedFetch } from 'generals/authorizedfetch';
      redirect: 'follow', // manual, *follow, error
      body: JSON.stringify({
          "query":
-             `query ($id: UUID!) {
+             `query ($id: ID!) {
                 userById(id: $id) {
                     editor { id }
                     id, name, surname, email, lastchange

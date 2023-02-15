@@ -203,18 +203,18 @@ class PublicationUpdateGQLModel:
     place: Optional[str] = None
     published_date: Optional[datetime.date] = None
     reference: Optional[str] = None
-    publication_type_id: Optional[uuid.UUID] = None
+    publication_type_id: Optional[strawberryA.ID] = None
     valid: Optional[bool] = None
 
 
 @strawberryA.input
 class PublicationInsertGQLModel:
-    id: Optional[uuid.UUID] = None
+    id: Optional[strawberryA.ID] = None
     name: Optional[str] = None
     place: Optional[str] = None
     published_date: Optional[datetime.date] = None
     reference: Optional[str] = None
-    publication_type_id: Optional[uuid.UUID] = None
+    publication_type_id: Optional[strawberryA.ID] = None
     valid: Optional[bool] = None
 
 
@@ -255,7 +255,7 @@ class PublicationEditorGQLModel:
 
     @strawberryA.field(description="""Sets author a share""")
     async def set_author_share(
-        self, info: strawberryA.types.Info, author_id: uuid.UUID, share: float
+        self, info: strawberryA.types.Info, author_id: strawberryA.ID, share: float
     ) -> "AuthorGQLModel":
         async with withInfo(info) as session:
             result = await resolveUpdateAuthor(
@@ -265,7 +265,7 @@ class PublicationEditorGQLModel:
 
     @strawberryA.field(description="""Updates the author data""")
     async def set_author_order(
-        self, info: strawberryA.types.Info, author_id: uuid.UUID, order: int
+        self, info: strawberryA.types.Info, author_id: strawberryA.ID, order: int
     ) -> List["AuthorGQLModel"]:
         async with withInfo(info) as session:
             result = await resolveUpdateAuthorOrder(session, self.id, author_id, order)

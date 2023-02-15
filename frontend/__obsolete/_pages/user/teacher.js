@@ -832,7 +832,7 @@ export const TeacherStudyGroups = (props) => {
      redirect: 'follow', // manual, *follow, error
      body: JSON.stringify({
          "query":
-             `query ($id: UUID!) {
+             `query ($id: ID!) {
                 userById(id: $id) {
                     id
                     name

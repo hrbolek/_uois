@@ -2,18 +2,16 @@ from functools import cache
 from gql_personalities.DBDefinitions import (
     BaseModel,
     UserModel,
-    Rank,
-    Study,
-    Certificate,
-    Medal,
-    WorkHistory,
-    RelatedDoc,
+    RankModel,
+    StudyModel,
+    CertificateModel,
+    MedalModel,
+    WorkHistoryModel,
+    RelatedDocModel,
 )
-from gql_personalities.DBDefinitions import RankType, CertificateType, MedalType
-from gql_personalities.DBDefinitions import CertificateTypeGroup, MedalTypeGroup
+from gql_personalities.DBDefinitions import RankTypeModel, CertificateTypeModel, MedalTypeModel, MedalTypeGroupModel
+from gql_personalities.DBDefinitions import CertificateTypeGroupModel
 
-import random
-import itertools
 from functools import cache
 
 
@@ -39,6 +37,10 @@ def singleCall(asyncFunc):
 # zde definujte sve funkce, ktere naplni random data do vasich tabulek
 #
 ###########################################################################################################################
+def get_demodata(asyncSessionMaker):
+    pass
+
+
 @cache
 def determineRankType():
     rankTypes = [

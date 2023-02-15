@@ -2,28 +2,39 @@ from doctest import master
 from functools import cache
 from gql_externalids.DBDefinitions import BaseModel, ExternalIdTypeModel
 
-import random
-import itertools
 from functools import cache
-
 
 from sqlalchemy.future import select
 
-
-def singleCall(asyncFunc):
-    """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
-    Dekorovana funkce je asynchronni.
-    """
-    resultCache = {}
-
-    async def result():
-        if resultCache.get("result", None) is None:
-            resultCache["result"] = await asyncFunc()
-        return resultCache["result"]
-
+def get_demodata():
+    result = {
+        "externalidtypes": determineExternalIdsTypes(),
+        "externalids": [
+            {'id': "cd85ef7c-ad44-11ed-9bd8-0242ac110002", "inner_id": "be1b2f34-ad44-11ed-9bd8-0242ac110002", "outer_id": "600", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
+            {'id': "cd85f22e-ad44-11ed-9bd8-0242ac110002", "inner_id": "be1b4992-ad44-11ed-9bd8-0242ac110002", "outer_id": "601", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
+            {'id': "cd85f2b0-ad44-11ed-9bd8-0242ac110002", "inner_id": "be1b4a28-ad44-11ed-9bd8-0242ac110002", "outer_id": "602", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
+            {'id': "cd85f30a-ad44-11ed-9bd8-0242ac110002", "inner_id": "be1b4a82-ad44-11ed-9bd8-0242ac110002", "outer_id": "603", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
+            {'id': "cd85f350-ad44-11ed-9bd8-0242ac110002", "inner_id": "be1b4ad2-ad44-11ed-9bd8-0242ac110002", "outer_id": "604", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
+            {'id': "cd85f396-ad44-11ed-9bd8-0242ac110002", "inner_id": "be1b4b18-ad44-11ed-9bd8-0242ac110002", "outer_id": "605", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
+            {'id': "cd85f3dc-ad44-11ed-9bd8-0242ac110002", "inner_id": "be1b4b68-ad44-11ed-9bd8-0242ac110002", "outer_id": "606", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
+            {'id': "cd85f422-ad44-11ed-9bd8-0242ac110002", "inner_id": "be1b4bae-ad44-11ed-9bd8-0242ac110002", "outer_id": "607", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
+            {'id': "cd85f468-ad44-11ed-9bd8-0242ac110002", "inner_id": "be1b4c30-ad44-11ed-9bd8-0242ac110002", "outer_id": "608", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
+            {'id': "cd85f4a4-ad44-11ed-9bd8-0242ac110002", "inner_id": "44c9722a-ad45-11ed-9bd8-0242ac110002", "outer_id": "609", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
+        ],
+        "users": [
+            {'id': "be1b2f34-ad44-11ed-9bd8-0242ac110002" },
+            {'id': "be1b4992-ad44-11ed-9bd8-0242ac110002" },
+            {'id': "be1b4a28-ad44-11ed-9bd8-0242ac110002" },
+            {'id': "be1b4a82-ad44-11ed-9bd8-0242ac110002" },
+            {'id': "be1b4ad2-ad44-11ed-9bd8-0242ac110002" },
+            {'id': "be1b4b18-ad44-11ed-9bd8-0242ac110002" },
+            {'id': "be1b4b68-ad44-11ed-9bd8-0242ac110002" },
+            {'id': "be1b4bae-ad44-11ed-9bd8-0242ac110002" },
+            {'id': "44c9722a-ad45-11ed-9bd8-0242ac110002" },
+            {'id': "be1b4c30-ad44-11ed-9bd8-0242ac110002" },
+        ],
+    }
     return result
-
-
 ###########################################################################################################################
 #
 # zde definujte sve funkce, ktere naplni random data do vasich tabulek

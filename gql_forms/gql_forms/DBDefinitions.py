@@ -42,9 +42,60 @@ def UUIDColumn(name=None):
 # je-li treba, muzete definovat modely obsahujici jen id polozku, na ktere se budete odkazovat
 #
 ###########################################################################################################################
-
-
 class RequestModel(BaseModel):
+    __tablename__ = "formrequests"
+
+    id = UUIDColumn()
+    name = Column(String)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
+
+class HistoryModel(BaseModel):
+    __tablename__ = "formhistories"
+
+    id = UUIDColumn()
+    name = Column(String)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+
+    request_id = Column(ForeignKey("requests.id"), index=True, nullable=True)
+    form_id = Column(ForeignKey("requests.id"), index=True, nullable=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
+
+class FormTypeModel(BaseModel):
+    __tablename__ = "formtypes"
+
+    id = UUIDColumn()
+    name = Column(String)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+
+    category_id = Column(ForeignKey("formcategories.id"), index=True, nullable=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
+
+class FormCategoryModel(BaseModel):
+    __tablename__ = "formcategories"
+
+    id = UUIDColumn()
+    name = Column(String)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
+
+class FormModel(BaseModel):
     __tablename__ = "forms"
 
     id = UUIDColumn()
@@ -52,12 +103,14 @@ class RequestModel(BaseModel):
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     status = Column(String)
     valid = Column(Boolean, default=True)
+    type_id = Column(ForeignKey("formtypes.id"), index=True, nullable=True)
+
     sections = relationship("SectionModel", back_populates="request")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
 
 class SectionModel(BaseModel):
@@ -77,10 +130,10 @@ class SectionModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
-    request = relationship("RequestModel", back_populates="sections")
+    request = relationship("FormModel", back_populates="sections")
     parts = relationship("PartModel", back_populates="section")
 
 
@@ -98,8 +151,8 @@ class PartModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
     section = relationship("SectionModel", back_populates="parts")
     items = relationship("ItemModel", back_populates="part")
@@ -121,8 +174,8 @@ class ItemModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = Column(String, index=True, nullable=True)
+    changedby = Column(String, index=True, nullable=True)
 
     part = relationship("PartModel", back_populates="items")
 
@@ -133,7 +186,7 @@ class UserModel(BaseModel):
     id = UUIDColumn()
 
 
-#    request = relationship('RequestModel', back_populates='user')
+#    request = relationship('FormModel', back_populates='user')
 
 
 from sqlalchemy import create_engine

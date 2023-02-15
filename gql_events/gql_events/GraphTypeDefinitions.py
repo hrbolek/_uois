@@ -9,10 +9,9 @@ async def withInfo(info):
     asyncSessionMaker = info.context["asyncSessionMaker"]
     async with asyncSessionMaker() as session:
         try:
-            yield session
+            yield session   
         finally:
             pass
-
 
 def AsyncSessionFromInfo(info):
     print(
@@ -52,7 +51,7 @@ class UserGQLModel:
             result = await resolveEventsForUser(session, self.id, startdate, enddate)
             return result
 
-
+from gql_events.GraphResolvers import resolvePresenceTypeById, resolveInvitationTypeById
 @strawberryA.federation.type(keys=["id"])
 class EventUserGQLModel:
 
@@ -160,6 +159,7 @@ import datetime
 from gql_events.GraphResolvers import (
     resolveEventById,
     resolveGroupsForEvent,
+    resolveParticipants
 )
 
 
@@ -189,14 +189,6 @@ class EventGQLModel:
     def enddate(self) -> Union[datetime.datetime, None]:
         return self.end
 
-    @strawberryA.field(description="""Organizers of the event""")
-    async def organizers(self, info: strawberryA.types.Info) -> List["UserGQLModel"]:
-        async with withInfo(info) as session:
-            links = await resolveUsersForEvent(session, self.id)
-            result = list(map(lambda item: item.user, links))
-            # print('event.orgs', result)
-            return result
-
     @strawberryA.field(description="""Groups of users linked to the event""")
     async def groups(self, info: strawberryA.types.Info) -> List["GroupGQLModel"]:
         async with withInfo(info) as session:
@@ -206,10 +198,10 @@ class EventGQLModel:
             return result
 
     @strawberryA.field(description="""Participants of the event""")
-    async def participants(self, info: strawberryA.types.Info) -> List["UserGQLModel"]:
+    async def participants(self, info: strawberryA.types.Info, invitation_types: List[strawberryA.ID] = []) -> List["UserGQLModel"]:
         async with withInfo(info) as session:
-            links = await resolveParticipantsForEvent(session, self.id)
-            result = list(map(lambda item: item.user, links))
+            links = await resolveParticipants(session, self.id, invitation_types)
+            result = list(map(lambda item: UserGQLModel(id=item.user_id), links))
             # print('event.group', result)
             return result
 
@@ -246,7 +238,6 @@ class EventEditorGQLModel:
             result = await resolveEventById(session, self.id)
             return result
 
-
 ###########################################################################################################################
 #
 # zde definujte svuj Query model
@@ -255,8 +246,7 @@ class EventEditorGQLModel:
 
 from typing import Optional
 import datetime
-from gql_events.GraphResolvers import resolveEventPage, resolveEventsForParticipant
-
+from gql_events.GraphResolvers import resolveEventPage
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
@@ -284,10 +274,10 @@ class Query:
             return result
 
     @strawberryA.field(description="""Finds all events for an organizer""")
-    async def event_by_organizer(
+    async def event_by_user(
         self,
         info: strawberryA.types.Info,
-        id: uuid.UUID,
+        id: strawberryA.ID,
         startdate: Optional[datetime.datetime] = None,
         enddate: Optional[datetime.datetime] = None,
     ) -> List[EventGQLModel]:
@@ -299,26 +289,13 @@ class Query:
     async def event_by_group(
         self,
         info: strawberryA.types.Info,
-        id: uuid.UUID,
+        id: strawberryA.ID,
         startdate: Optional[datetime.datetime] = None,
         enddate: Optional[datetime.datetime] = None,
     ) -> List[EventGQLModel]:
         async with withInfo(info) as session:
             result = await resolveEventsForGroup(session, id, startdate, enddate)
             return result
-
-    @strawberryA.field(description="""Finds all events for a participant""")
-    async def event_by_participant(
-        self,
-        info: strawberryA.types.Info,
-        id: uuid.UUID,
-        startdate: Optional[datetime.datetime] = None,
-        enddate: Optional[datetime.datetime] = None,
-    ) -> List[EventGQLModel]:
-        async with withInfo(info) as session:
-            result = await resolveEventsForParticipant(session, id, startdate, enddate)
-            return result
-
 
 ###########################################################################################################################
 #

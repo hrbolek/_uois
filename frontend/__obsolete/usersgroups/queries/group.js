@@ -10,7 +10,7 @@ export const GroupLargeQuery = (id) =>
         redirect: 'follow', // manual, *follow, error
         body: JSON.stringify({
             "query":
-                `query ($id: UUID!) {
+                `query ($id: ID!) {
                     groupById(id: $id) {
                         id, name
                         roles {

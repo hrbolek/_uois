@@ -14,7 +14,6 @@ from gql_facilities.DBDefinitions import FacilityModel, FacilityTypeModel
 from gql_facilities.DBDefinitions import EventFacilityModel, EventFacilityStateType
 from gql_facilities.DBDefinitions import UserModel, GroupModel, EventModel
 
-
 async def prepare_in_memory_sqllite():
     from sqlalchemy.ext.asyncio import create_async_engine
     from sqlalchemy.ext.asyncio import AsyncSession
@@ -85,8 +84,9 @@ async def prepare_demodata(async_session_maker):
     await ImportModels(
         async_session_maker,
         [
-            UserModel,
-            GroupModel
+            UserModel, GroupModel, EventModel,
+            FacilityModel, FacilityTypeModel,
+            EventFacilityModel, EventFacilityStateType,            
         ],
         data,
     )

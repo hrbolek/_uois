@@ -61,6 +61,8 @@ def types2():
 
 import asyncio
 
+def get_demodata(asyncSessionMaker):
+    pass
 
 async def predefineAllDataStructures(asyncSessionMaker):
     #
