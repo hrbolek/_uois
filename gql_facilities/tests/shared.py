@@ -12,7 +12,6 @@ import pytest
 from gql_facilities.DBDefinitions import BaseModel
 from gql_facilities.DBDefinitions import FacilityModel, FacilityTypeModel
 from gql_facilities.DBDefinitions import EventFacilityModel, EventFacilityStateType
-from gql_facilities.DBDefinitions import UserModel, GroupModel, EventModel
 
 async def prepare_in_memory_sqllite():
     from sqlalchemy.ext.asyncio import create_async_engine

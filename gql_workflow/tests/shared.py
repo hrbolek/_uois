@@ -10,7 +10,6 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_workflow.DBDefinitions import BaseModel
-from gql_workflow.DBDefinitions import RoleTypeModel, UserModel, GroupModel
 from gql_workflow.DBDefinitions import AuthorizationModel, AuthorizationGroupModel, AuthorizationUserModel, AuthorizationRoleTypeModel
 from gql_workflow.DBDefinitions import WorkflowModel, WorkflowStateModel, WorkflowStateRoleTypeModel, WorkflowStateUserModel
 
@@ -40,11 +39,7 @@ async def prepare_demodata(async_session_maker):
 
     await ImportModels(
         async_session_maker,
-        [
-            UserModel,
-            GroupModel,
-            RoleTypeModel,
-            
+        [           
             AuthorizationModel, 
             AuthorizationGroupModel, 
             AuthorizationUserModel, 

@@ -10,11 +10,9 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_personalities.DBDefinitions import BaseModel
-from gql_personalities.DBDefinitions import UserModel
 from gql_personalities.DBDefinitions import CertificateModel, CertificateTypeModel, CertificateTypeGroupModel
 from gql_personalities.DBDefinitions import MedalModel, MedalTypeModel, MedalTypeGroupModel
 from gql_personalities.DBDefinitions import WorkHistoryModel, RelatedDocModel
-
 
 async def prepare_in_memory_sqllite():
     from sqlalchemy.ext.asyncio import create_async_engine
@@ -42,7 +40,6 @@ async def prepare_demodata(async_session_maker):
     await ImportModels(
         async_session_maker,
         [
-            UserModel,
             CertificateModel, CertificateTypeModel, CertificateTypeGroupModel,
             MedalModel, MedalTypeModel, MedalTypeGroupModel,
             WorkHistoryModel, RelatedDocModel

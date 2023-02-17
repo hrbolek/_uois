@@ -32,7 +32,7 @@ from gql_events.DBDefinitions import (
     PresenceTypeModel,
     InvitationTypeModel
 )
-from gql_events.DBDefinitions import UserModel, GroupModel
+
 
 ###########################################################################################################################
 #
@@ -41,13 +41,13 @@ from gql_events.DBDefinitions import UserModel, GroupModel
 #
 ###########################################################################################################################
 
+resolveEventTypeById = createEntityByIdGetter(EventTypeModel)
+resolveEventTypePage = createEntityGetter(EventTypeModel)
+
+
 resolveEventById = createEntityByIdGetter(EventModel)
 resolveEventPage = createEntityGetter(EventModel)
-resolveGroupsForEvent = create1NGetter(
-    EventGroupModel,
-    foreignKeyName="event_id",
-    options=joinedload(EventGroupModel.group),
-)
+resolveGroupsForEvent = create1NGetter(EventGroupModel, foreignKeyName="event_id")
 
 resolveEventsForGroup_ = create1NGetter(
     EventGroupModel,
@@ -61,9 +61,9 @@ from sqlalchemy.future import select
 async def resolveEventsForGroup(session, id, startdate=None, enddate=None):
     statement = select(EventModel).join(EventGroupModel)
     if startdate is not None:
-        statement = statement.filter(EventModel.start >= startdate)
+        statement = statement.filter(EventModel.startdate >= startdate)
     if enddate is not None:
-        statement = statement.filter(EventModel.end <= enddate)
+        statement = statement.filter(EventModel.enddate <= enddate)
     statement = statement.filter(EventGroupModel.group_id == id)
 
     response = await session.execute(statement)
@@ -74,19 +74,19 @@ async def resolveEventsForGroup(session, id, startdate=None, enddate=None):
 async def resolveEventsForUser(session, id, startdate=None, enddate=None):
     statement = select(EventModel).join(PresenceModel)
     if startdate is not None:
-        statement = statement.filter(EventModel.start >= startdate)
+        statement = statement.filter(EventModel.startdate >= startdate)
     if enddate is not None:
-        statement = statement.filter(EventModel.end <= enddate)
+        statement = statement.filter(EventModel.enddate <= enddate)
     statement = statement.filter(PresenceModel.user_id == id)
 
     response = await session.execute(statement)
     result = response.scalars()
     return result
 
-async def resolveParticipants(session, id, invitationtypelist=[]):
+async def resolvePresencesForEvent(session, id, invitationtypelist=[]):
     statement = select(PresenceModel)
     if len(invitationtypelist) > 0:
-        statement = statement.filter(PresenceModel.invitation_id.in_invitationtypelist())
+        statement = statement.filter(PresenceModel.invitation_id.in_(invitationtypelist))
     response = await session.execute(statement)
     result = response.scalars()
     return result

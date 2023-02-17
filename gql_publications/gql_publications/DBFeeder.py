@@ -1,4 +1,3 @@
-from doctest import master
 from functools import cache
 from gql_publications.DBDefinitions import BaseModel
 

@@ -37,7 +37,16 @@ def UUIDColumn(name=None):
             name, String, primary_key=True, unique=True, default=newUuidAsString
         )
 
-
+def UUIDFKey(*, ForeignKey=None, nullable=False):
+    if ForeignKey is None:
+        return Column(
+            String, index=True, nullable=nullable
+        )
+    else:
+        return Column(
+            ForeignKey, index=True, nullable=nullable
+        )
+        
 class MembershipModel(BaseModel):
     """Spojuje User s Group jestlize User je clen Group
     Umoznuje udrzovat historii spojeni
@@ -55,8 +64,8 @@ class MembershipModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     user = relationship("UserModel", back_populates="memberships", foreign_keys=[user_id])
     group = relationship("GroupModel", back_populates="memberships")
@@ -81,8 +90,8 @@ class UserModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class GroupModel(BaseModel):
@@ -109,8 +118,8 @@ class GroupModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 
@@ -127,8 +136,8 @@ class GroupTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class RoleTypeModel(BaseModel):
@@ -146,8 +155,8 @@ class RoleTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class RoleCategoryModel(BaseModel):
     """Urcuje kategorii role (akademická, projektová, apod.)"""
@@ -160,8 +169,8 @@ class RoleCategoryModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 
@@ -181,8 +190,8 @@ class RoleModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
     roletype = relationship("RoleTypeModel", back_populates="roles")

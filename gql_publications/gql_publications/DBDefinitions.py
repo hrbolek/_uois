@@ -35,7 +35,15 @@ def UUIDColumn(name=None):
         )
 
 
-
+def UUIDFKey(*, ForeignKey=None, nullable=False):
+    if ForeignKey is None:
+        return Column(
+            String, index=True, nullable=nullable
+        )
+    else:
+        return Column(
+            ForeignKey, index=True, nullable=nullable
+        )
 
 # id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
@@ -62,24 +70,15 @@ class SubjectModel(BaseModel):
 
     id = UUIDColumn()
     publication_id = Column(ForeignKey("publications.id"), index=True)
-    subject_id = Column(ForeignKey("plan_subjects.id"), index=True)
+    subject_id = UUIDFKey(nullable=True)#Column(ForeignKey("plan_subjects.id"), index=True)
 
     publication = relationship("PublicationModel")
     subject = relationship("PlanSubjectModel")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
-
-class UserModel(BaseModel):
-    """Spravuje data spojena s uzivatelem"""
-
-    __tablename__ = "users"
-
-    id = UUIDColumn()
-    author = relationship("AuthorModel", back_populates="user")
-
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class PublicationModel(BaseModel):
 
@@ -96,8 +95,8 @@ class PublicationModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     author = relationship("AuthorModel", back_populates="publication")
     publication_type = relationship(
@@ -109,18 +108,18 @@ class AuthorModel(BaseModel):
     __tablename__ = "publication_authors"
 
     id = UUIDColumn()
-    user_id = Column(ForeignKey("users.id"), index=True)
+    user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
     publication_id = Column(ForeignKey("publications.id"), index=True)
     order = Column(Integer)
     share = Column(Float)
 
-    user = relationship("UserModel", back_populates="author")
+    #user = relationship("UserModel", back_populates="author")
     publication = relationship("PublicationModel", back_populates="author")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class PublicationTypeModel(BaseModel):
     __tablename__ = "publicationtypes"
@@ -134,8 +133,8 @@ class PublicationTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class PublicationCategoryModel(BaseModel):
     __tablename__ = "publicationcategories"
@@ -146,8 +145,8 @@ class PublicationCategoryModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

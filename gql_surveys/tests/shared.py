@@ -10,7 +10,6 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_surveys.DBDefinitions import BaseModel
-from gql_surveys.DBDefinitions import UserModel
 from gql_surveys.DBDefinitions import AnswerModel, SurveyModel, SurveyTypeModel, QuestionModel, QuestionTypeModel, QuestionValueModel
 
 async def prepare_in_memory_sqllite():

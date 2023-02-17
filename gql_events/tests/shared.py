@@ -10,7 +10,6 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_events.DBDefinitions import BaseModel
-from gql_events.DBDefinitions import UserModel
 from gql_events.DBDefinitions import EventModel, EventTypeModel, EventGroupModel
 from gql_events.DBDefinitions import PresenceModel, PresenceTypeModel, InvitationTypeModel
 
@@ -42,7 +41,6 @@ async def prepare_demodata(async_session_maker):
     await ImportModels(
         async_session_maker,
         [
-            UserModel,
             EventModel, EventTypeModel, EventGroupModel,
             PresenceModel, PresenceTypeModel, InvitationTypeModel        
         ],

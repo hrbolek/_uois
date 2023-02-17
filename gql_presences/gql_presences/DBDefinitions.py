@@ -34,7 +34,15 @@ def UUIDColumn(name=None):
             name, String, primary_key=True, unique=True, default=newUuidAsString
         )
 
-
+def UUIDFKey(*, ForeignKey=None, nullable=False):
+    if ForeignKey is None:
+        return Column(
+            String, index=True, nullable=nullable
+        )
+    else:
+        return Column(
+            ForeignKey, index=True, nullable=nullable
+        )
 
 # id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
@@ -44,33 +52,6 @@ def UUIDColumn(name=None):
 # je-li treba, muzete definovat modely obsahujici jen id polozku, na ktere se budete odkazovat
 #
 ###########################################################################################################################
-
-
-
-class UserModel(BaseModel):
-    """
-    Spravuje usera
-    """
-
-    __tablename__ = "users"
-
-    id = UUIDColumn()
-
-    tasks = relationship("TaskModel", back_populates="users", foreign_keys="TaskModel.user_id")
-
-
-class EventModel(BaseModel):
-    """
-    Spravuje events
-    """
-
-    # tablename v množném čísle
-    __tablename__ = "events"
-    id = UUIDColumn()
-
-
-    # může být tasks relationship
-
 
 class TaskModel(BaseModel):
 
@@ -86,15 +67,15 @@ class TaskModel(BaseModel):
     date_of_fulfillment = Column(DateTime)
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
-    user_id = Column(ForeignKey("users.id"), index=True)
-    users = relationship("UserModel", back_populates="tasks", foreign_keys=[user_id])
+    user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
+    #users = relationship("UserModel", back_populates="tasks", foreign_keys=[user_id])
 
-    event_id = Column(ForeignKey("events.id"), index=True, nullable=True)
+    event_id = UUIDFKey(nullable=True)#Column(ForeignKey("events.id"), index=True, nullable=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
     # nemusí být relationship
@@ -107,12 +88,12 @@ class ContentModel(BaseModel):
     brief_des = Column(String)
     detailed_des = Column(String)
 
-    event_id = Column(ForeignKey("events.id"), index=True)
+    event_id = UUIDFKey(nullable=True)#Column(ForeignKey("events.id"), index=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     # events = relationship('EventModel', back_populates='contents')
 

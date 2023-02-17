@@ -10,7 +10,7 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_publications.DBDefinitions import BaseModel
-from gql_publications.DBDefinitions import UserModel, AuthorModel
+from gql_publications.DBDefinitions import AuthorModel
 from gql_publications.DBDefinitions import PublicationModel, PublicationTypeModel, PublicationCategoryModel
 
 async def prepare_in_memory_sqllite():
@@ -39,7 +39,6 @@ async def prepare_demodata(async_session_maker):
     await ImportModels(
         async_session_maker,
         [
-            UserModel,
             AuthorModel,
             PublicationModel, 
             PublicationTypeModel, 

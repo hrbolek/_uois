@@ -10,8 +10,7 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_lessons.DBDefinitions import BaseModel
-from gql_lessons.DBDefinitions import UserModel, GroupModel, EventModel, FacilityModel, SemesterModel,TopicModel
-from gql_lessons.DBDefinitions import UserPlanModel, GroupPlanModel, PlannedLessonModel, LessonTypeModel
+from gql_lessons.DBDefinitions import UserPlanModel, GroupPlanModel, PlannedLessonModel
 
 from shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
 
@@ -21,20 +20,7 @@ async def test_table_users_feed():
     async_session_maker = await prepare_in_memory_sqllite()
     await prepare_demodata(async_session_maker)
 
-    stmt = sqlalchemy.select(UserModel)
-    async with async_session_maker() as session:
-        response = await session.execute(stmt)
-        rows = list(response.scalars())
-        print(rows)
-
     data = get_demodata()
-    data = list(data["users"])
-    result = [
-        {"id": u.id, "name": u.name, "surname": u.surname, "email": u.email}
-        for u in rows
-    ]
-    for dr, rr in zip(data, result):
-        assert dr == rr
 
 
 from gql_lessons.DBDefinitions import ComposeConnectionString

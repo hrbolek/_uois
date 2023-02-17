@@ -635,26 +635,26 @@ import asyncio
 async def ensureAllTypes(asyncSessionMaker):
     done = await asyncio.gather(
         putPredefinedStructuresIntoTable(
-            asyncSessionMaker, RankType, determineRankType
+            asyncSessionMaker, RankTypeModel, determineRankType
         ),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, Study, determineStudyPlace),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, StudyModel, determineStudyPlace),
         putPredefinedStructuresIntoTable(
-            asyncSessionMaker, Study, determineStudyProgram
-        ),
-        putPredefinedStructuresIntoTable(
-            asyncSessionMaker, CertificateType, determineCertificateType
+            asyncSessionMaker, StudyModel, determineStudyProgram
         ),
         putPredefinedStructuresIntoTable(
-            asyncSessionMaker, CertificateTypeGroup, determineCertificateTypeGroup
+            asyncSessionMaker, CertificateTypeModel, determineCertificateType
         ),
         putPredefinedStructuresIntoTable(
-            asyncSessionMaker, MedalType, determineMedalType
+            asyncSessionMaker, CertificateTypeGroupModel, determineCertificateTypeGroup
         ),
         putPredefinedStructuresIntoTable(
-            asyncSessionMaker, MedalTypeGroup, determineMedalTypeGroup
+            asyncSessionMaker, MedalTypeModel, determineMedalType
         ),
         putPredefinedStructuresIntoTable(
-            asyncSessionMaker, WorkHistory, determineWorkHistoryPosition
+            asyncSessionMaker, MedalTypeGroupModel, determineMedalTypeGroup
+        ),
+        putPredefinedStructuresIntoTable(
+            asyncSessionMaker, WorkHistoryModel, determineWorkHistoryPosition
         ),
     )
     return

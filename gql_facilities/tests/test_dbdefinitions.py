@@ -12,7 +12,6 @@ import pytest
 from gql_facilities.DBDefinitions import BaseModel
 from gql_facilities.DBDefinitions import FacilityModel, FacilityTypeModel
 from gql_facilities.DBDefinitions import EventFacilityModel, EventFacilityStateType
-from gql_facilities.DBDefinitions import UserModel, GroupModel, EventModel
 
 from shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
 
@@ -22,21 +21,7 @@ async def test_table_users_feed():
     async_session_maker = await prepare_in_memory_sqllite()
     await prepare_demodata(async_session_maker)
 
-    stmt = sqlalchemy.select(UserModel)
-    async with async_session_maker() as session:
-        response = await session.execute(stmt)
-        rows = list(response.scalars())
-        print(rows)
-
     data = get_demodata()
-    data = list(data["users"])
-    result = [
-        {"id": u.id, "name": u.name, "surname": u.surname, "email": u.email}
-        for u in rows
-    ]
-    for dr, rr in zip(data, result):
-        assert dr == rr
-
 
 from gql_facilities.DBDefinitions import ComposeConnectionString
 

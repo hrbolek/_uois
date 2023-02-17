@@ -10,7 +10,6 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_projects.DBDefinitions import BaseModel
-from gql_projects.DBDefinitions import UserModel, GroupModel
 from gql_projects.DBDefinitions import ProjectModel, ProjectTypeModel, ProjectCategoryModel
 from gql_projects.DBDefinitions import FinanceModel, FinanceTypeModel, FinanceCategory
 from gql_projects.DBDefinitions import MilestoneModel, MilestoneLinkModel
@@ -41,12 +40,9 @@ async def prepare_demodata(async_session_maker):
     await ImportModels(
         async_session_maker,
         [
-            UserModel,
-            GroupModel,
-            GroupTypeModel,
-            MembershipModel,
-            RoleModel,
-            RoleTypeModel,
+            ProjectModel, ProjectTypeModel, ProjectCategoryModel,
+            FinanceModel, FinanceTypeModel, FinanceCategory,
+            MilestoneModel, MilestoneLinkModel
         ],
         data,
     )

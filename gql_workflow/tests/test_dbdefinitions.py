@@ -10,7 +10,6 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_workflow.DBDefinitions import BaseModel
-from gql_workflow.DBDefinitions import RoleTypeModel, UserModel, GroupModel
 from gql_workflow.DBDefinitions import AuthorizationModel, AuthorizationGroupModel, AuthorizationUserModel, AuthorizationRoleTypeModel
 from gql_workflow.DBDefinitions import WorkflowModel, WorkflowStateModel, WorkflowStateRoleTypeModel, WorkflowStateUserModel
 
@@ -22,20 +21,7 @@ async def test_table_users_feed():
     async_session_maker = await prepare_in_memory_sqllite()
     await prepare_demodata(async_session_maker)
 
-    stmt = sqlalchemy.select(UserModel)
-    async with async_session_maker() as session:
-        response = await session.execute(stmt)
-        rows = list(response.scalars())
-        print(rows)
-
     data = get_demodata()
-    data = list(data["users"])
-    result = [
-        {"id": u.id, "name": u.name, "surname": u.surname, "email": u.email}
-        for u in rows
-    ]
-    for dr, rr in zip(data, result):
-        assert dr == rr
 
 
 from gql_workflow.DBDefinitions import ComposeConnectionString

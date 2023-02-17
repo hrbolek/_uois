@@ -34,7 +34,15 @@ def UUIDColumn(name=None):
             name, String, primary_key=True, unique=True, default=newUuidAsString
         )
 
-
+def UUIDFKey(*, ForeignKey=None, nullable=False):
+    if ForeignKey is None:
+        return Column(
+            String, index=True, nullable=nullable
+        )
+    else:
+        return Column(
+            ForeignKey, index=True, nullable=nullable
+        )
 # id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
 ###########################################################################################################################
@@ -61,14 +69,14 @@ class FacilityModel(BaseModel):
 
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
-    group_id = Column(ForeignKey("groups.id"), index=True)
+    group_id = UUIDFKey(nullable=True)#Column(ForeignKey("groups.id"), index=True)
     facilitytype_id = Column(ForeignKey("facilitytypes.id"), index=True)
     master_facility_id = Column(ForeignKey("facilities.id"), index=True, nullable=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class FacilityTypeModel(BaseModel):
     """Urcuje typ objektu (areal, budova, patro, mistnost)"""
@@ -82,8 +90,8 @@ class FacilityTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class EventFacilityModel(BaseModel):
     __tablename__ = "facilities_events"
@@ -95,8 +103,8 @@ class EventFacilityModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class EventFacilityStateType(BaseModel):
     __tablename__ = "facilityeventstatetypes"
@@ -110,8 +118,8 @@ class EventFacilityStateType(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class FacilityManagement(BaseModel):
     __tablename__ = "facilitymanagementgroups"
@@ -122,27 +130,8 @@ class FacilityManagement(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
-
-class EventModel(BaseModel):
-    __tablename__ = "events"
-
-    id = UUIDColumn()
-
-
-class GroupModel(BaseModel):
-    """Spravuje data spojena se skupinou"""
-
-    __tablename__ = "groups"
-    id = UUIDColumn()
-
-
-class UserModel(BaseModel):
-    """Spravuje data spojena s uzivatelem"""
-
-    __tablename__ = "users"
-    id = UUIDColumn()
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 ###########################################################################################################################
 

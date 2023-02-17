@@ -1,10 +1,6 @@
-from doctest import master
-from functools import cache
-from gql_workflow.DBDefinitions import BaseModel, UserModel, GroupModel, RoleTypeModel
-
 from functools import cache
 
-
+from gql_workflow.DBDefinitions import BaseModel
 from sqlalchemy.future import select
 
 
@@ -59,7 +55,7 @@ async def randomWorkflowData(session):
         ],
     }
 
-    roleTypes = await getRoleTypesFromDb()
+    #roleTypes = await getRoleTypesFromDb()
     usersToAdd = []
     async with session.begin():
         session.add_all(usersToAdd)

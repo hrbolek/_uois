@@ -33,7 +33,15 @@ def UUIDColumn(name=None):
         )
 
 
-
+def UUIDFKey(*, ForeignKey=None, nullable=False):
+    if ForeignKey is None:
+        return Column(
+            String, index=True, nullable=nullable
+        )
+    else:
+        return Column(
+            ForeignKey, index=True, nullable=nullable
+        )
 
 # id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
@@ -43,42 +51,6 @@ def UUIDColumn(name=None):
 # je-li treba, muzete definovat modely obsahujici jen id polozku, na ktere se budete odkazovat
 #
 ###########################################################################################################################
-
-
-class TopicModel(BaseModel):
-    __tablename__ = "actopics"
-    id = UUIDColumn()
-
-
-class LessonTypeModel(BaseModel):
-    __tablename__ = "aclessontypes"
-    id = UUIDColumn()
-
-
-class SemesterModel(BaseModel):
-    __tablename__ = "acsemesters"
-    id = UUIDColumn()
-
-
-class UserModel(BaseModel):
-    __tablename__ = "users"
-    id = UUIDColumn()
-
-
-class GroupModel(BaseModel):
-    __tablename__ = "groups"
-    id = UUIDColumn()
-
-
-class EventModel(BaseModel):
-    __tablename__ = "events"
-    id = UUIDColumn()
-
-
-class FacilityModel(BaseModel):
-    __tablename__ = "facilities"
-    id = UUIDColumn()
-
 
 class PlannedLessonModel(BaseModel):
     """Defines a lesson which is going to be planned in timetable"""
@@ -91,54 +63,54 @@ class PlannedLessonModel(BaseModel):
     startproposal = Column(DateTime)
 
     linkedlesson_id = Column(ForeignKey("plan_lessons.id"), index=True, nullable=True)
-    topic_id = Column(ForeignKey("actopics.id"), index=True, nullable=True)
-    lessontype_id = Column(ForeignKey("aclessontypes.id"), index=True)
+    topic_id = UUIDFKey(nullable=True)#Column(ForeignKey("actopics.id"), index=True, nullable=True)
+    lessontype_id = UUIDFKey(nullable=True)#Column(ForeignKey("aclessontypes.id"), index=True)
 
     # neni nadbytecne, topic_id muze byt null, pak je nutne mit semester_id, jedna-li se o akreditovanou vyuku
-    semester_id = Column(ForeignKey("acsemesters.id"), index=True, nullable=True)
-    event_id = Column(ForeignKey("events.id"), index=True, nullable=True)
+    semester_id = UUIDFKey(nullable=True)#Column(ForeignKey("acsemesters.id"), index=True, nullable=True)
+    event_id = UUIDFKey(nullable=True)#Column(ForeignKey("events.id"), index=True, nullable=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class UserPlanModel(BaseModel):
     __tablename__ = "plan_lessons_users"
 
     id = UUIDColumn()
-    user_id = Column(ForeignKey("users.id"), index=True)
+    user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
     planlesson_id = Column(ForeignKey("plan_lessons.id"), index=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class GroupPlanModel(BaseModel):
     __tablename__ = "plan_lessons_groups"
 
     id = UUIDColumn()
-    group_id = Column(ForeignKey("groups.id"), index=True)
+    group_id = UUIDFKey(nullable=True)#Column(ForeignKey("groups.id"), index=True)
     planlesson_id = Column(ForeignKey("plan_lessons.id"), index=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class FacilityPlanModel(BaseModel):
     __tablename__ = "plan_lessons_facilities"
 
     id = UUIDColumn()
-    facility_id = Column(ForeignKey("facilities.id"), index=True)
+    facility_id = UUIDFKey(nullable=True)#Column(ForeignKey("facilities.id"), index=True)
     planlesson_id = Column(ForeignKey("plan_lessons.id"), index=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 ###########################################################
 

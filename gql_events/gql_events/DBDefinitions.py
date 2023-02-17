@@ -32,6 +32,15 @@ def UUIDColumn(name=None):
             name, String, primary_key=True, unique=True, default=newUuidAsString
         )
 
+def UUIDFKey(*, ForeignKey=None, nullable=False):
+    if ForeignKey is None:
+        return Column(
+            String, index=True, nullable=nullable
+        )
+    else:
+        return Column(
+            ForeignKey, index=True, nullable=nullable
+        )
 # id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
 ###########################################################################################################################
@@ -50,13 +59,13 @@ class EventModel(BaseModel):
 
     id = UUIDColumn()
     name = Column(String)
-    start = Column(DateTime)
-    end = Column(DateTime)
+    startdate = Column(DateTime)
+    enddate = Column(DateTime)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     eventtype_id = Column(ForeignKey("eventtypes.id"), index=True)
     eventtype = relationship("EventTypeModel", back_populates="events")
@@ -66,36 +75,28 @@ class EventTypeModel(BaseModel):
 
     id = UUIDColumn()
     name = Column(String)
+    name_en = Column(String)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     events = relationship("EventModel", back_populates="eventtype")
-
-class UserModel(BaseModel):
-    __tablename__ = "users"
-    id = UUIDColumn()
-
-class GroupModel(BaseModel):
-    __tablename__ = 'groups'
-    id = UUIDColumn()
-
 
 class EventGroupModel(BaseModel):
     __tablename__ = "events_groups"
     id = UUIDColumn()
     event_id = Column(ForeignKey("events.id"), index=True)
-    group_id = Column(ForeignKey("groups.id"), index=True)
+    group_id = UUIDFKey()#Column(ForeignKey("groups.id"), index=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     event = relationship("EventModel")
-    group = relationship("GroupModel")
+    #group = relationship("GroupModel")
 
 ##########################################################
 #
@@ -107,14 +108,14 @@ class PresenceModel(BaseModel):
     id = UUIDColumn()
 
     event_id = Column(ForeignKey("events.id"), index=True)
-    user_id = Column(ForeignKey("users.id"), index=True)
+    user_id = UUIDFKey()#Column(ForeignKey("users.id"), index=True)
     presencetype_id = Column(ForeignKey("eventinvitationtypes.id"), index=True)
     invitation_id = Column(ForeignKey("eventpresencetypes.id"), index=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class PresenceTypeModel(BaseModel):
     __tablename__ = "eventpresencetypes"
@@ -126,8 +127,8 @@ class PresenceTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class InvitationTypeModel(BaseModel):
     __tablename__ = "eventinvitationtypes"
@@ -139,8 +140,8 @@ class InvitationTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = Column(String, index=True, nullable=True)
-    changedby = Column(String, index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 ##########################################################
 #

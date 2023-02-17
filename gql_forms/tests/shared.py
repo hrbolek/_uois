@@ -10,7 +10,6 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_forms.DBDefinitions import BaseModel
-from gql_forms.DBDefinitions import UserModel
 from gql_forms.DBDefinitions import FormModel, FormTypeModel, FormCategoryModel
 from gql_forms.DBDefinitions import SectionModel, PartModel, ItemModel
 from gql_forms.DBDefinitions import RequestModel, HistoryModel

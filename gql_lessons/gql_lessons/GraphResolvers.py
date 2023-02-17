@@ -17,13 +17,13 @@ from uoishelpers.resolvers import putSingleEntityToDb
 from gql_lessons.DBDefinitions import (
     BaseModel,
     PlannedLessonModel,
-    UserPlan,
-    GroupPlan,
-    FacilityPlan,
+    UserPlanModel,
+    GroupPlanModel,
+    FacilityPlanModel,
 )
 
 # from gql_lessons.DBDefinitions import UnavailabilityPL, UnavailabilityUser, UnavailabilityFacility
-from gql_lessons.DBDefinitions import UserModel, GroupModel, Event, Facility
+from gql_lessons.DBDefinitions import UserModel, GroupModel, EventModel, FacilityModel
 
 ###########################################################################################################################
 #
@@ -60,13 +60,13 @@ resolvePlannedLessonsByLink = create1NGetter(
 
 # intermediate data resolver
 resolveUserLinksForPlannedLesson = create1NGetter(
-    UserPlan, foreignKeyName="plannedlesson_id"
+    UserPlanModel, foreignKeyName="plannedlesson_id"
 )  #
 resolveGroupLinksForPlannedLesson = create1NGetter(
-    GroupPlan, foreignKeyName="plannedlesson_id"
+    GroupPlanModel, foreignKeyName="plannedlesson_id"
 )
 resolveFacilityLinksForPlannedLesson = create1NGetter(
-    FacilityPlan, foreignKeyName="plannedlesson_id"
+    FacilityPlanModel, foreignKeyName="plannedlesson_id"
 )
 # resolveEventLinksForPlannedLesson = create1NGetter(Eve)
 

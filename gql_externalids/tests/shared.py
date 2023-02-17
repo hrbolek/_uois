@@ -11,7 +11,7 @@ import pytest
 
 from gql_externalids.DBDefinitions import BaseModel
 from gql_externalids.DBDefinitions import ExternalIdTypeModel, ExternalIdModel
-from gql_externalids.DBDefinitions import UserModel
+
 
 async def prepare_in_memory_sqllite():
     from sqlalchemy.ext.asyncio import create_async_engine

@@ -10,7 +10,6 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_granting.DBDefinitions import BaseModel
-from gql_granting.DBDefinitions import UserModel, GroupModel
 from gql_granting.DBDefinitions import ProgramModel, ProgramLevelTypeModel, ProgramFormTypeModel, ProgramLanguageTypeModel, ProgramTitleTypeModel, ProgramTypeModel
 from gql_granting.DBDefinitions import SemesterModel, SubjectModel, TopicModel, LessonModel, LessonTypeModel
 from gql_granting.DBDefinitions import ClassificationLevelModel, ClassificationModel, ClassificationTypeModel
