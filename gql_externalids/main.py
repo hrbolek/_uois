@@ -104,10 +104,10 @@ class MyGraphQL(GraphQL):
 
 ## Definice GraphQL typu (pomoci strawberry https://strawberry.rocks/)
 ## Strawberry zvoleno kvuli moznosti mit federovane GraphQL API (https://strawberry.rocks/docs/guides/federation, https://www.apollographql.com/docs/federation/)
-from gql_externalids.GraphTypeDefinitions import Schema
+from gql_externalids.GraphTypeDefinitions import schema
 
 ## ASGI app, kterou "moutneme"
-graphql_app = MyGraphQL(Schema, graphiql=True, allow_queries_via_get=True)
+graphql_app = MyGraphQL(schema, graphiql=True, allow_queries_via_get=True)
 
 app = FastAPI()
 app.mount("/gql", graphql_app)

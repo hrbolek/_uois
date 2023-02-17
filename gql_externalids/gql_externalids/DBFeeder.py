@@ -1,9 +1,5 @@
-from doctest import master
 from functools import cache
 from gql_externalids.DBDefinitions import BaseModel, ExternalIdTypeModel
-
-from functools import cache
-
 from sqlalchemy.future import select
 
 def get_demodata():

@@ -14,14 +14,8 @@ async def withInfo(info):
         finally:
             pass
 
-
-def AsyncSessionFromInfo(info):
-    print(
-        "obsolte function used AsyncSessionFromInfo, use withInfo context manager instead"
-    )
-    return info.context["session"]
-
-
+def getLoaders(info):
+    return info.context['all']
 ###########################################################################################################################
 #
 # zde definujte sve GQL modely
@@ -46,10 +40,11 @@ from gql_externalids.GraphResolvers import (
 class ExternalIdTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveExternalTypeById(session, id)
+        loader = getLoaders(info=info).externaltypeids
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
@@ -67,10 +62,12 @@ class ExternalIdTypeGQLModel:
 class ExternalIdGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveExternalIdById(session, id)
+        loader = getLoaders(info=info).externalids
+        print(loader, flush=True)
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
@@ -86,18 +83,15 @@ class ExternalIdGQLModel:
 
     @strawberryA.field(description="""Type of id""")
     async def id_type(self, info: strawberryA.types.Info) -> "ExternalIdTypeGQLModel":
-        async with withInfo(info) as session:
-            result = await resolveExternalTypeById(session, self.typeid_id)
-            return result
+        result = await ExternalIdTypeGQLModel.resolve_reference(info=info, id=self.typeid_id)
+        return result
 
     @strawberryA.field(description="""Type name of id""")
     async def type_name(self, info: strawberryA.types.Info) -> Union[str, None]:
-        async with withInfo(info) as session:
-            result = await resolveExternalTypeById(session, self.typeid_id)
-            if not result is None:
-                result = result.name
-            return result
-
+        result = await ExternalIdTypeGQLModel.resolve_reference(info=info, id=self.typeid_id)
+        if not result is None:
+            result = result.name
+        return result
 
 ###########################################################################################################################
 #
@@ -125,11 +119,10 @@ class UserGQLModel:
     async def external_ids(
         self, info: strawberryA.types.Info
     ) -> List["ExternalIdGQLModel"]:
-        async with withInfo(info) as session:
-            result = await resolveExternalIds(session, self.id)
-            result = list(result)
-            print("UserGQL.external_ids", result, flush=True)
-            return result
+
+        loader = getLoaders(info=info).externalids_inner_id
+        result = await loader.load(self.id)    
+        return result
 
 
 @strawberryA.federation.type(extend=True, keys=["id"])
@@ -145,13 +138,11 @@ class GroupGQLModel:
     async def external_ids(
         self, info: strawberryA.types.Info
     ) -> List["ExternalIdGQLModel"]:
-        async with withInfo(info) as session:
-            result = await resolveExternalIds(session, self.id)
-            return result
-
+        loader = getLoaders(info=info).externalids_inner_id
+        result = await loader.load(id)    
+        return result
 
 from gql_externalids.GraphResolvers import resolveAssignExternalId
-
 
 @strawberryA.federation.type(extend=True, keys=["id"])
 class GroupEditorGQLModel:  # GroupGQLEditorModel
@@ -208,13 +199,13 @@ from gql_externalids.GraphResolvers import (
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
-    @strawberryA.field(description="""Returns all types for external ids""")
-    async def external_id_page(
-        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
-    ) -> List[ExternalIdTypeGQLModel]:
-        async with withInfo(info) as session:
-            result = await resolveExternalTypePaged(session, skip, limit)
-            return result
+    # @strawberryA.field(description="""Returns all types for external ids""")
+    # async def external_id_page(
+    #     self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
+    # ) -> List[ExternalIdTypeGQLModel]:
+    #     async with withInfo(info) as session:
+    #         result = await resolveExternalTypePaged(session, skip, limit)
+    #         return result
 
     @strawberryA.field(
         description="""Returns inner id based on external id type and external id value"""
@@ -256,6 +247,6 @@ class Query:
 #
 ###########################################################################################################################
 
-Schema = strawberryA.federation.Schema(
+schema = strawberryA.federation.Schema(
     Query, types=(UserGQLModel, GroupGQLModel, UserEditorGQLModel, GroupEditorGQLModel)
 )
