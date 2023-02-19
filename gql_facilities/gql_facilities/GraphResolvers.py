@@ -22,8 +22,7 @@ from gql_facilities.DBDefinitions import BaseModel
 #
 ###########################################################################################################################
 
-from gql_facilities.DBDefinitions import FacilityTypeModel, FacilityModel
-from gql_facilities.DBDefinitions import GroupModel
+from gql_facilities.DBDefinitions import FacilityTypeModel, FacilityModel, EventFacilityModel, EventFacilityStateType
 
 ###########################################################################################################################
 #
@@ -40,3 +39,7 @@ resolveFacilitiesByFacility = create1NGetter(
 )
 
 resolveFacityTypeById = createEntityByIdGetter(FacilityTypeModel)
+
+facilityPageStatement = select(FacilityModel)
+facilityTypePageStatement = select(FacilityTypeModel)
+facilityStateTypePageStatement = select(EventFacilityStateType)

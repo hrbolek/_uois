@@ -21,6 +21,8 @@ def AsyncSessionFromInfo(info):
     )
     return info.context["session"]
 
+def getLoaders(info):
+    return info.context['all']
 
 ###########################################################################################################################
 #
@@ -59,13 +61,6 @@ from gql_forms.GraphResolvers import (
     resolverUpdateItem,
     resolveInsertItem,
 )
-from gql_forms.GraphResolvers import (
-    resolveUserById,
-    resolveUserAll,
-    resolverUpdateUser,
-    resolveInsertUser,
-)
-
 
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
@@ -88,29 +83,13 @@ class RequestGQLModel:
     Type representing a request in the system.
     This class extends the base `RequestModel` from the database and adds additional fields and methods needed for use in GraphQL.
     """
-
-    # @strawberryA.field(description="""Finds an request by their id""")
-    # async def id(self, info: strawberryA.types.Info) -> Union[str, None]:
-    #     result = self.id
-    #     #resovle will be ask
-    #     return result
-
-    # #for the name attribute
-    # @strawberryA.field(description="""Finds an request by their name""")
-    # async def name(self, info: strawberryA.types.Info) -> Union[str, None]:
-    #     result = self.name
-    #     #resovle will be ask
-    #     return result
-
-    # Add more fields here using the @strawberryA.field decorator
-    # and using resolvers from GraphResolvers.py to retrieve the data
-
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveRequestById(session, id)
+        loader = getLoaders(info).request_by_id
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""Entity primary key""")
     def id(self) -> strawberryA.ID:
@@ -120,9 +99,152 @@ class RequestGQLModel:
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="""Request's time of creation""")
-    def created_at(self) -> datetime.datetime:
-        return self.created_at
+    @strawberryA.field(description="""Request's time of last update""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+
+    @strawberryA.field(description="""Request's time of last update""")
+    def creator(self) -> UserGQLModel:
+        return UserGQLModel(id=self.createdby)
+
+    @strawberryA.field(description="""Request's time of last update""")
+    async def histories(self, info: strawberryA.types.Info) -> List["HistoryGQLModel"]:
+        loader = getLoaders(info).histories_by_request_id
+        result = await loader.load(self.id)
+        return result
+
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Entity representing a request"""
+)
+class HistoryGQLModel:
+    """
+    Type representing a request in the system.
+    This class extends the base `RequestModel` from the database and adds additional fields and methods needed for use in GraphQL.
+    """
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).history_by_id
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""History comment""")
+    def name(self) -> str:
+        return self.name
+
+    @strawberryA.field(description="""Time of last update""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+
+    @strawberryA.field(description="""Request which history belongs to""")
+    async def request(self, info: strawberryA.types.Info) -> "RequestGQLModel":
+        result = await RequestGQLModel.resolve_reference(info, self.request_id)
+        return result
+
+    @strawberryA.field(description="""History form""")
+    async def form(self, info: strawberryA.types.Info) -> "FormGQLModel":
+        result = await FormGQLModel.resolve_reference(info, self.form_id)
+        return result
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Entity representing a category of form types"""
+)
+class FormCategoryGQLModel:
+    """
+    """
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).formcategory_by_id
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Name """)
+    def name(self) -> str:
+        return self.name
+
+    @strawberryA.field(description="""Name """)
+    def name_en(self) -> str:
+        return self.name_en
+
+    @strawberryA.field(description="""Time of last update""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Entity representing a category of form types"""
+)
+class FormTypeGQLModel:
+    """
+    """
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).formtype_by_id
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Request's name (like Vacation)""")
+    def name(self) -> str:
+        return self.name
+
+    @strawberryA.field(description="""Request's name (like Vacation)""")
+    def name_en(self) -> str:
+        return self.name_en
+
+    @strawberryA.field(description="""Request's time of last update""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+
+    @strawberryA.field(description="""Request's time of last update""")
+    async def category(self, info: strawberryA.types.Info) -> "FormCategoryGQLModel":
+        result = await FormCategoryGQLModel.resolve_reference(info, self.category_id)
+        return result
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Entity representing a form"""
+)
+class FormGQLModel:
+    """
+    Type representing a request in the system.
+    This class extends the base `RequestModel` from the database and adds additional fields and methods needed for use in GraphQL.
+    """
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).form_by_id
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Request's name (like Vacation)""")
+    def name(self) -> str:
+        return self.name
+
+    @strawberryA.field(description="""Request's name (like Vacation)""")
+    def name_en(self) -> str:
+        return self.name_en
 
     @strawberryA.field(description="""Request's time of last update""")
     def lastchange(self) -> datetime.datetime:
@@ -140,15 +262,20 @@ class RequestGQLModel:
     async def sections(
         self, info: strawberryA.types.Info
     ) -> typing.List["SectionGQLModel"]:
-        async with withInfo(info) as session:
-            sections = await resolveSectionsForRequest(session, self.id)
-            return sections
+        loader = getLoaders(info).section_by_form_id
+        sections = await loader.load(self.id)
+        return sections
 
     @strawberryA.field(description="Retrieves the user who has initiated this request")
     async def creator(self, info: strawberryA.types.Info) -> "UserGQLModel":
-        async with withInfo(info) as session:
-            user = UserGQLModel(id=self.user_id)
-            return user
+        user = UserGQLModel(id=self.createdby)
+        return user
+
+    @strawberryA.field(description="Retrieves the type of form")
+    async def type(self, info: strawberryA.types.Info) -> Union["FormTypeGQLModel", None]:
+        result = await FormTypeGQLModel.resolve_reference(info, id=self.type_id)
+        return result
+
 
 
 @strawberryA.federation.type(
@@ -157,10 +284,11 @@ class RequestGQLModel:
 class SectionGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveSectionById(session, id)
+        loader = getLoaders(info).section_by_id
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""Entity primary key""")
     def id(self) -> strawberryA.ID:
@@ -169,10 +297,6 @@ class SectionGQLModel:
     @strawberryA.field(description="""Section's name""")
     def name(self) -> str:
         return self.name
-
-    @strawberryA.field(description="""Section's time of creation""")
-    def create_at(self) -> datetime.datetime:
-        return self.create_at
 
     @strawberryA.field(description="""Section's time of last update""")
     def lastchange(self) -> datetime.datetime:
@@ -184,16 +308,14 @@ class SectionGQLModel:
 
     @strawberryA.field(description="Retrieves the parts related to this section")
     async def parts(self, info: strawberryA.types.Info) -> typing.List["PartGQLModel"]:
-        async with withInfo(info) as session:
-            parts = await resolvePartsForSection(session, self.id)
-            return parts
+        loader = getLoaders(info).parts_by_section_id
+        result = await loader.load(self.id)
+        return result
 
     @strawberryA.field(description="Retrieves the parts related to this section")
-    async def request(self, info: strawberryA.types.Info) -> "RequestGQLModel":
-        async with withInfo(info) as session:
-            parts = await resolveRequestById(session, self.request_id)
-            return parts
-
+    async def form(self, info: strawberryA.types.Info) -> "FormGQLModel":
+        result = await FormGQLModel.resolve_reference(info, self.form_id)
+        return result
 
 @strawberryA.federation.type(
     keys=["id"], description="""Type representing a part in the workflow"""
@@ -201,10 +323,11 @@ class SectionGQLModel:
 class PartGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolvePartById(session, id)
+        loader = getLoaders(info).part_by_id
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""Entity primary key""")
     def id(self) -> strawberryA.ID:
@@ -213,10 +336,6 @@ class PartGQLModel:
     @strawberryA.field(description="""Part's name (part for Student)""")
     def name(self) -> str:
         return self.name
-
-    @strawberryA.field(description="""Part's time of creation""")
-    def created_at(self) -> datetime.datetime:
-        return self.created_at
 
     @strawberryA.field(description="""Part's time of last update""")
     def lastchange(self) -> datetime.datetime:
@@ -227,17 +346,15 @@ class PartGQLModel:
         return self.order
 
     @strawberryA.field(description="Retrieves the items related to this part")
-    async def items(self, info: strawberryA.types.Info) -> typing.List["ItemGQLModel"]:
-        async with withInfo(info) as session:
-            items = await resolveItemsForPart(session, self.id)
-            return items
+    async def section(self, info: strawberryA.types.Info) -> "SectionGQLModel":
+        result = await SectionGQLModel.resolve_reference(info, self.section_id)
+        return result
 
     @strawberryA.field(description="Retrieves the items related to this part")
-    async def section(self, info: strawberryA.types.Info) -> "SectionGQLModel":
-        async with withInfo(info) as session:
-            items = await resolveSectionById(session, self.section_id)
-            return items
-
+    async def items(self, info: strawberryA.types.Info) -> typing.List["ItemGQLModel"]:
+        loader = getLoaders(info).items_by_part_id
+        result = await loader.load(self.id)
+        return result
 
 @strawberryA.federation.type(
     keys=["id"], description="""Type representing an item in the workflow"""
@@ -245,10 +362,11 @@ class PartGQLModel:
 class ItemGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveItemById(session, id)
+        loader = getLoaders(info).item_by_id
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""Entity primary key""")
     def id(self) -> strawberryA.ID:
@@ -258,9 +376,9 @@ class ItemGQLModel:
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="""Item's time of creation""")
-    def created_at(self) -> datetime.datetime:
-        return self.created_at
+    @strawberryA.field(description="""Item's name (like Name)""")
+    def order(self) -> str:
+        return self.order
 
     @strawberryA.field(description="""Item's time of last update""")
     def lastchange(self) -> datetime.datetime:
@@ -272,9 +390,59 @@ class ItemGQLModel:
 
     @strawberryA.field(description="Retrieves the items related to this part")
     async def part(self, info: strawberryA.types.Info) -> "PartGQLModel":
-        async with withInfo(info) as session:
-            items = await resolvePartById(session, self.section_id)
-            return items
+        result = await PartGQLModel.resolve_reference(info, self.part_id)
+        return result
+
+    @strawberryA.field(description="Retrieves the items related to this part")
+    async def type(self, info: strawberryA.types.Info) -> "ItemTypeGQLModel":
+        result = await ItemTypeGQLModel.resolve_reference(info, self.type_id)
+        return result
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Type representing an item in the workflow"""
+)
+class ItemTypeGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).item_type_by_id
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Type name""")
+    def name(self) -> str:
+        return self.name
+
+    @strawberryA.field(description="""Type category""")
+    async def category(self, info: strawberryA.types.Info) -> "ItemCategoryGQLModel":
+        result = await ItemCategoryGQLModel(info, self.category_id)
+        return result
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Type representing an item in the workflow"""
+)
+class ItemCategoryGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).item_category_by_id
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Item's name (like Name)""")
+    def name(self) -> str:
+        return self.name
+
 
 
 ###########################################################################################################################
@@ -283,6 +451,8 @@ class ItemGQLModel:
 #
 ###########################################################################################################################
 from gql_forms.GraphResolvers import resolveRequestByUser
+from gql_forms.GraphResolvers import requestselect, formtypeselect, formcategorySelect
+from gql_forms.GraphResolvers import itemtypeselect, itemcategoryselect
 
 
 @strawberryA.type(description="""Type for query root""")
@@ -298,27 +468,24 @@ class Query:
     async def request_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union[RequestGQLModel, None]:
-        async with withInfo(info) as session:
-            result = await resolveRequestById(session, id)
-            # u r getting the database sections , u srxtracting calling the function, returning the data from the table, able to extract , ask for it by Id there will be call the record
-            return result
+        result = await RequestGQLModel.resolve_reference(info, id)
+        return result
 
     @strawberryA.field(description="Retrieves all requests")
     async def requests_page(
-        self, info: strawberryA.types.Info
+        self, info: strawberryA.types.Info, skip: int=0, limit: int=10
     ) -> List[RequestGQLModel]:
-        async with withInfo(info) as session:
-            requests = await resolveRequestAll(session)
-            return requests
+        loader = getLoaders(info).request_by_id
+        result = await loader.execute_select(requestselect.offset(skip).limit(limit))
+        return result
 
     @strawberryA.field(description="""Finds an request by their id""")
-    async def request_by_creator(
+    async def requests_by_creator(
         self, info: strawberryA.types.Info, id: strawberryA.ID
-    ) -> Union[RequestGQLModel, None]:
-        async with withInfo(info) as session:
-            result = await resolveRequestByUser(session, id)
-            # u r getting the database sections , u srxtracting calling the function, returning the data from the table, able to extract , ask for it by Id there will be call the record
-            return result
+    ) -> List[RequestGQLModel]:
+        loader = getLoaders(info).requests_by_createdby
+        result = await loader.load(id)
+        return result
 
     @strawberryA.field(description="Retrieves requests by three letters in their name")
     async def requests_by_letters(
@@ -327,6 +494,78 @@ class Query:
         async with withInfo(info) as session:
             requests = await resolveRequestsByThreeLetters(session, letters=letters)
             return requests
+
+    @strawberryA.field(description="Retrieves the form category")
+    async def form_category_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[FormCategoryGQLModel, None]:
+        result = await FormCategoryGQLModel.resolve_reference(info=info, id=id)
+        return result
+
+    @strawberryA.field(description="Retrieves the form category")
+    async def form_category_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
+    ) -> List[FormCategoryGQLModel]:
+        loader = getLoaders(info).formcategory_by_id
+        stmt = formcategorySelect.offset(skip).limit(limit)
+        result = await loader.execute_select(stmt)
+        return result
+
+    @strawberryA.field(description="Retrieves the form type")
+    async def form_type_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[FormTypeGQLModel, None]:
+        result = await FormTypeGQLModel.resolve_reference(info=info, id=id)
+        return result
+
+    @strawberryA.field(description="Retrieves the form type")
+    async def form_type_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
+    ) -> List[FormTypeGQLModel]:
+        loader = getLoaders(info).formtype_by_id
+        stmt = formtypeselect.offset(skip).limit(limit)
+        result = await loader.execute_select(stmt)
+        return result
+
+    @strawberryA.field(description="Retrieves the item categories")
+    async def item_category_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
+    ) -> List[ItemCategoryGQLModel]:
+        loader = getLoaders(info).item_category_by_id
+        stmt = itemcategoryselect.offset(skip).limit(limit)
+        result = await loader.execute_select(stmt)
+        return result
+
+    @strawberryA.field(description="Retrieves the item category")
+    async def item_category_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[ItemCategoryGQLModel, None]:
+        result = await ItemCategoryGQLModel.resolve_reference(info=info, id=id)
+        return result
+
+    @strawberryA.field(description="Retrieves the item types")
+    async def item_type_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
+    ) -> List[ItemCategoryGQLModel]:
+        loader = getLoaders(info).item_type_by_id
+        stmt = itemtypeselect.offset(skip).limit(limit)
+        result = await loader.execute_select(stmt)
+        return result
+
+
+    @strawberryA.field(description="Retrieves the item type")
+    async def item_type_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[ItemTypeGQLModel, None]:
+        result = await ItemTypeGQLModel.resolve_reference(info=info, id=id)
+        return result
+
+    @strawberryA.field(description="Retrieves the item type")
+    async def item_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[ItemGQLModel, None]:
+        result = await ItemGQLModel.resolve_reference(info=info, id=id)
+        return result
 
 
 ###########################################################################################################################

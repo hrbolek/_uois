@@ -35,13 +35,24 @@ from gql_forms.DBDefinitions import (
     RequestModel,
     SectionModel,
     PartModel,
+    
     ItemModel,
-    UserModel,
+    ItemTypeModel,
+    ItemCategoryModel,
+
+    FormCategoryModel,
+    FormTypeModel
 )
 
 
 ## request resolvers,
 # it will use for form the table if y know the id , u can extract it from the database
+requestselect = select(RequestModel)
+formtypeselect = select(FormTypeModel)
+formcategorySelect = select(FormCategoryModel)
+
+itemcategoryselect = select(ItemCategoryModel)
+itemtypeselect = select(ItemTypeModel)
 
 resolveRequestById = createEntityByIdGetter(RequestModel)
 # try to get from the database ..of request u can gert multiblae request
@@ -97,9 +108,3 @@ resolveItemAll = createEntityGetter(ItemModel)
 resolverUpdateItem = createUpdateResolver(ItemModel)
 resolveInsertItem = createInsertResolver(ItemModel)
 
-## user resolvers
-resolveUserById = createEntityByIdGetter(UserModel)
-resolveUserAll = createEntityGetter(UserModel)
-
-resolverUpdateUser = createUpdateResolver(UserModel)
-resolveInsertUser = createInsertResolver(UserModel)

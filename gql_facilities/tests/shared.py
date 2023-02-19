@@ -29,51 +29,7 @@ async def prepare_in_memory_sqllite():
 
     return async_session_maker
 
-
-from gql_facilities.DBFeeder import determineFacilityTypes, determineFacilityStateType
-
-
-def get_demodata():
-
-    facilityTypes = determineFacilityTypes()
-    facilityStateTypes = determineFacilityStateType()
-
-    result = {
-        "facilityeventstatetypes": [*facilityStateTypes],
-        "facilitytypes": [*facilityTypes],
-        "facilities": [
-            {'id': "66275ffa-a7b3-11ed-b76e-0242ac110002" , 'name': '', 'name_en': ''},
-            {'id': "662763a6-a7b3-11ed-b76e-0242ac110002" , 'name': '', 'name_en': ''},
-            {'id': "66276464-a7b3-11ed-b76e-0242ac110002" , 'name': '', 'name_en': ''},
-            {'id': "662764dc-a7b3-11ed-b76e-0242ac110002" , 'name': '', 'name_en': ''},
-            {'id': "6627654a-a7b3-11ed-b76e-0242ac110002" , 'name': '', 'name_en': ''},
-            {'id': "662765ae-a7b3-11ed-b76e-0242ac110002" , 'name': '', 'name_en': ''},
-            {'id': "66276608-a7b3-11ed-b76e-0242ac110002" , 'name': '', 'name_en': ''},
-            {'id': "6627666c-a7b3-11ed-b76e-0242ac110002" , 'name': '', 'name_en': ''},
-            {'id': "662766c6-a7b3-11ed-b76e-0242ac110002" , 'name': '', 'name_en': ''},
-            {'id': "66276720-a7b3-11ed-b76e-0242ac110002" , 'name': '', 'name_en': ''},            
-        ],
-        "events": [
-            {'id': "892965ac-a7b3-11ed-b76e-0242ac110002" },
-            {'id': "8929694e-a7b3-11ed-b76e-0242ac110002" },
-            {'id': "89296a0c-a7b3-11ed-b76e-0242ac110002" },
-            {'id': "89296a8e-a7b3-11ed-b76e-0242ac110002" },
-            {'id': "89296afc-a7b3-11ed-b76e-0242ac110002" },
-        ],
-        "facilities_events": [
-            {'id': "a236c724-a7b3-11ed-b76e-0242ac110002" },
-            {'id': "a236cada-a7b3-11ed-b76e-0242ac110002" },
-            {'id': "a236cb98-a7b3-11ed-b76e-0242ac110002" },
-            {'id': "a236cc1a-a7b3-11ed-b76e-0242ac110002" },
-            {'id': "a236cc7e-a7b3-11ed-b76e-0242ac110002" },
-            {'id': "a236ccec-a7b3-11ed-b76e-0242ac110002" },
-            {'id': "a236cd50-a7b3-11ed-b76e-0242ac110002" },
-            {'id': "a236cdb4-a7b3-11ed-b76e-0242ac110002" },
-            {'id': "a236ce18-a7b3-11ed-b76e-0242ac110002" },
-            {'id': "a236ce7c-a7b3-11ed-b76e-0242ac110002" },        ]
-    }
-    return result
-
+from gql_facilities.DBFeeder import get_demodata
 
 async def prepare_demodata(async_session_maker):
     data = get_demodata()
@@ -83,7 +39,6 @@ async def prepare_demodata(async_session_maker):
     await ImportModels(
         async_session_maker,
         [
-            UserModel, GroupModel, EventModel,
             FacilityModel, FacilityTypeModel,
             EventFacilityModel, EventFacilityStateType,            
         ],

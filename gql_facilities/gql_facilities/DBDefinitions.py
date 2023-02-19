@@ -58,6 +58,7 @@ class FacilityModel(BaseModel):
 
     id = UUIDColumn()
     name = Column(String)
+    name_en = Column(String)
     label = Column(String)
     address = Column(String)
     valid = Column(Boolean, default=True)
@@ -86,7 +87,7 @@ class FacilityTypeModel(BaseModel):
     name = Column(String)
     name_en = Column(String)
 
-    facilities = relationship("FacilityModel", back_populates="facilitytype")
+    #facilities = relationship("FacilityModel", back_populates="facilitytype")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
@@ -97,7 +98,7 @@ class EventFacilityModel(BaseModel):
     __tablename__ = "facilities_events"
 
     id = UUIDColumn()
-    event_id = Column(ForeignKey("events.id"), index=True)
+    event_id = UUIDFKey(nullable=True)#Column(ForeignKey("events.id"), index=True)
     facility_id = Column(ForeignKey("facilities.id"), index=True)
     state_id = Column(ForeignKey("facilityeventstatetypes.id"), index=True)
 
@@ -121,17 +122,17 @@ class EventFacilityStateType(BaseModel):
     createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
-class FacilityManagement(BaseModel):
-    __tablename__ = "facilitymanagementgroups"
+# class FacilityManagement(BaseModel):
+#     __tablename__ = "facilitymanagementgroups"
 
-    id = UUIDColumn()
-    facility_id = Column(ForeignKey("facilities.id"), index=True)
-    group_id = Column(ForeignKey("groups.id"), index=True)
+#     id = UUIDColumn()
+#     facility_id = Column(ForeignKey("facilities.id"), index=True)
+#     group_id = UUIDFKey(nullable=False)#Column(ForeignKey("groups.id"), index=True)
 
-    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+#     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+#     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+#     createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+#     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 ###########################################################################################################################
 

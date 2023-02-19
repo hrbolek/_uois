@@ -11,7 +11,8 @@ import pytest
 
 from gql_forms.DBDefinitions import BaseModel
 from gql_forms.DBDefinitions import FormModel, FormTypeModel, FormCategoryModel
-from gql_forms.DBDefinitions import SectionModel, PartModel, ItemModel
+from gql_forms.DBDefinitions import SectionModel, PartModel
+from gql_forms.DBDefinitions import ItemModel, ItemTypeModel, ItemCategoryModel
 from gql_forms.DBDefinitions import RequestModel, HistoryModel
 
 async def prepare_in_memory_sqllite():
@@ -40,10 +41,10 @@ async def prepare_demodata(async_session_maker):
     await ImportModels(
         async_session_maker,
         [
-            UserModel,
             FormModel, FormTypeModel, FormCategoryModel,
-            SectionModel, PartModel, ItemModel,
-            RequestModel, HistoryModel        
+            SectionModel, PartModel, 
+            ItemModel, ItemTypeModel, ItemCategoryModel,
+            RequestModel, HistoryModel
         ],
         data,
     )

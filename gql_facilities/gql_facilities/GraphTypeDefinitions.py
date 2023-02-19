@@ -15,17 +15,10 @@ async def withInfo(info):
         finally:
             pass
 
-
 ##TODO relations
 
-
-def AsyncSessionFromInfo(info):
-    print(
-        "obsolte function used AsyncSessionFromInfo, use withInfo context manager instead"
-    )
-    return info.context["session"]
-
-
+def getLoaders(info):
+    return info.context['all']
 ###########################################################################################################################
 #
 # zde definujte sve GQL modely
@@ -38,6 +31,15 @@ def AsyncSessionFromInfo(info):
 #
 
 from gql_facilities.GraphResolvers import resolveFacilitiesByGroup
+
+@strawberryA.federation.type(extend=True, keys=["id"])
+class EventGQLModel:
+
+    id: strawberryA.ID = strawberryA.federation.field(external=True)
+
+    @classmethod
+    def resolve_reference(cls, id: strawberryA.ID):
+        return EventGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
 
 
 @strawberryA.federation.type(extend=True, keys=["id"])
@@ -59,9 +61,9 @@ class GroupGQLModel:
     async def facilities(
         self, info: strawberryA.types.Info
     ) -> List["FacilityGQLModel"]:
-        async with withInfo(info) as session:
-            result = resolveFacilitiesByGroup(session, self.id)
-            return result
+        loader = getLoaders(info).facilities_by_group_id
+        result = await loader.load(self.id)
+        return result
 
 
 import datetime
@@ -79,10 +81,15 @@ from gql_facilities.GraphResolvers import (
 class FacilityGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveFacilityById(session, id)
+        loader = getLoaders(info).facility_by_id
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
+
+    # @classmethod
+    # async def resolve_for_event(cls, info: strawberryA.types.Info, event_id: strawberryA.ID):
+    #     pass
 
     # id
     @strawberryA.field(description="""primary key/facility id""")
@@ -94,13 +101,17 @@ class FacilityGQLModel:
     def name(self) -> str:
         return self.name
 
+    @strawberryA.field(description="""Facility name""")
+    def name_en(self) -> str:
+        return self.name_en
+
     @strawberryA.field(description="""Facility full name""")
-    def label(self) -> str:
+    def label(self) -> Union[str, None]:
         return self.label
 
     # address
     @strawberryA.field(description="""Facility address""")
-    def address(self) -> str:
+    def address(self) -> Union[str, None]:
         return self.address
 
     # valid
@@ -117,18 +128,18 @@ class FacilityGQLModel:
 
     # capacity
     @strawberryA.field(description="""Facility's name""")
-    def capacity(self) -> int:
+    def capacity(self) -> Union[int, None]:
         return self.capacity
 
     # manager_id
 
     # address
     @strawberryA.field(description="""Facility geometry (SVG)""")
-    def geometry(self) -> str:
+    def geometry(self) -> Union[str, None]:
         return self.geometry
 
     @strawberryA.field(description="""Facility geo address""")
-    def geolocation(self) -> str:
+    def geolocation(self) -> Union[str, None]:
         return self.geolocation
 
     @strawberryA.field(description="""Facility timestamp""")
@@ -137,34 +148,37 @@ class FacilityGQLModel:
 
     @strawberryA.field(description="""Facility address""")
     async def type(self, info: strawberryA.types.Info) -> "FacilityTypeGQLModel":
-        async with withInfo(info) as session:
-            result = await resolveFacityTypeById(session, self.facilitytype_id)
-            return result
+        result = await FacilityTypeGQLModel.resolve_reference(info=info, id=self.facilitytype_id)
+        return result
 
-    @strawberryA.field(description="""Facility address""")
-    async def state(self, info: strawberryA.types.Info) -> "FacilityStateTypeGQLModel":
-        async with withInfo(info) as session:
-            result = await resolveFacityTypeById(session, self.facilitytype_id)
-            return result
+    @strawberryA.field(description="""Intermediate entity linking to event and facility""")
+    async def event_states(self, info: strawberryA.types.Info) -> List["FacilityEventGQLModel"]:
+        loader = getLoaders(info).event_facility_by_facility_id
+        result = await loader.load(self.id)
+        return result
 
     @strawberryA.field(description="""Facility above this""")
-    async def master_facility(self, info: strawberryA.types.Info) -> "FacilityGQLModel":
-        async with withInfo(info) as session:
-            result = await resolveFacilityById(session, self.facilitytype_id)
-            return result
+    async def master_facility(self, info: strawberryA.types.Info) -> Union["FacilityGQLModel", None]:
+        if self.master_facility_id is None:
+            return None
+        result = await FacilityGQLModel.resolve_reference(info=info, id=self.master_facility_id)
+        return result
 
     @strawberryA.field(description="""Facilities inside facility""")
     async def sub_facilities(
         self, info: strawberryA.types.Info
     ) -> List["FacilityGQLModel"]:
-        async with withInfo(info) as session:
-            result = await resolveFacilitiesByFacility(session, self.facilitytype_id)
-            return result
+        loader = getLoaders(info).facilities_by_master_id
+        result = await loader.load(self.id)
+        return result
 
     @strawberryA.field(description="""Facility address""")
     async def group(self, info: strawberryA.types.Info) -> Union["GroupGQLModel", None]:
+        if self.group_id is None:
+            return None
         return GroupGQLModel(id=self.group_id)
 
+from gql_facilities.GraphResolvers import facilityTypePageStatement
 
 @strawberryA.federation.type(
     keys=["id"], description="""Entity representing a facility type"""
@@ -172,11 +186,12 @@ class FacilityGQLModel:
 class FacilityTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveFacilityById(session, id)
+        loader = getLoaders(info).facilitytype_by_id
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
-
+        return result
+    
     # id
     @strawberryA.field(description="""primary key/facility id""")
     def id(self) -> strawberryA.ID:
@@ -187,16 +202,54 @@ class FacilityTypeGQLModel:
     def name(self) -> str:
         return self.name
 
+    @strawberryA.field(description="""Facility name""")
+    def name_en(self) -> str:
+        return self.name_en
+
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Entity representing the link between facility and event"""
+)
+class FacilityEventGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).event_facility_by_id
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""primary key/facility id""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""the event""")
+    def event(self) -> "EventGQLModel":
+        return EventGQLModel(id=self.event_id)
+
+    @strawberryA.field(description="""the facility""")
+    async def facility(self, info: strawberryA.types.Info) -> "FacilityGQLModel":
+        #print()
+        result = await FacilityGQLModel.resolve_reference(info=info, id=self.facility_id)
+        return result
+
+    @strawberryA.field(description="""the facility""")
+    async def state(self, info: strawberryA.types.Info) -> "FacilityStateTypeGQLModel":
+        result = await FacilityStateTypeGQLModel.resolve_reference(info=info, id=self.state_id)
+        return result
+
+
 @strawberryA.federation.type(
     keys=["id"], description="""Entity representing a facility type"""
 )
 class FacilityStateTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveFacilityStateTypeById(session, id)
+        loader = getLoaders(info).event_facility_state_by_id
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     # id
     @strawberryA.field(description="""primary key/facility id""")
@@ -216,25 +269,57 @@ class FacilityStateTypeGQLModel:
 # zde definujte svuj Query model
 #
 ###########################################################################################################################
-from gql_facilities.GraphResolvers import resolveFacilityById
+from gql_facilities.GraphResolvers import resolveFacilityById, facilityStateTypePageStatement, facilityPageStatement
 
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
     @strawberryA.field(description="""Finds an workflow by their id""")
-    async def say_hello(
+    async def say_hello_facility(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union[str, None]:
         result = f"Hello {id}"
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds an facility their id""")
     async def facility_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
-    ) -> FacilityGQLModel:
-        async with withInfo(info) as session:
-            result = await resolveFacilityById(session, id)
-            return result
+    ) -> Union[FacilityGQLModel, None]:
+        result = await FacilityGQLModel.resolve_reference(info=info, id=id)
+        return result
+
+    @strawberryA.field(description="""Finds an facility their id""")
+    async def facility_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
+    ) -> List[FacilityGQLModel]:
+        loader = getLoaders(info).facility_by_id
+        stmt = facilityPageStatement.offset(skip).limit(limit)
+        result = await loader.execute_select(stmt)
+        #result = await FacilityGQLModel.resolve_reference(info=info, id=id)
+        return result
+
+    @strawberryA.field(description="""Finds an workflow by their id""")
+    async def facility_type_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[FacilityTypeGQLModel, None]:
+        result = await FacilityTypeGQLModel.resolve_reference(info=info, id=id)
+        return result
+
+    @strawberryA.field(description="""Returns all facility types""")
+    async def facility_type_page(
+        self, info: strawberryA.types.Info
+    ) -> List[FacilityTypeGQLModel]:
+        loader = getLoaders(info).facilitytype_by_id
+        result = await loader.execute_select(facilityTypePageStatement)
+        return result
+
+    @strawberryA.field(description="""Returns all facility event states""")
+    async def facility_event_state_type_page(
+        self, info: strawberryA.types.Info
+    ) -> List[FacilityStateTypeGQLModel]:
+        loader = getLoaders(info).event_facility_state_by_id
+        result = await loader.execute_select(facilityStateTypePageStatement)
+        return result
 
 
 ###########################################################################################################################
