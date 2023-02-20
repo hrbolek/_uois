@@ -55,8 +55,30 @@ class ProgramGroupModel(BaseModel):
     ac_id = (
         UUIDColumn()
     )  # can be a program, also can be a subject, this row can be in a table only once per program and once per subject
-    group_id = Column(ForeignKey("groups.id"))
+    group_id = UUIDFKey()#Column(ForeignKey("groups.id"))
 
+class ProgramStudents(BaseModel):
+    __tablename__ = "acprograms_student_histories"
+    id = UUIDColumn()
+    name = Column(String) # note
+    student_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    program_student_id = UUIDFKey(ForeignKey=ForeignKey("acprograms_students.id"))
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+
+class ProgramStudents(BaseModel):
+    __tablename__ = "acprograms_students"
+    id = UUIDColumn()
+    student_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    valid = Column(Boolean, default=lambda item: True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class ProgramFormTypeModel(BaseModel):
     """It encapsulates a study at university, like Cyber defence.
@@ -184,7 +206,7 @@ class ProgramModel(BaseModel):
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class SubjectModel(BaseModel):
     """Could be a Mathematics.
@@ -204,7 +226,7 @@ class SubjectModel(BaseModel):
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     # language_id = Column(ForeignKey('plan_subject_languages.id'))
     # program = relationship('StudyProgramModel', back_populates='subjects')
@@ -225,6 +247,7 @@ class ClassificationModel(BaseModel):
     id = UUIDColumn()
     order = Column(Integer) #
 
+    semester_id = Column(ForeignKey("acsemesters.id"), index=True)
     user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
     classificationtype_id = Column(ForeignKey("acclassificationtypes.id"), index=True)
     classificationlevel_id = Column(ForeignKey("acclassificationlevels.id"), index=True)
@@ -232,7 +255,7 @@ class ClassificationModel(BaseModel):
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class ClassificationLevelModel(BaseModel):
     """Holds a particular classification level (A, B, C, ...).
@@ -278,7 +301,7 @@ class SemesterModel(BaseModel):
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     # subject = relationship('SubjectModel', back_populates='semesters')
     # classifications = relationship('ClassificationModel', back_populates='classificationsemesters')
@@ -297,7 +320,7 @@ class ClassificationTypeModel(BaseModel):
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 ##############################################
@@ -315,7 +338,7 @@ class TopicModel(BaseModel):
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     # studysemesters = relationship('SemesterModel', back_populates='themes')
     # items = relationship('StudyThemeItemModel', back_populates='theme')
@@ -336,7 +359,7 @@ class LessonModel(BaseModel):
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     # type = relationship('ThemeTypeModel', back_populates='items')
     # theme = relationship('StudyThemeModel', back_populates='items')
@@ -352,7 +375,7 @@ class LessonTypeModel(BaseModel):
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     # lectures, excersise, laboratory, ...
 
     # items = relationship('StudyThemeItemModel', back_populates='type')

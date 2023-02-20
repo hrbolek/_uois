@@ -39,7 +39,7 @@ from gql_granting.DBDefinitions import (
     LessonTypeModel,
     TopicModel,
 )
-from gql_granting.DBDefinitions import GroupModel, ProgramGroupModel
+from gql_granting.DBDefinitions import ProgramGroupModel
 
 ###########################################################################################################################
 #
@@ -79,6 +79,10 @@ async def resolveGroupIdsForProgram(session, id):
 
 resolveProgramById = createEntityByIdGetter(ProgramModel)
 resolveProgramPage = createEntityGetter(ProgramModel)
+
+programSelect = select(ProgramModel)
+subjectSelect = select(SubjectModel)
+classificationTypeSelect = select(ClassificationTypeModel)
 
 resolveLanguageTypeById = createEntityByIdGetter(ProgramLanguageTypeModel)
 resolveLevelTypeById = createEntityByIdGetter(ProgramLevelTypeModel)

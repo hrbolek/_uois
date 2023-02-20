@@ -39,10 +39,7 @@ async def prepare_demodata(async_session_maker):
 
     await ImportModels(
         async_session_maker,
-        [
-            UserModel,
-            GroupModel,
-            
+        [           
             ProgramModel, ProgramLevelTypeModel, ProgramFormTypeModel, ProgramLanguageTypeModel, ProgramTitleTypeModel, ProgramTypeModel,
             SemesterModel, SubjectModel, TopicModel, LessonModel, LessonTypeModel,
             ClassificationLevelModel, ClassificationModel, ClassificationTypeModel        

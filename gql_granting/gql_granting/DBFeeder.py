@@ -29,31 +29,107 @@ def singleCall(asyncFunc):
 # zde definujte sva systemova data
 #
 ###########################################################################################################################
+import datetime
 
+def get_demodata():
+    result = {
+        "groups": [
+            {'id': "2766f9d4-b095-11ed-9bd8-0242ac110002" },
+        ],
+        "users": [
+            {"id": "ce250c16-b095-11ed-9bd8-0242ac110002" },
+        ],
+
+        "acprogramforms": prgforms(),
+        "acprogramlanguages": prglanguages(),
+        "acprogramlevels": prglevels(),
+        "acprogramtitles": prgtitles(),
+        "acprogramtypes": prgtypes(),
+        "acclassificationlevels": get_acclassificationlevels(),
+        "acclassificationtypes": get_acclassificationtypes(),
+        "aclessontypes": lessontypes(),
+
+        "acprogramgroups": [
+            {'id': "ce250798-b095-11ed-9bd8-0242ac110002" },
+        ],
+        "acprograms": [
+            {'id': "2766fc9a-b095-11ed-9bd8-0242ac110002",
+                "type_id": "fd4f0980-9315-11ed-9b95-0242ac110002",
+                "lastchange": datetime.datetime.now(),
+                "name": "IT Technologie", "name_en": "" },
+        ],
+        "acsubjects": [
+            {'id': "ce250a68-b095-11ed-9bd8-0242ac110002",
+                "program_id": "2766fc9a-b095-11ed-9bd8-0242ac110002",
+                "lastchange": datetime.datetime.now(),
+                "name": "Programování", "name_en": "" },
+        ],
+        "acsemesters": [
+            {'id': "ce250af4-b095-11ed-9bd8-0242ac110002",
+                "subject_id": "ce250a68-b095-11ed-9bd8-0242ac110002",
+                "classificationtype_id": "a00a0642-b095-11ed-9bd8-0242ac110002",
+                "lastchange": datetime.datetime.now(),
+                "order": 1, "credits": 24 },
+        ],
+        "actopics": [
+            {'id': "ce250b44-b095-11ed-9bd8-0242ac110002",
+                "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+                "lastchange": datetime.datetime.now(),
+                "name": "Úvod", "name_en": "", "order" : 1
+             },            
+        ],
+        "aclessons": [
+            {'id': "ce250b8a-b095-11ed-9bd8-0242ac110002",        
+                "topic_id" : "ce250b44-b095-11ed-9bd8-0242ac110002",
+                "type_id": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002",
+                "lastchange": datetime.datetime.now(),
+                "count": 1            
+             },            
+        ],
+        "acclassifications": [
+            {'id': "ce250bd0-b095-11ed-9bd8-0242ac110002", 
+                "user_id": "ce250c16-b095-11ed-9bd8-0242ac110002",
+                "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+                "classificationtype_id": "a00a0322-b095-11ed-9bd8-0242ac110002",
+                "classificationlevel_id": "5faea396-b095-11ed-9bd8-0242ac110002",
+                "lastchange": datetime.datetime.now(),
+                "order": 1,   
+                 },
+            {'id': "ce250bd1-b095-11ed-9bd8-0242ac110002", 
+                "user_id": "ce250c16-b095-11ed-9bd8-0242ac110002",
+                "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+                "classificationtype_id": "a00a0322-b095-11ed-9bd8-0242ac110002",
+                "classificationlevel_id": "5faea21a-b095-11ed-9bd8-0242ac110002",
+                "lastchange": datetime.datetime.now(),
+                "order": 2,
+                 },
+        ],
+
+    }
+
+    return result
 
 @cache
-def types1():
-    # krome id a name, lze mit i dalsi prvky, napriklad cizi klice...
-    data = [
-        {"id": "282e67ec-6d9e-11ed-a1eb-0242ac120002", "name": "typeA"},
-        {"id": "282e6e86-6d9e-11ed-a1eb-0242ac120002", "name": "typeB"},
-        {"id": "282e7002-6d9e-11ed-a1eb-0242ac120002", "name": "typeC"},
+def get_acclassificationlevels():
+    result = [
+        {'id': "5fae9dd8-b095-11ed-9bd8-0242ac110002" , 'name': 'A', 'name_en': 'A'},
+        {'id': "5faea134-b095-11ed-9bd8-0242ac110002" , 'name': 'B', 'name_en': 'B'},
+        {'id': "5faea21a-b095-11ed-9bd8-0242ac110002" , 'name': 'C', 'name_en': 'C'},
+        {'id': "5faea2d8-b095-11ed-9bd8-0242ac110002" , 'name': 'D', 'name_en': 'D'},
+        {'id': "5faea332-b095-11ed-9bd8-0242ac110002" , 'name': 'E', 'name_en': 'E'},
+        {'id': "5faea396-b095-11ed-9bd8-0242ac110002" , 'name': 'F', 'name_en': 'F'},
     ]
-    return data
-
+    return result
 
 @cache
-def types2():
-    # krome id a name, lze mit i dalsi prvky, napriklad cizi klice...
-    data = [
-        {"id": "4b883614-6d9e-11ed-a1eb-0242ac120002", "name": "typeX"},
-        {"id": "4b8838a8-6d9e-11ed-a1eb-0242ac120002", "name": "typeY"},
-        {"id": "4b883a38-6d9e-11ed-a1eb-0242ac120002", "name": "typeZ"},
+def get_acclassificationtypes():
+    result = [
+        {'id': "a00a0322-b095-11ed-9bd8-0242ac110002" , 'name': 'Z', 'name_en': ''},
+        {'id': "a00a0642-b095-11ed-9bd8-0242ac110002" , 'name': 'Z+Zk', 'name_en': ''},
+        {'id': "a00a06f6-b095-11ed-9bd8-0242ac110002" , 'name': 'Zk', 'name_en': ''},
+        {'id': "a00a076e-b095-11ed-9bd8-0242ac110002" , 'name': 'KZ', 'name_en': ''},
     ]
-    return data
-
-def get_demodata(asyncSessionMaker):
-    pass
+    return result
 
 @cache
 def prgforms():
@@ -193,6 +269,7 @@ def prgtypes():
         {
             "id": "fd4f0980-9315-11ed-9b95-0242ac110002",
             "name": "bakalářský prezenční 3 roky čeština",
+            "name_en": "bachelor present 3 years czech",
             "title_id": "d1431d9c-930e-11ed-9b95-0242ac110002",
             "form_id": "19018d2c-930e-11ed-9b95-0242ac110002",
             "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
@@ -201,6 +278,7 @@ def prgtypes():
         {
             "id": "fd4f1d4e-9315-11ed-9b95-0242ac110002",
             "name": "bakalářský kombinovaný 3 roky čeština",
+            "name_en": "bachelor combined 3 years czech",
             "title_id": "d1431d9c-930e-11ed-9b95-0242ac110002",
             "form_id": "19019704-930e-11ed-9b95-0242ac110002",
             "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
@@ -209,6 +287,7 @@ def prgtypes():
         {
             "id": "fd4f1eb6-9315-11ed-9b95-0242ac110002",
             "name": "magisterský navazující na bakalářský prezenční 2 roky čeština",
+            "name_en": "master extending bachelor present 2 years czech",
             "title_id": "d1431644-930e-11ed-9b95-0242ac110002",
             "form_id": "19018d2c-930e-11ed-9b95-0242ac110002",
             "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
@@ -217,6 +296,7 @@ def prgtypes():
         {
             "id": "fd4f1f4c-9315-11ed-9b95-0242ac110002",
             "name": "magisterský navazující na bakalářský kombinovaný 2 roky čeština",
+            "name_en": "master extending bachelor combined 2 years czech",
             "title_id": "d1431644-930e-11ed-9b95-0242ac110002",
             "form_id": "19019704-930e-11ed-9b95-0242ac110002",
             "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
@@ -225,6 +305,7 @@ def prgtypes():
         {
             "id": "fd4f1fba-9315-11ed-9b95-0242ac110002",
             "name": "doktorský prezenční 4 roky čeština",
+            "name_en": "doctoral present 4 years czech",
             "title_id": "dc5bd804-930e-11ed-9b95-0242ac110002",
             "form_id": "19018d2c-930e-11ed-9b95-0242ac110002",
             "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
@@ -233,6 +314,7 @@ def prgtypes():
         {
             "id": "fd4f2028-9315-11ed-9b95-0242ac110002",
             "name": "doktorský kombinovaný 4 roky čeština",
+            "name_en": "doctoral combined 4 years czech",
             "title_id": "dc5bd804-930e-11ed-9b95-0242ac110002",
             "form_id": "19019704-930e-11ed-9b95-0242ac110002",
             "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
@@ -241,6 +323,7 @@ def prgtypes():
         {
             "id": "fd4f2082-9315-11ed-9b95-0242ac110002",
             "name": "magisterský prezenční 5 let čeština",
+            "name_en": "master present 5 years czech",
             "title_id": "d1431644-930e-11ed-9b95-0242ac110002",
             "form_id": "19018d2c-930e-11ed-9b95-0242ac110002",
             "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
@@ -249,6 +332,7 @@ def prgtypes():
         {
             "id": "fd4f20dc-9315-11ed-9b95-0242ac110002",
             "name": "magisterský prezenční 6 let čeština",
+            "name_en": "master present 6 years czech",
             "title_id": "2509ab28-95e2-11ed-a1eb-0242ac120002",
             "form_id": "19018d2c-930e-11ed-9b95-0242ac110002",
             "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",

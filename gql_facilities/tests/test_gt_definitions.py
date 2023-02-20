@@ -70,7 +70,39 @@ def createPageTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
 
     return result_test
 
+def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]):
+    @pytest.mark.asyncio
+    async def result_test():
+        async_session_maker = await prepare_in_memory_sqllite()
+        await prepare_demodata(async_session_maker)
 
+        data = get_demodata()
+
+        data = get_demodata()
+        table = data[tableName]
+        for row in table:
+            rowid = row['id']
+
+            query = (
+                'query { _entities(representations: [{ __typename: '+ f'"{gqltype}", id: "{rowid}"' + 
+                ' }])' +
+                '{' +
+                f'...on {gqltype}' + 
+                '{ id }'+
+                '}' + 
+                '}')
+
+            context_value = await createContext(async_session_maker)
+            resp = await schema.execute(query, context_value=context_value)
+            data = resp.data
+            print(data, flush=True)
+            data = data['_entities'][0]
+
+            assert data['id'] == rowid
+
+    return result_test
+
+    
 test_query_facilities_by_id = createByIdTest(tableName="facilities", queryEndpoint="facilityById")
 test_query_facilitytypes_by_id = createByIdTest(tableName="facilitytypes", queryEndpoint="facilityTypeById")
 
