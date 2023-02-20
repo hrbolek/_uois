@@ -1,14 +1,10 @@
 from sqlalchemy.future import select
 import strawberry
 
-from gql_survey.DBDefinitions import (
+from gql_surveys.DBDefinitions import (
     BaseModel,
-    UserModel,
-    GroupModel,
-    MembershipModel,
-    RoleModel,
 )
-from gql_survey.DBDefinitions import GroupTypeModel, RoleTypeModel
+from gql_surveys.DBDefinitions import GroupTypeModel, RoleTypeModel
 
 
 def AsyncSessionFromInfo(info):

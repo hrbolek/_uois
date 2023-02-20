@@ -5,7 +5,6 @@ from gql_projects.DBDefinitions import (
     FinanceModel,
     FinanceTypeModel,
     MilestoneModel,
-    GroupModel,
 )
 
 import uuid
@@ -335,8 +334,8 @@ async def randomDataStructure(session):
         session.add_all(milestonesToAdd)
     await session.commit()
 
-    groups = createDataStructureGroups()
-    groupsToAdd = [GroupModel(**record) for record in groups]
-    async with session.begin():
-        session.add_all(groupsToAdd)
-    await session.commit()
+    # groups = createDataStructureGroups()
+    # groupsToAdd = [GroupModel(**record) for record in groups]
+    # async with session.begin():
+    #     session.add_all(groupsToAdd)
+    # await session.commit()

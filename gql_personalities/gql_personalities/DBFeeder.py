@@ -1,7 +1,6 @@
 from functools import cache
 from gql_personalities.DBDefinitions import (
     BaseModel,
-    UserModel,
     RankModel,
     StudyModel,
     CertificateModel,

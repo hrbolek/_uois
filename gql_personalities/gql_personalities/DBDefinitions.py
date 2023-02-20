@@ -68,7 +68,7 @@ class RankModel(BaseModel):
 
 
     #user = relationship("UserModel", back_populates="ranks", foreign_keys=[user_id])
-    rankType = relationship("RankType", back_populates="rank")
+    rankType = relationship("RankTypeModel", back_populates="rank")
 
 
 class RankTypeModel(BaseModel):
@@ -83,7 +83,7 @@ class RankTypeModel(BaseModel):
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
-    rank = relationship("Rank", back_populates="rankType")
+    rank = relationship("RankModel", back_populates="rankType")
 
 
 class StudyModel(BaseModel):
@@ -160,7 +160,7 @@ class CertificateTypeGroupModel(BaseModel):
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     certificateType = relationship(
-        "CertificateType", back_populates="certificateTypeGroup"
+        "CertificateTypeModel", back_populates="certificateTypeGroup"
     )
 
 

@@ -1,4 +1,4 @@
-from ast import Call
+
 from typing import Coroutine, Callable, Awaitable, Union, List
 import uuid
 from sqlalchemy.future import select
@@ -27,7 +27,6 @@ from gql_publications.DBDefinitions import (
     PublicationModel,
     AuthorModel,
     PublicationTypeModel,
-    UserModel,
     SubjectModel,
 )
 
@@ -65,7 +64,7 @@ resolveUpdateAuthor = createUpdateResolver(AuthorModel)
 resolveInsertAuthor = createInsertResolver(AuthorModel)
 resolveAuthorsByUser = create1NGetter(AuthorModel, foreignKeyName="user_id")
 resolveAuthorsForPublication = create1NGetter(
-    AuthorModel, foreignKeyName="publication_id", options=joinedload(AuthorModel.user)
+    AuthorModel, foreignKeyName="publication_id"#, options=joinedload(AuthorModel.user)
 )
 
 resolvePublicationForUser = create1NGetter(

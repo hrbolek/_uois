@@ -3,10 +3,6 @@ import strawberry
 
 from gql_lessons.DBDefinitions import (
     BaseModel,
-    UserModel,
-    GroupModel,
-    MembershipModel,
-    RoleModel,
 )
 from gql_lessons.DBDefinitions import GroupTypeModel, RoleTypeModel
 

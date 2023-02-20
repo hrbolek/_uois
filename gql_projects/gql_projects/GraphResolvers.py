@@ -1,4 +1,3 @@
-from ast import Call
 from typing import Coroutine, Callable, Awaitable, Union, List
 import uuid
 from sqlalchemy.future import select
@@ -32,7 +31,6 @@ from gql_projects.DBDefinitions import (
     FinanceModel,
     FinanceTypeModel,
     MilestoneModel,
-    GroupModel,
 )
 
 ###########################################################################################################################

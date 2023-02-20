@@ -20,14 +20,13 @@ from gql_surveys.DBDefinitions import (
     SurveyModel,
     QuestionModel,
     AnswerModel,
-    UserModel,
     QuestionTypeModel,
 )
 
 # users
-resolveUserPaged = createEntityGetter(UserModel)
-resolveUserById = createEntityByIdGetter(UserModel)
-resolveUserSurvey = createInsertResolver(UserModel)
+#resolveUserPaged = createEntityGetter(UserModel)
+#resolveUserById = createEntityByIdGetter(UserModel)
+#resolveUserSurvey = createInsertResolver(UserModel)
 
 resolveAnswersForUser = create1NGetter(AnswerModel, foreignKeyName="user_id")
 

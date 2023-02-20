@@ -26,7 +26,6 @@ from gql_surveys.GraphResolvers import (
     resolveSurveyById,
     resolveQuestionById,
     resolveAnswerById,
-    resolveUserById,
     resolveQuestionTypeById,
 )
 from gql_surveys.GraphResolvers import (

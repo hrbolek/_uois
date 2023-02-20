@@ -24,7 +24,6 @@ from uoishelpers.resolvers import putSingleEntityToDb
 
 from gql_personalities.DBDefinitions import (
     BaseModel,
-    UserModel,
     RankModel,
     StudyModel,
     CertificateModel,
@@ -44,8 +43,8 @@ from gql_personalities.DBDefinitions import CertificateTypeGroupModel, MedalType
 ###########################################################################################################################
 
 # user resolvers
-resolveUserById = createEntityByIdGetter(UserModel)
-resolveUserAll = createEntityGetter(UserModel)
+#resolveUserById = createEntityByIdGetter(UserModel)
+#resolveUserAll = createEntityGetter(UserModel)
 
 resolveRanksForUser = create1NGetter(
     RankModel, foreignKeyName="user_id", options=joinedload(RankModel.rankType)

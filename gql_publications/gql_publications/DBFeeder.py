@@ -152,7 +152,6 @@ async def putPredefinedStructuresIntoTable(
 
 from gql_publications.DBDefinitions import (
     BaseModel,
-    UserModel,
     PublicationModel,
     AuthorModel,
     PublicationTypeModel,

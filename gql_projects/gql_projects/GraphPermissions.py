@@ -2,11 +2,7 @@ from sqlalchemy.future import select
 import strawberry
 
 from gql_projects.DBDefinitions import (
-    BaseModel,
-    UserModel,
-    GroupModel,
-    MembershipModel,
-    RoleModel,
+    BaseModel
 )
 from gql_projects.DBDefinitions import GroupTypeModel, RoleTypeModel
 

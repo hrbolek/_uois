@@ -29,7 +29,7 @@ def AsyncSessionFromInfo(info):
 # - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
 #
 ###########################################################################################################################
-from gql_personalities.GraphResolvers import resolveUserAll, resolveUserById
+
 from gql_personalities.GraphResolvers import (
     resolveRanksForUser,
     resolveStudiesForUser,
@@ -411,22 +411,6 @@ class RelatedDocGQLModel:
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
-    # user
-    @strawberryA.field(description="""Returns a list of users (paged)""")
-    async def user_page(
-        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
-    ) -> List[UserGQLModel]:
-        async with withInfo(info) as session:
-            result = await resolveUserAll(session, skip, limit)
-            return result
-
-    @strawberryA.field(description="""Finds a User by their id""")
-    async def user_by_id(
-        self, info: strawberryA.types.Info, id: strawberryA.ID
-    ) -> Union[UserGQLModel, None]:
-        async with withInfo(info) as session:
-            result = await resolveUserById(session, id)
-            return result
 
     # rank
     @strawberryA.field(description="""Returns a list of ranks (paged)""")

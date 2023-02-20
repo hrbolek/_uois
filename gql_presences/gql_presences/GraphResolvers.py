@@ -16,7 +16,6 @@ from uoishelpers.resolvers import putSingleEntityToDb
 
 from gql_presences.DBDefinitions import (
     BaseModel,
-    UserModel,
     TaskModel,
     ContentModel,
 )
@@ -29,8 +28,8 @@ from gql_presences.DBDefinitions import (
 
 # user
 
-resolveUserModelPage = createEntityGetter(UserModel)
-resolveUserModelById = createEntityByIdGetter(UserModel)
+#resolveUserModelPage = createEntityGetter(UserModel)
+#resolveUserModelById = createEntityByIdGetter(UserModel)
 
 # task on event
 

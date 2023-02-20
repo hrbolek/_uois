@@ -23,7 +23,7 @@ from gql_lessons.DBDefinitions import (
 )
 
 # from gql_lessons.DBDefinitions import UnavailabilityPL, UnavailabilityUser, UnavailabilityFacility
-from gql_lessons.DBDefinitions import UserModel, GroupModel, EventModel, FacilityModel
+# from gql_lessons.DBDefinitions import FacilityModel
 
 ###########################################################################################################################
 #

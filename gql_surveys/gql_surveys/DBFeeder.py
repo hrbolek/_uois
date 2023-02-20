@@ -1,6 +1,6 @@
 from doctest import master
 from functools import cache
-from gql_surveys.DBDefinitions import BaseModel, UserModel
+from gql_surveys.DBDefinitions import BaseModel
 
 import random
 import itertools
@@ -25,7 +25,6 @@ def singleCall(asyncFunc):
 
 from gql_surveys.DBDefinitions import (
     BaseModel,
-    UserModel,
     QuestionTypeModel,
     QuestionModel,
     AnswerModel,
@@ -138,7 +137,7 @@ async def randomSurveyData(session):
         },
     ]
     asyncSessionMaker = lambda: session
-    await putPredefinedStructuresIntoTable(asyncSessionMaker, UserModel, lambda: users)
+    #await putPredefinedStructuresIntoTable(asyncSessionMaker, UserModel, lambda: users)
     await putPredefinedStructuresIntoTable(
         asyncSessionMaker, SurveyModel, lambda: surveys
     )
