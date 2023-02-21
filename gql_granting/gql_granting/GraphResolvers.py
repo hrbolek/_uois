@@ -20,15 +20,18 @@ from gql_granting.DBDefinitions import BaseModel, StudyProgramModel, SubjectMode
 
 # StudyProgramModel
 resolveStudyProgramByID = createEntityByIdGetter(StudyProgramModel)
+resolveSubjectsforProgram = create1NGetter(SubjectModel, foreignKeyName='program_id')
 # Study->Subject 1/N
 
 # SubjectModel
 resolveSubjectByID = createEntityByIdGetter(SubjectModel)
+resolveSemestersforSubject = create1NGetter(SemesterModel, foreignKeyName='subject_id')
 # Subject -> Languguage 1/N
 # Subject->Semester 1/N
 
 # StudyLanguageModel
 resolveStudyLanguageByID = createEntityByIdGetter(StudyLanguageModel)
+resolveSubjectsforLanguage = create1NGetter(SubjectModel, foreignKeyName='language_id')
 
 # SemesterModel
 resolveSemesterByID = createEntityByIdGetter(SemesterModel)

@@ -18,7 +18,8 @@ def AsyncSessionFromInfo(info):
 
 from gql_granting.GraphResolvers import resolveSemesterByID, resolveSubjectByID, resolveClassificationByID, \
     resolveThemeTypeByID, resolveStudyThemeByID, resolveStudyProgramByID, resolveStudyLanguageByID, \
-    resolveStudyThemeItemByID, resolveThemesforSemester
+    resolveStudyThemeItemByID, resolveThemesforSemester, resolveSubjectsforProgram, resolveSemestersforSubject, \
+    resolveSubjectsforLanguage, resolveThemesforSemester
 
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing premade study programs""")
@@ -53,13 +54,18 @@ class StudyProgramGQLModel:
     def lastchange(self) -> datetime:
         return self.lastchange
 
-
-
     @strawberryA.field(description="""primary key""")
     def editor(self) -> 'StudyProgramEditorGQLModel':
         return self
-    #################################################
 
+    # FK ################################################
+    @strawberryA.field(description="""SemestersforSubject""")
+    async def themes(self, info: strawberryA.types.Info) -> List['SubjectGQLModel']:
+        result = await resolveSubjectsforProgram(AsyncSessionFromInfo(info), self.id)
+        return result
+
+
+####################################################################################
 
 ###########################################################################################################################
 """""
@@ -76,6 +82,8 @@ class StudyProgramEditorGQLModel:
         return self.id
     # change name, program, add subject, delete subject
 """""
+
+
 ###########################################################################################################################
 
 
@@ -96,6 +104,10 @@ class SubjectGQLModel:
     def name(self) -> str:
         return self.name
 
+    @strawberryA.field(description="""lastchange""")
+    def lastchange(self) -> datetime:
+        return self.lastchange
+
     # FK###############################################################################################
     @strawberryA.field(description="""StudyProgramID""")
     async def study_program(self, info: strawberryA.types.Info) -> 'StudyProgramGQLModel':
@@ -105,6 +117,11 @@ class SubjectGQLModel:
     @strawberryA.field(description="""StudyLanguageID""")
     async def study_language(self, info: strawberryA.types.Info) -> 'StudyLanguageGQLModel':
         result = await resolveStudyLanguageByID(AsyncSessionFromInfo(info), self.studyLanguage_id)
+        return result
+
+    @strawberryA.field(description="""SemestersforSubject""")
+    async def themes(self, info: strawberryA.types.Info) -> List['SemesterGQLModel']:
+        result = await resolveSemestersforSubject(AsyncSessionFromInfo(info), self.id)
         return result
 
 
@@ -124,6 +141,18 @@ class StudyLanguageGQLModel:
     @strawberryA.field(description="""name""")
     def name(self) -> str:
         return self.name
+
+    @strawberryA.field(description="""lastchange""")
+    def lastchange(self) -> datetime:
+        return self.lastchange
+
+    # FK #############################################################################
+    @strawberryA.field(description="""SubjectsforLanguage""")
+    async def subjects(self, info: strawberryA.types.Info) -> List['SubjectGQLModel']:
+        result = await resolveSubjectsforLanguage(AsyncSessionFromInfo(info), self.id)
+        return result
+
+    ################################################################################
 
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing each semester in study program""")
@@ -146,6 +175,10 @@ class SemesterGQLModel:
     def credits(self) -> int:
         return self.credits
 
+    @strawberryA.field(description="""lastchange""")
+    def lastchange(self) -> datetime:
+        return self.lastchange
+
     # FK###############################################################################################
     @strawberryA.field(description="""SubjectID""")
     async def subject(self, info: strawberryA.types.Info) -> 'SubjectGQLModel':
@@ -158,9 +191,10 @@ class SemesterGQLModel:
         return result
 
     @strawberryA.field(description="""ThemesfromSemester""")
-    async def themes(self, info:strawberryA.types.Info) -> List['StudyThemeGQLModel']:
+    async def themes(self, info: strawberryA.types.Info) -> List['StudyThemeGQLModel']:
         result = await resolveThemesforSemester(AsyncSessionFromInfo(info), self.id)
         return result
+
 
 ##################################################################################################
 @strawberryA.federation.type(keys=["id"], description="""Entity representing each semester in study program""")
@@ -178,6 +212,10 @@ class ClassificationGQLModel:
     @strawberryA.field(description="""name""")
     def name(self) -> str:
         return self.name
+
+    @strawberryA.field(description="""lastchange""")
+    def lastchange(self) -> datetime:
+        return self.lastchange
 
 
 @strawberryA.federation.type(keys=["id"], description="""Entity which represents all themes included in semester""")
@@ -201,6 +239,10 @@ class StudyThemeGQLModel:
         result = await resolveSemesterByID(AsyncSessionFromInfo(info), self.Semester_id)
         return result
 
+    @strawberryA.field(description="""lastchange""")
+    def lastchange(self) -> datetime:
+        return self.lastchange
+
 
 @strawberryA.federation.type(keys=["id"], description="""Entity which represents all themes included in semester""")
 class StudyThemeItemGQLModel:
@@ -213,6 +255,10 @@ class StudyThemeItemGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
+    @strawberryA.field(description="""lastchange""")
+    def lastchange(self) -> datetime:
+        return self.lastchange
 
     # FK###############################################################################################
     @strawberryA.field(description="""StudyThemeID""")
@@ -246,6 +292,10 @@ class ThemeTypeGQLModel:
     @strawberryA.field(description="""name""")
     def name(self) -> str:
         return self.name
+
+    @strawberryA.field(description="""lastchange""")
+    def lastchange(self) -> datetime:
+        return self.lastchange
 
 
 ###########################################################################################################################
@@ -282,7 +332,8 @@ class Query:
         result = f'Hello {id}'
         return result
 
-#byID, page
+
+# byID, page
 
 ###########################################################################################################################
 #
