@@ -18,7 +18,7 @@ def AsyncSessionFromInfo(info):
 
 from gql_granting.GraphResolvers import resolveSemesterByID, resolveSubjectByID, resolveClassificationByID, \
     resolveThemeTypeByID, resolveStudyThemeByID, resolveStudyProgramByID, resolveStudyLanguageByID, \
-    resolveStudyThemeItemByID
+    resolveStudyThemeItemByID, resolveThemesforSemester
 
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing premade study programs""")
@@ -49,6 +49,12 @@ class StudyProgramGQLModel:
     def name(self) -> str:
         return self.name
 
+    @strawberryA.field(description="""lastchange""")
+    def lastchange(self) -> datetime:
+        return self.lastchange
+
+
+
     @strawberryA.field(description="""primary key""")
     def editor(self) -> 'StudyProgramEditorGQLModel':
         return self
@@ -61,14 +67,14 @@ class StudyProgramGQLModel:
 class StudyProgramEditorGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        result = await resolveStudyProgramEditorByID(AsyncSessionFromInfo(info), id)
+        result = await resolveStudyProgramByID(AsyncSessionFromInfo(info), id)
         result._type_definition = cls._type_definition  # little hack :)
         return result
 
     @strawberryA.field(description="primary key")
     def id(self) -> strawberryA.ID:
         return self.id
-    # change name, add subject, delete subject
+    # change name, program, add subject, delete subject
 """""
 ###########################################################################################################################
 
@@ -143,14 +149,18 @@ class SemesterGQLModel:
     # FK###############################################################################################
     @strawberryA.field(description="""SubjectID""")
     async def subject(self, info: strawberryA.types.Info) -> 'SubjectGQLModel':
-        result = await resolveSubjectByID(AsyncSessionFromInfo(info), self.Subject_id)
+        result = await resolveSubjectByID(AsyncSessionFromInfo(info), self.subject_id)
         return result
 
     @strawberryA.field(description="""ClassificationID""")
     async def classification(self, info: strawberryA.types.Info) -> 'ClassificationGQLModel':
-        result = await resolveClassificationByID(AsyncSessionFromInfo(info), self.Classification_id)
+        result = await resolveClassificationByID(AsyncSessionFromInfo(info), self.classification_id)
         return result
 
+    @strawberryA.field(description="""ThemesfromSemester""")
+    async def themes(self, info:strawberryA.types.Info) -> List['StudyThemeGQLModel']:
+        result = await resolveThemesforSemester(AsyncSessionFromInfo(info), self.id)
+        return result
 
 ##################################################################################################
 @strawberryA.federation.type(keys=["id"], description="""Entity representing each semester in study program""")
@@ -272,6 +282,7 @@ class Query:
         result = f'Hello {id}'
         return result
 
+#byID, page
 
 ###########################################################################################################################
 #

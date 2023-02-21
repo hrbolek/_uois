@@ -51,6 +51,7 @@ class SubjectModel(BaseModel):
     language = relationship('StudyLanguageModel', back_populates='subjects')
 
 
+
 ##############################################
 
 class StudyLanguageModel(BaseModel):
