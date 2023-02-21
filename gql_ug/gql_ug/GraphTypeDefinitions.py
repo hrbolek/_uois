@@ -17,24 +17,12 @@ async def withInfo(info):
             pass
 
 
-def getLoader(info, name):
-    return info.context[name]
-
-
-def AsyncSessionFromInfo(info):
-    print(
-        "obsolete function used AsyncSessionFromInfo, use withInfo context manager instead"
-    )
-    return info.context["session"]
-
-
-def AsyncSessionMakerFromInfo(info):
-    return info.context["asyncSessionMaker"]
+def getLoader(info):
+    return info.context["all"]
 
 
 import datetime
 from gql_ug.GraphResolvers import resolveMembershipById
-
 
 @strawberryA.federation.type(
     keys=["id"],
@@ -43,11 +31,11 @@ from gql_ug.GraphResolvers import resolveMembershipById
 class MembershipGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        # result = await resolveMembershipById(session,  id)
-        async with withInfo(info) as session:
-            result = await resolveMembershipById(session, id)
+        loader = getLoader(info).memberships
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
@@ -89,7 +77,7 @@ class UserGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         # userloader = info.context['users']
-        loader = info.context["all"].users
+        loader = getLoader(info).users
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -123,7 +111,7 @@ class UserGQLModel:
         # selectstmt = membershipsSelect.filter_by(user_id=self.id)
         # result = await membershiploader.execute_select(selectstmt)
 
-        memberships_user_id = info.context["all"].memberships_user_id
+        memberships_user_id = getLoader(info).memberships_user_id
         print(self.id)
         result = await memberships_user_id.load(self.id)
         return list(result)
@@ -136,10 +124,9 @@ class UserGQLModel:
 
     @strawberryA.field(description="""List of roles, which the user has""")
     async def roles(self, info: strawberryA.types.Info) -> typing.List["RoleGQLModel"]:
-        # result = await resolveRolesForUser(session,  self.id)
-        async with withInfo(info) as session:
-            result = await resolveRolesForUser(session, self.id)
-            return result
+        loader = getLoader(info).roles_for_user_id
+        result = await loader.load(self.id)
+        return result
 
     @strawberryA.field(
         description="""List of groups given type, where the user is member"""
@@ -203,11 +190,10 @@ class UserEditorGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveUserById(session, id)
-            # result = await resolveUserById(session,  id)
+        result = await UserGQLModel.resolve_reference(info, id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""Entity primary key""")
     def id(self) -> strawberryA.ID:
@@ -219,10 +205,8 @@ class UserEditorGQLModel:
 
     @strawberryA.field(description="""Result of update operation""")
     async def user(self, info: strawberryA.types.Info) -> UserGQLModel:
-        # result = await resolveUserById(session,  self.id)
-        async with withInfo(info) as session:
-            result = await resolveUserById(session, self.id)
-            return result
+        result = await UserGQLModel.resolve_reference(info, id)
+        return result
 
     @strawberryA.field(description="""Updates the user data""")
     async def update(
@@ -264,7 +248,7 @@ class GroupGQLModel:
         #     result._type_definition = cls._type_definition # little hack :)
         #     return result
 
-        loader = info.context["all"].groups
+        loader = getLoader(info).groups
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -295,13 +279,9 @@ class GroupGQLModel:
     async def grouptype(
         self, info: strawberryA.types.Info
     ) -> Union["GroupTypeGQLModel", None]:
-        async with withInfo(info) as session:
-            if self.grouptype_id is None:
-                return None
-            else:
-                # result = resolveGroupTypeById(session,  self.grouptype_id)
-                result = await resolveGroupTypeById(session, self.grouptype_id)
-                return result
+        loader = getLoader(info).grouptypes
+        result = await loader.load(self.grouptype_id)
+        return result
 
     @strawberryA.field(description="""Directly commanded groups""")
     async def subgroups(
@@ -313,7 +293,7 @@ class GroupGQLModel:
 
         #     return result
 
-        groups_mastergroup_id = info.context["all"].groups_mastergroup_id
+        groups_mastergroup_id = getLoader(info).groups_mastergroup_id
         print(self.id)
         result = await groups_mastergroup_id.load(self.id)
         return list(result)
@@ -339,7 +319,7 @@ class GroupGQLModel:
         #     result = await resolveMembershipForGroup(session, self.id, skip, limit)
         #     return result
 
-        memberships_group_id = info.context["all"].memberships_group_id
+        memberships_group_id = getLoader(info).memberships_group_id
         print(self.id)
         result = await memberships_group_id.load(self.id)
         return list(result)
@@ -638,7 +618,7 @@ class RoleGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         # result = await resolverRoleById(session,  id)
-        result = await info.context["all"].roles.load(id)
+        result = await getLoader(info).roles.load(id)
         result._type_definition = cls._type_definition  # little hack :)
         return result
         # async with withInfo(info) as session:
@@ -720,7 +700,7 @@ class Query:
         self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
     ) -> List[UserGQLModel]:
         # result = await resolveUserAll(session,  skip, limit)
-        result = await info.context["all"].users.execute_select(
+        result = await getLoader(info).users.execute_select(
             userSelect.offset(skip).limit(limit)
         )
         return result
@@ -761,6 +741,7 @@ class Query:
         role_type_id: strawberryA.ID,
     ) -> List[UserGQLModel]:
         # result = await resolveUserByRoleTypeAndGroup(session,  group_id, role_type_id)
+
         async with withInfo(info) as session:
             result = await resolveUserByRoleTypeAndGroup(
                 session, group_id, role_type_id
@@ -772,7 +753,7 @@ class Query:
         self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
     ) -> List[GroupGQLModel]:
         # result = await resolveGroupAll(session,  skip, limit)
-        result = await info.context["all"].groups.execute_select(
+        result = await getLoader(info).groups.execute_select(
             groupSelect.offset(skip).limit(limit)
         )
         return result

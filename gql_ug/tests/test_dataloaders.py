@@ -1,10 +1,5 @@
 import sqlalchemy
-import sys
 import asyncio
-
-# setting path
-sys.path.append("../gql_ug")
-
 import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
@@ -13,7 +8,7 @@ from gql_ug.DBDefinitions import BaseModel
 from gql_ug.DBDefinitions import RoleTypeModel, RoleModel
 from gql_ug.DBDefinitions import UserModel, GroupModel, GroupTypeModel, MembershipModel
 
-from shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
+from tests.shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
 
 from gql_ug.Dataloaders import createLoaders
 

@@ -98,6 +98,7 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
                 '}')
 
             context_value = await createContext(async_session_maker)
+
             resp = await schema.execute(query, context_value=context_value)
             data = resp.data
             print(data, flush=True)

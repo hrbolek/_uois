@@ -25,4 +25,4 @@ yarn-error.log*
 config.json
 data.json
 
-__pycache__
+**/__pycache__

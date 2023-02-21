@@ -89,6 +89,11 @@ async def createLoaders_3(asyncSessionMaker):
 
         @property
         @cache
+        def roles_for_user_id(self):
+            return createFkeyLoader(asyncSessionMaker, RoleModel, foreignKeyName="user_id")
+
+        @property
+        @cache
         def roletypes(self):
             return createIdLoader(asyncSessionMaker, RoleTypeModel)
 

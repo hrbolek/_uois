@@ -28,3 +28,4 @@ data.json
 _extradata
 
 **/__pycache__
+*.pyc

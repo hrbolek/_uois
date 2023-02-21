@@ -78,6 +78,7 @@ def determineRoleTypes():
     ]
     return roleTypes
 
+import datetime
 
 @cache
 def determineGroupTypes():
@@ -202,24 +203,32 @@ def get_demodata():
             {
                 "id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
                 "name": "Uni",
+                "lastchange": datetime.datetime.now(),
+                "valid": True,
                 "grouptype_id": "cd49e152-610c-11ed-9f29-001a7dda7110",
                 "mastergroup_id": None,
             },
             {
                 "id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
                 "name": "Fac",
+                "lastchange": datetime.datetime.now(),
+                "valid": True,
                 "grouptype_id": "cd49e153-610c-11ed-bf19-001a7dda7110",
                 "mastergroup_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
             },
             {
                 "id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
                 "name": "Dep",
+                "lastchange": datetime.datetime.now(),
+                "valid": True,
                 "grouptype_id": "cd49e155-610c-11ed-844e-001a7dda7110",
                 "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
             },
             {
                 "id": "2d9dd2ea-a4a2-11ed-b9df-0242ac120003",
                 "name": "St",
+                "lastchange": datetime.datetime.now(),
+                "valid": False,
                 "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
                 "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
             },

@@ -1,10 +1,5 @@
 import sqlalchemy
-import sys
 import asyncio
-
-# setting path
-sys.path.append("../gql_ug")
-
 import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
