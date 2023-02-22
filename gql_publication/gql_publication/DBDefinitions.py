@@ -2,7 +2,7 @@ from email.policy import default
 import sqlalchemy
 import datetime
 
-from sqlalchemy import Column, String, BigInteger, Integer, Date, ForeignKey, Sequence, Table, Boolean,Float, DateTime
+from sqlalchemy import Column, String, Integer, Date, ForeignKey, Boolean,Float, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
@@ -10,13 +10,18 @@ from sqlalchemy.ext.declarative import declarative_base
 
 BaseModel = declarative_base()
 
+"""
+        Parameters
+        ----------
+        name : str
+           Deklaruje nazev sloupce pokud je hodnota zadana. Vychozi hodnota je None
+"""
+
 def UUIDColumn(name=None):
     if name is None:
         return Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
     else:
         return Column(name, UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
-    
-#id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
 
 class PlanSubjectModel(BaseModel):
@@ -48,7 +53,8 @@ class UserModel(BaseModel):
     author = relationship('AuthorModel', back_populates='user')
 
 class PublicationModel(BaseModel):
-    
+    """Spravuje data spojena s publikaci
+    """
     __tablename__ = 'publications'
 
     id = UUIDColumn()
@@ -66,6 +72,8 @@ class PublicationModel(BaseModel):
 
 
 class AuthorModel(BaseModel):
+    """Spojujici tabulka - uzivatel, publikace
+    """
     __tablename__ = 'publication_authors'
 
     id = UUIDColumn()
@@ -80,6 +88,8 @@ class AuthorModel(BaseModel):
 
 
 class PublicationTypeModel(BaseModel):
+    """Spravuje data spojena s typem publikace
+    """
     __tablename__= 'publication_types'
 
     id = UUIDColumn()
@@ -87,11 +97,8 @@ class PublicationTypeModel(BaseModel):
 
     publication = relationship('PublicationModel', back_populates='publication_type')
 
-
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 

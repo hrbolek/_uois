@@ -44,7 +44,6 @@ async def RunOnceAndReturnSessionMaker():
     result = await startEngine(connectionstring=connectionString, makeDrop=False, makeUp=True)
     
     print(f'initializing system structures')
-    # parsedDataset = asyncio.run(dataLoader())
 
     # await asyncio.gather( # concurency running :)
     # # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
@@ -85,7 +84,3 @@ app = FastAPI()
 app.mount("/gql", graphql_app)
 
 print('All initialization is done')
-
-#@app.get('/hello')
-#def hello():
-#    return {'hello': 'world'}
