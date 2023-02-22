@@ -19,7 +19,7 @@ import copy
 
 resolvePublicationById = createEntityByIdGetter(PublicationModel)
 resolvePublicationAll = createEntityGetter(PublicationModel)
-resolveUpdatePublication = createUpdateResolver(PublicationModel, safe=True)
+resolveUpdatePublication = createUpdateResolver(PublicationModel, safe=False)
 resolveInsertPublication = createInsertResolver(PublicationModel)
 
 async def resolvePublicationsByUser(session, id):

@@ -153,7 +153,9 @@ class PublicationUpdateGQLModel:
     A class used to represent a Publication GQL Model for update
 
     Attributes
-    ----------
+    ----------None
+    lastchange : datetime.datetime
+        timestamp
     name : str
         the name of the publication
     place : str
@@ -167,7 +169,7 @@ class PublicationUpdateGQLModel:
     valid: bool
         is publication valid
     """
-
+    lastchange: datetime.datetime
     name:  Optional[str] = None
     place: Optional[str] = None
     published_date: Optional[datetime.date] = None 
@@ -249,7 +251,7 @@ class PublicationEditorGQLModel:
             await resolveUpdatePublication(session, id=self.id, data=data)
             if (lastchange == data.lastchange):
                 # no change
-                resultMsg = "fail"
+                resultMsg = "failed"
             else:
                 resultMsg = "ok"
             result = PublicationEditorGQLModel()
@@ -302,6 +304,7 @@ class AuthorGQLModel:
             result = await resolveAuthorById(session, id)
             result._type_definition = cls._type_definition # little hack :)
             return result
+
 
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
