@@ -5,8 +5,7 @@ import strawberry as strawberryA
 import uuid
 import datetime
 
-from gql_publication.GraphResolvers import resolvePublicationById,resolvePublicationAll, resolveAuthorById, resolvePublicationTypeAll, resolvePublicationTypeById, resolvePublicationForPublicationType, resolveUpdatePublication, resolveAuthorsForPublication, resolvePublicationsForSubject, resolveAuthorByUser, resolvePublicationsByUser,resolveRemoveAuthor
-
+from gql_publication.GraphResolvers import resolvePublicationById,resolvePublicationAll, resolveAuthorById, resolvePublicationTypeAll, resolvePublicationTypeById, resolvePublicationForPublicationType, resolveUpdatePublication, resolveAuthorsForPublication, resolvePublicationsForSubject, resolveAuthorByUser, resolvePublicationsByUser,resolveRemoveAuthor,resolveInsertPublication
 from contextlib import asynccontextmanager
 
 @asynccontextmanager
@@ -199,7 +198,7 @@ class PublicationInsertGQLModel:
         is publication valid
     """
 
-    id: Optional[uuid.UUID] = None
+    # id: Optional[uuid.UUID] = None
     name:  Optional[str] = None
     place: Optional[str] = None
     published_date: Optional[datetime.date] = None 
@@ -279,6 +278,7 @@ class PublicationEditorGQLModel:
         result = await resolveInsertAuthor(AsyncSessionFromInfo(info), None, 
             extraAttributes={'user_id': user_id, 'publication_id': self.id})
         return result
+
         
     @strawberryA.field(description="""Invalidate a publication""")
     async def invalidate_publication(self, info: strawberryA.types.Info) -> 'PublicationGQLModel':
@@ -377,6 +377,16 @@ class Query:
     async def publications_by_user(self, info: strawberryA.types.Info, id: uuid.UUID) -> List['PublicationGQLModel']:
         result = await resolvePublicationsByUser(AsyncSessionFromInfo(info), id)
         return result
+    
+    @strawberryA.field(description="""Adds a publication """)
+    async def add_publication(self, info: strawberryA.types.Info, user_id: uuid.UUID, publication: PublicationInsertGQLModel) -> 'PublicationGQLModel':
+        async with withInfo(info) as session:
+            resultNewPublication = await resolveInsertPublication(
+            session, publication)
+                
+            result = await resolveInsertAuthor(session, None, 
+                extraAttributes={'user_id': user_id, 'publication_id': resultNewPublication.id})
+            return resultNewPublication
 
     @strawberryA.field(description="""Generate random publications""")
     async def randomPublication(self, info: strawberryA.types.Info) -> 'PublicationGQLModel':

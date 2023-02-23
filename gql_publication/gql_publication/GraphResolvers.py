@@ -22,6 +22,7 @@ resolvePublicationAll = createEntityGetter(PublicationModel)
 resolveUpdatePublication = createUpdateResolver(PublicationModel, safe=False)
 resolveInsertPublication = createInsertResolver(PublicationModel)
 
+
 async def resolvePublicationsByUser(session, id):
     """ Resolver selecting publication by user ID
 
