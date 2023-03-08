@@ -150,6 +150,9 @@ resolveMembershipById = createEntityByIdGetter(MembershipModel)
 # grouptype resolvers
 resolveGroupTypeById = createEntityByIdGetter(GroupTypeModel)
 resolveGroupTypeAll = createEntityGetter(GroupTypeModel)
+selectGroup = select(GroupModel)
+selectGroupType= select(GroupTypeModel)
+
 resolveGroupForGroupType = create1NGetter(GroupModel, foreignKeyName="grouptype_id")
 
 ## roletype resolvers

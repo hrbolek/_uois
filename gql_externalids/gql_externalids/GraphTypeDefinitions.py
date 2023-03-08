@@ -139,7 +139,7 @@ class GroupGQLModel:
         self, info: strawberryA.types.Info
     ) -> List["ExternalIdGQLModel"]:
         loader = getLoaders(info=info).externalids_inner_id
-        result = await loader.load(id)    
+        result = await loader.load(self.id)    
         return result
 
 from gql_externalids.GraphResolvers import resolveAssignExternalId

@@ -15,11 +15,11 @@ async def withInfo(info):
             pass
 
 
-def AsyncSessionFromInfo(info):
-    print(
-        "obsolte function used AsyncSessionFromInfo, use withInfo context manager instead"
-    )
-    return info.context["session"]
+# def AsyncSessionFromInfo(info):
+#     print(
+#         "obsolte function used AsyncSessionFromInfo, use withInfo context manager instead"
+#     )
+#     return info.context["session"]
 
 def getLoaders(info):
     return info.context['all']
@@ -268,18 +268,75 @@ class FormGQLModel:
 
     @strawberryA.field(description="Retrieves the user who has initiated this request")
     async def creator(self, info: strawberryA.types.Info) -> "UserGQLModel":
-        user = UserGQLModel(id=self.createdby)
-        return user
+        #user = UserGQLModel(id=self.createdby)
+        return UserGQLModel(id=self.createdby)
 
     @strawberryA.field(description="Retrieves the type of form")
     async def type(self, info: strawberryA.types.Info) -> Union["FormTypeGQLModel", None]:
         result = await FormTypeGQLModel.resolve_reference(info, id=self.type_id)
         return result
 
+    @strawberryA.field(description="Retrieves the editor")
+    async def editor(self, info: strawberryA.types.Info) -> Union["FormEditorGQLModel", None]:
+        result = await FormEditorGQLModel.resolve_reference(info, id=self.id)
+        return result
+
+from gql_forms.GraphResolvers import resolveUpdateForm
+from typing import Optional
+
+@strawberryA.input
+class FormUpdateGQLModel:
+    lastchange: datetime.datetime
+    name: Optional[str] = None
+    name_en: Optional[str] = None
+    valid: Optional[bool] = None
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Entity representing a form editor"""
+)
+class FormEditorGQLModel:
+    """
+    """
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).form_by_id
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+    
+    @strawberryA.field(
+        description="""Description of operation (form update) result. "ok", if all went good."""
+    )
+    def result(self) -> str:
+        return self.result
+    
+    @strawberryA.field(
+        description="""Updates a form."""
+    )
+    async def update(self, info: strawberryA.types.Info, form: FormUpdateGQLModel) -> "FormEditorGQLModel":
+        async with withInfo(info) as session:
+            lastchange = form.lastchange
+            # print(lastchange)
+            # updated = await resolveUpdateGroup(session,  id=self.id, data=group)
+            # loader = getLoaders(info).groups
+            updated = await resolveUpdateForm(session, id=self.id, data=form)
+            #updated = await loader.update(self, extraValues=data)
+            # print(updated)
+            # print(group.lastchange)
+            # print(updated.lastchange)
+            if lastchange == form.lastchange:
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = FormEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
+            return result
 
 
 @strawberryA.federation.type(
-    keys=["id"], description="""Type representing a section in the workflow"""
+    keys=["id"], description="""Type representing a section in the form"""
 )
 class SectionGQLModel:
     @classmethod
@@ -316,6 +373,86 @@ class SectionGQLModel:
     async def form(self, info: strawberryA.types.Info) -> "FormGQLModel":
         result = await FormGQLModel.resolve_reference(info, self.form_id)
         return result
+
+    @strawberryA.field(description="Retrieves the editor")
+    async def editor(self, info: strawberryA.types.Info) -> Union["SectionEditorGQLModel", None]:
+        result = await SectionEditorGQLModel.resolve_reference(info, id=self.id)
+        return result
+
+@strawberryA.input
+class SectionUpdateGQLModel:
+    lastchange: datetime.datetime
+    name: Optional[str] = None
+    order: Optional[int] = None
+    valid: Optional[bool] = None
+
+from gql_forms.GraphResolvers import resolverUpdateSection
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Entity representing a section editor"""
+)
+class SectionEditorGQLModel:
+    """
+    """
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).section_by_id
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+    
+    @strawberryA.field(
+        description="""Description of operation (form update) result. "ok", if all went good."""
+    )
+    def result(self) -> str:
+        return self.result
+    
+    @strawberryA.field(
+        description="""Updates a section."""
+    )
+    async def update(self, info: strawberryA.types.Info, section: SectionUpdateGQLModel) -> "SectionEditorGQLModel":
+        async with withInfo(info) as session:
+            lastchange = section.lastchange
+            # print(lastchange)
+            # updated = await resolveUpdateGroup(session,  id=self.id, data=group)
+            # loader = getLoaders(info).groups
+            updated = await resolverUpdateSection(session, id=self.id, data=section)
+            #updated = await loader.update(self, extraValues=data)
+            # print(updated)
+            # print(group.lastchange)
+            # print(updated.lastchange)
+            if lastchange == section.lastchange:
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = SectionEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
+            return result
+        
+    @strawberryA.field(
+        description="""Inserts a part."""
+    )
+    async def insert_part(self, info: strawberryA.types.Info, part: "PartUpdateGQLModel") -> "PartGQLModel":
+        async with withInfo(info) as session:
+            result = await resolveInsertPart(session, part)
+        return PartGQLModel.resolve_reference(info, result.id)
+            
+    # @strawberryA.field(
+    #     description="""Updates a part."""
+    # )
+    # async def update_part(self, info: strawberryA.types.Info, part: "PartUpdateGQLModel") -> "PartGQLModel":
+    #     async with withInfo(info) as session:
+    #         result = await resolveUpdatePart(session, part)
+    #     return PartGQLModel.resolve_reference(info, result.id)
+            
+
+@strawberryA.input
+class PartUpdateGQLModel:
+    lastchange: datetime.datetime
+    name: Optional[str] = None
+    order: Optional[int] = None
 
 @strawberryA.federation.type(
     keys=["id"], description="""Type representing a part in the workflow"""
@@ -356,8 +493,73 @@ class PartGQLModel:
         result = await loader.load(self.id)
         return result
 
+    @strawberryA.field(description="Retrieves the editor")
+    async def editor(self, info: strawberryA.types.Info) -> Union["PartEditorGQLModel", None]:
+        result = await PartEditorGQLModel.resolve_reference(info, id=self.id)
+        return result
+
+from gql_forms.GraphResolvers import resolverUpdatePart
 @strawberryA.federation.type(
-    keys=["id"], description="""Type representing an item in the workflow"""
+    keys=["id"], description="""Entity representing a part editor"""
+)
+class PartEditorGQLModel:
+    """
+    """
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).part_by_id
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+    
+    @strawberryA.field(
+        description="""Description of operation (form update) result. "ok", if all went good."""
+    )
+    def result(self) -> str:
+        return self.result
+    
+    @strawberryA.field(
+        description="""Updates a section."""
+    )
+    async def update(self, info: strawberryA.types.Info, part: PartUpdateGQLModel) -> "PartEditorGQLModel":
+        async with withInfo(info) as session:
+            lastchange = part.lastchange
+            # print(lastchange)
+            # updated = await resolveUpdateGroup(session,  id=self.id, data=group)
+            # loader = getLoaders(info).groups
+            updated = await resolverUpdatePart(session, id=self.id, data=part)
+            #updated = await loader.update(self, extraValues=data)
+            # print(updated)
+            # print(group.lastchange)
+            # print(updated.lastchange)
+            if lastchange == part.lastchange:
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = PartEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
+            return result
+        
+    @strawberryA.field(
+        description="""Inserts an item."""
+    )
+    async def insert_item(self, info: strawberryA.types.Info, item: "ItemUpdateGQLModel") -> "ItemGQLModel":
+        async with withInfo(info) as session:
+            result = await resolveInsertItem(session, item)
+        return ItemGQLModel.resolve_reference(info, result.id)
+
+@strawberryA.input
+class ItemUpdateGQLModel:
+    lastchange: datetime.datetime
+    name: Optional[str] = None
+    order: Optional[int] = None
+    value: Optional[str] = None
+    type_id: Optional[strawberryA.ID] = None
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Type representing an item in the form"""
 )
 class ItemGQLModel:
     @classmethod
@@ -398,6 +600,55 @@ class ItemGQLModel:
         result = await ItemTypeGQLModel.resolve_reference(info, self.type_id)
         return result
 
+    @strawberryA.field(description="Retrieves the editor")
+    async def editor(self, info: strawberryA.types.Info) -> Union["ItemEditorGQLModel", None]:
+        result = await ItemEditorGQLModel.resolve_reference(info, id=self.id)
+        return result
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Entity representing an item editor"""
+)
+class ItemEditorGQLModel:
+    """
+    """
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).item_by_id
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+    
+    @strawberryA.field(
+        description="""Description of operation (form update) result. "ok", if all went good."""
+    )
+    def result(self) -> str:
+        return self.result
+    
+    @strawberryA.field(
+        description="""Updates a section."""
+    )
+    async def update(self, info: strawberryA.types.Info, item: ItemUpdateGQLModel) -> "ItemEditorGQLModel":
+        async with withInfo(info) as session:
+            lastchange = item.lastchange
+            # print(lastchange)
+            # updated = await resolveUpdateGroup(session,  id=self.id, data=group)
+            # loader = getLoaders(info).groups
+            updated = await resolverUpdateItem(session, id=self.id, data=item)
+            #updated = await loader.update(self, extraValues=data)
+            # print(updated)
+            # print(group.lastchange)
+            # print(updated.lastchange)
+            if lastchange == item.lastchange:
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = ItemEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
+            return result
+
+
 @strawberryA.federation.type(
     keys=["id"], description="""Type representing an item in the workflow"""
 )
@@ -420,8 +671,8 @@ class ItemTypeGQLModel:
 
     @strawberryA.field(description="""Type category""")
     async def category(self, info: strawberryA.types.Info) -> "ItemCategoryGQLModel":
-        result = await ItemCategoryGQLModel(info, self.category_id)
-        return result
+        #result = await ItemCategoryGQLModel(info, self.category_id)
+        return await ItemCategoryGQLModel(info, self.category_id)
 
 @strawberryA.federation.type(
     keys=["id"], description="""Type representing an item in the workflow"""
@@ -444,7 +695,6 @@ class ItemCategoryGQLModel:
         return self.name
 
 
-
 ###########################################################################################################################
 #
 # zde definujte svuj Query model
@@ -452,7 +702,7 @@ class ItemCategoryGQLModel:
 ###########################################################################################################################
 from gql_forms.GraphResolvers import resolveRequestByUser
 from gql_forms.GraphResolvers import requestselect, formtypeselect, formcategorySelect
-from gql_forms.GraphResolvers import itemtypeselect, itemcategoryselect
+from gql_forms.GraphResolvers import itemtypeselect, itemcategoryselect, createNewRequest
 
 
 @strawberryA.type(description="""Type for query root""")
@@ -566,6 +816,15 @@ class Query:
     ) -> Union[ItemGQLModel, None]:
         result = await ItemGQLModel.resolve_reference(info=info, id=id)
         return result
+
+
+    @strawberryA.field(description="Creates an empty request")
+    async def new_request(
+        self, info: strawberryA.types.Info, formtype_id: strawberryA.ID
+    ) -> Union[RequestGQLModel, None]:
+        async with withInfo(info) as session:
+            result = await createNewRequest(session=session, formtypeid=formtype_id)
+        return await RequestGQLModel.resolve_reference(info, result.id)
 
 
 ###########################################################################################################################

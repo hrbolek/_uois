@@ -248,6 +248,33 @@ async def test_large_query():
 
     assert data['creator']['id'] == row['id']
 
+
+@pytest.mark.asyncio
+async def test_resolve_request():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    table = data['formrequests']
+    row = table[0]
+
+    query = '''
+            query {
+                _entities(representations: [{ __typename: "RequestGQLModel", id: "''' + row['id'] +  '''" }]) {
+                    ...on RequestGQLModel {
+                        id
+                        lastchange
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    resp = await schema.execute(query, context_value=context_value)
+    data = resp.data
+    print(data, flush=True)
+    data = data['_entities'][0]
+
 @pytest.mark.asyncio
 async def test_resolve_section():
     async_session_maker = await prepare_in_memory_sqllite()
@@ -262,6 +289,7 @@ async def test_resolve_section():
                 _entities(representations: [{ __typename: "SectionGQLModel", id: "''' + row['id'] +  '''" }]) {
                     ...on SectionGQLModel {
                         id
+                        lastchange
                     }
                 }
             }
@@ -352,8 +380,8 @@ async def test_reference_history():
     row = table[0]
 
     query = '''
-            query {
-                _entities(representations: [{ __typename: "HistoryGQLModel", id: "''' + row['id'] +  '''" }]) {
+            query($id: ID!) {
+                _entities(representations: [{ __typename: "HistoryGQLModel", id: $id }]) {
                     ...on HistoryGQLModel {
                         id
                         name
@@ -366,10 +394,137 @@ async def test_reference_history():
         '''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values = {'id': row['id']}
+
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
     data = resp.data
     print(data, flush=True)
     data = data['_entities'][0]
+    assert data['id'] == row['id']
 
 
 
+@pytest.mark.asyncio
+async def test_reference_user():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    table = data['users']
+    row = table[0]
+
+    query = '''
+            query($id: ID!) {
+                _entities(representations: [{ __typename: "UserGQLModel", id: $id }]) {
+                    ...on UserGQLModel {
+                        id
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {'id': row['id']}
+
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    data = resp.data
+    print(data, flush=True)
+    data = data['_entities'][0]
+    assert data['id'] == row['id']
+
+    
+@pytest.mark.asyncio
+async def test_requests_by_letters():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    table = data['formrequests']
+    row = table[0]
+
+    query = '''
+            query($letters: String!) {
+                requestsByLetters(letters: $letters) {
+                    id
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {'letters': row['name'][:4]}
+
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    data = resp.data
+    print(data, flush=True)
+    data = data['requestsByLetters'][0]
+    assert data['id'] == row['id']
+
+@pytest.mark.asyncio
+async def test_new_request():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    table = data['formtypes']
+    row = table[0]
+
+    query = '''
+            query($id: ID!) {
+                newRequest(formtypeId: $id) {
+                    id
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {'id': row['id']}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    data = resp.data
+    print(data, flush=True)
+    data = data['newRequest']
+
+    rid = data['id']
+
+    query = '''
+            query($id: ID!) {
+                requestById(id: $id) {
+                    id
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {'id': rid}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    data = resp.data
+    print(data, flush=True)
+    assert 'requestById' in data
+    data = data['requestById']
+    assert data['id'] == rid
+
+    print(data['id'], flush=True)
+
+@pytest.mark.asyncio
+async def test_say_hello_forms():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    query = '''
+            query($id: ID!) {
+                sayHelloForms(id: $id)
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {'id': '132456789'}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    data = resp.data
+    print(data, flush=True)
+    data = data['sayHelloForms']
+    assert 'ello' in data

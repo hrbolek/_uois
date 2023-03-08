@@ -215,9 +215,9 @@ async def test_representation_user():
     await prepare_demodata(async_session_maker)
 
     data = get_demodata()
-    table = data['externalids']
+    table = data['users']
     row = table[0]
-    id = row['inner_id']
+    id = row['id']
 
     query = '''
             query {
@@ -225,6 +225,7 @@ async def test_representation_user():
                     ...on UserGQLModel {
                         id
                         externalIds {
+                            innerId
                             outerId
                             idType {id name}
                             typeName
@@ -239,7 +240,151 @@ async def test_representation_user():
     
     print(resp, flush=True)
     respdata = resp.data['_entities']
-    assert respdata[0]['id'] == id
-    assert respdata[0]['externalIds'][0]['outerId'] == row['outer_id']
+    assert respdata[0]['externalIds'][0]['innerId'] == row['id']
     assert resp.errors is None
+
+@pytest.mark.asyncio
+async def test_representation_group():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    table = data['groups']
+    row = table[0]
+    id = row['id']
+
+    query = '''
+            query {
+                _entities(representations: [{ __typename: "GroupGQLModel", id: "''' + id +  '''" }]) {
+                    ...on GroupGQLModel {
+                        id
+                        externalIds {
+                            innerId
+                            outerId
+                            idType {id name}
+                            typeName
+                        }
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    resp = await schema.execute(query, context_value=context_value)
+    
+    print(resp, flush=True)
+    respdata = resp.data['_entities']
+    assert respdata[0]['externalIds'][0]['innerId'] == row['id']
+    assert resp.errors is None
+
+
+@pytest.mark.asyncio
+async def test_group_add_external_id():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    table = data['groups']
+    row = table[0]
+    id = row['id']
+
+    query = '''
+            query($id: ID!, $externalId: String!, $typeidId: ID!) {
+                _entities(representations: [{ __typename: "GroupEditorGQLModel", id: $id }]) {
+                    ...on GroupEditorGQLModel {
+                        id
+                        assignExternalId(externalId: $externalId, typeidId: $typeidId) {
+                            id
+                        }
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {'id': id, 'externalId': '999', 'typeidId': data['externalidtypes'][0]['id']}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+
+    query = '''
+            query($id: ID!) {
+                _entities(representations: [{ __typename: "GroupGQLModel", id: $id }]) {
+                    ...on GroupGQLModel {
+                        id
+                        externalIds {
+                            innerId
+                            outerId
+                            idType {id name}
+                            typeName
+                        }
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {'id': id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    print(resp, flush=True)
+
+    assert resp.errors is None
+    respdata = resp.data['_entities']
+    eids = list(map(lambda item: item['outerId'], respdata[0]['externalIds']))
+    
+    assert '999' in eids
+
+@pytest.mark.asyncio
+async def test_user_add_external_id():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    table = data['groups']
+    row = table[0]
+    id = row['id']
+
+    query = '''
+            query($id: ID!, $externalId: String!, $typeidId: ID!) {
+                _entities(representations: [{ __typename: "UserEditorGQLModel", id: $id }]) {
+                    ...on UserEditorGQLModel {
+                        id
+                        assignExternalId(externalId: $externalId, typeidId: $typeidId) {
+                            id
+                        }
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {'id': id, 'externalId': '999', 'typeidId': data['externalidtypes'][0]['id']}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+
+    query = '''
+            query($id: ID!) {
+                _entities(representations: [{ __typename: "UserGQLModel", id: $id }]) {
+                    ...on UserGQLModel {
+                        id
+                        externalIds {
+                            innerId
+                            outerId
+                            idType {id name}
+                            typeName
+                        }
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {'id': id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    print(resp, flush=True)
+
+    assert resp.errors is None
+    respdata = resp.data['_entities']
+    eids = list(map(lambda item: item['outerId'], respdata[0]['externalIds']))
+    
+    assert '999' in eids
 

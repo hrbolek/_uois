@@ -8,13 +8,36 @@ from tempfile import NamedTemporaryFile
 import openpyxl
 from copy import copy
 import datetime
-
+import os
 
 async def create_upload_files(files: List[UploadFile]):
 
     result = []
+    filetemplate = next(filter(lambda f: f.filename == 'vzor.xlsx', files), None)
+    fileforname = next(filter(lambda f: f.filename != 'vzor.xlsx', files), None)
+    resultfilename = fileforname.filename
+    
+    if filetemplate is None:
+        filetemplate = files[0]
+        # mame vzor a mame alespon dalsi dva soubory?
+        multimode = len(files) > 2
+    else:
+        # nemame vzor, mame nejmene dva soubory?
+        multimode = len(files) > 1
+    if multimode:
+        resultfilename = "VsechnyVykazy.xlsx"
+
+    filetemplatecontent = await filetemplate.read()
+    print('*'*30, flush=True)
+    print(multimode, flush=True)
+    print(resultfilename, flush=True)
     for file in files:
-        content = await file.read()
+        if file.filename == "vzor.xlsx":
+            continue
+        if file == filetemplate:
+            content = filetemplatecontent
+        else:
+            content = await file.read()
         memory = BytesIO(content)
         wb = openpyxl.load_workbook(filename=memory, read_only=True)
         ws = wb["DataCelyRok"]
@@ -32,10 +55,8 @@ async def create_upload_files(files: List[UploadFile]):
             else:
                 result.append(newRow)
 
-    with open("vzor.xlsx", "rb") as f:
-        content = f.read()
 
-    memory = BytesIO(content)
+    memory = BytesIO(filetemplatecontent)
     resultFile = openpyxl.load_workbook(filename=memory)
 
     resultFileCelyRok = resultFile["DataCelyRok"]
@@ -47,41 +68,46 @@ async def create_upload_files(files: List[UploadFile]):
     for item in result:
         currentName = item["name"]
         currentMonth = item["date"].month
-        if (currentName != prevName) or (currentMonth != prevMonth):
-            # print(currentName, currentMonth)
-            currentWs = resultFile.copy_worksheet(resultFileWs)
-            currentWs.title = f"{currentName}_{currentMonth}"
-            rowIndex = 16
+        if not multimode:
+            # zpracovavame pouze vzor a jeden soubor, budeme generovat listy po mesicich
+            if (currentName != prevName) or (currentMonth != prevMonth):
+                # v datech se zmenilo jmeno nebo mesic, vytvorime novy list
+                # print(currentName, currentMonth)
+                currentWs = resultFile.copy_worksheet(resultFileWs)
+                currentWs.title = f"{currentName}_{currentMonth}"
+                rowIndex = 16
 
-            print(currentName)
+                print(currentName)
 
-            names = currentName.split(" ")
-            currentWs[f"B10"] = names[0]
-            currentWs[f"B11"] = names[1]
+                names = currentName.split(" ")
+                currentWs[f"B10"] = names[0]
+                currentWs[f"B11"] = names[1]
 
-            currentWs[f"C12"] = datetime.datetime(
-                year=item["date"].year, month=item["date"].month, day=1
-            )
-            if item["date"].month == 12:
-                currentWs[f"E12"] = datetime.datetime(
-                    year=item["date"].year + 1, month=1, day=1
-                ) + datetime.timedelta(days=-1)
-            else:
-                currentWs[f"E12"] = datetime.datetime(
-                    year=item["date"].year, month=item["date"].month + 1, day=1
-                ) + datetime.timedelta(days=-1)
+                currentWs[f"C12"] = datetime.datetime(
+                    year=item["date"].year, month=item["date"].month, day=1
+                )
+                if item["date"].month == 12:
+                    currentWs[f"E12"] = datetime.datetime(
+                        year=item["date"].year + 1, month=1, day=1
+                    ) + datetime.timedelta(days=-1)
+                else:
+                    currentWs[f"E12"] = datetime.datetime(
+                        year=item["date"].year, month=item["date"].month + 1, day=1
+                    ) + datetime.timedelta(days=-1)
 
-            prevName = currentName
-            prevMonth = currentMonth
+                prevName = currentName
+                prevMonth = currentMonth
 
-        # currentWs.insert_rows(rowIndex)
-        currentWs[f"A{rowIndex}"] = item["date"]
-        currentWs[f"B{rowIndex}"] = item["desc"]
-        currentWs[f"F{rowIndex}"] = item["hours"]
-        # for col in ['A', 'B', 'C', 'D', 'E', 'F']:
-        #    currentWs[f'{col}{rowIndex}']._style = copy(currentWs[f'{col}{rowIndex+1}']._style)
-        rowIndex = rowIndex + 1
+            # currentWs.insert_rows(rowIndex)
+            currentWs[f"A{rowIndex}"] = item["date"]
+            currentWs[f"B{rowIndex}"] = item["desc"]
+            currentWs[f"F{rowIndex}"] = item["hours"]
+            # for col in ['A', 'B', 'C', 'D', 'E', 'F']:
+            #    currentWs[f'{col}{rowIndex}']._style = copy(currentWs[f'{col}{rowIndex+1}']._style)
+            rowIndex = rowIndex + 1
 
+
+        # kopirovani raw dat pro kontingencni tabulku
         resultFileCelyRok.insert_rows(2)
         resultFileCelyRok["A2"] = currentName
         resultFileCelyRok["B2"] = item["date"].month
@@ -94,12 +120,21 @@ async def create_upload_files(files: List[UploadFile]):
             )
         # resultFileCelyRok.append([currentName, item['month'], item['date'], item['desc'], item['hours']])
 
-    with NamedTemporaryFile() as tmp:
-        resultFile.save(tmp.name)
+    print("saving data", flush=True)
+    with NamedTemporaryFile(dir=".") as tmp:
+        tempfilename = tmp.name
+        print("temp file name", tmp.name, flush=True)
+    resultFile.save(tempfilename)
+    print("data saved", flush=True)
+    with open(tempfilename, mode="rb") as tmp:
         tmp.seek(0)
+        print("data rewind", flush=True)
         stream = tmp.read()
-        headers = {"Content-Disposition": 'attachment; filename="VsechnyVykazy.xlsx"'}
-        return Response(stream, media_type="application/vnd.ms-excel", headers=headers)
+    os.remove(tempfilename)
+    print("have stream 1", len(stream), flush=True)
+    print("have stream 2", len(stream), flush=True)
+    headers = {"Content-Disposition": f'attachment; filename="{resultfilename}"'}
+    return Response(stream, media_type="application/vnd.ms-excel", headers=headers)
 
 
 async def exportSchema():

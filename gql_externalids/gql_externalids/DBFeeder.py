@@ -16,6 +16,10 @@ def get_demodata():
             {'id': "cd85f422-ad44-11ed-9bd8-0242ac110002", "inner_id": "be1b4bae-ad44-11ed-9bd8-0242ac110002", "outer_id": "607", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
             {'id': "cd85f468-ad44-11ed-9bd8-0242ac110002", "inner_id": "be1b4c30-ad44-11ed-9bd8-0242ac110002", "outer_id": "608", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
             {'id': "cd85f4a4-ad44-11ed-9bd8-0242ac110002", "inner_id": "44c9722a-ad45-11ed-9bd8-0242ac110002", "outer_id": "609", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
+
+
+            {'id': "7f747a6a-ee46-4863-a88d-4a5357dd7bbc", "inner_id": "1decba11-4d86-4312-bca0-5e847a414cf9", "outer_id": "610", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
+            {'id': "d8897332-b6f0-4e2c-b2d5-4f1040f58425", "inner_id": "c6de02f9-2921-43a8-bff7-087081922225", "outer_id": "611", "typeid_id": "1db4ac10-67e8-11ed-9022-0242ac120002" },
         ],
         "users": [
             {'id': "be1b2f34-ad44-11ed-9bd8-0242ac110002" },
@@ -28,6 +32,10 @@ def get_demodata():
             {'id': "be1b4bae-ad44-11ed-9bd8-0242ac110002" },
             {'id': "44c9722a-ad45-11ed-9bd8-0242ac110002" },
             {'id': "be1b4c30-ad44-11ed-9bd8-0242ac110002" },
+        ],
+        "groups": [
+            {'id': "1decba11-4d86-4312-bca0-5e847a414cf9" },
+            {'id': "c6de02f9-2921-43a8-bff7-087081922225" },
         ],
     }
     return result

@@ -68,32 +68,75 @@ apiApp = FastAPI()
 print("All initialization is done")
 
 
-@apiApp.get("/hello")  # do not remove, healthchecks are based no this
+@apiApp.get("/hello")  # do not remove, healthchecks are based on this
 def hello():
     return {"hello": "world"}
 
 
-from fastapi import UploadFile
+from fastapi import UploadFile, File
 from fastapi.responses import HTMLResponse
 from typing import List
 
 from nogql_api.resolvers import create_upload_files
 
 
-@apiApp.post("/nogql/utils/vykazy")
-async def utils_vykazy_post(files: List[UploadFile]):
-    return await create_upload_files(files)
+@apiApp.post("/nogql/utils/vykazy/")
+async def utils_vykazy_post(files: List[UploadFile] = File(...)):
+    print("POST", "/nogql/utils/vykazy/", flush=True)
+    result = None
+    try:
+        result = await create_upload_files(files)
+    except Exception as e:
+        print(e, flush=True)
+    return result
 
 
-@apiApp.get("/nogql/utils/vykazy")
+@apiApp.get("/nogql/utils/vykazy/")
 async def utils_vykazy_get():
+    print("GET", "/nogql/utils/vykazy/", flush=True)
     content = """
-<body>
-<form action="." enctype="multipart/form-data" method="post">
-<input name="files" type="file" multiple>
-<input type="submit">
-</form>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <title>Vykazy</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    </head>
+    <body>
+
+        <div class="container-fluid p-5 bg-primary text-white text-center">
+            <h1>Výkazy</h1>
+        </div>
+        
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                Vyberte jeden soubor (.xlsx) a v tomto budou vytvořeny výkazy pro jednotlivé měsíce.
+                                Pokud vyberete více souborů, očekává se, že jeden ze souborů se bude jmenovat vzor.xlsx (všechna písmena malá).
+                                Pro více souborů je výsledkem sumarizace výkazů ze všech souborů.
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form action="." enctype="multipart/form-data" method="post">
+                                <div class="mb-3">
+                                    <label for="files" class="form-label">Soubor / soubory</label>
+                                    <input class="form-control" name="files" type="file" id="files" multiple>
+                                </div>
+                                <input class="form-control btn btn-outline-primary" type="submit">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
     """
     return HTMLResponse(content=content)
 

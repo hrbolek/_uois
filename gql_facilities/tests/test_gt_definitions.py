@@ -370,8 +370,8 @@ async def test_representation_facility_state_type():
 
     query = '''
             query {
-                _entities(representations: [{ __typename: "FacilityStateTypeGQLModel", id: "''' + id +  '''" }]) {
-                    ...on FacilityStateTypeGQLModel {
+                _entities(representations: [{ __typename: "FacilityEventStateTypeGQLModel", id: "''' + id +  '''" }]) {
+                    ...on FacilityEventStateTypeGQLModel {
                         id
                     }
                 }

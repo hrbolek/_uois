@@ -20,8 +20,8 @@ WORKDIR /app/extradata
 WORKDIR /app
 COPY . /app
 
-# FROM prepare as tester
-RUN python -m pip install coverage pytest pytest-cov
+FROM prepare as tester
+RUN python -m pip install coverage pytest pytest-cov pytest-asyncio
 # RUN python -m unittest tests/*
 RUN python -m pytest --cov-report term-missing --cov=gql_ug tests/*
 

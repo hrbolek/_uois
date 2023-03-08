@@ -83,7 +83,6 @@ graphql_app = MyGraphQL(
 app = FastAPI()
 app.mount("/gql", graphql_app)
 
-
 @app.on_event("startup")
 async def startup_event():
     initizalizedEngine = await RunOnceAndReturnSessionMaker()

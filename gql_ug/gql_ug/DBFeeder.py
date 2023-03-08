@@ -238,6 +238,7 @@ def get_demodata():
                 "id": "7cea8596-a4a2-11ed-b9df-0242ac120003",
                 "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
                 "group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
+                "valid": True
             }
         ],
         "roles": [
@@ -246,6 +247,9 @@ def get_demodata():
                 "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
                 "group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
                 "roletype_id": "ae3f0d74-6159-11ed-b753-0242ac120003",
+                "startdate": datetime.datetime.now(),
+                "enddate": datetime.datetime.now(),
+                "valid": True,
             }
         ],
     }
@@ -256,7 +260,7 @@ from uoishelpers.feeders import ImportModels
 def randomUniversity(name):
     """Generuje strukturu skupin na urovni univerzity (fakulty, katedry) a jejich akademicke pracovniky ve forme json"""
     result = {
-        "name": f"University {name}",
+        "name": f"{name}",
         "grouptype": {"name": "univerzita"},
         "subgroups": [randomFaculty(i + 1) for i in range(random.randint(3, 5))],
         "roles": [],

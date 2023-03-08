@@ -33,6 +33,7 @@ from uoishelpers.resolvers import putSingleEntityToDb
 from gql_forms.DBDefinitions import (
     BaseModel,
     RequestModel,
+    FormModel,
     SectionModel,
     PartModel,
     
@@ -41,7 +42,9 @@ from gql_forms.DBDefinitions import (
     ItemCategoryModel,
 
     FormCategoryModel,
-    FormTypeModel
+    FormTypeModel,
+
+    HistoryModel
 )
 
 
@@ -85,12 +88,14 @@ async def resolveRequestsByThreeLetters(
     return dbSet.scalars()
 
 
+resolveUpdateForm = createUpdateResolver(FormModel, safe=True)
+
 ## section resolvers
 resolveSectionById = createEntityByIdGetter(SectionModel)
 resolveSectionAll = createEntityGetter(SectionModel)
 resolvePartsForSection = create1NGetter(PartModel, foreignKeyName="section_id")
 
-resolverUpdateSection = createUpdateResolver(SectionModel)
+resolverUpdateSection = createUpdateResolver(SectionModel, safe=True)
 resolveInsertSection = createInsertResolver(SectionModel)
 
 ## part resolvers
@@ -98,13 +103,29 @@ resolvePartById = createEntityByIdGetter(PartModel)
 resolvePartAll = createEntityGetter(PartModel)
 resolveItemsForPart = create1NGetter(ItemModel, foreignKeyName="part_id")
 
-resolverUpdatePart = createUpdateResolver(PartModel)
+resolverUpdatePart = createUpdateResolver(PartModel, safe=True)
 resolveInsertPart = createInsertResolver(PartModel)
 
 ## item resolvers
 resolveItemById = createEntityByIdGetter(ItemModel)
 resolveItemAll = createEntityGetter(ItemModel)
 
-resolverUpdateItem = createUpdateResolver(ItemModel)
+resolverUpdateItem = createUpdateResolver(ItemModel, safe=True)
 resolveInsertItem = createInsertResolver(ItemModel)
 
+async def createNewRequest(session, formtypeid):
+    request = RequestModel()
+    
+    session.add(request)
+    form = FormModel()
+    form.type_id = formtypeid
+
+    session.add(form)
+    history = HistoryModel()
+    session.add(history)
+    history.form_id = form.id
+    history.request_id = request.id
+    await session.commit()
+    print("new request", request.id, form.id, flush=True)
+    return request
+    

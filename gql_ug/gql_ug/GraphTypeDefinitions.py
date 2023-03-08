@@ -99,6 +99,10 @@ class UserGQLModel:
     def email(self) -> Union[str, None]:
         return self.email
 
+    @strawberryA.field(description="""User's validity (if their are member of institution)""")
+    def valid(self) -> bool:
+        return self.valid
+
     @strawberryA.field(description="""Time stamp""")
     def lastchange(self) -> Union[datetime.datetime, None]:
         return self.lastchange
@@ -451,9 +455,11 @@ class GroupEditorGQLModel:
                     "user_id": user_id,
                     "group_id": self.id,
                     "roletype_id": roletype_id,
+                    "valid": True,
                 },
             )
-            return result
+        return await RoleGQLModel.resolve_reference(info, id=result.id)
+            
 
     @strawberryA.field(description="""Invalidate a new role""")
     async def invalidate_role(
@@ -502,7 +508,9 @@ class GroupEditorGQLModel:
             lastchange = group.lastchange
             # print(lastchange)
             # updated = await resolveUpdateGroup(session,  id=self.id, data=group)
+            loader = getLoader(info).groups
             updated = await resolveUpdateGroup(session, id=self.id, data=group)
+            #updated = await loader.update(self, extraValues=data)
             # print(updated)
             # print(group.lastchange)
             # print(updated.lastchange)
@@ -515,22 +523,20 @@ class GroupEditorGQLModel:
             result.result = resultMsg
             return result
 
-    @strawberryA.field(description="""Create user and introduce membership""")
+    @strawberryA.field(description="""Create user and DO NOT introduce membership""")
     async def create_user(
-        self, info: strawberryA.types.Info, user: UserUpdateGQLModel
+        self, info: strawberryA.types.Info, user: UserInsertGQLModel
     ) -> "UserGQLModel":
         # session = AsyncSessionFromInfo(info)
         async with withInfo(info) as session:
             print("create_user")
-            print(session.in_transaction())
-            if session.in_transaction():
-                await session.commit()
             newUser = await resolveInsertUser(session, user, {})
             await session.commit()
             print(newUser)
             # result = await resolveInsertMembership(session, None,
             #    extraAttributes={'user_id': newUser.id, 'group_id': self.id})
-            return newUser
+        result = await UserGQLModel.resolve_reference(info, newUser.id)
+        return result
 
 
 from gql_ug.GraphResolvers import resolveGroupForGroupType
@@ -635,35 +641,32 @@ class RoleGQLModel:
         return self.valid
 
     @strawberryA.field(description="""When an user has got this role""")
-    def startdate(self) -> str:
+    def startdate(self) -> Union[str, None]:
         return self.startdate
 
     @strawberryA.field(description="""When an user has been removed from this role""")
-    def enddate(self) -> str:
+    def enddate(self) -> Union[str, None]:
         return self.enddate
 
     @strawberryA.field(description="""Role type (like Dean)""")
     async def roletype(self, info: strawberryA.types.Info) -> RoleTypeGQLModel:
         # result = await resolveRoleTypeById(session,  self.roletype_id)
-        async with withInfo(info) as session:
-            result = await resolveRoleTypeById(session, self.roletype_id)
-            return result
+        result = await RoleTypeGQLModel.resolve_reference(info, self.roletype_id)
+        return result
 
     @strawberryA.field(
         description="""User having this role. Must be member of group?"""
     )
     async def user(self, info: strawberryA.types.Info) -> UserGQLModel:
         # result = await resolveUserById(session,  self.user_id)
-        async with withInfo(info) as session:
-            result = await resolveUserById(session, self.user_id)
-            return result
+        result = await UserGQLModel.resolve_reference(info, self.user_id)
+        return result
 
     @strawberryA.field(description="""Group where user has a role name""")
     async def group(self, info: strawberryA.types.Info) -> GroupGQLModel:
         # result = await resolveGroupById(session,  self.group_id)
-        async with withInfo(info) as session:
-            result = await resolveGroupById(session, self.group_id)
-            return result
+        result = await GroupGQLModel.resolve_reference(info, self.group_id)
+        return result
 
 
 from gql_ug.GraphResolvers import (
@@ -688,7 +691,7 @@ from gql_ug.GraphResolvers import (
 )
 
 from gql_ug.GraphResolvers import import_ug, export_ug
-from gql_ug.GraphResolvers import userSelect, groupSelect
+from gql_ug.GraphResolvers import userSelect, groupSelect, selectGroup, selectGroupType
 
 from gql_ug.DBFeeder import randomDataStructure, createUniversity
 
@@ -788,21 +791,19 @@ class Query:
 
     @strawberryA.field(description="""Returns a list of groups types (paged)""")
     async def group_type_page(
-        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 20
     ) -> List[GroupTypeGQLModel]:
-        # result = await resolveGroupTypeAll(session,  skip, limit)
-        async with withInfo(info) as session:
-            result = await resolveGroupTypeAll(session, skip, limit)
-            return result
+        loader = getLoader(info).grouptypes
+        result = await loader.execute_select(selectGroupType.offset(skip).limit(limit))
+        return result
 
     @strawberryA.field(description="""Finds a group type by its id""")
     async def group_type_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union[GroupTypeGQLModel, None]:
         # result = await resolveGroupTypeById(session,  id)
-        async with withInfo(info) as session:
-            result = await resolveGroupTypeById(session, id)
-            return result
+        result = await GroupTypeGQLModel.resolve_reference(info, id)
+        return result
 
     @strawberryA.field(description="""Finds all roles types paged""")
     async def role_type_page(
@@ -851,6 +852,13 @@ class Query:
         return result
 
 
+@strawberryA.type
+class Mutation:
+    @strawberryA.mutation
+    def ug_add_book(self, author: str) -> str:
+        return author
+
+
 ###########################################################################################################################
 #
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
@@ -860,4 +868,4 @@ class Query:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,))
+schema = strawberryA.federation.Schema(query=Query, types=(UserGQLModel,), mutation=Mutation)

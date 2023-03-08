@@ -6,14 +6,14 @@ import uuid
 from contextlib import asynccontextmanager
 
 
-@asynccontextmanager
-async def withInfo(info):
-    asyncSessionMaker = info.context["asyncSessionMaker"]
-    async with asyncSessionMaker() as session:
-        try:
-            yield session
-        finally:
-            pass
+# @asynccontextmanager
+# async def withInfo(info):
+#     asyncSessionMaker = info.context["asyncSessionMaker"]
+#     async with asyncSessionMaker() as session:
+#         try:
+#             yield session
+#         finally:
+#             pass
 
 ##TODO relations
 
@@ -234,15 +234,15 @@ class FacilityEventGQLModel:
         return result
 
     @strawberryA.field(description="""the facility""")
-    async def state(self, info: strawberryA.types.Info) -> "FacilityStateTypeGQLModel":
-        result = await FacilityStateTypeGQLModel.resolve_reference(info=info, id=self.state_id)
+    async def state(self, info: strawberryA.types.Info) -> "FacilityEventStateTypeGQLModel":
+        result = await FacilityEventStateTypeGQLModel.resolve_reference(info=info, id=self.state_id)
         return result
 
 
 @strawberryA.federation.type(
     keys=["id"], description="""Entity representing a facility type"""
 )
-class FacilityStateTypeGQLModel:
+class FacilityEventStateTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         loader = getLoaders(info).event_facility_state_by_id
@@ -316,7 +316,7 @@ class Query:
     @strawberryA.field(description="""Returns all facility event states""")
     async def facility_event_state_type_page(
         self, info: strawberryA.types.Info
-    ) -> List[FacilityStateTypeGQLModel]:
+    ) -> List[FacilityEventStateTypeGQLModel]:
         loader = getLoaders(info).event_facility_state_by_id
         result = await loader.execute_select(facilityStateTypePageStatement)
         return result
