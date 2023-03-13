@@ -1,14 +1,35 @@
 5.10.2022
     Založení repozitáře.
 
+
 1. týden (10. - 16. 10.)
     Brainstorming nad databázovými modely.
+
 
 2. - 3. týden (17. - 30. 10.)
     Konzultace databázových modelů a jejich úprava ve schematickém podání.
 
+
 4. - 7. týden (31. 10. - 27. 11.)
     Shromažďování dat a vytváření databáze (DBFeeder).
     Úprava modelů v DBDefinitions.
+    18.11.Přejmenování projektu na gql_personalities
+
+
+8. - 10. týden (28.11. - 18.12.)
+    Soustavná úprava DBDefinitions
+    Aktualizace DBFeederu
+    První práce na GraphTypeDefinitions a GraphResolvers
+
+
+11. - 14. týden (19.12. - 15.1.)
+    Updatování GQL modelů a resolverů
+    10.1. commit for merge
 
     
+    5.2. Přidání StudyType pro lepší logiku a návaznost již vytvořeného DBFeederu
+
+
+19. - 23. týden(13.2. - 15.3.)
+    Práce na editoru
+    Finish projektu
