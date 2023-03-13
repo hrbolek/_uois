@@ -217,7 +217,9 @@ class ClassificationGQLModel:
     def lastchange(self) -> datetime:
         return self.lastchange
 
+# FK#############################################################################
 
+#################################################################################
 @strawberryA.federation.type(keys=["id"], description="""Entity which represents all themes included in semester""")
 class StudyThemeGQLModel:
     @classmethod

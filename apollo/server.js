@@ -35,6 +35,7 @@ const getENV = (name, defaultValue) => {
         { name: "survey", url: "http://gql_survey:8000/gql" },
         { name: "facilities", url: "http://gql_facilities:8000/gql" },
         { name: "publications", url: "http://gql_publications:8000/gql" },
+        { name: "granting", url: "http://gql_granting:8000/gql" },
         
         /* 
         * ###########################################################################################################################

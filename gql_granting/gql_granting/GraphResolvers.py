@@ -41,6 +41,7 @@ resolveThemesforSemester = create1NGetter(StudyThemeModel, foreignKeyName='semes
 
 # ClassificationModel
 resolveClassificationByID = createEntityByIdGetter(ClassificationModel)
+resolveClassificationsforSemester = create1NGetter(ClassificationModel, foreignKeyName='classification_id')
 
 # StudyThemeModel
 resolveStudyThemeByID = createEntityByIdGetter(StudyThemeModel)
