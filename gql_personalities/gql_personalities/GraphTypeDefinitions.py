@@ -2,9 +2,104 @@ from typing import List, Union
 import typing
 import strawberry as strawberryA
 import uuid
+from datetime import datetime
+from typing import List, Union, Optional
+from pydoc import resolve
 
 def AsyncSessionFromInfo(info):
     return info.context['session']
+
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def withInfo(info):
+    asyncSessionMaker = info.context['asyncSessionMaker']
+    async with asyncSessionMaker() as session:
+        try:
+            yield session
+        finally:
+            pass
+
+
+###########################################################################################################################
+#
+#   EDITOR
+#
+###########################################################################################################################
+@strawberryA.input
+class UserUpdateGQLModel:
+    lastchange: datetime.datetime #razitko
+
+    rank: Optional[uuid.UUID] = None
+    study: Optional[uuid.UUID] = None
+    certificate: Optional[uuid.UUID] = None
+    medal: Optional[uuid.UUID] = None
+    workHistory: Optional[uuid.UUID] = None
+    relatedDoc: Optional[uuid.UUID] = None
+
+
+@strawberryA.input
+class UserInsertGQLModel:
+    id: Optional[uuid.UUID] = None
+
+    rank: Optional[uuid.UUID] = None
+    study: Optional[uuid.UUID] = None
+    certificate: Optional[uuid.UUID] = None
+    medal: Optional[uuid.UUID] = None
+    workHistory: Optional[uuid.UUID] = None
+    relatedDoc: Optional[uuid.UUID] = None
+
+
+@strawberryA.federation.type(keys=["id"], extend=True)
+class UserEditorGQLModel:
+    ##
+    ## Mutace, obejiti problemu s federativnim API
+    ##
+    
+    # vysledky opearace update
+    id: strawberryA.ID = None
+    result: str = None
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        async with withInfo(info) as session:
+            result = await resolveUserById(session, id)
+            #result = await resolveUserById(AsyncSessionFromInfo(info), id)
+            result._type_definition = cls._type_definition # little hack :)
+            return result
+
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Result of update operation""")
+    def result(self) -> str:
+        return self.result
+
+    @strawberryA.field(description="""Result of update operation""")
+    async def user(self, info: strawberryA.types.Info) -> 'UserGQLModel':
+        #result = await resolveUserById(AsyncSessionFromInfo(info), self.id)
+        async with withInfo(info) as session:
+            result = await resolveUserById(session, self.id)
+            return result
+
+    @strawberryA.field(description="""Updates the user data""")
+    async def update(self, info: strawberryA.types.Info, data: UserUpdateGQLModel) -> 'UserEditorGQLModel':
+        lastchange = data.lastchange
+        #await resolverUpdateUser(AsyncSessionFromInfo(info), id=self.id, data=data)
+        async with withInfo(info) as session:
+            #await resolverUpdateUser(session, id=self.id, data=data)
+            if (lastchange == data.lastchange):
+                # no change
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = UserEditorGQLModel()
+            result.id = self.id
+            
+            result.result = resultMsg
+            return result
+
 
 ###########################################################################################################################
 #
@@ -454,4 +549,4 @@ class Query:
         result = await resolveRelatedDocAll(AsyncSessionFromInfo(info), skip, limit)
         return result
 
-schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, ))
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, UserEditorGQLModel))
