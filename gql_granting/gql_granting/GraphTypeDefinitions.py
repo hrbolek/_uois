@@ -52,12 +52,14 @@ class StudyProgramGQLModel:
         return self.name
 
     @strawberryA.field(description="""lastchange""")
-    def lastchange(self) -> datetime:
+    def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
-    @strawberryA.field(description="""primary key""")
-    def editor(self) -> 'StudyProgramEditorGQLModel':
-        return self
+
+    # @strawberryA.field(description="""primary key""")
+    # def editor(self) -> 'StudyProgramEditorGQLModel':
+    #     return self
+
 
     # FK ################################################
     @strawberryA.field(description="""SemestersforSubject""")
@@ -106,22 +108,22 @@ class SubjectGQLModel:
         return self.name
 
     @strawberryA.field(description="""lastchange""")
-    def lastchange(self) -> datetime:
+    def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
     # FK###############################################################################################
     @strawberryA.field(description="""StudyProgramID""")
     async def study_program(self, info: strawberryA.types.Info) -> 'StudyProgramGQLModel':
-        result = await resolveStudyProgramByID(AsyncSessionFromInfo(info), self.studyProgram_id)
+        result = await resolveStudyProgramByID(AsyncSessionFromInfo(info), self.program_id)
         return result
 
     @strawberryA.field(description="""StudyLanguageID""")
     async def study_language(self, info: strawberryA.types.Info) -> 'StudyLanguageGQLModel':
-        result = await resolveStudyLanguageByID(AsyncSessionFromInfo(info), self.studyLanguage_id)
+        result = await resolveStudyLanguageByID(AsyncSessionFromInfo(info), self.language_id)
         return result
 
     @strawberryA.field(description="""SemestersforSubject""")
-    async def themes(self, info: strawberryA.types.Info) -> List['SemesterGQLModel']:
+    async def semesters(self, info: strawberryA.types.Info) -> List['SemesterGQLModel']:
         result = await resolveSemestersforSubject(AsyncSessionFromInfo(info), self.id)
         return result
 
@@ -144,7 +146,7 @@ class StudyLanguageGQLModel:
         return self.name
 
     @strawberryA.field(description="""lastchange""")
-    def lastchange(self) -> datetime:
+    def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
     # FK #############################################################################
@@ -177,7 +179,7 @@ class SemesterGQLModel:
         return self.credits
 
     @strawberryA.field(description="""lastchange""")
-    def lastchange(self) -> datetime:
+    def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
     # FK###############################################################################################
@@ -215,7 +217,7 @@ class ClassificationGQLModel:
         return self.name
 
     @strawberryA.field(description="""lastchange""")
-    def lastchange(self) -> datetime:
+    def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
 # FK#############################################################################
@@ -243,7 +245,7 @@ class StudyThemeGQLModel:
         return result
 
     @strawberryA.field(description="""lastchange""")
-    def lastchange(self) -> datetime:
+    def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
 
@@ -260,7 +262,7 @@ class StudyThemeItemGQLModel:
         return self.id
 
     @strawberryA.field(description="""lastchange""")
-    def lastchange(self) -> datetime:
+    def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
     # FK###############################################################################################
@@ -297,7 +299,7 @@ class ThemeTypeGQLModel:
         return self.name
 
     @strawberryA.field(description="""lastchange""")
-    def lastchange(self) -> datetime:
+    def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
 
@@ -330,9 +332,44 @@ class UserGQLModel:
 @strawberryA.type(description="""Type for query root""")
 class Query:
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
-    async def say_hello(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[str, None]:
-        result = f'Hello {id}'
+    @strawberryA.field(description="""Finds study programs by their id""")
+    async def study_program_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyProgramGQLModel, None]:
+        result = await resolveStudyProgramByID(AsyncSessionFromInfo(info), id)
+        return result
+##ZEPTAT SE###
+    @strawberryA.field(description="""Finds subjects by their page""")
+    async def subject_by_id(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[SubjectGQLModel]:
+        result = await resolveSubjectByID(AsyncSessionFromInfo(info), skip, limit)
+        return result
+
+    @strawberryA.field(description="""Finds study programs by their id""")
+    async def study_language_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyLanguageGQLModel, None]:
+        result = await resolveStudyLanguageByID(AsyncSessionFromInfo(info), id)
+        return result
+
+    @strawberryA.field(description="""Finds subjects by their page""")
+    async def semester_by_id(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[SemesterGQLModel]:
+        result = await resolveSemesterByID(AsyncSessionFromInfo(info), skip, limit)
+        return result
+
+    @strawberryA.field(description="""Finds study programs by their id""")
+    async def classification_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ClassificationGQLModel, None]:
+        result = await resolveClassificationByID(AsyncSessionFromInfo(info), id)
+        return result
+
+    @strawberryA.field(description="""Finds subjects by their page""")
+    async def study_theme_by_id(self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10) -> List[StudyThemeGQLModel]:
+            result = await resolveStudyThemeByID(AsyncSessionFromInfo(info), skip, limit)
+            return result
+
+    @strawberryA.field(description="""Finds study programs by their id""")
+    async def study_theme_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyThemeItemGQLModel, None]:
+        result = await resolveStudyThemeByID(AsyncSessionFromInfo(info), id)
+        return result
+
+    @strawberryA.field(description="""Finds study programs by their id""")
+    async def theme_type_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ThemeTypeGQLModel, None]:
+        result = await resolveThemeTypeByID(AsyncSessionFromInfo(info), id)
         return result
 
 

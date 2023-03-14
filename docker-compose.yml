@@ -32,6 +32,9 @@ services:
       - gql_ug
       - gql_workflow
       - gql_granting
+      - gql_personalities
+      - gql_projects
+      - gql_publications
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu a srovnejte s portem v environment)
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:3000/gql/ || exit 1"
