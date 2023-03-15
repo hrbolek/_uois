@@ -1,4 +1,3 @@
-from doctest import master
 from functools import cache
 from gql_personalities.DBDefinitions import (
     BaseModel,
@@ -9,30 +8,37 @@ from gql_personalities.DBDefinitions import (
     WorkHistoryModel,
     RelatedDocModel,
 )
-from gql_personalities.DBDefinitions import RankTypeModel, StudyTypeModel, CertificateTypeModel, MedalTypeModel, MedalTypeGroupModel
+from gql_personalities.DBDefinitions import RankTypeModel, CertificateTypeModel, MedalTypeModel, MedalTypeGroupModel
 from gql_personalities.DBDefinitions import CertificateTypeGroupModel
 
-import uuid
-import random
-import datetime
-import itertools
 from functools import cache
 
 
 from sqlalchemy.future import select
 
+
 def singleCall(asyncFunc):
     """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
-       Dekorovana funkce je asynchronni.
+    Dekorovana funkce je asynchronni.
     """
     resultCache = {}
+
     async def result():
-        if resultCache.get('result', None) is None:
-            resultCache['result'] = await asyncFunc()
-        return resultCache['result']
+        if resultCache.get("result", None) is None:
+            resultCache["result"] = await asyncFunc()
+        return resultCache["result"]
+
     return result
 
+
 ###########################################################################################################################
+#
+# zde definujte sve funkce, ktere naplni random data do vasich tabulek
+#
+###########################################################################################################################
+def get_demodata(asyncSessionMaker):
+    pass
+
 
 @cache
 def determineRankType():
@@ -48,7 +54,6 @@ def determineRankType():
             "name_en": "Private First Class (PFC)",
             "id": "f3038058-e1fa-4f7c-9e50-7b1d99998d37",
         },
-
         # poddůstojníci
         {
             "name": "desátník (des.)",
@@ -65,7 +70,6 @@ def determineRankType():
             "name_en": "Staff Sergeant (SSG)",
             "id": "a9043224-9c3b-4562-a329-997fba9237d0",
         },
-
         # praporčíci
         {
             "name": "rotmistr (rtm.)",
@@ -92,7 +96,6 @@ def determineRankType():
             "name_en": "Master Warrant Officer (MW4)",
             "id": "841fa09f-625e-49b4-8872-05c43ce197cf",
         },
-
         # nižší důstojníci
         {
             "name": "poručík (por.)",
@@ -109,7 +112,6 @@ def determineRankType():
             "name_en": "Captain (CPT)",
             "id": "a8ce2853-26ec-4e10-8bbe-899cc296a35f",
         },
-
         # vyšší důstojníci
         {
             "name": "major (mjr.)",
@@ -126,7 +128,6 @@ def determineRankType():
             "name_en": "Colonel (COL)",
             "id": "824533e5-eba7-45f7-80f6-e2466529e73c",
         },
-
         # generálové
         {
             "name": "brigádní generál (brig.gen.)",
@@ -153,8 +154,8 @@ def determineRankType():
 
 
 @cache
-def determineStudyTypeName():
-    studyTypeNames = [
+def determineStudyPlace():
+    studyPlaces = [
         # veřejné VŠ
         {
             "name": "Akademie múzických umění v Praze (AMU)",
@@ -260,7 +261,6 @@ def determineStudyTypeName():
             "name": "Západočeská univerzita v Plzni (ZČU)",
             "id": "fbad1416-2f46-4671-927c-100be0914dcb",
         },
-
         # státní VŠ
         {
             "name": "Policejní akademie České republiky v Praze (POLAC)",
@@ -271,85 +271,77 @@ def determineStudyTypeName():
             "id": "3da845f7-a616-4ed9-98d8-329fac7fae81",
         },
     ]
-    return studyTypeNames
+    return studyPlaces
+
 
 @cache
-def determineStudyTypeProgram():
-    studyTypePrograms = [
+def determineStudyProgram():
+    studyPrograms = [
         {
             "name": "bakalářský",
+            "name_en": "bachelor",
             "id": "00602448-9d42-4af3-95fd-20fd6a551771",
         },
         {
             "name": "magisterský",
+            "name_en": "master",
             "id": "f0e17944-e7d8-434a-9b36-b70cf6f0fac5",
         },
         {
             "name": "doktorský",
+            "name_en": "doctoral",
             "id": "0ea55a54-1fa5-43ce-b2e6-67ebf57c9671",
         },
     ]
-    return studyTypePrograms
-
+    return studyPrograms
 
 
 @cache
 def determineCertificateType():
     certificateTypes = [
-        #jazykové 
-        {'name': 'STANAG English',  'id': '34a29ef9-b9a9-4d62-9270-e16504d47fa9'},
-        {'name': 'PET',             'id': '8f212ce5-9dfb-4595-a3c0-8c819a6af424'},
-        {'name': 'CAE',             'id': '9ab4186a-1a23-4632-8dc5-8b6c7012c024'},
-        {'name': 'FCE',             'id': '228ad8c0-8ef9-48ec-9ad1-fa9e9c123d50'},
-        {'name': 'CPE',             'id': '6bc6e441-511c-403b-a754-50b8ccd9bfc3'},
-        {'name': 'TOEFL',           'id': '87408450-922a-4f2e-84c5-3fd25255d738'},
-        {'name': 'IELTS',           'id': '6c2b6c8f-812f-4372-bd10-1a395c7faf4b'},
-        {'name': 'TOEIC',           'id': '9afba032-ed69-4d5c-bc73-805ae6eb156b'},
-
-        {'name': 'STANAG German',   'id': '6b381e55-528e-4d13-85a2-963f0710e962'},
-        {'name': 'ZDaF',            'id': '3139c891-e59e-4345-9f87-e7e93b22d686'},
-        {'name': 'ZMF',             'id': 'e1bd3e67-363d-4e46-b616-89f22d64468f'},
-        {'name': 'KDS',             'id': '2f682b71-a772-4b55-8d30-2100844f5b53'},
-        {'name': 'GDS',             'id': '37147540-e3ac-49b8-8ae0-2121f417b92f'},
-        {'name': 'PNDS',            'id': '22bc21ab-5a87-448e-a0f4-74d0136678df'},
-        {'name': 'DSH',             'id': '62c41d70-2757-4378-a7c0-e90bdb57a051'},
-        
-        {'name': 'STANAG French',   'id': '9c615240-f23e-4b6b-abf6-b10327742a1f'},
-        {'name': 'DELF',            'id': 'b6cedca1-38c7-470c-8688-caab5a102aa8'},
-        {'name': 'DALF',            'id': 'c1177873-7ef0-4e59-b24c-803d430d7541'},
-
-        {'name': 'STANAG Spanish',  'id': '62aeac61-0c0a-4962-af06-9b32c375ad0b'},
-        {'name': 'DELE',            'id': 'c6275399-7302-49ca-837d-811f9238a5dc'},
-
-        {'name': 'STANAG Italian',  'id': '49d71536-e9fb-4110-8639-a07ca653e6fb'},
-        {'name': 'CILS',            'id': 'e1a2c256-8e11-4a94-8bfb-4d564c4a892f'},
-
-        {'name': 'STANAG Russian',  'id': '43089ad0-722c-4f13-9a89-c809b2e3ecee'},
-        
-        {'name': 'STANAG Polish',   'id': '634fe5b9-8494-4586-b67a-191157c0ed60'},
-
-
-        #vědecké
-        #{'name': '', 'en_name': '', 'id': ''},
-        #{'name': '', 'en_name': '', 'id': ''},
-        #{'name': '', 'en_name': '', 'id': ''},
-        #{'name': '', 'en_name': '', 'id': ''},
-        #{'name': '', 'en_name': '', 'id': ''},
-
-        #sportovní
-        #{'name': '', 'en_name': '', 'id': ''},
-        #{'name': '', 'en_name': '', 'id': ''},
-        #{'name': '', 'en_name': '', 'id': ''},
-        #{'name': '', 'en_name': '', 'id': ''},
-        #{'name': '', 'en_name': '', 'id': ''},
-
-        #pracovní
-        #{'name': '', 'en_name': '', 'id': ''},
-        #{'name': '', 'en_name': '', 'id': ''},
-        #{'name': '', 'en_name': '', 'id': ''},
-        #{'name': '', 'en_name': '', 'id': ''},
-        #{'name': '', 'en_name': '', 'id': ''},
-
+        # jazykové
+        {"name": "STANAG English", "id": "34a29ef9-b9a9-4d62-9270-e16504d47fa9"},
+        {"name": "PET", "id": "8f212ce5-9dfb-4595-a3c0-8c819a6af424"},
+        {"name": "CAE", "id": "9ab4186a-1a23-4632-8dc5-8b6c7012c024"},
+        {"name": "FCE", "id": "228ad8c0-8ef9-48ec-9ad1-fa9e9c123d50"},
+        {"name": "CPE", "id": "6bc6e441-511c-403b-a754-50b8ccd9bfc3"},
+        {"name": "TOEFL", "id": "87408450-922a-4f2e-84c5-3fd25255d738"},
+        {"name": "IELTS", "id": "6c2b6c8f-812f-4372-bd10-1a395c7faf4b"},
+        {"name": "TOEIC", "id": "9afba032-ed69-4d5c-bc73-805ae6eb156b"},
+        {"name": "STANAG German", "id": "6b381e55-528e-4d13-85a2-963f0710e962"},
+        {"name": "ZDaF", "id": "3139c891-e59e-4345-9f87-e7e93b22d686"},
+        {"name": "ZMF", "id": "e1bd3e67-363d-4e46-b616-89f22d64468f"},
+        {"name": "KDS", "id": "2f682b71-a772-4b55-8d30-2100844f5b53"},
+        {"name": "GDS", "id": "37147540-e3ac-49b8-8ae0-2121f417b92f"},
+        {"name": "PNDS", "id": "22bc21ab-5a87-448e-a0f4-74d0136678df"},
+        {"name": "DSH", "id": "62c41d70-2757-4378-a7c0-e90bdb57a051"},
+        {"name": "STANAG French", "id": "9c615240-f23e-4b6b-abf6-b10327742a1f"},
+        {"name": "DELF", "id": "b6cedca1-38c7-470c-8688-caab5a102aa8"},
+        {"name": "DALF", "id": "c1177873-7ef0-4e59-b24c-803d430d7541"},
+        {"name": "STANAG Spanish", "id": "62aeac61-0c0a-4962-af06-9b32c375ad0b"},
+        {"name": "DELE", "id": "c6275399-7302-49ca-837d-811f9238a5dc"},
+        {"name": "STANAG Italian", "id": "49d71536-e9fb-4110-8639-a07ca653e6fb"},
+        {"name": "CILS", "id": "e1a2c256-8e11-4a94-8bfb-4d564c4a892f"},
+        {"name": "STANAG Russian", "id": "43089ad0-722c-4f13-9a89-c809b2e3ecee"},
+        {"name": "STANAG Polish", "id": "634fe5b9-8494-4586-b67a-191157c0ed60"},
+        # vědecké
+        # {'name': '', 'name_en': '', 'id': ''},
+        # {'name': '', 'name_en': '', 'id': ''},
+        # {'name': '', 'name_en': '', 'id': ''},
+        # {'name': '', 'name_en': '', 'id': ''},
+        # {'name': '', 'name_en': '', 'id': ''},
+        # sportovní
+        # {'name': '', 'name_en': '', 'id': ''},
+        # {'name': '', 'name_en': '', 'id': ''},
+        # {'name': '', 'name_en': '', 'id': ''},
+        # {'name': '', 'name_en': '', 'id': ''},
+        # {'name': '', 'name_en': '', 'id': ''},
+        # pracovní
+        # {'name': '', 'name_en': '', 'id': ''},
+        # {'name': '', 'name_en': '', 'id': ''},
+        # {'name': '', 'name_en': '', 'id': ''},
+        # {'name': '', 'name_en': '', 'id': ''},
+        # {'name': '', 'name_en': '', 'id': ''},
     ]
     return certificateTypes
 
@@ -379,21 +371,18 @@ def determineCertificateTypeGroup():
     ]
     return certificateTypeGroups
 
+
 @cache
 def determineMedalType():
     medalTypes = [
         # Řády a vyznamenání České republiky
-        {
-        "name": "Řád Bílého lva", 
-        "id": "cf4c274c-6cf1-11ed-a1eb-0242ac120002",
-        },
+        {"name": "Řád Bílého lva", "id": "cf4c274c-6cf1-11ed-a1eb-0242ac120002"},
         {
             "name": "Řád Tomáše Garrigua Masaryka",
             "id": "cf4c2ef4-6cf1-11ed-a1eb-0242ac120002",
         },
         {"name": "Medaile za hrdinství", "id": "cf4c3052-6cf1-11ed-a1eb-0242ac120002"},
         {"name": "Medaile za zásluhy", "id": "cf4c3188-6cf1-11ed-a1eb-0242ac120002"},
-        
         # Vojenské resortní vyznamenání
         {"name": "Záslužný kříž", "id": "1ebfcc2a-6cf2-11ed-a1eb-0242ac120002"},
         {"name": "Medaile za zranění", "id": "1ebfcf2c-6cf2-11ed-a1eb-0242ac120002"},
@@ -405,7 +394,6 @@ def determineMedalType():
             "name": "Medaile Armády České republiky",
             "id": "1ebfd198-6cf2-11ed-a1eb-0242ac120002",
         },
-
         # Čestné odznaky
         {
             "name": "Čestný pamětní odznak za službu míru",
@@ -615,40 +603,42 @@ def determineMedalTypeGroup():
     ]
     return medalTypeGroup
 
+
 @cache
 def determineWorkHistoryPosition():
     workHistoryPosition = [
-        {'name': 'manažer',             'id': '3406c765-8454-4f3a-b3bb-76b74582be2e' },
-        {'name': 'účetní',              'id': 'd9a50a22-edf4-4264-98f0-5a9eced115c4'},
-        {'name': 'úředník',             'id': '203cb4d1-6d61-4dfd-8662-d7a352db739c'},
-        {'name': 'konzultant',          'id': '7925ca15-acd5-4af9-9731-2884c8225081'},
-        {'name': 'asistent',            'id': 'fd8ea6b7-4706-4537-8569-5dc8040519f8'},
-        {'name': 'právní zástupce',     'id': '242a84a8-f754-4136-b322-e20b0382dff4'},
-        {'name': 'administrátor',       'id': 'cc3f7106-f38c-48ee-89d9-d1a420e45df5'},
-        {'name': 'pokladní',            'id': '950d3466-af5b-4a59-b91f-14514bf693d0'},
-        {'name': 'uklízeč',             'id': 'c24dba24-b636-46d4-b0b2-2dc03e6af933'},
-        {'name': 'operátor',            'id': '02addd4f-ee6f-4141-bbc7-5a6ca9bc8647'},
-        {'name': 'analytik',            'id': 'aaea9b89-dbed-42a2-8f22-737ce913f803'},
-        {'name': 'správce',             'id': '87897e28-c92d-49be-8878-e9c39c9b8a5a'},
-        {'name': 'technická podpora',   'id': 'f60e38af-069b-4f8e-8cc9-b6cd077a7cee'},
-        {'name': 'řidič',               'id': 'c11f1606-bdd2-4973-89ca-1489e8249c0f'},
-        {'name': 'specialista',         'id': '8b18a1a2-f759-4441-a18b-0bee41e71519'},
+        {"name": "manažer", "id": "3406c765-8454-4f3a-b3bb-76b74582be2e"},
+        {"name": "účetní", "id": "d9a50a22-edf4-4264-98f0-5a9eced115c4"},
+        {"name": "úředník", "id": "203cb4d1-6d61-4dfd-8662-d7a352db739c"},
+        {"name": "konzultant", "id": "7925ca15-acd5-4af9-9731-2884c8225081"},
+        {"name": "asistent", "id": "fd8ea6b7-4706-4537-8569-5dc8040519f8"},
+        {"name": "právní zástupce", "id": "242a84a8-f754-4136-b322-e20b0382dff4"},
+        {"name": "administrátor", "id": "cc3f7106-f38c-48ee-89d9-d1a420e45df5"},
+        {"name": "pokladní", "id": "950d3466-af5b-4a59-b91f-14514bf693d0"},
+        {"name": "uklízeč", "id": "c24dba24-b636-46d4-b0b2-2dc03e6af933"},
+        {"name": "operátor", "id": "02addd4f-ee6f-4141-bbc7-5a6ca9bc8647"},
+        {"name": "analytik", "id": "aaea9b89-dbed-42a2-8f22-737ce913f803"},
+        {"name": "správce", "id": "87897e28-c92d-49be-8878-e9c39c9b8a5a"},
+        {"name": "technická podpora", "id": "f60e38af-069b-4f8e-8cc9-b6cd077a7cee"},
+        {"name": "řidič", "id": "c11f1606-bdd2-4973-89ca-1489e8249c0f"},
+        {"name": "specialista", "id": "8b18a1a2-f759-4441-a18b-0bee41e71519"},
     ]
     return workHistoryPosition
 
 
+# from gql_personalities.DBDefinitions import
+
 import asyncio
+
 
 async def ensureAllTypes(asyncSessionMaker):
     done = await asyncio.gather(
         putPredefinedStructuresIntoTable(
             asyncSessionMaker, RankTypeModel, determineRankType
         ),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, StudyModel, determineStudyPlace),
         putPredefinedStructuresIntoTable(
-        asyncSessionMaker, StudyTypeModel, determineStudyTypeName),
-
-        putPredefinedStructuresIntoTable(
-            asyncSessionMaker, StudyTypeModel, determineStudyTypeProgram
+            asyncSessionMaker, StudyModel, determineStudyProgram
         ),
         putPredefinedStructuresIntoTable(
             asyncSessionMaker, CertificateTypeModel, determineCertificateType
@@ -743,51 +733,3 @@ async def putPredefinedStructuresIntoTable(
     # nyni vsechny entity mame v pameti a v databazi synchronizovane
     print(structureFunction())
     pass
-
-##################################################################################
-#
-#random guy
-#
-##################################################################################
-limit = 5
-
-def randomUUID():
-    uuids = [uuid.uuid4() for _ in range(limit) ]
-    return uuids
-
-def randomRankType():
-    rankTypes = [
-        determineRankType()
-    ]
-    return random.choice(rankTypes)
-
-def randomRank():
-    start = datetime.datetime
-    end = datetime.datetime
-
-    ranktype = randomRankType()
-
-    return start,end,ranktype
-
-def randomStudyTypeName():
-    studyTypeNames = [
-        determineStudyTypeName()
-    ]
-    return random.choice(studyTypeNames)
-
-def randomStudy():
-    start = datetime.datetime
-    end = datetime.datetime
-
-    studyType_name = randomStudyTypeName()
-    studyType_program = randomStudyTypeProgram()
-
-    return start,end,studyType_name,studyType_program
-
-
-def randomStudyTypeProgram():
-    studyTypePrograms = [
-        determineStudyTypeProgram()
-    ]
-    return random.choice(studyTypePrograms)
-

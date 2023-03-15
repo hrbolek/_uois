@@ -255,7 +255,7 @@ class WorkHistoryModel(BaseModel):
     id = UUIDColumn()
     start = Column(DateTime)
     end = Column(DateTime)
-    position = Column(String)
+    name = Column(String)
     ico = Column(String)
 
     user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"))

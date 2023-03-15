@@ -791,8 +791,8 @@ class WorkHistoryGQLModel:
         date when user started working
     end: datetime
         date when user stopped working
-    position: str
-        what type of position is the work about
+    name: str
+        name of position is the work about
     ico: str
         ico of employer
     created: datetime
@@ -825,9 +825,9 @@ class WorkHistoryGQLModel:
     def end(self) -> datetime.datetime:
         return self.end
 
-    @strawberryA.field(description="""position""")
-    def position(self) -> str:
-        return self.position
+    @strawberryA.field(description="""name of position""")
+    def name(self) -> str:
+        return self.name
 
     @strawberryA.field(description="""ico""")
     def ico(self) -> str:
