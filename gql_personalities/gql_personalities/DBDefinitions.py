@@ -49,17 +49,17 @@ def UUIDFKey(*, ForeignKey=None, nullable=False):
 #
 ###########################################################################################################################
 
-class UserModel(BaseModel):
-    __tablename__ = 'users'
+# class UserModel(BaseModel):
+#     __tablename__ = 'users'
 
-    id = UUIDColumn()
+#     id = UUIDColumn()
 
-    ranks = relationship('Rank', back_populates='user')
-    studies = relationship('Study', back_populates='user')
-    certificates = relationship('Certificate', back_populates='user')
-    medals = relationship('Medal', back_populates='user')
-    workHistories = relationship('WorkHistory', back_populates='user')
-    relatedDocs = relationship('RelatedDoc', back_populates='user')
+#     ranks = relationship('Rank', back_populates='user')
+#     studies = relationship('Study', back_populates='user')
+#     certificates = relationship('Certificate', back_populates='user')
+#     medals = relationship('Medal', back_populates='user')
+#     workHistories = relationship('WorkHistory', back_populates='user')
+#     relatedDocs = relationship('RelatedDoc', back_populates='user')
 
 class RankModel(BaseModel):
     __tablename__ = 'personalitiesranks'
@@ -219,7 +219,7 @@ class MedalTypeModel(BaseModel):
 
     id = UUIDColumn()
     name = Column(String)
-    name_en = Column(String)
+
 
     medalTypeGroup_id = Column(ForeignKey("personalitiesmedalcategories.id"), index=True)
 
@@ -238,7 +238,7 @@ class MedalTypeGroupModel(BaseModel):
 
     id = UUIDColumn()
     name = Column(String)
-    name_en = Column(String)
+
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())

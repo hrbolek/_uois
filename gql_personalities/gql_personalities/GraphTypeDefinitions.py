@@ -115,7 +115,7 @@ class UserEditorGQLModel:
 #
 ###########################################################################################################################
 
-from gql_personalities.GraphResolvers import resolveUserById
+#from gql_personalities.GraphResolvers import resolveUserById
 from gql_personalities.GraphResolvers import resolveRanksForUser, resolveStudiesForUser, resolveMedalsForUser, resolveWorkHistoriesForUser, resolveRelatedDocsForUser
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:

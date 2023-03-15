@@ -11,6 +11,7 @@ from uoishelpers.resolvers import putSingleEntityToDb
 
 from gql_personalities.DBDefinitions import (
     BaseModel,
+    #UserModel,
     RankModel,
     StudyModel,
     CertificateModel,
@@ -18,7 +19,7 @@ from gql_personalities.DBDefinitions import (
     WorkHistoryModel,
     RelatedDocModel,
 )
-from gql_personalities.DBDefinitions import RankTypeModel, CertificateTypeModel, MedalTypeModel
+from gql_personalities.DBDefinitions import RankTypeModel, StudyTypeModel, CertificateTypeModel, MedalTypeModel
 from gql_personalities.DBDefinitions import CertificateTypeGroupModel, MedalTypeGroupModel
 
 #user resolvers
@@ -73,13 +74,32 @@ resolveStudyAll = createEntityGetter(StudyModel)
 resolverUpdateStudy = createUpdateResolver(StudyModel)
 resolveInsertStudy = createInsertResolver(StudyModel)
 
+#studyType resolvers
+resolveStudyTypeById = createEntityByIdGetter(StudyTypeModel)
+resolveStudyTypeAll = createEntityGetter(StudyTypeModel)
+resolverUpdateStudyType = createUpdateResolver(StudyTypeModel)
+resolverInsertStudyType = createInsertResolver(StudyTypeModel)
 
-async def resolveStudyByThreeLetters(
+async def resolveStudyTypeNameByThreeLetters(
     session: AsyncSession, validity=None, letters: str = ""
-) -> List[StudyModel]:
+) -> List[StudyTypeModel]:
     if len(letters) < 3:
         return []
-    stmt = select(StudyModel).where(
+    stmt = select(StudyTypeModel).where(
+        StudyModel.place.like(f"%{letters}%")
+    )  # Study.place. ... kvůli názvu v entitě
+    if validity is not None:
+        stmt = stmt.filter_by(valid=True)
+
+    dbSet = await session.execute(stmt)
+    return dbSet.scalars()
+
+async def resolveStudyTypeProgramByThreeLetters(
+    session: AsyncSession, validity=None, letters: str = ""
+) -> List[StudyTypeModel]:
+    if len(letters) < 3:
+        return []
+    stmt = select(StudyTypeModel).where(
         StudyModel.place.like(f"%{letters}%")
     )  # Study.place. ... kvůli názvu v entitě
     if validity is not None:

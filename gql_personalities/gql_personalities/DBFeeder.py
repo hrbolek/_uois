@@ -9,10 +9,12 @@ from gql_personalities.DBDefinitions import (
     WorkHistoryModel,
     RelatedDocModel,
 )
-from gql_personalities.DBDefinitions import RankTypeModel, CertificateTypeModel, MedalTypeModel, MedalTypeGroupModel
+from gql_personalities.DBDefinitions import RankTypeModel, StudyTypeModel, CertificateTypeModel, MedalTypeModel, MedalTypeGroupModel
 from gql_personalities.DBDefinitions import CertificateTypeGroupModel
 
+import uuid
 import random
+import datetime
 import itertools
 from functools import cache
 
@@ -151,8 +153,8 @@ def determineRankType():
 
 
 @cache
-def determineStudyPlace():
-    studyPlaces = [
+def determineStudyTypeName():
+    studyTypeNames = [
         # veřejné VŠ
         {
             "name": "Akademie múzických umění v Praze (AMU)",
@@ -269,28 +271,25 @@ def determineStudyPlace():
             "id": "3da845f7-a616-4ed9-98d8-329fac7fae81",
         },
     ]
-    return studyPlaces
+    return studyTypeNames
 
 @cache
-def determineStudyProgram():
-    studyPrograms = [
+def determineStudyTypeProgram():
+    studyTypePrograms = [
         {
             "name": "bakalářský",
-            "name_en": "bachelor",
             "id": "00602448-9d42-4af3-95fd-20fd6a551771",
         },
         {
             "name": "magisterský",
-            "name_en": "master",
             "id": "f0e17944-e7d8-434a-9b36-b70cf6f0fac5",
         },
         {
             "name": "doktorský",
-            "name_en": "doctoral",
             "id": "0ea55a54-1fa5-43ce-b2e6-67ebf57c9671",
         },
     ]
-    return studyPrograms
+    return studyTypePrograms
 
 
 
@@ -642,9 +641,11 @@ async def ensureAllTypes(asyncSessionMaker):
         putPredefinedStructuresIntoTable(
             asyncSessionMaker, RankTypeModel, determineRankType
         ),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, StudyModel, determineStudyPlace),
         putPredefinedStructuresIntoTable(
-            asyncSessionMaker, StudyModel, determineStudyProgram
+        asyncSessionMaker, StudyTypeModel, determineStudyTypeName),
+
+        putPredefinedStructuresIntoTable(
+            asyncSessionMaker, StudyTypeModel, determineStudyTypeProgram
         ),
         putPredefinedStructuresIntoTable(
             asyncSessionMaker, CertificateTypeModel, determineCertificateType
@@ -739,3 +740,51 @@ async def putPredefinedStructuresIntoTable(
     # nyni vsechny entity mame v pameti a v databazi synchronizovane
     print(structureFunction())
     pass
+
+##################################################################################
+#
+#random guy
+#
+##################################################################################
+limit = 5
+
+def randomUUID():
+    uuids = [uuid.uuid4() for _ in range(limit) ]
+    return uuids
+
+def randomRankType():
+    rankTypes = [
+        determineRankType()
+    ]
+    return random.choice(rankTypes)
+
+def randomRank():
+    start = datetime.datetime
+    end = datetime.datetime
+
+    ranktype = randomRankType()
+
+    return start,end,ranktype
+
+def randomStudyTypeName():
+    studyTypeNames = [
+        determineStudyTypeName()
+    ]
+    return random.choice(studyTypeNames)
+
+def randomStudy():
+    start = datetime.datetime
+    end = datetime.datetime
+
+    studyType_name = randomStudyTypeName()
+    studyType_program = randomStudyTypeProgram()
+
+    return start,end,studyType_name,studyType_program
+
+
+def randomStudyTypeProgram():
+    studyTypePrograms = [
+        determineStudyTypeProgram()
+    ]
+    return random.choice(studyTypePrograms)
+
