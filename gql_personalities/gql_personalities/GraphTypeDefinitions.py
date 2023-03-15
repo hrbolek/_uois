@@ -119,6 +119,10 @@ class UserEditorGQLModel:
 from gql_personalities.GraphResolvers import resolveRanksForUser, resolveStudiesForUser, resolveMedalsForUser, resolveWorkHistoriesForUser, resolveRelatedDocsForUser
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
+    """
+    class representing UserModel
+    """
+
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
@@ -172,6 +176,28 @@ class UserGQLModel:
 from gql_personalities.GraphResolvers import resolveRankAll, resolveRankById
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a rank""")
 class RankGQLModel:
+    """
+    class representing rank
+
+    Attributes
+    ----------
+    id: UUID(UUID4)
+        primary key of rank
+    user_id: UUIDFKey(UUID4)
+        id of user
+    rankType_id: ForeignKey personalitiesranktypes_id
+        id of rankType for rank
+    start: datetime
+        date when was rank acquired
+    end: datetime
+        date when was rank lost
+    created: datetime
+        date when rank was created in db
+    lastchange: datetime
+        date when rank was last changed in db
+    changedby: UUIDFKey
+        who made the last change
+    """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -182,16 +208,34 @@ class RankGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+    
+    @strawberryA.field(description="""foreign key""")
+    def user_id(self) -> strawberryA.ID:
+        return self.user_id
+    
+    @strawberryA.field(description="""foreign key""")
+    def rankType_id(self) -> strawberryA.ID:
+        return self.rankType_id
 
     @strawberryA.field(description="""start""")
-    def start(self) -> strawberryA.ID:
+    def start(self) -> datetime.datetime:
         return self.start
 
     @strawberryA.field(description="""end""")
-    def end(self) -> strawberryA.ID:
+    def end(self) -> datetime.datetime:
         return self.end
 
+    @strawberryA.filed(description="""created""")
+    def created(self) -> datetime.datetime:
+        return self.created
 
+    @strawberryA.filed(description="""lastchange""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+    
+    @strawberryA.field(description="""foreign key""")
+    def changedby(self) -> strawberryA.ID:
+        return self.changedby
 
 
 
@@ -199,6 +243,22 @@ from gql_personalities.GraphResolvers import resolveRankTypeAll, resolveRankType
 from gql_personalities.GraphResolvers import resolveRankTypeByThreeLetters
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a rankType""")
 class RankTypeGQLModel:
+    """
+    class representing rankType
+
+    Attributes
+    ----------
+    id: UUID(UUID4)
+        primary key of rankType for rank
+    name: str
+        name of rankType
+    created: datetime
+        date when rankType was created in db
+    lastchange: datetime
+        date when rankType was last changed in db
+    changedby: UUIDFKey
+        who made the last change
+    """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -211,8 +271,21 @@ class RankTypeGQLModel:
         return self.id
 
     @strawberryA.field(description="""name""")
-    def name(self) -> strawberryA.ID:
+    def name(self) -> str:
         return self.name
+    
+    @strawberryA.filed(description="""created""")
+    def created(self) -> datetime.datetime:
+        return self.created
+
+    @strawberryA.filed(description="""lastchange""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+    
+    @strawberryA.field(description="""foreign key""")
+    def changedby(self) -> strawberryA.ID:
+        return self.changedby
+
 
 
 
@@ -220,6 +293,28 @@ class RankTypeGQLModel:
 from gql_personalities.GraphResolvers import resolveStudyAll, resolveStudyById
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a study""")
 class StudyGQLModel:
+    """
+    class representing study
+
+    Attributes
+    ----------
+    id: UUID(UUID4)
+        primary key of study
+    user_id: UUIDFKey
+        id of user
+    studyType_id: foreign key
+        id of studyType for study
+    start: datetime
+        date when studying started
+    end: datetime
+        date when studying stopped
+    created: datetime
+        date when study was created in db
+    lastchange: datetime
+        date when study was last changed in db
+    changedby: UUIDFKey
+        who made the last change
+    """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -230,14 +325,35 @@ class StudyGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+    
+    @strawberryA.field(description="""foreign key""")
+    def user_id(self) -> strawberryA.ID:
+        return self.user_id
+    
+    @strawberryA.field(description="""foreign key""")
+    def studyType_id(self) -> strawberryA.ID:
+        return self.studyType_id
 
     @strawberryA.field(description="""start""")
-    def start(self) -> strawberryA.ID:
+    def start(self) -> datetime.datetime:
         return self.start
 
     @strawberryA.field(description="""end""")
-    def end(self) -> strawberryA.ID:
+    def end(self) -> datetime.datetime:
         return self.end
+    
+    @strawberryA.filed(description="""created""")
+    def created(self) -> datetime.datetime:
+        return self.created
+
+    @strawberryA.filed(description="""lastchange""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+    
+    @strawberryA.field(description="""foreign key""")
+    def changedby(self) -> strawberryA.ID:
+        return self.changedby
+
 
 
 
@@ -246,6 +362,24 @@ from gql_personalities.GraphResolvers import resolveStudyTypeAll, resolveStudyTy
 from gql_personalities.GraphResolvers import resolveStudyTypeNameByThreeLetters, resolveStudyTypeProgramByThreeLetters
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a rankType""")
 class StudyTypeGQLModel:
+    """
+    class representing studyType
+
+    Attributes
+    ----------
+    id: UUID(UUID4)
+        primary key of studyType for study
+    name: str
+        name of school
+    program: str
+        name of studying program
+    created: datetime
+        date when studyType was created in db
+    lastchange: datetime
+        date when studyType was last changed in db
+    changedby: UUIDFKey
+        who made the last change
+    """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -258,19 +392,54 @@ class StudyTypeGQLModel:
         return self.id
 
     @strawberryA.field(description="""name""")
-    def name(self) -> strawberryA.ID:
+    def name(self) -> str:
         return self.name
 
     @strawberryA.field(description="""program""")
-    def program(self) -> strawberryA.ID:
+    def program(self) -> str:
         return self.program
 
+    @strawberryA.filed(description="""created""")
+    def created(self) -> datetime.datetime:
+        return self.created
+
+    @strawberryA.filed(description="""lastchange""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+    
+    @strawberryA.field(description="""foreign key""")
+    def changedby(self) -> strawberryA.ID:
+        return self.changedby
 
 
 
 from gql_personalities.GraphResolvers import resolveCertificateAll, resolveCertificateById
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a certificate""")
 class CertificateGQLModel:
+    """
+    class representing certificate
+
+    Attributes
+    ----------
+    id: UUID(UUID4)
+        primary key of certificate
+    user_id: UUIDFKey
+        id of user
+    certificateType_id: foreign key
+        id of certificateType for certificate
+    level: str
+        level of certificate
+    validity_start: datetime
+        date when certificate became valid
+    validity_end: datetime
+        date when certificate became invalid
+    created: datetime
+        date when certificate was created in db
+    lastchange: datetime
+        date when certificate was last changed in db
+    changedby: UUIDFKey
+        who made the last change
+    """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -282,17 +451,38 @@ class CertificateGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
     
+    @strawberryA.field(description="""foreign key""")
+    def user_id(self) -> strawberryA.ID:
+        return self.user_id
+    
+    @strawberryA.field(description="""foreign key""")
+    def certificateType_id(self) -> strawberryA.ID:
+        return self.certificateType_id
+    
     @strawberryA.field(description="""level""")
-    def level(self) -> strawberryA.ID:
+    def level(self) -> str:
         return self.level
 
     @strawberryA.field(description="""validity start""")
-    def validity_start(self) -> strawberryA.ID:
+    def validity_start(self) -> datetime.datetime:
         return self.validity_start
 
     @strawberryA.field(description="""validity end""")
-    def validity_end(self) -> strawberryA.ID:
+    def validity_end(self) -> datetime.datetime:
         return self.validity_end
+    
+    @strawberryA.filed(description="""created""")
+    def created(self) -> datetime.datetime:
+        return self.created
+
+    @strawberryA.filed(description="""lastchange""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+    
+    @strawberryA.field(description="""foreign key""")
+    def changedby(self) -> strawberryA.ID:
+        return self.changedby
+
 
 
 
@@ -301,6 +491,26 @@ from gql_personalities.GraphResolvers import resolveCertificateTypeAll, resolveC
 from gql_personalities.GraphResolvers import resolveCertificateTypeByThreeLetters
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a certificateType""")
 class CertificateTypeGQLModel:
+    """
+    class representing StudyTypeModel
+
+    Attributes
+    ----------
+    id: UUID(UUID4)
+        primary key of studyType for study
+    certificateTypeGroup_id: foreign key
+        foreign key of certificateTypeGroup for certificateType
+    name: str
+        czech name of certificateType
+    name_en: str
+        english name of certificateType
+    created: datetime
+        date when certificateType was created in db
+    lastchange: datetime
+        date when certificateType was last changed in db
+    changedby: UUIDFKey
+        who made the last change
+    """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -311,10 +521,31 @@ class CertificateTypeGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+    
+    @strawberryA.field(description="""foreign key""")
+    def certificateTypeGroup_id(self) -> strawberryA.ID:
+        return self.certificateTypeGroup_id
 
     @strawberryA.field(description="""name""")
-    def name(self) -> strawberryA.ID:
+    def name(self) -> str:
         return self.name
+    
+    @strawberryA.field(description="""name_en""")
+    def name_en(self) -> str:
+        return self.name_en
+    
+    @strawberryA.filed(description="""created""")
+    def created(self) -> datetime.datetime:
+        return self.created
+
+    @strawberryA.filed(description="""lastchange""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+    
+    @strawberryA.field(description="""foreign key""")
+    def changedby(self) -> strawberryA.ID:
+        return self.changedby
+
 
 
 
@@ -323,6 +554,24 @@ from gql_personalities.GraphResolvers import resolveCertificateTypeGroupAll, res
 from gql_personalities.GraphResolvers import resolveCertificateTypeGroupByThreeLetters
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a certificateTypeGroup""")
 class CertificateTypeGroupGQLModel:
+    """
+    class representing CertificateTypeGroup
+
+    Attributes
+    ----------
+    id: UUID(UUID4)
+        primary key of CertificateTypeGroup for CertificateType
+    name: str
+        czech name of CertificateTypeGroup
+    name_en: str
+        english name of CertificateTypeGroup
+    created: datetime
+        date when certificateTypeGroup was created in db
+    lastchange: datetime
+        date when certificateTypeGroup was last changed in db
+    changedby: UUIDFKey
+        who made the last change
+    """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -335,8 +584,25 @@ class CertificateTypeGroupGQLModel:
         return self.id
 
     @strawberryA.field(description="""name""")
-    def name(self) -> strawberryA.ID:
+    def name(self) -> str:
         return self.name
+    
+    @strawberryA.field(description="""name_en""")
+    def name_en(self) -> str:
+        return self.name_en
+    
+    @strawberryA.filed(description="""created""")
+    def created(self) -> datetime.datetime:
+        return self.created
+
+    @strawberryA.filed(description="""lastchange""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+    
+    @strawberryA.field(description="""foreign key""")
+    def changedby(self) -> strawberryA.ID:
+        return self.changedby
+
 
 
 
@@ -344,6 +610,26 @@ class CertificateTypeGroupGQLModel:
 from gql_personalities.GraphResolvers import resolveMedalAll, resolveMedalById
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a medal""")
 class MedalGQLModel:
+    """
+    class representing medal
+
+    Attributes
+    ----------
+    id: UUID(UUID4)
+        primary key of medal
+    user_id: UUIDFKey
+        id of user
+    medalType_id: foreign key
+        id of medalType for medal
+    year: int
+        year when medal was acquired
+    created: datetime
+        date when medal was created in db
+    lastchange: datetime
+        date when medal was last changed in db
+    changedby: UUIDFKey
+        who made the last change
+    """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -355,14 +641,54 @@ class MedalGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""foreign key""")
+    def user_id(self) -> strawberryA.ID:
+        return self.user_id
+    
+    @strawberryA.field(description="""foreign key""")
+    def medalType_id(self) -> strawberryA.ID:
+        return self.medalType_id
+    
     @strawberryA.field(description="""year""")
-    def year(self) -> strawberryA.ID:
+    def year(self) -> int:
         return self.year
+    
+    @strawberryA.filed(description="""created""")
+    def created(self) -> datetime.datetime:
+        return self.created
+
+    @strawberryA.filed(description="""lastchange""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+    
+    @strawberryA.field(description="""foreign key""")
+    def changedby(self) -> strawberryA.ID:
+        return self.changedby
+    
+
     
 from gql_personalities.GraphResolvers import resolveMedalTypeAll, resolveMedalTypeById
 from gql_personalities.GraphResolvers import resolveMedalTypeByThreeLetters
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a medalType""")
 class MedalTypeGQLModel:
+    """
+    class representing medalType
+
+    Attributes
+    ----------
+    id: UUID(UUID4)
+        primary key of medalType
+    medalTypeGroup_id: foreign key
+        id of medalTypeGroup for medalType
+    name: str
+        name of medalType
+    created: datetime
+        date when medalType was created in db
+    lastchange: datetime
+        date when medalType was last changed in db
+    changedby: UUIDFKey
+        who made the last change
+    """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -373,10 +699,27 @@ class MedalTypeGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+    
+    @strawberryA.field(description="""foreign key""")
+    def medalTypeGroup_id(self) -> strawberryA.ID:
+        return self.medalTypeGroup_id
 
     @strawberryA.field(description="""name""")
-    def name(self) -> strawberryA.ID:
+    def name(self) -> str:
         return self.name
+    
+    @strawberryA.filed(description="""created""")
+    def created(self) -> datetime.datetime:
+        return self.created
+
+    @strawberryA.filed(description="""lastchange""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+    
+    @strawberryA.field(description="""foreign key""")
+    def changedby(self) -> strawberryA.ID:
+        return self.changedby
+    
 
 
 
@@ -385,6 +728,22 @@ from gql_personalities.GraphResolvers import resolveMedalTypeGroupAll, resolveMe
 from gql_personalities.GraphResolvers import resolveMedalTypeGroupByThreeLetters
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a medalTypeGroup""")
 class MedalTypeGroupGQLModel:
+    """
+    class representing medalTypeGroup
+
+    Attributes
+    ----------
+    id: UUID(UUID4)
+        primary key of medalTypeGroup
+    name: str
+        name of medalTypeGroup
+    created: datetime
+        date when medalTypeGroup was created in db
+    lastchange: datetime
+        date when medalTypeGroup was last changed in db
+    changedby: UUIDFKey
+        who made the last change
+    """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -399,6 +758,18 @@ class MedalTypeGroupGQLModel:
     @strawberryA.field(description="""name""")
     def name(self) -> strawberryA.ID:
         return self.name
+    
+    @strawberryA.filed(description="""created""")
+    def created(self) -> datetime.datetime:
+        return self.created
+
+    @strawberryA.filed(description="""lastchange""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+    
+    @strawberryA.field(description="""foreign key""")
+    def changedby(self) -> strawberryA.ID:
+        return self.changedby
 
 
 
@@ -407,6 +778,30 @@ from gql_personalities.GraphResolvers import resolveWorkHistoryAll, resolveWorkH
 from gql_personalities.GraphResolvers import resolveWorkHistoryByThreeLetters
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a workHistory""")
 class WorkHistoryGQLModel:
+    """
+    class representing workHistory
+
+    Attributes
+    ----------
+    id: UUID(UUID4)
+        primary key of workHistory
+    user_id: UUIDFKey
+        id of user
+    start: datetime
+        date when user started working
+    end: datetime
+        date when user stopped working
+    position: str
+        what type of position is the work about
+    ico: str
+        ico of employer
+    created: datetime
+        date when study was created in db
+    lastchange: datetime
+        date when study was last changed in db
+    changedby: UUIDFKey
+        who made the last change
+    """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -417,22 +812,38 @@ class WorkHistoryGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+    
+    @strawberryA.field(description="""foreign key""")
+    def user_id(self) -> strawberryA.ID:
+        return self.user_id
 
     @strawberryA.field(description="""start""")
-    def start(self) -> strawberryA.ID:
+    def start(self) -> datetime.datetime:
         return self.start
 
     @strawberryA.field(description="""end""")
-    def end(self) -> strawberryA.ID:
+    def end(self) -> datetime.datetime:
         return self.end
 
     @strawberryA.field(description="""position""")
-    def position(self) -> strawberryA.ID:
+    def position(self) -> str:
         return self.position
 
     @strawberryA.field(description="""ico""")
-    def ico(self) -> strawberryA.ID:
+    def ico(self) -> str:
         return self.ico
+    
+    @strawberryA.filed(description="""created""")
+    def created(self) -> datetime.datetime:
+        return self.created
+
+    @strawberryA.filed(description="""lastchange""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+    
+    @strawberryA.field(description="""foreign key""")
+    def changedby(self) -> strawberryA.ID:
+        return self.changedby
 
 
 
@@ -440,6 +851,24 @@ class WorkHistoryGQLModel:
 from gql_personalities.GraphResolvers import resolveRelatedDocAll, resolveRelatedDocById 
 @strawberryA.federation.type(extend=True, keys=["id"], description="""Entity representing a relatedDoc""")
 class RelatedDocGQLModel:
+    """
+    class representing relatedDoc
+
+    Attributes
+    ----------
+    id: UUID(UUID4)
+        primary key of workHistory
+    user_id: UUIDFKey
+        id of user
+    name: str
+        name of document
+    created: datetime
+        date when study was created in db
+    lastchange: datetime
+        date when study was last changed in db
+    changedby: UUIDFKey
+        who made the last change
+    """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -450,10 +879,26 @@ class RelatedDocGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+    
+    @strawberryA.field(description="""foreign key""")
+    def user_id(self) -> strawberryA.ID:
+        return self.user_id
 
     @strawberryA.field(description="""name""")
-    def name(self) -> strawberryA.ID:
+    def name(self) -> str:
         return self.name
+    
+    @strawberryA.filed(description="""created""")
+    def created(self) -> datetime.datetime:
+        return self.created
+
+    @strawberryA.filed(description="""lastchange""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+    
+    @strawberryA.field(description="""foreign key""")
+    def changedby(self) -> strawberryA.ID:
+        return self.changedby
 
     #@strawberryA.field(description="""uploaded""")
     #def uploaded(self) -> strawberryA.ID:
