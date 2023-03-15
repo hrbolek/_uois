@@ -24,11 +24,13 @@ resolveMedalsForUser = create1NGetter(Medal, foreignKeyName='user_id', options=j
 resolveWorkHistoriesForUser = create1NGetter(WorkHistory, foreignKeyName='user_id')
 resolveRelatedDocsForUser = create1NGetter(RelatedDoc, foreignKeyName='user_id')
 
+
 #rank resolvers
 resolveRankById = createEntityByIdGetter(Rank)
 resolveRankAll = createEntityGetter(Rank)
 resolverUpdateRank = createUpdateResolver(Rank)
 resolveInsertRank = createInsertResolver(Rank)
+
 
 #rankType resolvers
 resolveRankTypeById = createEntityByIdGetter(RankType)

@@ -1,0 +1,58 @@
+5.10.2022
+    Založení repozitáře. https://github.com/Hujnis/_uois
+
+
+1. týden (10. - 16. 10.)
+    Brainstorming nad databázovými modely.
+
+
+2. - 3. týden (17. - 30. 10.)
+    18.10. Projektový den
+    Konzultace databázových modelů a jejich úprava ve schematickém podání v lucid.app
+    https://lucid.app/lucidchart/5f103af7-1e0e-419f-936d-d9b00bc00cdf/edit?viewport_loc=-31%2C108%2C1598%2C641%2C0_0&invitationId=inv_0ec6fd88-2746-47d4-95b9-abfaffd7c8d4
+
+
+4. - 7. týden (31. 10. - 27. 11.)
+    Shromažďování dat a vytváření databáze (DBFeeder).
+    Úprava modelů v DBDefinitions.
+    18.11.Přejmenování projektu na gql_personalities
+
+
+8. - 10. týden (28.11. - 18.12.)
+    29.11. Projektový den
+    Soustavná úprava DBDefinitions
+    Aktualizace DBFeederu
+    První práce na GraphTypeDefinitions a GraphResolvers
+
+
+11. - 14. týden (19.12. - 15.1.)
+    Updatování GQL modelů a resolverů
+    10.1. commit for merge
+    10.1. Projektový den
+
+    
+    5.2. Přidání StudyType pro lepší logiku a návaznost již vytvořeného DBFeederu
+
+
+19. - 23. týden(13.2. - 15.3.)
+    Práce na editoru
+    Finish projektu
+
+
+
+TO DO:
+- Editor 
+
+POVEDLO SE:
+- Detailní struktura DBDefinitions = SQL modely
+- strukturovaný a smysluplný DBFeeder
+- snaha o vytvoření co nejreálnějšího prostředí, které bude nadále použitelné tak, aby nástupci spravující projekt museli dělat co možná nejméně změn ve struktuře
+
+NEPOVEDLO SE:
+- příliš mnoho času věnováno perfekcionalizaci SQL modelů
+- Editor
+
+LESSONS LEARNED:
+- time management
+- priority management
+- nikdy nic není perfektní
