@@ -115,12 +115,19 @@ class UserEditorGQLModel:
 #
 ###########################################################################################################################
 
-
+from gql_personalities.GraphResolvers import resolveUserById
 from gql_personalities.GraphResolvers import resolveRanksForUser, resolveStudiesForUser, resolveMedalsForUser, resolveWorkHistoriesForUser, resolveRelatedDocsForUser
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        async with withInfo(info) as session:
+            result = await resolveUserById(session, id)
+            result._type_definition = cls._type_definition  # little hack :)
+            return result
+        
     @classmethod
     def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id)
