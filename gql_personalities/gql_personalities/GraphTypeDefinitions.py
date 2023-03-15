@@ -225,11 +225,11 @@ class RankGQLModel:
     def end(self) -> datetime.datetime:
         return self.end
 
-    @strawberryA.filed(description="""created""")
+    @strawberryA.field(description="""created""")
     def created(self) -> datetime.datetime:
         return self.created
 
-    @strawberryA.filed(description="""lastchange""")
+    @strawberryA.field(description="""lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
     
@@ -274,11 +274,11 @@ class RankTypeGQLModel:
     def name(self) -> str:
         return self.name
     
-    @strawberryA.filed(description="""created""")
+    @strawberryA.field(description="""created""")
     def created(self) -> datetime.datetime:
         return self.created
 
-    @strawberryA.filed(description="""lastchange""")
+    @strawberryA.field(description="""lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
     
@@ -342,11 +342,11 @@ class StudyGQLModel:
     def end(self) -> datetime.datetime:
         return self.end
     
-    @strawberryA.filed(description="""created""")
+    @strawberryA.field(description="""created""")
     def created(self) -> datetime.datetime:
         return self.created
 
-    @strawberryA.filed(description="""lastchange""")
+    @strawberryA.field(description="""lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
     
@@ -399,11 +399,11 @@ class StudyTypeGQLModel:
     def program(self) -> str:
         return self.program
 
-    @strawberryA.filed(description="""created""")
+    @strawberryA.field(description="""created""")
     def created(self) -> datetime.datetime:
         return self.created
 
-    @strawberryA.filed(description="""lastchange""")
+    @strawberryA.field(description="""lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
     
@@ -471,11 +471,11 @@ class CertificateGQLModel:
     def validity_end(self) -> datetime.datetime:
         return self.validity_end
     
-    @strawberryA.filed(description="""created""")
+    @strawberryA.field(description="""created""")
     def created(self) -> datetime.datetime:
         return self.created
 
-    @strawberryA.filed(description="""lastchange""")
+    @strawberryA.field(description="""lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
     
@@ -534,11 +534,11 @@ class CertificateTypeGQLModel:
     def name_en(self) -> str:
         return self.name_en
     
-    @strawberryA.filed(description="""created""")
+    @strawberryA.field(description="""created""")
     def created(self) -> datetime.datetime:
         return self.created
 
-    @strawberryA.filed(description="""lastchange""")
+    @strawberryA.field(description="""lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
     
@@ -591,11 +591,11 @@ class CertificateTypeGroupGQLModel:
     def name_en(self) -> str:
         return self.name_en
     
-    @strawberryA.filed(description="""created""")
+    @strawberryA.field(description="""created""")
     def created(self) -> datetime.datetime:
         return self.created
 
-    @strawberryA.filed(description="""lastchange""")
+    @strawberryA.field(description="""lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
     
@@ -653,11 +653,11 @@ class MedalGQLModel:
     def year(self) -> int:
         return self.year
     
-    @strawberryA.filed(description="""created""")
+    @strawberryA.field(description="""created""")
     def created(self) -> datetime.datetime:
         return self.created
 
-    @strawberryA.filed(description="""lastchange""")
+    @strawberryA.field(description="""lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
     
@@ -708,11 +708,11 @@ class MedalTypeGQLModel:
     def name(self) -> str:
         return self.name
     
-    @strawberryA.filed(description="""created""")
+    @strawberryA.field(description="""created""")
     def created(self) -> datetime.datetime:
         return self.created
 
-    @strawberryA.filed(description="""lastchange""")
+    @strawberryA.field(description="""lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
     
@@ -759,11 +759,11 @@ class MedalTypeGroupGQLModel:
     def name(self) -> strawberryA.ID:
         return self.name
     
-    @strawberryA.filed(description="""created""")
+    @strawberryA.field(description="""created""")
     def created(self) -> datetime.datetime:
         return self.created
 
-    @strawberryA.filed(description="""lastchange""")
+    @strawberryA.field(description="""lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
     
@@ -833,11 +833,11 @@ class WorkHistoryGQLModel:
     def ico(self) -> str:
         return self.ico
     
-    @strawberryA.filed(description="""created""")
+    @strawberryA.field(description="""created""")
     def created(self) -> datetime.datetime:
         return self.created
 
-    @strawberryA.filed(description="""lastchange""")
+    @strawberryA.field(description="""lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
     
@@ -888,11 +888,11 @@ class RelatedDocGQLModel:
     def name(self) -> str:
         return self.name
     
-    @strawberryA.filed(description="""created""")
+    @strawberryA.field(description="""created""")
     def created(self) -> datetime.datetime:
         return self.created
 
-    @strawberryA.filed(description="""lastchange""")
+    @strawberryA.field(description="""lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
     

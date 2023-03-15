@@ -36,6 +36,22 @@ def singleCall(asyncFunc):
 
 @cache
 def determineRankType():
+    """
+    defines rank types
+
+    Parameters
+    ----------
+    name: string
+        czech name of rank
+    name_en: string
+        english name of rank
+    id: UUID (UUID4)
+        id of ranktype
+    
+    Returns
+    ----------
+    list of rank types
+    """
     rankTypes = [
         # mužstvo
         {
@@ -154,6 +170,20 @@ def determineRankType():
 
 @cache
 def determineStudyTypeName():
+    """
+    defines study type names
+
+    Parameters
+    ----------
+    name: string
+        name of school where user studied
+    id: UUID (UUID4)
+        id of studytypename
+    
+    Returns
+    ----------
+    list of study type names
+    """
     studyTypeNames = [
         # veřejné VŠ
         {
@@ -275,6 +305,20 @@ def determineStudyTypeName():
 
 @cache
 def determineStudyTypeProgram():
+    """
+    defines studytypeprograms
+
+    Parameters
+    ----------
+    name: string
+        name of program
+    id: UUID (UUID4)
+        id of studytypeprogram
+    
+    Returns
+    ----------
+    list of studytypeprograms
+    """
     studyTypePrograms = [
         {
             "name": "bakalářský",
@@ -295,6 +339,20 @@ def determineStudyTypeProgram():
 
 @cache
 def determineCertificateType():
+    """
+    defines certificatetypes
+
+    Parameters
+    ----------
+    name: string
+        name of certificate
+    id: UUID (UUID4)
+        id of certificatetype
+    
+    Returns
+    ----------
+    list of certificatetypes
+    """
     certificateTypes = [
         #jazykové 
         {'name': 'STANAG English',  'id': '34a29ef9-b9a9-4d62-9270-e16504d47fa9'},
@@ -355,6 +413,22 @@ def determineCertificateType():
 
 
 def determineCertificateTypeGroup():
+    """
+    defines certificatetypegroup
+
+    Parameters
+    ----------
+    name: string
+        czech name of certificate type group
+    name_en: string
+        english name of certificate type group
+    id: UUID (UUID4)
+        id of certificatetypegroup
+    
+    Returns
+    ----------
+    list of certificatetypegroups
+    """
     certificateTypeGroups = [
         {
             "name": "jazykové",
@@ -381,9 +455,26 @@ def determineCertificateTypeGroup():
 
 @cache
 def determineMedalType():
+    """
+    defines medaltypes
+
+    Parameters
+    ----------
+    name: string
+        name of medaltype
+    id: UUID (UUID4)
+        id of medaltype
+    
+    Returns
+    ----------
+    list of medaltypes
+    """
     medalTypes = [
         # Řády a vyznamenání České republiky
-        {"name": "Řád Bílého lva", "id": "cf4c274c-6cf1-11ed-a1eb-0242ac120002"},
+        {
+        "name": "Řád Bílého lva", 
+        "id": "cf4c274c-6cf1-11ed-a1eb-0242ac120002",
+        },
         {
             "name": "Řád Tomáše Garrigua Masaryka",
             "id": "cf4c2ef4-6cf1-11ed-a1eb-0242ac120002",
@@ -599,7 +690,21 @@ def determineMedalType():
 
 @cache
 def determineMedalTypeGroup():
-    medalTypeGroup = [
+    """
+    defines medaltypegroups
+
+    Parameters
+    ----------
+    name: string
+        name of medaltypegroup
+    id: UUID (UUID4)
+        id of medaltypegroup
+    
+    Returns
+    ----------
+    list of medaltypegroups
+    """
+    medalTypeGroups = [
         {
             "name": "Řády a vyznamenání České republiky",
             "id": "0747704c-d6f9-461c-9b2f-4b9681bd50ed",
@@ -610,11 +715,25 @@ def determineMedalTypeGroup():
         },
         {"name": "Čestné odznaky", "id": "6299630e-4d27-44a9-a844-53831add33ca"},
     ]
-    return medalTypeGroup
+    return medalTypeGroups
 
 @cache
 def determineWorkHistoryPosition():
-    workHistoryPosition = [
+    """
+    defines workhistorypositions
+
+    Parameters
+    ----------
+    name: string
+        czech name of position
+    id: UUID (UUID4)
+        id of workhistoryposition
+    
+    Returns
+    ----------
+    list of workhistorypositions
+    """
+    workHistoryPositions = [
         {'name': 'manažer',             'id': '3406c765-8454-4f3a-b3bb-76b74582be2e' },
         {'name': 'účetní',              'id': 'd9a50a22-edf4-4264-98f0-5a9eced115c4'},
         {'name': 'úředník',             'id': '203cb4d1-6d61-4dfd-8662-d7a352db739c'},
@@ -631,7 +750,7 @@ def determineWorkHistoryPosition():
         {'name': 'řidič',               'id': 'c11f1606-bdd2-4973-89ca-1489e8249c0f'},
         {'name': 'specialista',         'id': '8b18a1a2-f759-4441-a18b-0bee41e71519'},
     ]
-    return workHistoryPosition
+    return workHistoryPositions
 
 
 import asyncio
@@ -741,46 +860,26 @@ async def putPredefinedStructuresIntoTable(
     print(structureFunction())
     pass
 
+
+
+
+
 ##################################################################################
 #
 #random guy
 #
 ##################################################################################
-limit = 5
-
-def randomUUID():
-    uuids = [uuid.uuid4() for _ in range(limit) ]
-    return uuids
-
 def randomRankType():
     rankTypes = [
         determineRankType()
     ]
     return random.choice(rankTypes)
 
-def randomRank():
-    start = datetime.datetime
-    end = datetime.datetime
-
-    ranktype = randomRankType()
-
-    return start,end,ranktype
-
 def randomStudyTypeName():
     studyTypeNames = [
         determineStudyTypeName()
     ]
     return random.choice(studyTypeNames)
-
-def randomStudy():
-    start = datetime.datetime
-    end = datetime.datetime
-
-    studyType_name = randomStudyTypeName()
-    studyType_program = randomStudyTypeProgram()
-
-    return start,end,studyType_name,studyType_program
-
 
 def randomStudyTypeProgram():
     studyTypePrograms = [
