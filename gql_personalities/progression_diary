@@ -41,7 +41,7 @@
 DOCKER IMAGE: https://hub.docker.com/r/hujnis/gql_personalities/tags
 
 TO DO:
-- Editor 
+- Editory 
 
 POVEDLO SE:
 - Detailní struktura DBDefinitions = SQL modely
@@ -50,12 +50,15 @@ POVEDLO SE:
 
 NEPOVEDLO SE:
 - příliš mnoho času věnováno perfekcionalizaci SQL modelů
-- Editor
+- Editory
 
 ŘEŠENÉ PROBLÉMY:
+- apollo
+- 
 - GraphTypeDefinitions - UserUpdateGQLModel - datetime.datetime ... docker error
 
 LESSONS LEARNED:
 - time management
 - priority management
 - nikdy nic není perfektní
+- když to funguje, tak na to nesahej
