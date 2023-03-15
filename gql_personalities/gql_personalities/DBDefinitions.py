@@ -1,26 +1,51 @@
 import sqlalchemy
 import datetime
 
-from sqlalchemy import Column, String, BigInteger, Integer, DateTime, ForeignKey, Sequence, Table, Boolean
+from sqlalchemy import (
+    Column,
+    String,
+    BigInteger,
+    Integer,
+    DateTime,
+    ForeignKey,
+    Sequence,
+    Table,
+    Boolean,
+)
 from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+import uuid
 
 BaseModel = declarative_base()
 
+def newUuidAsString():
+    return f"{uuid.uuid1()}"
+
 def UUIDColumn(name=None):
     if name is None:
-        return Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
+        return Column(String, primary_key=True, unique=True, default=newUuidAsString)
     else:
-        return Column(name, UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
-        
+        return Column(
+            name, String, primary_key=True, unique=True, default=newUuidAsString
+        )
+    
+def UUIDFKey(*, ForeignKey=None, nullable=False):
+    if ForeignKey is None:
+        return Column(
+            String, index=True, nullable=nullable
+        )
+    else:
+        return Column(
+            ForeignKey, index=True, nullable=nullable
+        )
+    
 #id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
 ###########################################################################################################################
 #
-# zde definujte sve SQLAlchemy modely
-# je-li treba, muzete definovat modely obsahujici jen id polozku, na ktere se budete odkazovat
+#            SQLAlchemy modely
 #
 ###########################################################################################################################
 
@@ -36,139 +61,229 @@ class UserModel(BaseModel):
     workHistories = relationship('WorkHistory', back_populates='user')
     relatedDocs = relationship('RelatedDoc', back_populates='user')
 
-class Rank(BaseModel):
-    __tablename__ = 'personalitiesRanks'
-
-    id = UUIDColumn()
-    start = Column(DateTime)
-    end = Column(DateTime) 
-
-    user_id = Column(ForeignKey('users.id'))
-    rankType_id = Column(ForeignKey('personalitiesRankTypes.id'))
-
-    user = relationship('UserModel', back_populates = 'Rank')
-    rankType = relationship('RankType', back_populates = 'Rank')
-
-class RankType(BaseModel):
-    __tablename__ = 'personalitiesRankTypes'
-
-    id = UUIDColumn()
-    name = Column(String)
-
-    rank = relationship('Rank', back_populates = 'RankTypes')
-
-class Study(BaseModel):
-    __tablename__ = 'personalitiesStudies'
+class RankModel(BaseModel):
+    __tablename__ = 'personalitiesranks'
 
     id = UUIDColumn()
     start = Column(DateTime)
     end = Column(DateTime)
-    
-    user_id = Column(ForeignKey('users.id'))
-    studyType_id = Column(ForeignKey('personalitiesStudyTypes.id'))
-    
-    user = relationship('UserModel', back_populates = 'Study')
-    studyType = relationship('StudyType', back_populates = 'Study')
+
+    user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
+    rankType_id = Column(ForeignKey("personalitiesranktypes.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    #user = relationship("UserModel", back_populates="ranks", foreign_keys=[user_id])
+    rankType = relationship("RankTypeModel", back_populates="rank")
 
 
-class StudyType(BaseModel):
-    __tablename__ = 'personalitiesStudyTypes'
+
+class RankTypeModel(BaseModel):
+    __tablename__ = 'personalitiesranktypes'
+
+    id = UUIDColumn()
+    name = Column(String)
+    name_en = Column(String)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    rank = relationship("RankModel", back_populates="rankType")
+
+
+
+class StudyModel(BaseModel):
+    __tablename__ = 'personalitiesstudies'
+
+    id = UUIDColumn()
+    start = Column(DateTime)
+    end = Column(DateTime)
+
+    user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
+    studyType_id = Column(ForeignKey("personalitiesstudytypes.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    #user = relationship("UserModel", back_populates="studies", foreign_keys=[user_id])
+    studyType = relationship('StudyTypeModel', back_populates = 'study')
+
+
+
+class StudyTypeModel(BaseModel):
+    __tablename__ = 'personalitiesstudytypes'
 
     id = UUIDColumn()
     name = Column(String)
     program = Column(String)
 
-    study = relationship('Study', back_populates = 'StudyTypes')
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    study = relationship('StudyModel', back_populates = 'studyType')
 
 
-class Certificate(BaseModel):
-    __tablename__ = 'personalitiesCertificates'
+
+class CertificateModel(BaseModel):
+    __tablename__ = "personalitiescertificates"
 
     id = UUIDColumn()
     level = Column(String)
     validity_start = Column(DateTime)
     validity_end = Column(DateTime)
 
-    user_id = Column(ForeignKey('users.id'))
-    certificateType_id = Column(ForeignKey('personalitiesCertificateTypes.id'))
-    
-    user = relationship('UserModel', back_populates = 'Certificate')
-    certificateType = relationship('CertificateType', back_populates = 'Certificate')
+    user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
+    certificateType_id = Column(ForeignKey("personalitiescertificatetypes.id"), index=True)
 
-class CertificateType(BaseModel):
-    __tablename__ = 'personalitiesCertificateTypes'
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
-    id = UUIDColumn()
-    name = Column(String)
+    #user = relationship("UserModel", back_populates="certificates", foreign_keys=[user_id])
+    certificateType = relationship("CertificateTypeModel", back_populates="certificates")
 
-    certificateTypeGroup_id = Column(ForeignKey('personalitiesCertificateTypeGroups.id'))
-    
-    certificate = relationship('Certificate', back_populates = 'CertificateType')
-    certificateTypeGroup = relationship('CertificateTypeGroup', back_populates = 'CertificationType')
 
-class CertificateTypeGroup(BaseModel):
-    __tablename__ = 'personalitiesCertificateTypeGroups'
+
+class CertificateTypeModel(BaseModel):
+    __tablename__ = "personalitiescertificatetypes"
 
     id = UUIDColumn()
     name = Column(String)
-    
-    certificateType = relationship('CertificateType', back_populates = 'CertificateTypeGroup')
+    name_en = Column(String)
+
+    certificateTypeGroup_id = Column(
+        ForeignKey("personalitiescertificatecategories.id")
+    )
+
+    certificates = relationship("CertificateModel", back_populates="certificateType")
+    certificateTypeGroup = relationship(
+        "CertificateTypeGroupModel", back_populates="certificateType"
+    )
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
-class Medal(BaseModel):
-    __tablename__ = 'personalitiesMedals'
+
+class CertificateTypeGroupModel(BaseModel):
+    __tablename__ = "personalitiescertificatecategories"
+
+    id = UUIDColumn()
+    name = Column(String)
+    name_en = Column(String)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    certificateType = relationship(
+        "CertificateTypeModel", back_populates="certificateTypeGroup"
+    )
+
+
+
+class MedalModel(BaseModel):
+    __tablename__ = "personalitiesmedals"
 
     id = UUIDColumn()
     year = Column(Integer)
-    
-    user_id = Column(ForeignKey('users.id'))
-    medalType_id = Column(ForeignKey('personalitiesMedalTypes.id'))
-    
-    user = relationship('UserModel', back_populates = 'Medal')
-    medalType = relationship('MedalType', back_populates = 'Medal')
 
-class MedalType(BaseModel):
-    __tablename__ = 'personalitiesMedalTypes'
+    user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
+    medalType_id = Column(ForeignKey("personalitiesmedaltypes.id"), index=True)
 
-    id = UUIDColumn()
-    name = Column(String)
-    
-    medalTypeGroup_id = Column(ForeignKey('personalitiesMedalTypeGroups.id'))
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
-    medal = relationship('Medal', back_populates = 'MedalType')
-    medalTypeGroup = relationship('MedalTypeGroup', back_populates = 'MedalType')
+    #user = relationship("UserModel", back_populates="medals", foreign_keys=[user_id])
+    medalType = relationship("MedalTypeModel", back_populates="medal")
 
-class MedalTypeGroup(BaseModel):
-    __tablename__ = 'personalitiesMedalTypeGroups'
+
+
+class MedalTypeModel(BaseModel):
+    __tablename__ = "personalitiesmedaltypes"
 
     id = UUIDColumn()
     name = Column(String)
-    
-    medalType = relationship('MedalType', back_populates = 'MedalTypeGroup')
+    name_en = Column(String)
 
-class WorkHistory(BaseModel):
-    __tablename__ = 'personalitiesWorkHistories'
+    medalTypeGroup_id = Column(ForeignKey("personalitiesmedalcategories.id"), index=True)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    medal = relationship("MedalModel", back_populates="medalType")
+    medalTypeGroup = relationship("MedalTypeGroupModel", back_populates="medalTypes")
+
+
+
+class MedalTypeGroupModel(BaseModel):
+    __tablename__ = "personalitiesmedalcategories"
+
+    id = UUIDColumn()
+    name = Column(String)
+    name_en = Column(String)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    medalTypes = relationship("MedalTypeModel", back_populates="medalTypeGroup")
+
+
+
+class WorkHistoryModel(BaseModel):
+    __tablename__ = "personalitiesworkhistories"
 
     id = UUIDColumn()
     start = Column(DateTime)
     end = Column(DateTime)
-    position = Column(String)
+    name = Column(String)
     ico = Column(String)
 
-    user_id = Column(ForeignKey('users.id'))
-    
-    user = relationship('UserModel', back_populates = 'WorkHistory')
+    user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"))
 
-class RelatedDoc(BaseModel):
-    __tablename__ = 'personalitiesRelatedDocs'
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    #user = relationship("UserModel", back_populates="workHistories", foreign_keys=[user_id])
+
+
+
+class RelatedDocModel(BaseModel):
+    __tablename__ = "personalitiesrelateddocs"
 
     id = UUIDColumn()
     name = Column(String)
-    #uploaded
+    # doc_upload
 
-    user_id = Column(ForeignKey('users.id'))
-    
-    user = relationship('UserModel', back_populates = 'RelatedDoc')
+    user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"))
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+
+    #user = relationship("UserModel", back_populates="relatedDocs", foreign_keys=[user_id])
 
 
 
@@ -178,34 +293,43 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 
+
 async def startEngine(connectionstring, makeDrop=False, makeUp=True):
-    """Provede nezbytne ukony a vrati asynchronni SessionMaker """
-    asyncEngine = create_async_engine(connectionstring) 
+    """Provede nezbytne ukony a vrati asynchronni SessionMaker"""
+    asyncEngine = create_async_engine(connectionstring)
 
     async with asyncEngine.begin() as conn:
         if makeDrop:
             await conn.run_sync(BaseModel.metadata.drop_all)
-            print('BaseModel.metadata.drop_all finished')
+            print("BaseModel.metadata.drop_all finished")
         if makeUp:
-            await conn.run_sync(BaseModel.metadata.create_all)    
-            print('BaseModel.metadata.create_all finished')
+            try:
+                await conn.run_sync(BaseModel.metadata.create_all)
+                print("BaseModel.metadata.create_all finished")
+            except sqlalchemy.exc.NoReferencedTableError as e:
+                print(e)
+                print("Unable automaticaly create tables")
+                return None
 
     async_sessionMaker = sessionmaker(
         asyncEngine, expire_on_commit=False, class_=AsyncSession
     )
     return async_sessionMaker
 
+
 import os
+
+
 def ComposeConnectionString():
     """Odvozuje connectionString z promennych prostredi (nebo z Docker Envs, coz je fakticky totez).
-       Lze predelat na napr. konfiguracni file.
+    Lze predelat na napr. konfiguracni file.
     """
     user = os.environ.get("POSTGRES_USER", "postgres")
     password = os.environ.get("POSTGRES_PASSWORD", "example")
-    database =  os.environ.get("POSTGRES_DB", "data")
-    hostWithPort =  os.environ.get("POSTGRES_HOST", "postgres:5432")
-    
-    driver = "postgresql+asyncpg" #"postgresql+psycopg2"
+    database = os.environ.get("POSTGRES_DB", "data")
+    hostWithPort = os.environ.get("POSTGRES_HOST", "postgres:5432")
+
+    driver = "postgresql+asyncpg"  # "postgresql+psycopg2"
     connectionstring = f"{driver}://{user}:{password}@{hostWithPort}/{database}"
 
     return connectionstring

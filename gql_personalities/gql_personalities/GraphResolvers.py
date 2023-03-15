@@ -9,39 +9,57 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uoishelpers.resolvers import create1NGetter, createEntityByIdGetter, createEntityGetter, createInsertResolver, createUpdateResolver
 from uoishelpers.resolvers import putSingleEntityToDb
 
-from gql_personalities.DBDefinitions import BaseModel, UserModel, Rank, Study, Certificate, Medal, WorkHistory, RelatedDoc
-from gql_personalities.DBDefinitions import RankType, StudyType, CertificateType, MedalType
-from gql_personalities.DBDefinitions import CertificateTypeGroup, MedalTypeGroup
+from gql_personalities.DBDefinitions import (
+    BaseModel,
+    RankModel,
+    StudyModel,
+    CertificateModel,
+    MedalModel,
+    WorkHistoryModel,
+    RelatedDocModel,
+)
+from gql_personalities.DBDefinitions import RankTypeModel, CertificateTypeModel, MedalTypeModel
+from gql_personalities.DBDefinitions import CertificateTypeGroupModel, MedalTypeGroupModel
 
 #user resolvers
-resolveUserById = createEntityByIdGetter(UserModel)
-resolveUserAll = createEntityGetter(UserModel)
+#resolveUserById = createEntityByIdGetter(UserModel)
+#resolveUserAll = createEntityGetter(UserModel)
 
-resolveRanksForUser = create1NGetter(Rank, foreignKeyName='user_id', options=joinedload(Rank.rankType))
-resolveStudiesForUser = create1NGetter(Study, foreignKeyName='user_id')
-resolveCertificatesForUser = create1NGetter(Certificate, foreignKeyName='user_id', options=joinedload(Certificate.certificateType))
-resolveMedalsForUser = create1NGetter(Medal, foreignKeyName='user_id', options=joinedload(Medal.medalType))
-resolveWorkHistoriesForUser = create1NGetter(WorkHistory, foreignKeyName='user_id')
-resolveRelatedDocsForUser = create1NGetter(RelatedDoc, foreignKeyName='user_id')
+resolveRanksForUser = create1NGetter(
+    RankModel, foreignKeyName="user_id", options=joinedload(RankModel.rankType)
+)
+resolveStudiesForUser = create1NGetter(StudyModel, foreignKeyName="user_id")
+resolveCertificatesForUser = create1NGetter(
+    CertificateModel,
+    foreignKeyName="user_id",
+    options=joinedload(CertificateModel.certificateType),
+)
+resolveMedalsForUser = create1NGetter(
+    MedalModel, foreignKeyName="user_id", options=joinedload(MedalModel.medalType)
+)
+resolveWorkHistoriesForUser = create1NGetter(WorkHistoryModel, foreignKeyName="user_id")
+resolveRelatedDocsForUser = create1NGetter(RelatedDocModel, foreignKeyName="user_id")
 
 
 #rank resolvers
-resolveRankById = createEntityByIdGetter(Rank)
-resolveRankAll = createEntityGetter(Rank)
-resolverUpdateRank = createUpdateResolver(Rank)
-resolveInsertRank = createInsertResolver(Rank)
+resolveRankById = createEntityByIdGetter(RankModel)
+resolveRankAll = createEntityGetter(RankModel)
+resolverUpdateRank = createUpdateResolver(RankModel)
+resolveInsertRank = createInsertResolver(RankModel)
 
 
 #rankType resolvers
-resolveRankTypeById = createEntityByIdGetter(RankType)
-resolveRankTypeAll = createEntityGetter(RankType)
-resolverUpdateRankType = createUpdateResolver(RankType)
-resolveInsertRankType = createInsertResolver(RankType)
+resolveRankTypeById = createEntityByIdGetter(RankTypeModel)
+resolveRankTypeAll = createEntityGetter(RankTypeModel)
+resolverUpdateRankType = createUpdateResolver(RankTypeModel)
+resolveInsertRankType = createInsertResolver(RankTypeModel)
 
-async def resolveRankTypeByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[Rank]:
+async def resolveRankTypeByThreeLetters(
+    session: AsyncSession, validity=None, letters: str = ""
+) -> List[RankModel]:
     if len(letters) < 3:
         return []
-    stmt = select(RankType).where(RankType.name.like(f'%{letters}%'))
+    stmt = select(RankTypeModel).where(RankTypeModel.name.like(f"%{letters}%"))
     if validity is not None:
         stmt = stmt.filter_by(valid=True)
 
@@ -50,54 +68,47 @@ async def resolveRankTypeByThreeLetters(session: AsyncSession, validity = None, 
 
 
 #study resolvers
-resolveStudyById = createEntityByIdGetter(Study)
-resolveStudyAll = createEntityGetter(Study)
-resolverUpdateStudy = createUpdateResolver(Study)
-resolveInsertStudy = createInsertResolver(Study)
+resolveStudyById = createEntityByIdGetter(StudyModel)
+resolveStudyAll = createEntityGetter(StudyModel)
+resolverUpdateStudy = createUpdateResolver(StudyModel)
+resolveInsertStudy = createInsertResolver(StudyModel)
 
-#studyType resolvers
-resolveStudyTypeById = createEntityByIdGetter(StudyType)
-resolveStudyTypeAll = createEntityGetter(StudyType)
-resolverUpdateStudyType = createUpdateResolver(StudyType)
-resolveInsertStudyType = createInsertResolver(StudyType)
 
-async def resolveStudyTypeNameByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[Study]:
+async def resolveStudyByThreeLetters(
+    session: AsyncSession, validity=None, letters: str = ""
+) -> List[StudyModel]:
     if len(letters) < 3:
         return []
-    stmt = select(StudyType).where(StudyType.name.like(f'%{letters}%'))
+    stmt = select(StudyModel).where(
+        StudyModel.place.like(f"%{letters}%")
+    )  # Study.place. ... kvůli názvu v entitě
     if validity is not None:
         stmt = stmt.filter_by(valid=True)
 
     dbSet = await session.execute(stmt)
     return dbSet.scalars()
 
-async def resolveStudyTypeProgramByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[Study]:
-    if len(letters) < 3:
-        return []
-    stmt = select(StudyType).where(StudyType.program.like(f'%{letters}%'))
-    if validity is not None:
-        stmt = stmt.filter_by(valid=True)
-
-    dbSet = await session.execute(stmt)
-    return dbSet.scalars()
 
 #certificate resolvers
-resolveCertificateById = createEntityByIdGetter(Certificate)
-resolveCertificateAll = createEntityGetter(Certificate)
-resolverUpdateCertificate = createUpdateResolver(Certificate)
-resolveInsertCertificate = createInsertResolver(Certificate)
+resolveCertificateById = createEntityByIdGetter(CertificateModel)
+resolveCertificateAll = createEntityGetter(CertificateModel)
+resolverUpdateCertificate = createUpdateResolver(CertificateModel)
+resolveInsertCertificate = createInsertResolver(CertificateModel)
 
 
 #certificateType resolvers
-resolveCertificateTypeById = createEntityByIdGetter(CertificateType)
-resolveCertificateTypeAll = createEntityGetter(CertificateType)
-resolverUpdateCertificateType = createUpdateResolver(CertificateType)
-resolveInsertCertificateType = createInsertResolver(CertificateType)
+resolveCertificateTypeById = createEntityByIdGetter(CertificateTypeModel)
+resolveCertificateTypeAll = createEntityGetter(CertificateTypeModel)
+resolverUpdateCertificateType = createUpdateResolver(CertificateTypeModel)
+resolveInsertCertificateType = createInsertResolver(CertificateTypeModel)
 
-async def resolveCertificateTypeByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[CertificateType]:
+
+async def resolveCertificateTypeByThreeLetters(
+    session: AsyncSession, validity=None, letters: str = ""
+) -> List[CertificateTypeModel]:
     if len(letters) < 3:
         return []
-    stmt = select(CertificateType).where(CertificateType.name.like(f'%{letters}%'))
+    stmt = select(CertificateTypeModel).where(CertificateTypeModel.name.like(f"%{letters}%"))
     if validity is not None:
         stmt = stmt.filter_by(valid=True)
 
@@ -106,15 +117,19 @@ async def resolveCertificateTypeByThreeLetters(session: AsyncSession, validity =
 
 
 #certificateTypeGroup resolvers
-resolveCertificateTypeGroupById = createEntityByIdGetter(CertificateTypeGroup)
-resolveCertificateTypeGroupAll = createEntityGetter(CertificateTypeGroup)
-resolverUpdateCertificateTypeGroup = createUpdateResolver(CertificateTypeGroup)
-resolveInsertCertificateTypeGroup = createInsertResolver(CertificateTypeGroup)
+resolveCertificateTypeGroupById = createEntityByIdGetter(CertificateTypeGroupModel)
+resolveCertificateTypeGroupAll = createEntityGetter(CertificateTypeGroupModel)
+resolverUpdateCertificateTypeGroup = createUpdateResolver(CertificateTypeGroupModel)
+resolveInsertCertificateTypeGroup = createInsertResolver(CertificateTypeGroupModel)
 
-async def resolveCertificateTypeGroupByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[CertificateTypeGroup]:
+async def resolveCertificateTypeGroupByThreeLetters(
+    session: AsyncSession, validity=None, letters: str = ""
+) -> List[CertificateTypeGroupModel]:
     if len(letters) < 3:
         return []
-    stmt = select(CertificateTypeGroup).where(CertificateTypeGroup.name.like(f'%{letters}%'))
+    stmt = select(CertificateTypeGroupModel).where(
+        CertificateTypeGroupModel.name.like(f"%{letters}%")
+    )
     if validity is not None:
         stmt = stmt.filter_by(valid=True)
 
@@ -123,22 +138,23 @@ async def resolveCertificateTypeGroupByThreeLetters(session: AsyncSession, valid
 
 
 #medal resolvers
-resolveMedalById = createEntityByIdGetter(Medal)
-resolveMedalAll = createEntityGetter(Medal)
-resolverUpdateMedal = createUpdateResolver(Medal)
-resolveInsertMedal = createInsertResolver(Medal)
-
+resolveMedalById = createEntityByIdGetter(MedalModel)
+resolveMedalAll = createEntityGetter(MedalModel)
+resolverUpdateMedal = createUpdateResolver(MedalModel)
+resolveInsertMedal = createInsertResolver(MedalModel)
 
 #medalType resolvers
-resolveMedalTypeById = createEntityByIdGetter(MedalType)
-resolveMedalTypeAll = createEntityGetter(MedalType)
-resolverUpdateMedalType = createUpdateResolver(MedalType)
-resolveInsertMedalType = createInsertResolver(MedalType)
+resolveMedalTypeById = createEntityByIdGetter(MedalTypeModel)
+resolveMedalTypeAll = createEntityGetter(MedalTypeModel)
+resolverUpdateMedalType = createUpdateResolver(MedalTypeModel)
+resolveInsertMedalType = createInsertResolver(MedalTypeModel)
 
-async def resolveMedalTypeByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[MedalType]:
+async def resolveMedalTypeByThreeLetters(
+    session: AsyncSession, validity=None, letters: str = ""
+) -> List[MedalTypeModel]:
     if len(letters) < 3:
         return []
-    stmt = select(MedalType).where(MedalType.name.like(f'%{letters}%'))
+    stmt = select(MedalTypeModel).where(MedalTypeModel.name.like(f"%{letters}%"))
     if validity is not None:
         stmt = stmt.filter_by(valid=True)
 
@@ -147,15 +163,17 @@ async def resolveMedalTypeByThreeLetters(session: AsyncSession, validity = None,
 
 
 #medalTypeGroup resolvers
-resolveMedalTypeGroupById = createEntityByIdGetter(MedalTypeGroup)
-resolveMedalTypeGroupAll = createEntityGetter(MedalTypeGroup)
-resolverUpdateMedalTypeGroup = createUpdateResolver(MedalTypeGroup)
-resolveInsertMedalTypeGroup = createInsertResolver(MedalTypeGroup)
+resolveMedalTypeGroupById = createEntityByIdGetter(MedalTypeGroupModel)
+resolveMedalTypeGroupAll = createEntityGetter(MedalTypeGroupModel)
+resolverUpdateMedalTypeGroup = createUpdateResolver(MedalTypeGroupModel)
+resolveInsertMedalTypeGroup = createInsertResolver(MedalTypeGroupModel)
 
-async def resolveMedalTypeGroupByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[MedalTypeGroup]:
+async def resolveMedalTypeGroupByThreeLetters(
+    session: AsyncSession, validity=None, letters: str = ""
+) -> List[MedalTypeGroupModel]:
     if len(letters) < 3:
         return []
-    stmt = select(MedalTypeGroup).where(MedalTypeGroup.name.like(f'%{letters}%'))
+    stmt = select(MedalTypeGroupModel).where(MedalTypeGroupModel.name.like(f"%{letters}%"))
     if validity is not None:
         stmt = stmt.filter_by(valid=True)
 
@@ -164,15 +182,17 @@ async def resolveMedalTypeGroupByThreeLetters(session: AsyncSession, validity = 
 
 
 #workHistory resolvers
-resolveWorkHistoryById = createEntityByIdGetter(WorkHistory)
-resolveWorkHistoryAll = createEntityGetter(WorkHistory)
-resolverUpdateWorkHistory = createUpdateResolver(WorkHistory)
-resolveInsertWorkHistory = createInsertResolver(WorkHistory)
+resolveWorkHistoryById = createEntityByIdGetter(WorkHistoryModel)
+resolveWorkHistoryAll = createEntityGetter(WorkHistoryModel)
+resolverUpdateWorkHistory = createUpdateResolver(WorkHistoryModel)
+resolveInsertWorkHistory = createInsertResolver(WorkHistoryModel)
 
-async def resolveWorkHistoryByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[WorkHistory]:
+async def resolveWorkHistoryByThreeLetters(
+    session: AsyncSession, validity=None, letters: str = ""
+) -> List[WorkHistoryModel]:
     if len(letters) < 3:
         return []
-    stmt = select(WorkHistory).where(WorkHistory.name.like(f'%{letters}%'))
+    stmt = select(WorkHistoryModel).where(WorkHistoryModel.name.like(f"%{letters}%"))
     if validity is not None:
         stmt = stmt.filter_by(valid=True)
 
@@ -181,25 +201,19 @@ async def resolveWorkHistoryByThreeLetters(session: AsyncSession, validity = Non
 
 
 #relatedDoc resolvers
-resolveRelatedDocById = createEntityByIdGetter(RelatedDoc)
-resolveRelatedDocAll = createEntityGetter(RelatedDoc)
-resolverUpdateRelatedDoc = createUpdateResolver(RelatedDoc)
-resolveInsertRelatedDoc = createInsertResolver(RelatedDoc)
+resolveRelatedDocById = createEntityByIdGetter(RelatedDocModel)
+resolveRelatedDocAll = createEntityGetter(RelatedDocModel)
+resolverUpdateRelatedDoc = createUpdateResolver(RelatedDocModel)
+resolveInsertRelatedDoc = createInsertResolver(RelatedDocModel)
 
-async def resolveRelatecDocByThreeLetters(session: AsyncSession, validity = None, letters: str = '') -> List[RelatedDoc]:
+async def resolveRelatecDocByThreeLetters(
+    session: AsyncSession, validity=None, letters: str = ""
+) -> List[RelatedDocModel]:
     if len(letters) < 3:
         return []
-    stmt = select(RelatedDoc).where(RelatedDoc.name.like(f'%{letters}%'))
+    stmt = select(RelatedDocModel).where(RelatedDocModel.name.like(f"%{letters}%"))
     if validity is not None:
         stmt = stmt.filter_by(valid=True)
 
     dbSet = await session.execute(stmt)
     return dbSet.scalars()
-
-###########################################################################################################################
-#
-# zde definujte sve resolvery s pomoci funkci vyse
-# tyto pouzijete v GraphTypeDefinitions
-#
-###########################################################################################################################
-

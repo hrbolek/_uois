@@ -52,6 +52,9 @@ NEPOVEDLO SE:
 - příliš mnoho času věnováno perfekcionalizaci SQL modelů
 - Editor
 
+ŘEŠENÉ PROBLÉMY:
+- GraphTypeDefinitions - UserUpdateGQLModel - datetime.datetime ... docker error
+
 LESSONS LEARNED:
 - time management
 - priority management

@@ -21,71 +21,95 @@ from gql_personalities.DBDefinitions import startEngine, ComposeConnectionString
 
 connectionString = ComposeConnectionString()
 
+
+
 def singleCall(asyncFunc):
     """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
        Dekorovana funkce je asynchronni.
     """
     resultCache = {}
+
     async def result():
         if resultCache.get('result', None) is None:
             resultCache['result'] = await asyncFunc()
         return resultCache['result']
+    
     return result
+
+from gql_personalities.DBFeeder import ensureAllTypes
+
 
 @singleCall
 async def RunOnceAndReturnSessionMaker():
     """Provadi inicializaci asynchronniho db engine, inicializaci databaze a vraci asynchronni SessionMaker.
-       Protoze je dekorovana, volani teto funkce se provede jen jednou a vystup se zapamatuje a vraci se pri dalsich volanich.
+    Protoze je dekorovana, volani teto funkce se provede jen jednou a vystup se zapamatuje a vraci se pri dalsich volanich.
     """
     print(f'starting engine for "{connectionString}"')
 
-    result = await startEngine(connectionstring=connectionString, makeDrop=False, makeUp=True)
-    
-    print(f'initializing system structures')
+    result = await startEngine(
+        connectionstring=connectionString, makeDrop=False, makeUp=True
+    )
+
+    print(f"initializing system structures")
 
     ###########################################################################################################################
     #
     # zde definujte do funkce asyncio.gather
     # vlozte asynchronni funkce, ktere maji data uvest do prvotniho konzistentniho stavu
-   
-    # await asyncio.gather( # concurency running :)
+    #
     # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
     # musi byt asynchronniho typu (async def ...)
-        # createSystemDataStructureRoleTypes(result),
-        # createSystemDataStructureGroupTypes(result)
+    # await asyncio.gather( # concurency running :)
+    #    funcA(result),
+    #    funcB(result)
     # )
-
+    #
+    # Pokud je potreba provest jen jednu funkci, lze to takto:
+    await ensureAllTypes(result)
+    #
     ###########################################################################################################################
-    print(f'all done')
+    print(f"all done")
     return result
 
+
+
 from strawberry.asgi import GraphQL
+
 class MyGraphQL(GraphQL):
     """Rozsirena trida zabezpecujici praci se session"""
+
     async def __call__(self, scope, receive, send):
         asyncSessionMaker = await RunOnceAndReturnSessionMaker()
         async with asyncSessionMaker() as session:
             self._session = session
-            self._user = {'id': '?'}
+            self._user = {"id": "?"}
             return await GraphQL.__call__(self, scope, receive, send)
-    
+
     async def get_context(self, request, response):
         parentResult = await GraphQL.get_context(self, request, response)
-        return {**parentResult, 
-            'session': self._session, 
-            'asyncSessionMaker': await RunOnceAndReturnSessionMaker(),
-            'user': self._user
-            }
+        return {
+            **parentResult,
+            "session": self._session,
+            "asyncSessionMaker": await RunOnceAndReturnSessionMaker(),
+            "user": self._user,
+        }
+    
+
+from gql_personalities.GraphTypeDefinitions import schema
 
 ## ASGI app, kterou "moutneme"
-graphql_app = MyGraphQL(
-    strawberry.federation.Schema(Query), 
-    graphiql = True,
-    allow_queries_via_get = True
-)
+graphql_app = MyGraphQL(schema, graphiql=True, allow_queries_via_get=True)
+
 
 app = FastAPI()
 app.mount("/gql", graphql_app)
+
+
+@app.on_event("startup")
+async def startup_event():
+    initizalizedEngine = await RunOnceAndReturnSessionMaker()
+    return None
+
 
 print('All initialization is done')
 
