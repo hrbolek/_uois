@@ -51,13 +51,13 @@ class SubjectModel(BaseModel):
     language = relationship('StudyLanguageModel', back_populates='subjects')
 
 
-
 ##############################################
 
 class StudyLanguageModel(BaseModel):
     __tablename__ = "plan_subject_languages"
     id = UUIDColumn()
     name = Column(String)
+    semester_id = Column(ForeignKey('plan_subjects.id', primary_key=True))
     last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
     subjects = relationship('SubjectModel', back_populates='language')
@@ -94,8 +94,9 @@ class StudyThemeModel(BaseModel):
     __tablename__ = "plan_themes"
     id = UUIDColumn()
     name = Column(String)
-    semester_id = Column(ForeignKey('plan_semesters.id'))
     last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+
+    semester_id = Column(ForeignKey('plan_semesters.id'), primary_key=True)
 
     studysemesters = relationship('SemesterModel', back_populates='themes')
     items = relationship('StudyThemeItemModel', back_populates='theme')
@@ -111,6 +112,8 @@ class StudyThemeItemModel(BaseModel):
     lessons = Column(Integer)
     last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
+    semester_id = Column(ForeignKey('plan_semesters.id'), primary_key=True)
+
     type = relationship('ThemeTypeModel', back_populates='items')
     theme = relationship('StudyThemeModel', back_populates='items')
 
@@ -120,6 +123,8 @@ class ThemeTypeModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
     last_change = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+
+    semester_id = Column(ForeignKey('plan_semesters.id'), primary_key=True)
 
     items = relationship('StudyThemeItemModel', back_populates='type')
 

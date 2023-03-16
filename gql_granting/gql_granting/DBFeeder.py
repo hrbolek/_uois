@@ -1,8 +1,10 @@
 from doctest import master
 from functools import cache
-from gql_granting.gql_granting.DBDefinitions import BaseModel
+from gql_granting.DBDefinitions import BaseModel, StudyProgramModel, SubjectModel, StudyLanguageModel, SemesterModel, ClassificationModel, StudyThemeModel, StudyThemeItemModel, ThemeTypeModel
 
+import uuid
 import random
+import datetime
 import itertools
 from functools import cache
 
@@ -27,25 +29,137 @@ def singleCall(asyncFunc):
 ###########################################################################################################################
 
 @cache
-def types1():
-    # krome id a name, lze mit i dalsi prvky, napriklad cizi klice...
+def determineStudyPrograms():
+    # Returns list of study programs
     data = [
-        {'id': '282e67ec-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeA'},
-        {'id': '282e6e86-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeB'},
-        {'id': '282e7002-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeC'},
+        {
+            'id':'4b883614-6d9e-11ed-a1eb-0242ac120002',
+            'type': 'Master',
+            'study_duration':5,
+            'type_of_study':'Military',
+            'name':'Kybernetická bezpečnost',
+            'lastchange': datetime.datetime,
+        },
+        {
+            'id':'4b883614-6d5e-11ed-a1eb-0242ac120405',
+            'type': 'Master',
+            'study_duration':5,
+            'type_of_study':'Civilian',
+            'name':'Kybernetická bezpečnost',
+            'lastchange': datetime.datetime,
+        }
     ]
     return data
 
 @cache
-def types2():
-    # krome id a name, lze mit i dalsi prvky, napriklad cizi klice...
+def determineSubjects():
+    # returns list of subjects
     data = [
-        {'id': '4b883614-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeX'},
-        {'id': '4b8838a8-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeY'},
-        {'id': '4b883a38-6d9e-11ed-a1eb-0242ac120002', 'name': 'typeZ'},
+        {
+            'id':'4b773614-6d9e-11ed-a1eb-0242ac120099',
+            'name':'Analýza informačních zdrojů',
+            'program_id':'4b883614-6d9e-11ed-a1eb-0242ac120002',
+            'language_id':'4b883614-6d9e-11ed-a1eb-0242ac120003',
+            'lastchange': datetime.datetime,
+        }
     ]
     return data
 
+@cache
+def determineStudyLanguage():
+    # returns list of languages
+    data = [
+        {
+            'id':'4b883614-6d9e-11ed-a1eb-0242ac120003',
+            'name':'Česky',
+            'semester_id':'4b883614-6d9e-11ed-a1eb-0242ac120004',
+            'lastchange': datetime.datetime,
+        }
+    ]
+    return data
+
+@cache
+def determineSemester():
+    # returns list of languages
+    data = [
+        {
+            'id':'4b883614-6d9e-11ed-a1eb-0242ac120004',
+            'semester_number':5,
+            'credits':30,
+            'subject_id':'4b773614-6d9e-11ed-a1eb-0242ac120099',
+            'classification_id':'4b773614-6d9e-11ed-a1eb-0242ac120088',
+            'lastchange': datetime.datetime,
+        }
+    ]
+    return data
+
+@cache
+def determineClassification():
+    # returns list of classifications
+    data = [
+        {
+            'id':'4b773614-6d9e-11ed-a1eb-0242ac120088',
+            'name':'Zkouška',
+            'lastchange': datetime.datetime,
+        },
+        {
+            'id': '4b773614-6d9e-11ed-a1eb-0242ac120077',
+            'name': 'Zápočet',
+            'lastchange': datetime.datetime,
+        },
+        {
+            'id': '4b773614-6d9e-11ed-a1eb-0242ac120066',
+            'name': 'Klasifikovaný zápočet',
+            'lastchange': datetime.datetime,
+        }
+    ]
+    return data
+
+@cache
+def determineTheme():
+    # returns list of themes
+    data = [
+        {
+            'id':'4b883614-6d9e-11ed-a1eb-0242ac120010',
+            'name':'Úvodní hodina',
+            'semester_id':'4b883614-6d9e-11ed-a1eb-0242ac120004',
+            'lastchange': datetime.datetime,
+        },
+        {
+            'id': '4b883614-6d9e-11ed-a1eb-0242ac120011',
+            'name': 'Analýza informací',
+            'semester_id': '4b883614-6d9e-11ed-a1eb-0242ac120004',
+            'lastchange': datetime.datetime,
+        }
+    ]
+    return data
+
+@cache
+def determineThemeItem():
+    # returns list of theme items
+    data = [
+        {
+            'id':'4b883614-6d9e-12ed-a1eb-0242ac120012',
+            'theme_id': '4b883614-6d9e-11ed-a1eb-0242ac120010',
+            'type_id':'4b883614-6d9e-11ed-a1eb-0242ac120987',
+            'semester_id':'4b883614-6d9e-11ed-a1eb-0242ac120004',
+            'lessons':5,
+            'lastchange': datetime.datetime,
+        }
+    ]
+    return data
+
+def determineThemeTypes():
+    # returns list of theme types
+    data = [
+        {
+            'id':'4b883614-6d9e-11ed-a1eb-0242ac120987',
+            'name':'Neco',
+            'semester_id':'4b883614-6d9e-11ed-a1eb-0242ac120004',
+            'lastchange': datetime.datetime,
+        }
+    ]
+    return data
 
 ###########################################################################################################################
 #
@@ -54,14 +168,34 @@ def types2():
 ###########################################################################################################################
 
 import asyncio
-async def predefineAllDataStructures(asyncSessionMaker):
-    #
-    # asyncio.gather(
-    #   putPredefinedStructuresIntoTable(asyncSessionMaker, Types1Model, types1), # prvni
-    #   putPredefinedStructuresIntoTable(asyncSessionMaker, Types1Model, types2)  # druha ...
-    # )
-    #
-    #
+
+async def ensureAllTypes(asyncSessionMaker):
+    done = await asyncio.gather(
+        putPredefinedStructuresIntoTable(
+            asyncSessionMaker, StudyProgramModel, determineStudyPrograms
+        ),
+        putPredefinedStructuresIntoTable(
+            asyncSessionMaker, SubjectModel, determineSubjects
+        ),
+        putPredefinedStructuresIntoTable(
+            asyncSessionMaker, StudyLanguageModel, determineStudyLanguage
+        ),
+        putPredefinedStructuresIntoTable(
+            asyncSessionMaker, SemesterModel, determineSemester
+        ),
+        putPredefinedStructuresIntoTable(
+            asyncSessionMaker, ClassificationModel, determineClassification
+        ),
+        putPredefinedStructuresIntoTable(
+            asyncSessionMaker, StudyThemeModel, determineTheme
+        ),
+        putPredefinedStructuresIntoTable(
+            asyncSessionMaker, StudyThemeItemModel, determineThemeItem
+        ),
+        putPredefinedStructuresIntoTable(
+            asyncSessionMaker, ThemeTypeModel, determineThemeTypes
+        ),
+    )
     return
 
 async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structureFunction):

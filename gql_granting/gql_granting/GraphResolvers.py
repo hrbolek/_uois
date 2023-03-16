@@ -26,6 +26,8 @@ resolveSubjectsforProgram = create1NGetter(SubjectModel, foreignKeyName='program
 # SubjectModel
 resolveSubjectByID = createEntityByIdGetter(SubjectModel)
 resolveSemestersforSubject = create1NGetter(SemesterModel, foreignKeyName='subject_id')
+resolveUpdateSubject = createUpdateResolver(SubjectModel)
+
 # Subject -> Languguage 1/N
 # Subject->Semester 1/N
 
@@ -36,6 +38,7 @@ resolveSubjectsforLanguage = create1NGetter(SubjectModel, foreignKeyName='langua
 # SemesterModel
 resolveSemesterByID = createEntityByIdGetter(SemesterModel)
 resolveThemesforSemester = create1NGetter(StudyThemeModel, foreignKeyName='semester_id')
+resolveUpdateSemester = createUpdateResolver(SemesterModel)
 # Semester->Class 1/1
 # Semester->StudyTheme 1/N
 
@@ -45,15 +48,70 @@ resolveClassificationsforSemester = create1NGetter(ClassificationModel, foreignK
 
 # StudyThemeModel
 resolveStudyThemeByID = createEntityByIdGetter(StudyThemeModel)
+resolveUpdateTheme = createUpdateResolver(StudyThemeModel)
+resolveInsertTheme = createInsertResolver(StudyThemeModel)
+
+async def resolveRemoveTheme(session, subject_id, theme_id):
+    stmt = delete(StudyThemeModel).where((StudyThemeModel.subject_id == subject_id) & (StudyThemeModel.id == theme_id))
+    resultMsg = ""
+    try:
+        response = await session.execute(stmt)
+        await session.commit()
+        if (response.rowcount == 1):
+            resultMsg = "ok"
+        else:
+            resultMsg = "fail"
+    except:
+        resultMsg = "error"
+
+    return resultMsg
+
 
 # StudyTheme->ThemeItem 1/N
 
 # StudyThemeItemModel
 resolveStudyThemeItemByID = createEntityByIdGetter(StudyThemeItemModel)
+resolveUpdateThemeItem = createUpdateResolver(StudyThemeItemModel)
+resolveInsertThemeItem = createInsertResolver(StudyThemeItemModel)
+
+async def resolveRemoveThemeItem(session, subject_id, theme_item_id):
+    stmt = delete(StudyThemeModel).where(
+        (StudyThemeModel.subject_id == subject_id) & (StudyThemeModel.id == theme_item_id))
+    resultMsg = ""
+    try:
+        response = await session.execute(stmt)
+        await session.commit()
+        if (response.rowcount == 1):
+            resultMsg = "ok"
+        else:
+            resultMsg = "fail"
+    except:
+        resultMsg = "error"
+
+    return resultMsg
+
+
 # ThemeItem->ThemeType 1/1
 
 # ThemeTypeModel
 resolveThemeTypeByID = createEntityByIdGetter(ThemeTypeModel)
+resolveUpdateThemeType = createUpdateResolver(ThemeTypeModel)
+resolveInsertThemeType = createInsertResolver(ThemeTypeModel)
+async def resolveRemoveThemeType(session, subject_id, theme_type_id):
+    stmt = delete(StudyThemeModel).where(
+        (StudyThemeModel.subject_id == subject_id) & (StudyThemeModel.id == theme_type_id))
+    resultMsg = ""
+    try:
+        response = await session.execute(stmt)
+        await session.commit()
+        if (response.rowcount == 1):
+            resultMsg = "ok"
+        else:
+            resultMsg = "fail"
+    except:
+        resultMsg = "error"
+
+    return resultMsg
 
 ###########################################################################################################################
 #
