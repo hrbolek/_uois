@@ -54,7 +54,7 @@ NEPOVEDLO SE:
 
 ŘEŠENÉ PROBLÉMY:
 - apollo
-- 
+- Crashování dockeru gql_personalities
 - GraphTypeDefinitions - UserUpdateGQLModel - datetime.datetime ... docker error
 
 LESSONS LEARNED:

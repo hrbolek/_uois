@@ -407,7 +407,7 @@ def determineCertificateType():
     ]
     return certificateTypes
 
-
+@cache
 def determineCertificateTypeGroup():
     """
     defines certificatetypegroup
