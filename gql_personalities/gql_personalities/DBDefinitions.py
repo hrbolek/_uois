@@ -30,7 +30,7 @@ def UUIDColumn(name=None):
         return Column(
             name, String, primary_key=True, unique=True, default=newUuidAsString
         )
-    
+
 def UUIDFKey(*, ForeignKey=None, nullable=False):
     if ForeignKey is None:
         return Column(
@@ -40,7 +40,7 @@ def UUIDFKey(*, ForeignKey=None, nullable=False):
         return Column(
             ForeignKey, index=True, nullable=nullable
         )
-    
+
 #id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
 ###########################################################################################################################
@@ -220,7 +220,6 @@ class MedalTypeModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-
     medalTypeGroup_id = Column(ForeignKey("personalitiesmedalcategories.id"), index=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
@@ -238,7 +237,7 @@ class MedalTypeGroupModel(BaseModel):
 
     id = UUIDColumn()
     name = Column(String)
-
+    name_en = Column(String)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
