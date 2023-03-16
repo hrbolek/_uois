@@ -1,7 +1,6 @@
 from doctest import master
 from functools import cache
 from gql_granting.DBDefinitions import BaseModel, StudyProgramModel, SubjectModel, StudyLanguageModel, SemesterModel, ClassificationModel, StudyThemeModel, StudyThemeItemModel, ThemeTypeModel
-
 import uuid
 import random
 import datetime

@@ -15,7 +15,6 @@ from gql_granting.DBDefinitions import BaseModel, StudyProgramModel, SubjectMode
 ###########################################################################################################################
 #
 # zde si naimportujte sve SQLAlchemy modely
-#
 ###########################################################################################################################
 
 # StudyProgramModel

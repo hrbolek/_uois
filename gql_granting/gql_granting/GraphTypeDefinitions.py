@@ -4,7 +4,6 @@ from unittest import result
 import strawberry as strawberryA
 import uuid
 import datetime
-
 from contextlib import asynccontextmanager
 
 @asynccontextmanager
@@ -478,42 +477,42 @@ class UserGQLModel:
 class Query:
 
     @strawberryA.field(description="""Finds study programs by their id""")
-    async def studyprogrambyid(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyProgramGQLModel, None]:
+    async def study_program_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyProgramGQLModel, None]:
         result = await resolveStudyProgramByID(AsyncSessionFromInfo(info), id)
         return result
 
     @strawberryA.field(description="""Finds study programs by their id""")
-    async def subjectbyid(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[SubjectGQLModel, None]:
+    async def subject_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[SubjectGQLModel, None]:
         result = await resolveSubjectByID(AsyncSessionFromInfo(info), id)
         return result
 
     @strawberryA.field(description="""Finds study programs by their id""")
-    async def studylanguagebyid(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyLanguageGQLModel, None]:
+    async def study_language_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyLanguageGQLModel, None]:
         result = await resolveStudyLanguageByID(AsyncSessionFromInfo(info), id)
         return result
 
     @strawberryA.field(description="""Finds study programs by their id""")
-    async def semesterbyid(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[SemesterGQLModel, None]:
+    async def semester_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[SemesterGQLModel, None]:
         result = await resolveSemesterByID(AsyncSessionFromInfo(info), id)
         return result
 
     @strawberryA.field(description="""Finds study programs by their id""")
-    async def classificationbyid(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ClassificationGQLModel, None]:
+    async def classification_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ClassificationGQLModel, None]:
         result = await resolveClassificationByID(AsyncSessionFromInfo(info), id)
         return result
 
     @strawberryA.field(description="""Finds study programs by their id""")
-    async def studythemebyid(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyThemeGQLModel, None]:
+    async def study_theme_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyThemeGQLModel, None]:
         result = await resolveStudyThemeByID(AsyncSessionFromInfo(info), id)
         return result
 
     @strawberryA.field(description="""Finds study programs by their id""")
-    async def studythemebyid(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyThemeItemGQLModel, None]:
+    async def study_theme_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyThemeItemGQLModel, None]:
         result = await resolveStudyThemeByID(AsyncSessionFromInfo(info), id)
         return result
 
     @strawberryA.field(description="""Finds study programs by their id""")
-    async def themetypebyid(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ThemeTypeGQLModel, None]:
+    async def theme_type_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ThemeTypeGQLModel, None]:
         result = await resolveThemeTypeByID(AsyncSessionFromInfo(info), id)
         return result
 # byID, page
