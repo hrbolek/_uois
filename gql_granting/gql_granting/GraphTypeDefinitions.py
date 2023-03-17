@@ -509,7 +509,7 @@ class Query:
             return result
 
     # SUBJECT
-    @strawberryA.field(description="""Finds study programs by their id""")
+    @strawberryA.field(description="""Finds subjects by their id""")
     async def subject_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[SubjectGQLModel, None]:
         result = await resolveSubjectByID(AsyncSessionFromInfo(info), id)
         return result
@@ -522,7 +522,7 @@ class Query:
 
     # STUDY LANGUAGE
 
-    @strawberryA.field(description="""Finds study programs by their id""")
+    @strawberryA.field(description="""Finds languages by their id""")
     async def study_language_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyLanguageGQLModel, None]:
         result = await resolveStudyLanguageByID(AsyncSessionFromInfo(info), id)
         return result
@@ -535,7 +535,7 @@ class Query:
 
     # SEMESTER
 
-    @strawberryA.field(description="""Finds study programs by their id""")
+    @strawberryA.field(description="""Finds semesters by their id""")
     async def semester_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[SemesterGQLModel, None]:
         result = await resolveSemesterByID(AsyncSessionFromInfo(info), id)
         return result
@@ -548,7 +548,7 @@ class Query:
 
     # CLASSIFICATION
 
-    @strawberryA.field(description="""Finds study programs by their id""")
+    @strawberryA.field(description="""Finds classifications by their id""")
     async def classification_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ClassificationGQLModel, None]:
         result = await resolveClassificationByID(AsyncSessionFromInfo(info), id)
         return result
@@ -561,7 +561,7 @@ class Query:
 
     # STUDY THEME
 
-    @strawberryA.field(description="""Finds study programs by their id""")
+    @strawberryA.field(description="""Finds study themes by their id""")
     async def study_theme_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyThemeGQLModel, None]:
         result = await resolveStudyThemeByID(AsyncSessionFromInfo(info), id)
         return result
@@ -574,7 +574,7 @@ class Query:
 
     # STUDY THEME ITEM
 
-    @strawberryA.field(description="""Finds study programs by their id""")
+    @strawberryA.field(description="""Finds study theme items by their id""")
     async def study_theme_item_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[StudyThemeItemGQLModel, None]:
         result = await resolveStudyThemeItemByID(AsyncSessionFromInfo(info), id)
         return result
@@ -588,7 +588,7 @@ class Query:
 
     # STUDY THEME TYPE
 
-    @strawberryA.field(description="""Finds study programs by their id""")
+    @strawberryA.field(description="""Finds study theme types by their id""")
     async def theme_type_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ThemeTypeGQLModel, None]:
         result = await resolveThemeTypeByID(AsyncSessionFromInfo(info), id)
         return result
