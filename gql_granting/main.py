@@ -2,7 +2,7 @@ from typing import List
 import typing
 
 import asyncio
-
+from gql_granting.GraphTypeDefinitions import schema
 from fastapi import FastAPI
 import strawberry
 from strawberry.fastapi import GraphQLRouter
@@ -15,20 +15,24 @@ from strawberry.fastapi import GraphQLRouter
 from gql_granting.DBDefinitions import startEngine, ComposeConnectionString
 
 ## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
-#from gql_workflow.DBFeeder import createSystemDataStructureRoleTypes, createSystemDataStructureGroupTypes
+# from gql_workflow.DBFeeder import createSystemDataStructureRoleTypes, createSystemDataStructureGroupTypes
 
 connectionString = ComposeConnectionString()
+
 
 def singleCall(asyncFunc):
     """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
        Dekorovana funkce je asynchronni.
     """
     resultCache = {}
+
     async def result():
         if resultCache.get('result', None) is None:
             resultCache['result'] = await asyncFunc()
         return resultCache['result']
+
     return result
+
 
 @singleCall
 async def RunOnceAndReturnSessionMaker():
@@ -38,51 +42,52 @@ async def RunOnceAndReturnSessionMaker():
     print(f'starting engine for "{connectionString}"')
 
     result = await startEngine(connectionstring=connectionString, makeDrop=False, makeUp=True)
-    
+
     print(f'initializing system structures')
 
     ###########################################################################################################################
     #
     # zde definujte do funkce asyncio.gather
     # vlozte asynchronni funkce, ktere maji data uvest do prvotniho konzistentniho stavu
-   
+
     # await asyncio.gather( # concurency running :)
     # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
     # musi byt asynchronniho typu (async def ...)
-        # createSystemDataStructureRoleTypes(result),
-        # createSystemDataStructureGroupTypes(result)
+    # createSystemDataStructureRoleTypes(result),
+    # createSystemDataStructureGroupTypes(result)
     # )
 
     ###########################################################################################################################
     print(f'all done')
     return result
 
+
 from strawberry.asgi import GraphQL
+
+
 class MyGraphQL(GraphQL):
     """Rozsirena trida zabezpecujici praci se session"""
+
     async def __call__(self, scope, receive, send):
         asyncSessionMaker = await RunOnceAndReturnSessionMaker()
         async with asyncSessionMaker() as session:
             self._session = session
             self._user = {'id': '?'}
             return await GraphQL.__call__(self, scope, receive, send)
-    
+
     async def get_context(self, request, response):
         parentResult = await GraphQL.get_context(self, request, response)
-        return {**parentResult, 
-            'session': self._session, 
-            'asyncSessionMaker': await RunOnceAndReturnSessionMaker(),
-            'user': self._user
-            }
-
-
-from gql_granting.GraphTypeDefinitions import schema
+        return {**parentResult,
+                'session': self._session,
+                'asyncSessionMaker': await RunOnceAndReturnSessionMaker(),
+                'user': self._user
+                }
 
 ## ASGI app, kterou "moutneme"
 graphql_app = MyGraphQL(
-    schema, 
-    graphiql = True,
-    allow_queries_via_get = True
+    schema,
+    graphiql=True,
+    allow_queries_via_get=True
 )
 
 app = FastAPI()
@@ -90,8 +95,8 @@ app.mount("/gql", graphql_app)
 
 print('All initialization is done')
 
-#@app.get('/hello')
-#def hello():
+# @app.get('/hello')
+# def hello():
 #    return {'hello': 'world'}
 
 ###########################################################################################################################
