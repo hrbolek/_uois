@@ -1,25 +1,29 @@
 from doctest import master
 from functools import cache
-from gql_granting.DBDefinitions import BaseModel, StudyProgramModel, SubjectModel, StudyLanguageModel, SemesterModel, ClassificationModel, StudyThemeModel, StudyThemeItemModel, ThemeTypeModel
+from gql_granting.DBDefinitions import BaseModel, StudyProgramModel, SubjectModel, StudyLanguageModel, SemesterModel, \
+    ClassificationModel, StudyThemeModel, StudyThemeItemModel, ThemeTypeModel
 import uuid
 import random
 import datetime
 import itertools
 from functools import cache
 
-
 from sqlalchemy.future import select
+
 
 def singleCall(asyncFunc):
     """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
        Dekorovana funkce je asynchronni.
     """
     resultCache = {}
+
     async def result():
         if resultCache.get('result', None) is None:
             resultCache['result'] = await asyncFunc()
         return resultCache['result']
+
     return result
+
 
 ###########################################################################################################################
 #
@@ -32,73 +36,77 @@ def determineStudyPrograms():
     # Returns list of study programs
     data = [
         {
-            'id':'4b883614-6d9e-11ed-a1eb-0242ac120002',
+            'id': '4b883614-6d9e-11ed-a1eb-0242ac120002',
             'type': 'Master',
-            'study_duration':5,
-            'type_of_study':'Military',
-            'name':'Kybernetická bezpečnost',
+            'study_duration': 5,
+            'type_of_study': 'Military',
+            'name': 'Kybernetická bezpečnost',
             'lastchange': datetime.datetime,
         },
         {
-            'id':'4b883614-6d5e-11ed-a1eb-0242ac120405',
+            'id': '4b883614-6d5e-11ed-a1eb-0242ac120405',
             'type': 'Master',
-            'study_duration':5,
-            'type_of_study':'Civilian',
-            'name':'Kybernetická bezpečnost',
+            'study_duration': 5,
+            'type_of_study': 'Civilian',
+            'name': 'Kybernetická bezpečnost',
             'lastchange': datetime.datetime,
         }
     ]
     return data
+
 
 @cache
 def determineSubjects():
     # returns list of subjects
     data = [
         {
-            'id':'4b773614-6d9e-11ed-a1eb-0242ac120099',
-            'name':'Analýza informačních zdrojů',
-            'program_id':'4b883614-6d9e-11ed-a1eb-0242ac120002',
-            'language_id':'4b883614-6d9e-11ed-a1eb-0242ac120003',
+            'id': '4b773614-6d9e-11ed-a1eb-0242ac120099',
+            'name': 'Analýza informačních zdrojů',
+            'program_id': '4b883614-6d9e-11ed-a1eb-0242ac120002',
+            'language_id': '4b883614-6d9e-11ed-a1eb-0242ac120003',
             'lastchange': datetime.datetime,
         }
     ]
     return data
+
 
 @cache
 def determineStudyLanguage():
     # returns list of languages
     data = [
         {
-            'id':'4b883614-6d9e-11ed-a1eb-0242ac120003',
-            'name':'Česky',
-            'semester_id':'4b883614-6d9e-11ed-a1eb-0242ac120004',
+            'id': '4b883614-6d9e-11ed-a1eb-0242ac120003',
+            'name': 'Česky',
+            'semester_id': '4b883614-6d9e-11ed-a1eb-0242ac120004',
             'lastchange': datetime.datetime,
         }
     ]
     return data
+
 
 @cache
 def determineSemester():
     # returns list of languages
     data = [
         {
-            'id':'4b883614-6d9e-11ed-a1eb-0242ac120004',
-            'semester_number':5,
-            'credits':30,
-            'subject_id':'4b773614-6d9e-11ed-a1eb-0242ac120099',
-            'classification_id':'4b773614-6d9e-11ed-a1eb-0242ac120088',
+            'id': '4b883614-6d9e-11ed-a1eb-0242ac120004',
+            'semester_number': 5,
+            'credits': 30,
+            'subject_id': '4b773614-6d9e-11ed-a1eb-0242ac120099',
+            'classification_id': '4b773614-6d9e-11ed-a1eb-0242ac120088',
             'lastchange': datetime.datetime,
         }
     ]
     return data
+
 
 @cache
 def determineClassification():
     # returns list of classifications
     data = [
         {
-            'id':'4b773614-6d9e-11ed-a1eb-0242ac120088',
-            'name':'Zkouška',
+            'id': '4b773614-6d9e-11ed-a1eb-0242ac120088',
+            'name': 'Zkouška',
             'lastchange': datetime.datetime,
         },
         {
@@ -114,14 +122,15 @@ def determineClassification():
     ]
     return data
 
+
 @cache
 def determineTheme():
     # returns list of themes
     data = [
         {
-            'id':'4b883614-6d9e-11ed-a1eb-0242ac120010',
-            'name':'Úvodní hodina',
-            'semester_id':'4b883614-6d9e-11ed-a1eb-0242ac120004',
+            'id': '4b883614-6d9e-11ed-a1eb-0242ac120010',
+            'name': 'Úvodní hodina',
+            'semester_id': '4b883614-6d9e-11ed-a1eb-0242ac120004',
             'lastchange': datetime.datetime,
         },
         {
@@ -133,32 +142,35 @@ def determineTheme():
     ]
     return data
 
+
 @cache
 def determineThemeItem():
     # returns list of theme items
     data = [
         {
-            'id':'4b883614-6d9e-12ed-a1eb-0242ac120012',
+            'id': '4b883614-6d9e-12ed-a1eb-0242ac120012',
             'theme_id': '4b883614-6d9e-11ed-a1eb-0242ac120010',
-            'type_id':'4b883614-6d9e-11ed-a1eb-0242ac120987',
-            'semester_id':'4b883614-6d9e-11ed-a1eb-0242ac120004',
-            'lessons':5,
+            'type_id': '4b883614-6d9e-11ed-a1eb-0242ac120987',
+            'semester_id': '4b883614-6d9e-11ed-a1eb-0242ac120004',
+            'lessons': 5,
             'lastchange': datetime.datetime,
         }
     ]
     return data
 
+
 def determineThemeTypes():
     # returns list of theme types
     data = [
         {
-            'id':'4b883614-6d9e-11ed-a1eb-0242ac120987',
-            'name':'Neco',
-            'semester_id':'4b883614-6d9e-11ed-a1eb-0242ac120004',
+            'id': '4b883614-6d9e-11ed-a1eb-0242ac120987',
+            'name': 'Neco',
+            'semester_id': '4b883614-6d9e-11ed-a1eb-0242ac120004',
             'lastchange': datetime.datetime,
         }
     ]
     return data
+
 
 ###########################################################################################################################
 #
@@ -167,6 +179,7 @@ def determineThemeTypes():
 ###########################################################################################################################
 
 import asyncio
+
 
 async def ensureAllTypes(asyncSessionMaker):
     done = await asyncio.gather(
@@ -197,6 +210,7 @@ async def ensureAllTypes(asyncSessionMaker):
     )
     return
 
+
 async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structureFunction):
     """Zabezpeci prvotni inicicalizaci typu externích ids v databazi
        DBModel zprostredkovava tabulku, je to sqlalchemy model
@@ -204,18 +218,18 @@ async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structure
     """
     # ocekavane typy 
     externalIdTypes = structureFunction()
-    
-    #dotaz do databaze
+
+    # dotaz do databaze
     stmt = select(DBModel)
     async with asyncSessionMaker() as session:
         dbSet = await session.execute(stmt)
         dbRows = list(dbSet.scalars())
-    
-    #extrakce dat z vysledku dotazu
-    #vezmeme si jen atributy name a id, id je typu uuid, tak jej zkovertujeme na string
+
+    # extrakce dat z vysledku dotazu
+    # vezmeme si jen atributy name a id, id je typu uuid, tak jej zkovertujeme na string
     dbRowsDicts = [
         {'name': row.name, 'id': f'{row.id}'} for row in dbRows
-        ]
+    ]
 
     print(structureFunction, 'external id types found in database')
     print(dbRowsDicts)
@@ -224,7 +238,7 @@ async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structure
     idsInDatabase = [row['id'] for row in dbRowsDicts]
 
     # zjistime, ktera id nejsou v databazi
-    unsavedRows = list(filter(lambda row: not(row['id'] in idsInDatabase), externalIdTypes))
+    unsavedRows = list(filter(lambda row: not (row['id'] in idsInDatabase), externalIdTypes))
     print(structureFunction, 'external id types not found in database')
     print(unsavedRows)
 
@@ -244,11 +258,11 @@ async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structure
     async with asyncSessionMaker() as session:
         dbSet = await session.execute(stmt)
         dbRows = dbSet.scalars()
-    
-    #extrakce dat z vysledku dotazu
+
+    # extrakce dat z vysledku dotazu
     dbRowsDicts = [
         {'name': row.name, 'id': f'{row.id}'} for row in dbRows
-        ]
+    ]
 
     print(structureFunction, 'found in database')
     print(dbRowsDicts)
@@ -257,12 +271,12 @@ async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structure
     idsInDatabase = [row['id'] for row in dbRowsDicts]
 
     # znovu zaznamy, ktere dosud ulozeny nejsou, mely by byt ulozeny vsechny, takze prazdny list
-    unsavedRows = list(filter(lambda row: not(row['id'] in idsInDatabase), externalIdTypes))
+    unsavedRows = list(filter(lambda row: not (row['id'] in idsInDatabase), externalIdTypes))
 
     # ted by melo byt pole prazdne
     print(structureFunction, 'not found in database')
     print(unsavedRows)
-    if not(len(unsavedRows) == 0):
+    if not (len(unsavedRows) == 0):
         print('SOMETHING is REALLY WRONG')
 
     print(structureFunction, 'Defined in database')
