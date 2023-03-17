@@ -226,7 +226,7 @@ class SemesterEditorGQLModel:
         return self.result
 
     @strawberryA.field(description="""Result of update operation""")
-    async def project(self, info: strawberryA.types.Info) -> SemesterGQLModel:
+    async def project(self, info: strawberryA.types.Info) -> 'SemesterGQLModel':
         async with withInfo(info) as session:
             result = await resolveSemesterByID(session, id)
             return result
