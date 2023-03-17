@@ -258,7 +258,7 @@ class SemesterEditorGQLModel:
             result = await resolveRemoveTheme(session, self.id, theme_id)
             return result
 
-    @strawberryA.filed(description="""Create new ThemeItem""")
+    @strawberryA.field(description="""Create new ThemeItem""")
     async def add_theme_item(self, info: strawberryA.types.Info, theme_id: uuid.UUID, type_id: uuid.UUID,
                              lessons: int) -> 'StudyThemeItemGQLModel':
         async with withInfo(info) as session:
