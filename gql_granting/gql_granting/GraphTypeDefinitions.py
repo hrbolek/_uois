@@ -40,7 +40,7 @@ from gql_granting.GraphResolvers import (
 
 import datetime
 @strawberryA.federation.type(
-    keys=["id"], description="""Entity representing premade study programs"""
+    keys=["id"], description="""Entity representing acredited study programs"""
 )
 class AcProgramGQLModel:
     @classmethod
@@ -63,7 +63,7 @@ class AcProgramGQLModel:
     def name_en(self) -> str:
         return self.name_en
 
-    @strawberryA.field(description="""name""")
+    @strawberryA.field(description="""""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
@@ -72,7 +72,7 @@ class AcProgramGQLModel:
         result = await AcProgramTypeGQLModel.resolve_reference(info, self.type_id)
         return result
 
-    @strawberryA.field(description="""primary key""")
+    @strawberryA.field(description="""""")
     def editor(self) -> "AcProgramEditorGQLModel":
         return self
 
@@ -104,15 +104,15 @@ class AcProgramFormTypeGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="name")
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="name")
     def name_en(self) -> str:
         return self.name_en
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="")
     def lastchange(self) -> str:
         return self.lastchange
 
@@ -120,7 +120,7 @@ class AcProgramFormTypeGQLModel:
 from gql_granting.GraphResolvers import resolveLanguageTypeById
 
 
-@strawberryA.federation.type(keys=["id"], description="Program language")
+@strawberryA.federation.type(keys=["id"], description="Study program language")
 class AcProgramLanguageTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -134,15 +134,15 @@ class AcProgramLanguageTypeGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="name (like čeština)")
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="name (like Czech)")
     def name_en(self) -> str:
         return self.name_en
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
@@ -163,15 +163,15 @@ class AcProgramLevelTypeGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="Name of the program level")
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="name in english")
     def name_en(self) -> str:
         return self.name_en
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="")
     def lastchange(self) -> str:
         return self.lastchange
 
@@ -193,15 +193,15 @@ class AcProgramTitleTypeGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="name")
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="english name")
     def name_en(self) -> str:
         return self.name_en
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="datetime lastchange")
     def lastchange(self) -> str:
         return self.lastchange
 
@@ -210,7 +210,7 @@ from gql_granting.GraphResolvers import resolveClassificationTypeById
 
 
 @strawberryA.federation.type(
-    keys=["id"], description="Classification on the end of semesters"
+    keys=["id"], description="Classification at the end of semester"
 )
 class AcClassificationTypeGQLModel:
     @classmethod
@@ -225,15 +225,15 @@ class AcClassificationTypeGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="name")
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="english name")
     def name_en(self) -> str:
         return self.name_en
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="datetime lastchange")
     def lastchange(self) -> str:
         return self.lastchange
 
@@ -254,15 +254,15 @@ class AcLessonTypeGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="name")
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="english name")
     def name_en(self) -> str:
         return self.name_en
 
-    @strawberryA.field(description="primary key")
+    @strawberryA.field(description="datetime lastchange")
     def lastchange(self) -> str:
         return self.lastchange
 
@@ -302,7 +302,7 @@ from gql_granting.GraphResolvers import subjectSelect
 
 @strawberryA.federation.type(
     keys=["id"],
-    description="""Entity which connects programs and semesters, includes informations about subjects""",
+    description="""Entity which connects programs and semesters, includes informations about subjects (divided into semesters)""",
 )
 class AcSubjectGQLModel:
     @classmethod
@@ -321,20 +321,20 @@ class AcSubjectGQLModel:
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="""name""")
+    @strawberryA.field(description="""english name""")
     def name_en(self) -> str:
         return self.name_en
 
-    @strawberryA.field(description="""name""")
+    @strawberryA.field(description="""datetime laschange""")
     def lastchange(self) -> str:
         return self.lastchange
 
-    @strawberryA.field(description="""StudyProgramID""")
+    @strawberryA.field(description="""Program owing this subjects""")
     async def program(self, info: strawberryA.types.Info) -> "AcProgramGQLModel":
         result = await AcProgramGQLModel.resolve_reference(info, self.program_id)
         return result
 
-    @strawberryA.field(description="""StudyProgramID""")
+    @strawberryA.field(description="""Semesters which the subjects in divided into""")
     async def semesters(
         self, info: strawberryA.types.Info
     ) -> List["AcSemesterGQLModel"]:
@@ -347,7 +347,7 @@ from gql_granting.GraphResolvers import resolveSemesterById, resolveTopicsForSem
 
 
 @strawberryA.federation.type(
-    keys=["id"], description="""Entity representing each semester in study program"""
+    keys=["id"], description="""Entity representing each semester in study subject"""
 )
 class AcSemesterGQLModel:
     @classmethod
@@ -376,13 +376,13 @@ class AcSemesterGQLModel:
 
 
     # FK###############################################################################################
-    @strawberryA.field(description="""SubjectID""")
+    @strawberryA.field(description="""Subject related to the semester (semester owner)""")
     async def subject(self, info: strawberryA.types.Info) -> "AcSubjectGQLModel":
         result = await AcSubjectGQLModel.resolve_reference(info, self.subject_id)
         return result
 
-    @strawberryA.field(description="""ClassificationID""")
-    async def classifications(
+    @strawberryA.field(description="""Final classification of the semester""")
+    async def classification(
         self, info: strawberryA.types.Info
     ) -> List["AcClassificationGQLModel"]:
         loader = getLoaders(info).acclassification_for_semester
@@ -403,7 +403,7 @@ from gql_granting.GraphResolvers import resolveTopicById
 
 @strawberryA.federation.type(
     keys=["id"],
-    description="""Entity which represents all themes included in semester""",
+    description="""Entity which represents a theme included in semester of subject""",
 )
 class AcTopicGQLModel:
     @classmethod
@@ -422,11 +422,11 @@ class AcTopicGQLModel:
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="""name ("Introduction")""")
+    @strawberryA.field(description="""english name ("Introduction")""")
     def name_en(self) -> str:
         return self.name_en
 
-    @strawberryA.field(description="""name ("Introduction")""")
+    @strawberryA.field(description="""datetime lastchange""")
     def lastchange(self) -> str:
         return self.lastchange
 
@@ -434,7 +434,7 @@ class AcTopicGQLModel:
     def order(self) -> Union[int, None]:
         return self.order
 
-    @strawberryA.field(description="""Semester""")
+    @strawberryA.field(description="""Semester of subject which owns the topic""")
     async def semester(self, info: strawberryA.types.Info) -> "AcSemesterGQLModel":
         result = await AcSemesterGQLModel.resolve_reference(info, self.semester_id)
         return result
@@ -450,7 +450,7 @@ from gql_granting.GraphResolvers import resolveLessonById
 
 @strawberryA.federation.type(
     keys=["id"],
-    description="""Entity which represents all themes included in semester""",
+    description="""Entity which represents single lesson included in a topic""",
 )
 class AcLessonGQLModel:
     @classmethod
@@ -465,22 +465,22 @@ class AcLessonGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""primary key""")
+    @strawberryA.field(description="""datetime lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
     # FK###############################################################################################
-    @strawberryA.field(description="""ThemeTypeID""")
+    @strawberryA.field(description="""Lesson type""")
     async def type(self, info: strawberryA.types.Info) -> "AcLessonTypeGQLModel":
         result = await AcLessonTypeGQLModel.resolve_reference(info, self.type_id)
         return result
 
     ##################################################################################################
-    @strawberryA.field(description="""number of this lesson in the topic""")
+    @strawberryA.field(description="""Number of hour of this lesson in the topic""")
     def count(self) -> int:
         return self.count
 
-    @strawberryA.field(description="""number of this lesson in the topic""")
+    @strawberryA.field(description="""The topic which owns this lesson""")
     async def topic(self, info: strawberryA.types.Info) -> "AcTopicGQLModel":
         result = await AcTopicGQLModel.resolve_reference(info, self.topic_id)
         return result
@@ -488,7 +488,7 @@ class AcLessonGQLModel:
 
 @strawberryA.federation.type(
     keys=["id"],
-    description="""""",
+    description="""Encapsulation of language, level, type etc. of program. This is intermediate entity for acredited program and its types""",
 )
 class AcProgramTypeGQLModel:
     @classmethod
@@ -503,15 +503,15 @@ class AcProgramTypeGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""primary key""")
+    @strawberryA.field(description="""name""")
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="""primary key""")
+    @strawberryA.field(description="""english name""")
     def name_en(self) -> str:
         return self.name_en
 
-    @strawberryA.field(description="""primary key""")
+    @strawberryA.field(description="""datetime lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
@@ -539,7 +539,7 @@ class AcProgramTypeGQLModel:
 
 @strawberryA.federation.type(
     keys=["id"],
-    description="""""",
+    description="""Entity which holds a exam result for a subject semester and user / student""",
 )
 class AcClassificationGQLModel:
     @classmethod
@@ -554,32 +554,32 @@ class AcClassificationGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""primary key""")
+    @strawberryA.field(description="""datetime lastchange""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
-    @strawberryA.field(description="""primary key""")
+    @strawberryA.field(description="""User""")
     async def user(self, info: strawberryA.types.Info) -> "UserGQLModel":
-        return UserGQLModel(id=self.user_id)
+        return await UserGQLModel(id=self.user_id)
 
-    @strawberryA.field(description="""primary key""")
+    @strawberryA.field(description="""Semester""")
     async def semester(self, info: strawberryA.types.Info) -> "AcSemesterGQLModel":
         result = await AcSemesterGQLModel.resolve_reference(info, id=self.semester_id)
         return result
 
-    @strawberryA.field(description="""primary key""")
+    @strawberryA.field(description="""Type""")
     async def type(self, info: strawberryA.types.Info) -> "AcClassificationTypeGQLModel":
         result = await AcClassificationTypeGQLModel.resolve_reference(info, id=self.classificationtype_id)
         return result
 
-    @strawberryA.field(description="""primary key""")
+    @strawberryA.field(description="""Level""")
     async def level(self, info: strawberryA.types.Info) -> "AcClassificationLevelGQLModel":
         result = await AcClassificationLevelGQLModel.resolve_reference(info, id=self.classificationlevel_id)
         return result
 
 @strawberryA.federation.type(
     keys=["id"],
-    description="""""",
+    description="""Mark which student could get as an exam evaluation""",
 )
 class AcClassificationLevelGQLModel:
     @classmethod
@@ -594,11 +594,11 @@ class AcClassificationLevelGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""primary key""")
+    @strawberryA.field(description="""name (like A)""")
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="""primary key""")
+    @strawberryA.field(description="""name (like A)""")
     def name_en(self) -> str:
         return self.name_en
 
@@ -616,7 +616,7 @@ class GroupGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return GroupGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
 
     async def program(
@@ -632,7 +632,7 @@ class UserGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
 
 #     zde je rozsireni o dalsi resolvery
@@ -661,21 +661,21 @@ from gql_granting.GraphResolvers import programSelect, classificationTypeSelect
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Just container gql test""")
     async def say_hello_granting(
         self, info: strawberryA.types.Info, id: str
     ) -> Union[str, None]:
         result = f"Hello {id} from granting"
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds an program by their id""")
     async def program_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union["AcProgramGQLModel", None]:
         result = await AcProgramGQLModel.resolve_reference(info, id)
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds all programs""")
     async def program_page(
         self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
     ) -> List["AcProgramGQLModel"]:
@@ -684,77 +684,77 @@ class Query:
         result = loader.execute_select(stmt)
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds a program type its id""")
     async def program_type_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union["AcProgramTypeGQLModel", None]:
         result = await AcProgramTypeGQLModel.resolve_reference(info, id)
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds a program language its id""")
     async def program_language_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union["AcProgramLanguageTypeGQLModel", None]:
         result = await AcProgramLanguageTypeGQLModel.resolve_reference(info, id)
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds a program level its id""")
     async def program_level_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union["AcProgramLevelTypeGQLModel", None]:
         result = await AcProgramLevelTypeGQLModel.resolve_reference(info, id)
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds a program from its id""")
     async def program_form_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union["AcProgramFormTypeGQLModel", None]:
         result = await AcProgramFormTypeGQLModel.resolve_reference(info, id)
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds a program title by its id""")
     async def program_title_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union["AcProgramTitleTypeGQLModel", None]:
         result = await AcProgramTitleTypeGQLModel.resolve_reference(info, id)
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds a subject by its id""")
     async def acsubject_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union["AcSubjectGQLModel", None]:
         result = await AcSubjectGQLModel.resolve_reference(info, id)
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds a subject semester by its id""")
     async def acsemester_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union["AcSemesterGQLModel", None]:
         result = await AcSemesterGQLModel.resolve_reference(info, id)
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds a topic by its id""")
     async def actopic_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union["AcTopicGQLModel", None]:
         result = await AcTopicGQLModel.resolve_reference(info, id)
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds a lesson by its id""")
     async def aclesson_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union["AcLessonGQLModel", None]:
         result = await AcLessonGQLModel.resolve_reference(info, id)
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Finds a lesson type by its id""")
     async def aclesson_type_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union["AcLessonTypeGQLModel", None]:
         result = await AcLessonTypeGQLModel.resolve_reference(info, id)
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""Lists classifications""")
     async def acclassification_type_page(
         self, info: strawberryA.types.Info
     ) -> List["AcClassificationTypeGQLModel"]:
@@ -762,7 +762,7 @@ class Query:
         result = await loader.execute_select(classificationTypeSelect)
         return result
 
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""""")
     async def program_for_group(
         self, info: strawberryA.types.Info, group_id: strawberryA.ID
     ) -> List["AcProgramGQLModel"]:

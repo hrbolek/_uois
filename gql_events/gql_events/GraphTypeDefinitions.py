@@ -33,10 +33,10 @@ class UserGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id)
 
-    @strawberryA.field(description="""Events""")
+    @strawberryA.field(description="""Gets events related to the user in the specified interval""")
     async def events(
         self,
         info: strawberryA.types.Info,
@@ -48,7 +48,7 @@ class UserGQLModel:
             return result
 
 from gql_events.GraphResolvers import resolvePresenceTypeById, resolveInvitationTypeById
-@strawberryA.federation.type(keys=["id"])
+@strawberryA.federation.type(keys=["id"], description="""Describes a relation of an user to the event by invitation (like invited) and participation (like absent)""")
 class PresenceGQLModel:
 
     @classmethod
@@ -84,7 +84,7 @@ class PresenceGQLModel:
 
 from gql_events.GraphResolvers import resolveEventTypeById
 
-@strawberryA.federation.type(keys=["id"])
+@strawberryA.federation.type(keys=["id"], description="""Represents an event type""")
 class EventTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -113,7 +113,7 @@ class EventTypeGQLModel:
         return result
 
 
-@strawberryA.federation.type(keys=["id"])
+@strawberryA.federation.type(keys=["id"], description="""Represents a type of presence (like Present)""")
 class PresenceTypeGQLModel:
 
     @classmethod
@@ -136,7 +136,7 @@ class PresenceTypeGQLModel:
     def name_en(self) -> str:
         return self.name_en
 
-@strawberryA.federation.type(keys=["id"])
+@strawberryA.federation.type(keys=["id"], description="""Represents if an user has been invited to the event ot whatever""")
 class InvitationTypeGQLModel:
 
     @classmethod
@@ -167,10 +167,10 @@ class GroupGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
-        return GroupGQLModel(id=id)
+    async def resolve_reference(cls, id: strawberryA.ID):
+        return await GroupGQLModel(id=id)
 
-    @strawberryA.field(description="""Events""")
+    @strawberryA.field(description="""Events related to a group""")
     async def events(
         self,
         info: strawberryA.types.Info,
@@ -189,7 +189,7 @@ from gql_events.GraphResolvers import (
 )
 
 
-@strawberryA.federation.type(keys=["id"], description="""Entity representing events""")
+@strawberryA.federation.type(keys=["id"], description="""Entity representing an event (calendar item)""")
 class EventGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -203,7 +203,7 @@ class EventGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""Primary key""")
+    @strawberryA.field(description="""Event name""")
     def name(self) -> Union[str, None]:
         return self.name
 
@@ -225,18 +225,18 @@ class EventGQLModel:
             
 
 
-    @strawberryA.field(description="""Participants of the event""")
+    @strawberryA.field(description="""Participants of the event and if they were absent or so...""")
     async def presences(self, info: strawberryA.types.Info, invitation_types: List[strawberryA.ID] = []) -> List["PresenceGQLModel"]:
         async with withInfo(info) as session:
             result = await resolvePresencesForEvent(session, self.id, invitation_types)
             return result
 
-    @strawberryA.field(description="""Participants of the event""")
+    @strawberryA.field(description="""Type of the event""")
     async def event_type(self, info: strawberryA.types.Info) -> "EventTypeGQLModel":
         result = await EventTypeGQLModel.resolve_reference(info=info, id=self.eventtype_id)
         return result
 
-    @strawberryA.field(description="""Participants of the event""")
+    @strawberryA.field(description="""Editor for the event""")
     async def editor(self, info: strawberryA.types.Info) -> "EventEditorGQLModel":
         result = await EventEditorGQLModel.resolve_reference(info=info, id=self.id)
         return result

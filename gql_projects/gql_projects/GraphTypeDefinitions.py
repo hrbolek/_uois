@@ -289,7 +289,7 @@ class GroupGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return GroupGQLModel(id=id)
 
     @strawberryA.field(description="""List of projects, related to group""")

@@ -60,8 +60,8 @@ class ProjectModel(BaseModel):
     startdate = Column(DateTime)
     enddate = Column(DateTime)
 
-    projectType_id = Column(ForeignKey("projecttypes.id"), index=True)
-    projectType = relationship("ProjectTypeModel", back_populates="projects")
+    projecttype_id = Column(ForeignKey("projecttypes.id"), index=True)
+    projecttype = relationship("ProjectTypeModel", back_populates="projects")
 
     group_id = UUIDFKey(nullable=True)#Column(ForeignKey("groups.id"), index=True)
     #group = relationship("groupModel")
@@ -110,8 +110,8 @@ class FinanceModel(BaseModel):
 
     project_id = Column(ForeignKey("projects.id"), index=True)
 
-    financeType_id = Column(ForeignKey("projectfinancetypes.id"), index=True)
-    financeType = relationship("FinanceTypeModel", back_populates="finances")
+    financetype_id = Column(ForeignKey("projectfinancetypes.id"), index=True)
+    financetype = relationship("FinanceTypeModel", back_populates="finances")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())

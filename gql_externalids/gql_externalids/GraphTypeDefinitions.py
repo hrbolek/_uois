@@ -112,10 +112,10 @@ class UserGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id)
 
-    @strawberryA.field(description="""Inner id""")
+    @strawberryA.field(description="""All external ids related to the user""")
     async def external_ids(
         self, info: strawberryA.types.Info
     ) -> List["ExternalIdGQLModel"]:
@@ -131,10 +131,10 @@ class GroupGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return GroupGQLModel(id=id)
 
-    @strawberryA.field(description="""Inner id""")
+    @strawberryA.field(description="""All external ids related to a group""")
     async def external_ids(
         self, info: strawberryA.types.Info
     ) -> List["ExternalIdGQLModel"]:
@@ -150,7 +150,7 @@ class GroupEditorGQLModel:  # GroupGQLEditorModel
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return GroupEditorGQLModel(id=id)
 
     @strawberryA.field(description="""Inner id""")
@@ -170,7 +170,7 @@ class UserEditorGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return UserEditorGQLModel(id=id)
 
     @strawberryA.field(description="""Inner id""")

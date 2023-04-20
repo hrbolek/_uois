@@ -109,8 +109,9 @@ class PresenceModel(BaseModel):
 
     event_id = Column(ForeignKey("events.id"), index=True)
     user_id = UUIDFKey()#Column(ForeignKey("users.id"), index=True)
-    presencetype_id = Column(ForeignKey("eventinvitationtypes.id"), index=True)
-    invitation_id = Column(ForeignKey("eventpresencetypes.id"), index=True)
+    
+    invitation_id = Column(ForeignKey("eventinvitationtypes.id"), index=True)
+    presencetype_id = Column(ForeignKey("eventpresencetypes.id"), index=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())

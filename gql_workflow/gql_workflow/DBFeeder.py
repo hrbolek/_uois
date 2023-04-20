@@ -55,6 +55,42 @@ async def randomWorkflowData(session):
         ],
     }
 
+
+    data = {
+        'awauthorizations': [
+            {'id': 'e0ca6b6c-e962-4944-88d6-fb85e98572de'},
+        ],
+        'awauthorizationusers': [
+            {
+                'id': 'c84ce88c-690c-4ff3-990c-9d4c01e847c1',
+                'authorization_id': 'e0ca6b6c-e962-4944-88d6-fb85e98572de',
+                'user_id': '',
+
+                'accesslevel': 1
+            },
+        ],
+        'awauthorizationgroups': [
+            {
+                'id': '829e3687-2cfa-4961-ad45-68f26e3bc3d8',
+                'authorization_id': 'e0ca6b6c-e962-4944-88d6-fb85e98572de',
+                'group_id': '',
+
+                'accesslevel': 1
+            },            
+        ],
+        'awauthorizationroletypes': [
+            {
+                'id': '8eeb8bee-a54e-4514-bddd-941c1a1f17e8',
+                'authorization_id': 'e0ca6b6c-e962-4944-88d6-fb85e98572de',
+                'group_id': '',
+                'roletype_id': '',
+
+                'accesslevel': 1
+            },
+        ],
+
+
+    }
     #roleTypes = await getRoleTypesFromDb()
     usersToAdd = []
     async with session.begin():

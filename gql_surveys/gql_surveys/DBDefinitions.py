@@ -16,7 +16,8 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 import uuid
 
 BaseModel = declarative_base()
@@ -33,15 +34,25 @@ def UUIDColumn(name=None):
             name, String, primary_key=True, unique=True, default=newUuidAsString
         )
 
-def UUIDFKey(*, ForeignKey=None, nullable=False):
-    if ForeignKey is None:
+def CreateUUIDFKey(allowCross=False):
+    def UUIDFKey(ForeignKey=None, *, nullable=False, index=True):
+        assert ForeignKey is not None, "ForeignKey is mandatory"
         return Column(
-            String, index=True, nullable=nullable
+            ForeignKey, index=index, nullable=nullable
         )
+    
+    def UUIDFKeyDummy(ForeignKey=None, *, nullable=False, index=True):
+        return Column(
+            String, index=index, nullable=nullable
+        )
+    
+    if allowCross:
+        return UUIDFKey
     else:
-        return Column(
-            ForeignKey, index=True, nullable=nullable
-        )
+        return UUIDFKeyDummy
+    
+UUIDFKey = CreateUUIDFKey()
+
 # id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
 
 class SurveyModel(BaseModel):
@@ -55,8 +66,8 @@ class SurveyModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class SurveyTypeModel(BaseModel):

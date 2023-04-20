@@ -60,7 +60,7 @@ class PlanSubjectGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return PlanSubjectGQLModel(id=id)
 
 
@@ -70,7 +70,7 @@ class SubjectGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return SubjectGQLModel(id=id)
 
     @strawberryA.field(description="""List of publications with this type""")
@@ -88,7 +88,7 @@ class UserGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id)
 
     @strawberryA.field(description="""List of authors""")

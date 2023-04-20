@@ -38,7 +38,7 @@ class EventGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return EventGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
 
 
@@ -48,7 +48,7 @@ class GroupGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return GroupGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
 
     #     zde je rozsireni o dalsi resolvery
@@ -101,11 +101,11 @@ class FacilityGQLModel:
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="""Facility name""")
+    @strawberryA.field(description="""Facility english name""")
     def name_en(self) -> str:
         return self.name_en
 
-    @strawberryA.field(description="""Facility full name""")
+    @strawberryA.field(description="""Facility full name assigned by an administrator""")
     def label(self) -> Union[str, None]:
         return self.label
 
@@ -127,7 +127,7 @@ class FacilityGQLModel:
     # facilitytype_id
 
     # capacity
-    @strawberryA.field(description="""Facility's name""")
+    @strawberryA.field(description="""Facility's capacity""")
     def capacity(self) -> Union[int, None]:
         return self.capacity
 
@@ -138,7 +138,7 @@ class FacilityGQLModel:
     def geometry(self) -> Union[str, None]:
         return self.geometry
 
-    @strawberryA.field(description="""Facility geo address""")
+    @strawberryA.field(description="""Facility geo address (WGS84+zoom)""")
     def geolocation(self) -> Union[str, None]:
         return self.geolocation
 
@@ -146,12 +146,12 @@ class FacilityGQLModel:
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
-    @strawberryA.field(description="""Facility address""")
+    @strawberryA.field(description="""Facility type""")
     async def type(self, info: strawberryA.types.Info) -> "FacilityTypeGQLModel":
         result = await FacilityTypeGQLModel.resolve_reference(info=info, id=self.facilitytype_id)
         return result
 
-    @strawberryA.field(description="""Intermediate entity linking to event and facility""")
+    @strawberryA.field(description="""Intermediate entity linking the event and facility""")
     async def event_states(self, info: strawberryA.types.Info) -> List["FacilityEventGQLModel"]:
         loader = getLoaders(info).event_facility_by_facility_id
         result = await loader.load(self.id)
@@ -164,7 +164,7 @@ class FacilityGQLModel:
         result = await FacilityGQLModel.resolve_reference(info=info, id=self.master_facility_id)
         return result
 
-    @strawberryA.field(description="""Facilities inside facility""")
+    @strawberryA.field(description="""Facilities inside facility (like buildings in an areal)""")
     async def sub_facilities(
         self, info: strawberryA.types.Info
     ) -> List["FacilityGQLModel"]:
@@ -172,11 +172,11 @@ class FacilityGQLModel:
         result = await loader.load(self.id)
         return result
 
-    @strawberryA.field(description="""Facility address""")
+    @strawberryA.field(description="""Facility management group""")
     async def group(self, info: strawberryA.types.Info) -> Union["GroupGQLModel", None]:
         if self.group_id is None:
             return None
-        return GroupGQLModel(id=self.group_id)
+        return await GroupGQLModel.resolve_reference(id=self.group_id)
 
 from gql_facilities.GraphResolvers import facilityTypePageStatement
 
@@ -198,11 +198,11 @@ class FacilityTypeGQLModel:
         return self.id
 
     # name
-    @strawberryA.field(description="""Facility name""")
+    @strawberryA.field(description="""Facility type name""")
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="""Facility name""")
+    @strawberryA.field(description="""Facility type name""")
     def name_en(self) -> str:
         return self.name_en
 
@@ -224,8 +224,8 @@ class FacilityEventGQLModel:
         return self.id
 
     @strawberryA.field(description="""the event""")
-    def event(self) -> "EventGQLModel":
-        return EventGQLModel(id=self.event_id)
+    async def event(self) -> "EventGQLModel":
+        return await EventGQLModel.resolve_reference(id=self.event_id)
 
     @strawberryA.field(description="""the facility""")
     async def facility(self, info: strawberryA.types.Info) -> "FacilityGQLModel":
@@ -233,7 +233,7 @@ class FacilityEventGQLModel:
         result = await FacilityGQLModel.resolve_reference(info=info, id=self.facility_id)
         return result
 
-    @strawberryA.field(description="""the facility""")
+    @strawberryA.field(description="""the facility state (reserved for an event, lesson planned etc.)""")
     async def state(self, info: strawberryA.types.Info) -> "FacilityEventStateTypeGQLModel":
         result = await FacilityEventStateTypeGQLModel.resolve_reference(info=info, id=self.state_id)
         return result

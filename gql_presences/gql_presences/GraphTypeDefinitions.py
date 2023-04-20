@@ -136,7 +136,7 @@ class UserGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
 
     @strawberryA.field(description="""task id""")
@@ -151,7 +151,7 @@ class EventGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return EventGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
 
     # rozšiřujeme jen o atributy (1,1)

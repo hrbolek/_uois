@@ -106,7 +106,6 @@ async def create_upload_files(files: List[UploadFile]):
             #    currentWs[f'{col}{rowIndex}']._style = copy(currentWs[f'{col}{rowIndex+1}']._style)
             rowIndex = rowIndex + 1
 
-
         # kopirovani raw dat pro kontingencni tabulku
         resultFileCelyRok.insert_rows(2)
         resultFileCelyRok["A2"] = currentName
@@ -135,6 +134,103 @@ async def create_upload_files(files: List[UploadFile]):
     print("have stream 2", len(stream), flush=True)
     headers = {"Content-Disposition": f'attachment; filename="{resultfilename}"'}
     return Response(stream, media_type="application/vnd.ms-excel", headers=headers)
+
+
+def SingleFile(source):
+    # cteni dat ze zdroje
+    result = []
+    memory = BytesIO(source)
+    wb = openpyxl.load_workbook(filename=memory, read_only=True)
+    ws = wb["DataCelyRok"]
+
+    for index, row in enumerate(ws.rows):
+        if index == 0:
+            continue
+
+        names = ["name", "month", "date", "desc", "hours"]
+        newRow = dict(zip(names, map(lambda item: item.value, row)))
+        if newRow["date"] is None:
+            print("has no date", newRow)
+        elif not isinstance(newRow["date"], datetime.datetime):
+            print("date has bad type", newRow)
+        else:
+            result.append(newRow)
+
+    #zapis dat
+    memory = BytesIO(source)
+    resultFile = openpyxl.load_workbook(filename=memory)
+
+    resultFileCelyRok = resultFile["DataCelyRok"]
+    resultFileWs = resultFile["ProTisk"]
+
+    prevName = None
+    prevMonth = None
+    rowIndex = 16
+    for item in result:
+        currentName = item["name"]
+        currentMonth = item["date"].month
+        if (currentName != prevName) or (currentMonth != prevMonth):
+            # v datech se zmenilo jmeno nebo mesic, vytvorime novy list
+            # print(currentName, currentMonth)
+            currentWs = resultFile.copy_worksheet(resultFileWs)
+            currentWs.title = f"{currentName}_{currentMonth}"
+            rowIndex = 16
+
+            print(currentName)
+
+            names = currentName.split(" ")
+            
+            #predpoklada se, ze je vyplneno
+            #currentWs[f"B10"] = names[0]
+            #currentWs[f"B11"] = names[1]
+
+            currentWs[f"C12"] = datetime.datetime(
+                year=item["date"].year, month=item["date"].month, day=1
+            )
+            if item["date"].month == 12:
+                currentWs[f"E12"] = datetime.datetime(
+                    year=item["date"].year + 1, month=1, day=1
+                ) + datetime.timedelta(days=-1)
+            else:
+                currentWs[f"E12"] = datetime.datetime(
+                    year=item["date"].year, month=item["date"].month + 1, day=1
+                ) + datetime.timedelta(days=-1)
+
+            prevName = currentName
+            prevMonth = currentMonth
+
+        # currentWs.insert_rows(rowIndex)
+        currentWs[f"A{rowIndex}"] = item["date"]
+        currentWs[f"B{rowIndex}"] = item["desc"]
+        currentWs[f"F{rowIndex}"] = item["hours"]
+        # for col in ['A', 'B', 'C', 'D', 'E', 'F']:
+        #    currentWs[f'{col}{rowIndex}']._style = copy(currentWs[f'{col}{rowIndex+1}']._style)
+        rowIndex = rowIndex + 1
+    
+    return resultFile
+
+import os
+async def create_upload_file_one(files: List[UploadFile]):
+    filetemplate = files[0]
+    filetemplatecontent = await filetemplate.read()   
+    resultFile = SingleFile(filetemplatecontent)
+    print("saving data", flush=True)
+    with NamedTemporaryFile(dir=".") as tmp:
+        tempfilename = tmp.name
+        print("temp file name", tmp.name, flush=True)
+    resultFile.save(tempfilename)
+    print("data saved", flush=True)
+    with open(tempfilename, mode="rb") as tmp:
+        tmp.seek(0)
+        print("data rewind", flush=True)
+        stream = tmp.read()
+    os.remove(tempfilename)
+    print("have stream 1", len(stream), flush=True)
+    
+    headers = {"Content-Disposition": f'attachment; filename="{filetemplate.filename}"'}
+    return Response(stream, media_type="application/vnd.ms-excel", headers=headers)    
+    
+
 
 
 async def exportSchema():

@@ -39,7 +39,7 @@ class UserGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
 
 
@@ -56,7 +56,7 @@ class GroupGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return GroupGQLModel(id=id)
 
 
@@ -66,7 +66,7 @@ class FacilityGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return FacilityGQLModel(id=id)
 
 
@@ -76,7 +76,7 @@ class EventGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return EventGQLModel(id=id)
 
 
@@ -86,7 +86,7 @@ class AcTopicGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return AcTopicGQLModel(id=id)
 
 
@@ -96,7 +96,7 @@ class AcSemesterGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return AcSemesterGQLModel(id=id)
 
 
@@ -217,7 +217,7 @@ class PlannedLessonGQLModel:
             return result
 
     @strawberryA.field(
-        description="""linked semester (stage of subject) from accreditation"""
+        description="""linked subject semester from program (accreditation)"""
     )
     async def semester(
         self, info: strawberryA.types.Info

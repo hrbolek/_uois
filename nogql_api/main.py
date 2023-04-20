@@ -77,7 +77,7 @@ from fastapi import UploadFile, File
 from fastapi.responses import HTMLResponse
 from typing import List
 
-from nogql_api.resolvers import create_upload_files
+from nogql_api.resolvers import create_upload_file_one
 
 
 @apiApp.post("/nogql/utils/vykazy/")
@@ -85,7 +85,7 @@ async def utils_vykazy_post(files: List[UploadFile] = File(...)):
     print("POST", "/nogql/utils/vykazy/", flush=True)
     result = None
     try:
-        result = await create_upload_files(files)
+        result = await create_upload_file_one(files)
     except Exception as e:
         print(e, flush=True)
     return result
@@ -117,8 +117,6 @@ async def utils_vykazy_get():
                         <div class="card-header">
                             <div class="card-title">
                                 Vyberte jeden soubor (.xlsx) a v tomto budou vytvořeny výkazy pro jednotlivé měsíce.
-                                Pokud vyberete více souborů, očekává se, že jeden ze souborů se bude jmenovat vzor.xlsx (všechna písmena malá).
-                                Pro více souborů je výsledkem sumarizace výkazů ze všech souborů.
                             </div>
                         </div>
                         <div class="card-body">

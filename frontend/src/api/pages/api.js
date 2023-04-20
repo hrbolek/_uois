@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useCallback } from "react";
 import { GraphiQL } from 'graphiql';
+import { useExplorerPlugin } from '@graphiql/plugin-explorer';
 
 //import { LoginButton } from "../../helpers/index";
 
@@ -32,6 +33,11 @@ export const ApiPage = (props) => {
             updateURL();
         }, []
     )
+
+    const explorerPlugin = useExplorerPlugin({
+        query: parameters.query,
+        onEdit: onEditQuery,
+      });
 
     const graphQLFetcher = useCallback(
         (graphQLParams) => {
@@ -65,6 +71,7 @@ export const ApiPage = (props) => {
         <LoginButton /> <br/>
         <GraphiQL
             {...parameters}
+            plugins= {[explorerPlugin]}
             fetcher = {graphQLFetcher}
             onEditQuery = {onEditQuery}
             onEditVariables = {onEditVariables}

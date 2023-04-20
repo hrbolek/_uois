@@ -53,3 +53,30 @@ async def test_table_start_engine():
     )
 
     assert async_session_maker is not None
+
+from sqlalchemy.future import select
+
+def createRowTest(tableName, DBModel):
+    @pytest.mark.asyncio
+    async def result_test():
+        async_session_maker = await prepare_in_memory_sqllite()
+        await prepare_demodata(async_session_maker)
+
+        data = get_demodata()
+        assert data.get(tableName, None) is not None
+        datatable = data[tableName]
+        assert len(datatable) > 0
+
+        for row in datatable:
+            async with async_session_maker() as session:
+                statement = select(DBModel).filter_by(id=row["id"])
+                result = await session.execute(statement)
+                rows = result.scalars()
+                rows = [item for item in rows]
+                assert len(rows) == 1
+                firstrow = rows[0]
+                assert firstrow.id == row["id"]
+    return result_test
+
+test_answers_rows = createRowTest("surveyanswers", AnswerModel)
+test_survey_rows = createRowTest("surveys", SurveyModel)

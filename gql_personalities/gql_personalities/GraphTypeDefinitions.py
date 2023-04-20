@@ -44,7 +44,7 @@ class UserGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id)
 
     @strawberryA.field(description="""List of ranks for the user""")
@@ -71,7 +71,7 @@ class UserGQLModel:
 
     strawberryA.field(description="""List of workHistories for the user""")
 
-    async def workHistories(
+    async def work_histories(
         self, info: strawberryA.types.Info
     ) -> typing.List["WorkHistoryGQLModel"]:
         async with withInfo(info) as session:
@@ -79,7 +79,7 @@ class UserGQLModel:
             return result
 
     @strawberryA.field(description="""List of relatedDocs for the user""")
-    async def relatedDocs(
+    async def related_docs(
         self, info: strawberryA.types.Info
     ) -> typing.List["RelatedDocGQLModel"]:
         async with withInfo(info) as session:
