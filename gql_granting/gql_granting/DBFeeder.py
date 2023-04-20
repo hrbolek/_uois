@@ -34,7 +34,7 @@ import datetime
 def get_demodata():
     result = {
         "groups": [
-            {'id': "2766f9d4-b095-11ed-9bd8-0242ac110002" },
+            {"id": "2766f9d4-b095-11ed-9bd8-0242ac110002" },
         ],
         "users": [
             {"id": "ce250c16-b095-11ed-9bd8-0242ac110002" },
@@ -50,36 +50,36 @@ def get_demodata():
         "aclessontypes": lessontypes(),
 
         "acprogramgroups": [
-            {'id': "ce250798-b095-11ed-9bd8-0242ac110002" },
+            {"id": "ce250798-b095-11ed-9bd8-0242ac110002" },
         ],
         "acprograms": [
-            {'id': "2766fc9a-b095-11ed-9bd8-0242ac110002",
+            {"id": "2766fc9a-b095-11ed-9bd8-0242ac110002",
                 "type_id": "fd4f0980-9315-11ed-9b95-0242ac110002",
                 "lastchange": datetime.datetime.now(),
                 "name": "IT Technologie", "name_en": "" },
         ],
         "acsubjects": [
-            {'id': "ce250a68-b095-11ed-9bd8-0242ac110002",
+            {"id": "ce250a68-b095-11ed-9bd8-0242ac110002",
                 "program_id": "2766fc9a-b095-11ed-9bd8-0242ac110002",
                 "lastchange": datetime.datetime.now(),
                 "name": "Programování", "name_en": "" },
         ],
         "acsemesters": [
-            {'id': "ce250af4-b095-11ed-9bd8-0242ac110002",
+            {"id": "ce250af4-b095-11ed-9bd8-0242ac110002",
                 "subject_id": "ce250a68-b095-11ed-9bd8-0242ac110002",
                 "classificationtype_id": "a00a0642-b095-11ed-9bd8-0242ac110002",
                 "lastchange": datetime.datetime.now(),
                 "order": 1, "credits": 24 },
         ],
         "actopics": [
-            {'id': "ce250b44-b095-11ed-9bd8-0242ac110002",
+            {"id": "ce250b44-b095-11ed-9bd8-0242ac110002",
                 "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
                 "lastchange": datetime.datetime.now(),
                 "name": "Úvod", "name_en": "", "order" : 1
              },            
         ],
         "aclessons": [
-            {'id': "ce250b8a-b095-11ed-9bd8-0242ac110002",        
+            {"id": "ce250b8a-b095-11ed-9bd8-0242ac110002",        
                 "topic_id" : "ce250b44-b095-11ed-9bd8-0242ac110002",
                 "type_id": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002",
                 "lastchange": datetime.datetime.now(),
@@ -87,7 +87,7 @@ def get_demodata():
              },            
         ],
         "acclassifications": [
-            {'id': "ce250bd0-b095-11ed-9bd8-0242ac110002", 
+            {"id": "ce250bd0-b095-11ed-9bd8-0242ac110002", 
                 "user_id": "ce250c16-b095-11ed-9bd8-0242ac110002",
                 "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
                 "classificationtype_id": "a00a0322-b095-11ed-9bd8-0242ac110002",
@@ -95,7 +95,7 @@ def get_demodata():
                 "lastchange": datetime.datetime.now(),
                 "order": 1,   
                  },
-            {'id': "ce250bd1-b095-11ed-9bd8-0242ac110002", 
+            {"id": "ce250bd1-b095-11ed-9bd8-0242ac110002", 
                 "user_id": "ce250c16-b095-11ed-9bd8-0242ac110002",
                 "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
                 "classificationtype_id": "a00a0322-b095-11ed-9bd8-0242ac110002",
@@ -112,22 +112,22 @@ def get_demodata():
 @cache
 def get_acclassificationlevels():
     result = [
-        {'id': "5fae9dd8-b095-11ed-9bd8-0242ac110002" , 'name': 'A', 'name_en': 'A'},
-        {'id': "5faea134-b095-11ed-9bd8-0242ac110002" , 'name': 'B', 'name_en': 'B'},
-        {'id': "5faea21a-b095-11ed-9bd8-0242ac110002" , 'name': 'C', 'name_en': 'C'},
-        {'id': "5faea2d8-b095-11ed-9bd8-0242ac110002" , 'name': 'D', 'name_en': 'D'},
-        {'id': "5faea332-b095-11ed-9bd8-0242ac110002" , 'name': 'E', 'name_en': 'E'},
-        {'id': "5faea396-b095-11ed-9bd8-0242ac110002" , 'name': 'F', 'name_en': 'F'},
+        {"id": "5fae9dd8-b095-11ed-9bd8-0242ac110002" , "name": 'A', "name_en": 'A'},
+        {"id": "5faea134-b095-11ed-9bd8-0242ac110002" , "name": 'B', "name_en": 'B'},
+        {"id": "5faea21a-b095-11ed-9bd8-0242ac110002" , "name": 'C', "name_en": 'C'},
+        {"id": "5faea2d8-b095-11ed-9bd8-0242ac110002" , "name": 'D', "name_en": 'D'},
+        {"id": "5faea332-b095-11ed-9bd8-0242ac110002" , "name": 'E', "name_en": 'E'},
+        {"id": "5faea396-b095-11ed-9bd8-0242ac110002" , "name": 'F', "name_en": 'F'},
     ]
     return result
 
 @cache
 def get_acclassificationtypes():
     result = [
-        {'id': "a00a0322-b095-11ed-9bd8-0242ac110002" , 'name': 'Z', 'name_en': ''},
-        {'id': "a00a0642-b095-11ed-9bd8-0242ac110002" , 'name': 'Z+Zk', 'name_en': ''},
-        {'id': "a00a06f6-b095-11ed-9bd8-0242ac110002" , 'name': 'Zk', 'name_en': ''},
-        {'id': "a00a076e-b095-11ed-9bd8-0242ac110002" , 'name': 'KZ', 'name_en': ''},
+        {"id": "a00a0322-b095-11ed-9bd8-0242ac110002" , "name": 'Z', "name_en": ''},
+        {"id": "a00a0642-b095-11ed-9bd8-0242ac110002" , "name": 'Z+Zk', "name_en": ''},
+        {"id": "a00a06f6-b095-11ed-9bd8-0242ac110002" , "name": 'Zk', "name_en": ''},
+        {"id": "a00a076e-b095-11ed-9bd8-0242ac110002" , "name": 'KZ', "name_en": ''},
     ]
     return result
 
