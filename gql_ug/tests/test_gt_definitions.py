@@ -1247,7 +1247,7 @@ async def test_group_type_update():
     assert data["groupType"]["name"] == newname
     assert data["msg"] == "ok"
 
-    # zmeneno lastchange, nema projit uspesne
+    print("# zmeneno lastchange, nema projit uspesne", flush=True)
     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
     
     assert resp.errors is None
@@ -1312,3 +1312,255 @@ async def test_group_type_insert():
     
     pass
 
+@pytest.mark.asyncio
+async def test_membership_update():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    table = data['memberships']
+    row = table[0]
+    id = row['id']
+    group_id = row['group_id']
+    user_id = row['user_id']
+    
+    print(id, flush=True)
+
+    query = '''
+            query($id: ID!) {
+                groupById(id: $id){
+                    memberships {
+                        id
+                        lastchange
+                    }
+                }
+            }
+        '''
+
+    
+    context_value = await createContext(async_session_maker)
+    variable_values = {"id": group_id}
+    print(query, variable_values, flush=True)
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    assert resp.data is not None
+
+    memberships = resp.data['groupById']['memberships']
+    lastchange = memberships[0]['lastchange']
+    query = '''
+            mutation($id: ID!, $lastchange: DateTime!) {
+                membershipUpdate(membership: {
+                id: $id, valid: false,
+                lastchange: $lastchange
+            }){
+                id
+                msg
+                membership {
+                    id
+                    lastchange
+                    valid
+                }
+            }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {"id": id, "lastchange": lastchange}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    
+    print(resp, flush=True)
+
+
+    assert resp.errors is None
+    data = resp.data['membershipUpdate']
+    assert data["membership"]["valid"] == False
+    assert data["msg"] == "ok"
+
+    print("# zmeneno lastchange, nema projit uspesne", flush=True)
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    
+    assert resp.errors is None
+    data = resp.data['membershipUpdate']
+    assert data["msg"] == "fail"
+
+    pass
+
+@pytest.mark.asyncio
+async def test_membership_insert():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    table = data['users']
+    row = table[1]
+    user_id = row['id']
+
+    table = data['groups']
+    row = table[1]
+    group_id = row['id']
+
+    table = data['roletypes']
+    row = table[0]
+    role_id = row['id']
+
+    query = '''
+            mutation($group_id: ID!, $user_id: ID!) {
+                membershipInsert(membership: {
+                groupId: $group_id,
+                userId: $user_id
+            }){
+                id
+                msg
+                membership {
+                    id
+                    group { id }
+                    user { id }
+                    lastchange
+                }
+            }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {"group_id": group_id, "user_id": user_id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    
+    print(resp, flush=True)
+
+    assert resp.errors is None
+    data = resp.data['membershipInsert']
+    assert data["membership"]["group"]["id"] == group_id
+    assert data["membership"]["user"]["id"] == user_id
+    assert data["msg"] == "ok"
+   
+    pass
+
+@pytest.mark.asyncio
+async def test_role_update():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    table = data['roles']
+    row = table[0]
+    id = row['id']
+    group_id = row['group_id']
+    user_id = row['user_id']
+    
+    print(id, flush=True)
+
+    query = '''
+            query($id: ID!) {
+                groupById(id: $id){
+                    roles {
+                        id
+                        lastchange
+                    }
+                }
+            }
+        '''
+
+    
+    context_value = await createContext(async_session_maker)
+    variable_values = {"id": group_id}
+    print(query, variable_values, flush=True)
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    assert resp.data is not None
+
+    roles = resp.data['groupById']['roles']
+    role = roles[0]
+    lastchange = role['lastchange']
+    assert id == role['id']
+
+    query = '''
+            mutation($id: ID!, $lastchange: DateTime!) {
+                roleUpdate(role: {
+                id: $id, valid: false,
+                lastchange: $lastchange
+            }){
+                id
+                msg
+                role {
+                    id
+                    lastchange
+                    valid
+                }
+            }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {"id": id, "lastchange": lastchange}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    
+    print(resp, flush=True)
+
+
+    assert resp.errors is None
+    data = resp.data['roleUpdate']
+    assert data["role"]["valid"] == False
+    assert data["msg"] == "ok"
+
+    print("# zmeneno lastchange, nema projit uspesne", flush=True)
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    print(resp, flush=True)
+    # assert False
+    assert resp.errors is None
+    data = resp.data['roleUpdate']
+    assert data["msg"] == "fail"
+
+    pass
+
+@pytest.mark.asyncio
+async def test_role_insert():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    table = data['users']
+    row = table[1]
+    user_id = row['id']
+
+    table = data['groups']
+    row = table[1]
+    group_id = row['id']
+
+    table = data['roletypes']
+    row = table[0]
+    roletype_id = row['id']
+
+    query = '''
+            mutation($group_id: ID!, $user_id: ID!, $roletype_id: ID!) {
+                roleInsert(role: {
+                groupId: $group_id,
+                userId: $user_id,
+                roletypeId: $roletype_id
+            }){
+                id
+                msg
+                role {
+                    id
+                    group { id }
+                    user { id }
+                    roletype { id }
+                    lastchange
+                }
+            }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {"group_id": group_id, "user_id": user_id, "roletype_id": roletype_id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    
+    print(resp, flush=True)
+
+    assert resp.errors is None
+    data = resp.data['roleInsert']
+    assert data["role"]["group"]["id"] == group_id
+    assert data["role"]["user"]["id"] == user_id
+    assert data["role"]["roletype"]["id"] == roletype_id
+    assert data["msg"] == "ok"
+   
+    pass

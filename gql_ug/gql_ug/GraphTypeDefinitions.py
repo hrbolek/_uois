@@ -41,6 +41,10 @@ class MembershipGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""time stamp""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+
     @strawberryA.field(description="""user""")
     async def user(self, info: strawberryA.types.Info) -> "UserGQLModel":
         # return self.user
@@ -277,13 +281,7 @@ class GroupGQLModel:
 
     @strawberryA.field(description="""""")
     def lastchange(self) -> Union[datetime.datetime, None]:
-        print("group.lastchange", flush=True)
-        result = None
         result = self.lastchange
-        try:
-            result = self.lastchange
-        except:
-            print("error")
         return result
 
     @strawberryA.field(description="""Group's type (like Department)""")
@@ -672,8 +670,10 @@ class RoleGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         # result = await resolverRoleById(session,  id)
-        result = await getLoader(info).roles.load(id)
-        result._type_definition = cls._type_definition  # little hack :)
+        loader = getLoader(info).roles
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
         return result
         # async with withInfo(info) as session:
         #     result = await resolverRoleById(session, id)
@@ -683,6 +683,10 @@ class RoleGQLModel:
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
+    @strawberryA.field(description="""Time stamp""")
+    def lastchange(self) -> strawberryA.ID:
+        return self.lastchange
 
     @strawberryA.field(description="""If an user has still this role""")
     def valid(self) -> bool:
@@ -1139,9 +1143,8 @@ class Mutation:
         
         updatedrow = await loader.update(group_type)
         result = GroupTypeResultGQLModel()
-        result.id = group_type.id
         result.msg = "ok"
-
+        result.id = group_type.id
         if updatedrow is None:
             result.msg = "fail"
         
@@ -1235,16 +1238,14 @@ class Mutation:
     ) -> RoleResultGQLModel:
 
         loader = getLoader(info).roles
-        row = await loader.load(role.id)       
+        updatedrow = await loader.update(role)
 
         result = RoleResultGQLModel()
         result.msg = "ok"
-
-        if row is None:
-            result.msg = "fail"
-        else:
-            updatedrow = await loader.update(role)           
-            result.id = updatedrow.id
+        result.id = role.id
+        
+        if updatedrow is None:
+            result.msg = "fail"        
         
         return result
 
