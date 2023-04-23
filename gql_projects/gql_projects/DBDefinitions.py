@@ -126,7 +126,7 @@ class FinanceTypeModel(BaseModel):
     name = Column(String)
     name_en = Column(String)
 
-    finances = relationship("FinanceModel", back_populates="financeType")
+    finances = relationship("FinanceModel", back_populates="financetype")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())

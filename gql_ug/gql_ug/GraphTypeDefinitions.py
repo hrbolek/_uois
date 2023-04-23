@@ -115,9 +115,9 @@ class UserGQLModel:
         # selectstmt = membershipsSelect.filter_by(user_id=self.id)
         # result = await membershiploader.execute_select(selectstmt)
 
-        memberships_user_id = getLoader(info).memberships_user_id
-        print(self.id)
-        result = await memberships_user_id.load(self.id)
+        loader = getLoader(info).memberships
+        #print(self.id)
+        result = await loader.filter_by(user_id=self.id)
         return list(result)
 
     #        statement =
@@ -128,8 +128,8 @@ class UserGQLModel:
 
     @strawberryA.field(description="""List of roles, which the user has""")
     async def roles(self, info: strawberryA.types.Info) -> typing.List["RoleGQLModel"]:
-        loader = getLoader(info).roles_for_user_id
-        result = await loader.load(self.id)
+        loader = getLoader(info).roles
+        result = await loader.filter_by(user_id=self.id)
         return result
 
     @strawberryA.field(
@@ -159,22 +159,22 @@ class UserGQLModel:
         return self
 
 
-@strawberryA.input
-class UserUpdateGQLModel:
-    lastchange: datetime.datetime  # razitko
-    name: Optional[str] = None
-    surname: Optional[str] = None
-    email: Optional[str] = None
-    valid: Optional[bool] = None
+# @strawberryA.input
+# class UserUpdateGQLModel:
+#     lastchange: datetime.datetime  # razitko
+#     name: Optional[str] = None
+#     surname: Optional[str] = None
+#     email: Optional[str] = None
+#     valid: Optional[bool] = None
 
 
-@strawberryA.input
-class UserInsertGQLModel:
-    id: Optional[strawberryA.ID] = None
-    name: Optional[str] = None
-    surname: Optional[str] = None
-    email: Optional[str] = None
-    valid: Optional[bool] = None
+# @strawberryA.input
+# class UserInsertGQLModel:
+#     id: Optional[strawberryA.ID] = None
+#     name: Optional[str] = None
+#     surname: Optional[str] = None
+#     email: Optional[str] = None
+#     valid: Optional[bool] = None
 
 
 from gql_ug.GraphResolvers import resolverUpdateUser
@@ -214,7 +214,7 @@ class UserEditorGQLModel:
 
     @strawberryA.field(description="""Updates the user data""")
     async def update(
-        self, info: strawberryA.types.Info, data: UserUpdateGQLModel
+        self, info: strawberryA.types.Info, data: "UserUpdateGQLModel"
     ) -> "UserEditorGQLModel":
         lastchange = data.lastchange
         # await resolverUpdateUser(session,  id=self.id, data=data)
@@ -275,9 +275,16 @@ class GroupGQLModel:
         else:
             return self.valid
 
-    @strawberryA.field(description="""Group's validity (still exists?)""")
+    @strawberryA.field(description="""""")
     def lastchange(self) -> Union[datetime.datetime, None]:
-        return self.lastchange
+        print("group.lastchange", flush=True)
+        result = None
+        result = self.lastchange
+        try:
+            result = self.lastchange
+        except:
+            print("error")
+        return result
 
     @strawberryA.field(description="""Group's type (like Department)""")
     async def grouptype(
@@ -297,9 +304,9 @@ class GroupGQLModel:
 
         #     return result
 
-        groups_mastergroup_id = getLoader(info).groups_mastergroup_id
+        loader = getLoader(info).groups
         print(self.id)
-        result = await groups_mastergroup_id.load(self.id)
+        result = await loader.filter_by(mastergroup_id=self.id)
         return list(result)
 
     @strawberryA.field(description="""Commanding group""")
@@ -323,9 +330,9 @@ class GroupGQLModel:
         #     result = await resolveMembershipForGroup(session, self.id, skip, limit)
         #     return result
 
-        memberships_group_id = getLoader(info).memberships_group_id
-        print(self.id)
-        result = await memberships_group_id.load(self.id)
+        loader = getLoader(info).memberships
+        #print(self.id)
+        result = await loader.filter_by(group_id=self.id)
         return list(result)
 
     @strawberryA.field(description="""List of roles in the group""")
@@ -352,20 +359,20 @@ class GroupGQLModel:
 from typing import Optional
 
 
-@strawberryA.input
-class GroupUpdateGQLModel:
-    lastchange: datetime.datetime
-    name: Optional[str] = None
-    type_id: Optional[strawberryA.ID] = None
-    valid: Optional[bool] = None
+# @strawberryA.input
+# class GroupUpdateGQLModel:
+#     lastchange: datetime.datetime
+#     name: Optional[str] = None
+#     type_id: Optional[strawberryA.ID] = None
+#     valid: Optional[bool] = None
 
 
-@strawberryA.input
-class GroupInsertGQLModel:
-    id: Optional[strawberryA.ID] = None
-    name: Optional[str] = None
-    type_id: Optional[strawberryA.ID] = None
-    valid: Optional[bool] = None
+# @strawberryA.input
+# class GroupInsertGQLModel:
+#     id: Optional[strawberryA.ID] = None
+#     name: Optional[str] = None
+#     type_id: Optional[strawberryA.ID] = None
+#     valid: Optional[bool] = None
 
 
 from gql_ug.GraphResolvers import (
@@ -475,7 +482,7 @@ class GroupEditorGQLModel:
 
     @strawberryA.field(description="""Create a new role""")
     async def create_subgroup(
-        self, info: strawberryA.types.Info, group: GroupInsertGQLModel
+        self, info: strawberryA.types.Info, group: "GroupInsertGQLModel"
     ) -> "GroupGQLModel":
         # newGroup = await resolveInsertGroup(session,  group, extraAttributes={'mastergroup_id': self.id})
         async with withInfo(info) as session:
@@ -502,7 +509,7 @@ class GroupEditorGQLModel:
 
     @strawberryA.field(description="""Updates group""")
     async def update(
-        self, info: strawberryA.types.Info, group: GroupUpdateGQLModel
+        self, info: strawberryA.types.Info, group: "GroupUpdateGQLModel"
     ) -> "GroupEditorGQLModel":
         async with withInfo(info) as session:
             lastchange = group.lastchange
@@ -525,7 +532,7 @@ class GroupEditorGQLModel:
 
     @strawberryA.field(description="""Create user and DO NOT introduce membership""")
     async def create_user(
-        self, info: strawberryA.types.Info, user: UserInsertGQLModel
+        self, info: strawberryA.types.Info, user: "UserInsertGQLModel"
     ) -> "UserGQLModel":
         # session = AsyncSessionFromInfo(info)
         async with withInfo(info) as session:
@@ -558,6 +565,10 @@ class GroupTypeGQLModel:
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
+    @strawberryA.field(description="""""")
+    def lastchange(self) -> strawberryA.ID:
+        return self.lastchange
 
     @strawberryA.field(description="""Group type name CZ""")
     def name(self) -> str:
@@ -597,6 +608,10 @@ class RoleTypeGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""Datetime stamp""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+
     @strawberryA.field(description="""Role type name CZ""")
     def name(self) -> str:
         return self.name
@@ -612,6 +627,39 @@ class RoleTypeGQLModel:
             result = await resolveRoleForRoleType(session, self.id)
             return result
 
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Entity representing a role type (like Dean)"""
+)
+class RoleCategoryGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoader(info).rolecategories
+        result = await loader.load(id)
+        return result
+
+    @strawberryA.field(description="""Primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Primary key""")
+    def lastchange(self) -> strawberryA.ID:
+        return self.lastchange
+
+    @strawberryA.field(description="""Role type name CZ""")
+    def name(self) -> str:
+        return self.name
+
+    @strawberryA.field(description="""Role type name EN""")
+    def name_en(self) -> str:
+        return self.name_en
+
+    @strawberryA.field(description="""List of roles with this type""")
+    async def role_types(self, info: strawberryA.types.Info) -> typing.List["RoleTypeGQLModel"]:
+        # result = await resolveRoleForRoleType(session,  self.id)
+        loader = getLoader(info).roletypes
+        rows = await loader.filter_by(category_id=self.id)
+        return rows
 
 from gql_ug.GraphResolvers import resolveRoleTypeById, resolverRoleById
 
@@ -818,10 +866,15 @@ class Query:
     async def role_type_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union[RoleTypeGQLModel, None]:
-        # result = await resolveRoleTypeById(session,  id)
-        async with withInfo(info) as session:
-            result = await resolveRoleTypeById(session, id)
-            return result
+        result = await RoleTypeGQLModel.resolve_reference(info, id)
+        return result
+
+    @strawberryA.field(description="""Finds a role type by its id""")
+    async def role_category_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[RoleCategoryGQLModel, None]:
+        result = await RoleCategoryGQLModel.resolve_reference(info,  id)
+        return result
 
     @strawberryA.field(description="""Random university""")
     async def randomUniversity(
@@ -851,14 +904,439 @@ class Query:
         print("import_ug returned")
         return result
 
+###########################################################################################################################
+#
+#
+# Mutations
+#
+#
+###########################################################################################################################
 
+@strawberryA.input
+class UserUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime  # razitko
+    name: Optional[str] = None
+    surname: Optional[str] = None
+    email: Optional[str] = None
+    valid: Optional[bool] = None
+
+@strawberryA.input
+class UserInsertGQLModel:
+    id: Optional[strawberryA.ID] = None
+    name: Optional[str] = None
+    surname: Optional[str] = None
+    email: Optional[str] = None
+    valid: Optional[bool] = None
+
+@strawberryA.type
+class UserResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of user operation""")
+    async def user(self, info: strawberryA.types.Info) -> Union[UserGQLModel, None]:
+        result = await UserGQLModel.resolve_reference(info, self.id)
+        return result
+
+@strawberryA.input
+class GroupUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+    name: Optional[str] = None
+    type_id: Optional[strawberryA.ID] = None
+    mastergroup_id: Optional[strawberryA.ID] = None
+    valid: Optional[bool] = None
+
+
+@strawberryA.input
+class GroupInsertGQLModel:
+    id: Optional[strawberryA.ID] = None
+    name: Optional[str] = None
+    type_id: Optional[strawberryA.ID] = None
+    mastergroup_id: Optional[strawberryA.ID] = None
+    valid: Optional[bool] = None
+
+@strawberryA.type
+class GroupResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of group operation""")
+    async def group(self, info: strawberryA.types.Info) -> Union[GroupGQLModel, None]:
+        print("GroupResultGQLModel", "group", self.id, flush=True)
+        result = await GroupGQLModel.resolve_reference(info, self.id)
+        return result
+
+@strawberryA.input
+class MembershipUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime   
+    valid: Optional[bool] = None
+    startdate: Optional[datetime.datetime] = None
+    enddate: Optional[datetime.datetime] = None
+
+@strawberryA.input
+class MembershipInsertGQLModel:
+    user_id: strawberryA.ID
+    group_id: strawberryA.ID
+    id: Optional[strawberryA.ID] = None
+    valid: Optional[bool] = True
+    startdate: Optional[datetime.datetime] = None
+    enddate: Optional[datetime.datetime] = None
+
+@strawberryA.type
+class MembershipResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of membership operation""")
+    async def membership(self, info: strawberryA.types.Info) -> Union[MembershipGQLModel, None]:
+        result = await MembershipGQLModel.resolve_reference(info, self.id)
+        return result
+    
+@strawberryA.input
+class GeneralTypeUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+    name: Optional[str] = None
+    name_en: Optional[str] = None
+
+@strawberryA.input
+class GeneralTypeInsertGQLModel:
+    id: Optional[strawberryA.ID] = None
+    name: Optional[str] = None
+    name_en: Optional[str] = None
+
+@strawberryA.type
+class GroupTypeResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of grouptype operation""")
+    async def group_type(self, info: strawberryA.types.Info) -> Union[GroupTypeGQLModel, None]:
+        result = await GroupTypeGQLModel.resolve_reference(info, self.id)
+        return result
+
+@strawberryA.type
+class RoleTypeResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of role type operation""")
+    async def role_type(self, info: strawberryA.types.Info) -> Union[RoleTypeGQLModel, None]:
+        result = await RoleTypeGQLModel.resolve_reference(info, self.id)
+        return result
+
+@strawberryA.type
+class RoleCategoryResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of role category operation""")
+    async def role_category(self, info: strawberryA.types.Info) -> Union[RoleCategoryGQLModel, None]:
+        result = await RoleCategoryGQLModel.resolve_reference(info, self.id)
+        return result
+
+@strawberryA.input
+class RoleUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+    valid: Optional[bool] = None
+    startdate: Optional[datetime.datetime] = None
+    enddate: Optional[datetime.datetime] = None
+
+@strawberryA.input
+class RoleInsertGQLModel:
+    user_id: strawberryA.ID
+    group_id: strawberryA.ID
+    roletype_id: strawberryA.ID
+    id: Optional[strawberryA.ID] = None
+    valid: Optional[bool] = True
+    startdate: Optional[datetime.datetime] = datetime.datetime.now()
+    enddate: Optional[datetime.datetime] = None
+
+@strawberryA.type
+class RoleResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of user operation""")
+    async def role(self, info: strawberryA.types.Info) -> Union[RoleGQLModel, None]:
+        result = await RoleGQLModel.resolve_reference(info, self.id)
+        return result
+    
 @strawberryA.type
 class Mutation:
     @strawberryA.mutation
-    def ug_add_book(self, author: str) -> str:
-        return author
+    async def user_update(self, info: strawberryA.types.Info, user: UserUpdateGQLModel) -> UserResultGQLModel:
+        #print("user_update", flush=True)
+        #print(user, flush=True)
+        loader = getLoader(info).users
+        
+        updatedrow = await loader.update(user)
+        #print("user_update", updatedrow, flush=True)
+        result = UserResultGQLModel()
+        result.id = user.id
 
+        if updatedrow is None:
+            result.msg = "fail"
+        else:
+            result.msg = "ok"
+        print("user_update", result.msg, flush=True)
+        return result
 
+    @strawberryA.mutation
+    async def user_insert(self, info: strawberryA.types.Info, user: UserInsertGQLModel) -> UserResultGQLModel:
+        loader = getLoader(info).users
+        
+        row = await loader.insert(user)
+
+        result = UserResultGQLModel()
+        result.id = row.id
+        result.msg = "ok"
+        
+        return result
+
+    @strawberryA.mutation(description="""
+        Allows a update of group, also it allows to change the mastergroup of the group
+    """)
+    async def group_update(self, info: strawberryA.types.Info, group: GroupUpdateGQLModel) -> GroupResultGQLModel:
+        loader = getLoader(info).groups
+        
+        updatedrow = await loader.update(group)
+        result = GroupResultGQLModel()
+        result.id = group.id
+        result.msg = "ok"
+
+        if updatedrow is None:
+            result.msg = "fail"
+        
+        return result
+
+    @strawberryA.mutation(description="""
+        Allows a update of group, also it allows to change the mastergroup of the group
+    """)
+    async def group_insert(self, info: strawberryA.types.Info, group: GroupInsertGQLModel) -> GroupResultGQLModel:
+        loader = getLoader(info).groups
+        
+        updatedrow = await loader.insert(group)
+        print("group_insert", updatedrow, updatedrow.id, updatedrow.name, flush=True)
+        result = GroupResultGQLModel()
+        result.id = updatedrow.id
+        result.msg = "ok"
+
+        if updatedrow is None:
+            result.msg = "fail"
+        
+        return result
+
+    @strawberryA.mutation(description="""
+        Allows a update of group, also it allows to change the mastergroup of the group
+    """)
+    async def group_type_update(self, info: strawberryA.types.Info, group_type: GeneralTypeUpdateGQLModel) -> GroupTypeResultGQLModel:
+        loader = getLoader(info).grouptypes
+        
+        updatedrow = await loader.update(group_type)
+        result = GroupTypeResultGQLModel()
+        result.id = group_type.id
+        result.msg = "ok"
+
+        if updatedrow is None:
+            result.msg = "fail"
+        
+        return result
+
+    @strawberryA.mutation(description="""
+        Inserts a group
+    """)
+    async def group_type_insert(self, info: strawberryA.types.Info, group_type: GeneralTypeInsertGQLModel) -> GroupTypeResultGQLModel:
+        loader = getLoader(info).grouptypes
+        
+        updatedrow = await loader.insert(group_type)
+        result = GroupTypeResultGQLModel()
+        result.id = updatedrow.id
+        result.msg = "ok"
+
+        if updatedrow is None:
+            result.msg = "fail"
+        
+        return result
+
+    @strawberryA.mutation(description="""
+        Allows to assign the group to8 specified master group
+    """)
+    async def group_update_master(self, 
+        info: strawberryA.types.Info, 
+        master_id: strawberryA.ID,
+        group: GroupUpdateGQLModel) -> GroupResultGQLModel:
+        loader = getLoader(info).groups
+        
+        result = GroupResultGQLModel()
+        result.id = group.id
+        result.msg = "ok"
+
+        #use asyncio.gather here
+        updatedrow = await loader.load(group.id)
+        if updatedrow is None:
+            result.msg = "fail"
+            return result
+
+        masterrow = await loader.load(master_id)
+        if masterrow is None:
+            result.msg = "fail"
+            return result
+
+        updatedrow.master_id = master_id
+        updatedrow = await loader.update(updatedrow)
+        
+        if updatedrow is None:
+            result.msg = "fail"
+        
+        return result
+
+    @strawberryA.mutation(description="""Update the membership, cannot update group / user""")
+    async def membership_update(self, 
+        info: strawberryA.types.Info, 
+        membership: MembershipUpdateGQLModel
+    ) -> MembershipResultGQLModel:
+
+        loader = getLoader(info).memberships
+        updatedrow = await loader.update(membership)
+
+        result = MembershipResultGQLModel()
+        result.msg = "ok"
+        result.id = membership.id
+
+        if updatedrow is None:
+            result.msg = "fail"
+       
+        return result
+
+    @strawberryA.mutation(description="""Inserts new membership""")
+    async def membership_insert(self, 
+        info: strawberryA.types.Info, 
+        membership: MembershipInsertGQLModel
+    ) -> MembershipResultGQLModel:
+
+        loader = getLoader(info).memberships
+        row = await loader.insert(membership)
+
+        result = MembershipResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        
+        return result
+
+    @strawberryA.mutation(description="""Updates a role""")
+    async def role_update(self, 
+        info: strawberryA.types.Info, 
+        role: RoleUpdateGQLModel
+    ) -> RoleResultGQLModel:
+
+        loader = getLoader(info).roles
+        row = await loader.load(role.id)       
+
+        result = RoleResultGQLModel()
+        result.msg = "ok"
+
+        if row is None:
+            result.msg = "fail"
+        else:
+            updatedrow = await loader.update(role)           
+            result.id = updatedrow.id
+        
+        return result
+
+    @strawberryA.mutation(description="""Inserts a role""")
+    async def role_insert(self, 
+        info: strawberryA.types.Info, 
+        role: RoleInsertGQLModel
+    ) -> RoleResultGQLModel:
+
+        loader = getLoader(info).roles
+
+        result = RoleResultGQLModel()
+        result.msg = "ok"
+        
+        updatedrow = await loader.insert(role)
+        result.id = updatedrow.id
+        
+        return result
+
+    @strawberryA.mutation(description="""Updates existing roleType record""")
+    async def role_type_update(self, 
+        info: strawberryA.types.Info, 
+        role_type: GeneralTypeUpdateGQLModel
+
+    ) -> RoleTypeResultGQLModel:
+        print("role_type_update", role_type, flush=True)
+        loader = getLoader(info).roletypes
+        row = await loader.update(role_type)
+        if row is not None:
+            print("role_type_update", row, row.name, row.id, flush=True)
+        result = RoleTypeResultGQLModel()
+        result.msg = "ok"
+        result.id = role_type.id
+        if row is None:
+            result.msg = "fail"
+        
+        return result
+
+    @strawberryA.mutation(description="""Inserts a new roleType record""")
+    async def role_type_insert(self, 
+        info: strawberryA.types.Info, 
+        role_type: GeneralTypeInsertGQLModel
+
+    ) -> RoleTypeResultGQLModel:
+        #print("role_type_update", role_type, flush=True)
+        loader = getLoader(info).roletypes
+        row = await loader.insert(role_type)
+        if row is not None:
+            print("role_type_update", row, row.name, row.id, flush=True)
+        result = RoleTypeResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id       
+        return result
+
+    @strawberryA.mutation(description="""Updates a role category""")
+    async def role_category_update(self, 
+        info: strawberryA.types.Info, 
+        role_category: GeneralTypeUpdateGQLModel
+
+    ) -> RoleCategoryResultGQLModel:
+
+        loader = getLoader(info).rolecategories
+        row = await loader.update(role_category)
+
+        result = RoleCategoryResultGQLModel()
+        result.msg = "ok"
+        result.id = role_category.id
+        if row is None:
+            result.msg = "fail"
+        else:
+            result.id = row.id
+
+        
+        return result
+    
+    @strawberryA.mutation(description="""Inserts a role category""")
+    async def role_category_insert(self, 
+        info: strawberryA.types.Info, 
+        role_category: GeneralTypeInsertGQLModel
+
+    ) -> RoleCategoryResultGQLModel:
+
+        loader = getLoader(info).rolecategories
+        row = await loader.insert(role_category)
+
+        result = RoleCategoryResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        
+        return result
+
+    
 ###########################################################################################################################
 #
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani

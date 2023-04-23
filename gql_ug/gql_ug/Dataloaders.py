@@ -7,10 +7,11 @@ from gql_ug.DBDefinitions import (
     GroupTypeModel,
     RoleModel,
     RoleTypeModel,
+    RoleCategoryModel
 )
 
 
-async def createLoaders(
+async def _createLoaders(
     asyncSessionMaker,
     DBModels=[
         UserModel,
@@ -19,6 +20,7 @@ async def createLoaders(
         GroupTypeModel,
         RoleModel,
         RoleTypeModel,
+        RoleCategoryModel,
     ],
 ):
 
@@ -30,6 +32,26 @@ async def createLoaders(
     # result['memberships'].max_batch_size = 20
     return result
 
+dbmodels = {
+    "users": UserModel,
+    "memberships": MembershipModel,
+    "groups": GroupModel,
+    "grouptypes": GroupTypeModel,
+    "roles": RoleModel,
+    "roletypes": RoleTypeModel,
+    "rolecategories": RoleCategoryModel,
+}
+
+async def createLoaders(asyncSessionMaker, models=dbmodels):
+    def createLambda(loaderName, DBModel):
+        return lambda self: createIdLoader(asyncSessionMaker, DBModel)
+    
+    attrs = {}
+    for key, DBModel in models.items():
+        attrs[key] = property(cache(createLambda(key, DBModel)))
+    
+    Loaders = type('Loaders', (), attrs)   
+    return Loaders()
 
 from functools import cache
 

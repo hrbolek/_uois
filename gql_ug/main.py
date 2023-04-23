@@ -48,8 +48,8 @@ async def createContext():
     loaders = await createLoaders(asyncSessionMaker)
     return {
         "asyncSessionMaker": await RunOnceAndReturnSessionMaker(),
-        "all": await createLoaders_3(asyncSessionMaker),
-        **loaders,
+        "all": await createLoaders(asyncSessionMaker),
+        #**loaders,
     }
 
 

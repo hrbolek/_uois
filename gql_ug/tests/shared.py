@@ -5,7 +5,7 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_ug.DBDefinitions import BaseModel
-from gql_ug.DBDefinitions import RoleTypeModel, RoleModel
+from gql_ug.DBDefinitions import RoleTypeModel, RoleModel, RoleCategoryModel
 from gql_ug.DBDefinitions import UserModel, GroupModel, GroupTypeModel, MembershipModel
 
 
@@ -41,16 +41,17 @@ async def prepare_demodata(async_session_maker):
             MembershipModel,
             RoleModel,
             RoleTypeModel,
+            RoleCategoryModel
         ],
         data,
     )
 
 
-from gql_ug.Dataloaders import createLoaders_3
+from gql_ug.Dataloaders import createLoaders_3, createLoaders
 
 
 async def createContext(asyncSessionMaker):
     return {
         "asyncSessionMaker": asyncSessionMaker,
-        "all": await createLoaders_3(asyncSessionMaker),
+        "all": await createLoaders(asyncSessionMaker),
     }

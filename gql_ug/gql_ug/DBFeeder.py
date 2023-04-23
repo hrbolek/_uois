@@ -172,13 +172,16 @@ def get_demodata():
         #     {"name": "studijní skupina", "name_en": "study group", "ex_type": "001", "id": "cd49e157-610c-11ed-9312-001a7dda7110"},
         # ],
         "roletypes": [*roleTypes],
+        "rolecategories": [
+            {"id": "a36fc45f-700a-4d09-966e-1d309e3deed4", "name": "obecné role", "name": "general roles"}
+        ],
         "grouptypes": [*groupTypes],
         "users": [
             {
                 "id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
                 "name": "John",
                 "surname": "Newbie",
-                "email": "john.newbie@world.com",
+                "email": "john.newbie@world.com"
             },
             {
                 "id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",

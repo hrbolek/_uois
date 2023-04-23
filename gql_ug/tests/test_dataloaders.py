@@ -19,7 +19,7 @@ async def test_table_users_select_a():
     await prepare_demodata(async_session_maker)
 
     loaders = await createLoaders(async_session_maker)
-    usersloader = loaders["users"]
+    usersloader = loaders.users
     data = get_demodata()
     data = list(data["users"])
     userids = [u["id"] for u in data]

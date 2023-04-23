@@ -52,7 +52,7 @@ resolveMilestonesForProject = create1NGetter(
 resolveFinancesForProject = create1NGetter(
     FinanceModel,
     foreignKeyName="project_id",
-    options=joinedload(FinanceModel.financeType),
+    options=joinedload(FinanceModel.financetype),
 )
 
 # ProjectType resolvers
