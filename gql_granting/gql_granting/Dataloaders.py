@@ -125,3 +125,33 @@ async def createLoaders_3(asyncSessionMaker):
 
     return Loaders()
 
+dbmodels = {
+    "programforms": ProgramFormTypeModel,
+    "programgroups": ProgramGroupModel,
+    "programlanguages": ProgramLanguageTypeModel,
+    "programleveltypes": ProgramLevelTypeModel,
+    "programs": ProgramModel,
+    "programtitletypes": ProgramTitleTypeModel,
+    "programtypes": ProgramTypeModel,
+
+    "classificationlevels": ClassificationLevelModel,
+    "classifications": ClassificationModel,
+    "classificationtypes": ClassificationTypeModel,
+    
+    "subjects": SubjectModel,
+    "semesters": SemesterModel,
+    "topics": TopicModel,
+    "lessons": LessonModel,
+    "lessontypes": LessonTypeModel
+}
+
+async def createLoaders(asyncSessionMaker, models=dbmodels):
+    def createLambda(loaderName, DBModel):
+        return lambda self: createIdLoader(asyncSessionMaker, DBModel)
+    
+    attrs = {}
+    for key, DBModel in models.items():
+        attrs[key] = property(cache(createLambda(key, DBModel)))
+    
+    Loaders = type('Loaders', (), attrs)   
+    return Loaders()

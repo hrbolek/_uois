@@ -207,19 +207,23 @@ async def test_query_program_type():
     data = get_demodata()
     table = data['acprogramtypes']
     row = table[0]
-    query = 'query{programTypeById(id: "' + row['id'] + '''") { 
-        id
-        name
-        nameEn
-        lastchange
-        level { id }
-        language { id }
-        title { id }
-        form { id }
+    id = row['id']
+    query = '''query($id: ID!){
+        programTypeById(id: $id) { 
+            id
+            name
+            nameEn
+            lastchange
+            level { id }
+            language { id }
+            title { id }
+            form { id }
     }}'''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values = {"id": id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
     data = resp.data
     data = data['programTypeById']
 
@@ -241,15 +245,19 @@ async def test_query_program_language():
     data = get_demodata()
     table = data['acprogramlanguages']
     row = table[0]
-    query = 'query{programLanguageById(id: "' + row['id'] + '''") { 
-        id
-        name
-        nameEn
-        lastchange
+    id = row['id']
+    query = '''query($id: ID!){
+        programLanguageById(id: $id) { 
+            id
+            name
+            nameEn
+            lastchange
     }}'''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values = {"id": id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
     data = resp.data
     data = data['programLanguageById']
 
@@ -274,6 +282,7 @@ async def test_query_classification_type():
 
     context_value = await createContext(async_session_maker)
     resp = await schema.execute(query, context_value=context_value)
+    assert resp.errors is None
     data = resp.data
     data = data['acclassificationTypePage']
 
@@ -290,15 +299,19 @@ async def test_query_program_form():
     data = get_demodata()
     table = data['acprogramforms']
     row = table[0]
-    query = 'query{programFormById(id: "' + row['id'] + '''") { 
-        id
-        name
-        nameEn
-        lastchange
+    id = row['id']
+    query = '''query($id: ID!){
+        programFormById(id: $id) { 
+            id
+            name
+            nameEn
+            lastchange
     }}'''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values = {"id": id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
     data = resp.data
     data = data['programFormById']
 
@@ -316,15 +329,19 @@ async def test_query_program_title():
     data = get_demodata()
     table = data['acprogramtitles']
     row = table[0]
-    query = 'query{programTitleById(id: "' + row['id'] + '''") { 
-        id
-        name
-        nameEn
-        lastchange
+    id = row['id']
+    query = '''query($id: ID!){
+        programTitleById(id: $id) { 
+            id
+            name
+            nameEn
+            lastchange
     }}'''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values = {"id": id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
     data = resp.data
     data = data['programTitleById']
 
@@ -341,15 +358,19 @@ async def test_query_program_level():
     data = get_demodata()
     table = data['acprogramlevels']
     row = table[0]
-    query = 'query{programLevelById(id: "' + row['id'] + '''") { 
-        id
-        name
-        nameEn
-        lastchange
+    id = row['id']
+    query = '''query($id: ID!){
+        programLevelById(id: $id) { 
+            id
+            name
+            nameEn
+            lastchange
     }}'''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values = {"id": id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
     data = resp.data
     data = data['programLevelById']
 
@@ -366,20 +387,24 @@ async def test_query_subject():
     data = get_demodata()
     table = data['acsubjects']
     row = table[0]
-    query = 'query{acsubjectById(id: "' + row['id'] + '''") { 
-        id
-        name
-        nameEn
-        lastchange
-        program { id }
-        semesters { 
-            id 
-            subject { id }
-        }
+    id = row['id']
+    query = '''query($id: ID!){
+        acsubjectById(id: $id) { 
+            id
+            name
+            nameEn
+            lastchange
+            program { id }
+            semesters { 
+                id 
+                subject { id }
+            }
     }}'''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values = {"id": id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
     data = resp.data
     data = data['acsubjectById']
 
@@ -401,20 +426,24 @@ async def test_query_semesters():
     data = get_demodata()
     table = data['acsemesters']
     row = table[0]
-    query = 'query{acsemesterById(id: "' + row['id'] + '''") { 
-        id
-        order
-        credits
-        lastchange
-        subject { id }
-        topics { 
-            id 
-            semester { id }
-        }
+    id = row['id']
+    query = '''query($id: ID!){
+        acsemesterById(id: $id) { 
+            id
+            order
+            credits
+            lastchange
+            subject { id }
+            topics { 
+                id 
+                semester { id }
+            }
     }}'''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values = {"id": id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
     data = resp.data
     data = data['acsemesterById']
 
@@ -434,20 +463,26 @@ async def test_query_classification_via_semester():
     data = get_demodata()
     table = data['acsemesters']
     row = table[0]
-    query = 'query{acsemesterById(id: "' + row['id'] + '''") { 
-        id
-        classifications { 
+    id = row['id']
+    query = '''query($id: ID!){
+        acsemesterById(id: $id) { 
             id
-            lastchange
-            user { id }
-            level { id name nameEn }
-            type { id name nameEn }
-            semester { id }
+            classifications { 
+                id
+                lastchange
+                user { id }
+                level { id name nameEn }
+                type { id name nameEn }
+                semester { id }
+            }
         }
-    }}'''
+    }'''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values = {"id": id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    assert resp.data is not None
     data = resp.data
     data = data['acsemesterById']
 
@@ -469,18 +504,22 @@ async def test_query_topic():
     data = get_demodata()
     table = data['actopics']
     row = table[0]
-    query = 'query{actopicById(id: "' + row['id'] + '''") { 
-        id
-        name
-        nameEn
-        lastchange
-        order
-        semester { id }
-        lessons { id }
+    id = row['id']
+    query = '''query($id: ID!){
+        actopicById(id: $id) { 
+            id
+            name
+            nameEn
+            lastchange
+            order
+            semester { id }
+            lessons { id }
     }}'''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values = {"id": id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
     data = resp.data
     data = data['actopicById']
 
@@ -500,16 +539,20 @@ async def test_query_lesson():
     data = get_demodata()
     table = data['aclessons']
     row = table[0]
-    query = 'query{aclessonById(id: "' + row['id'] + '''") { 
-        id
-        count
-        lastchange
-        topic { id }
-        type { id }
+    id = row['id']
+    query = '''query($id: ID!){
+        aclessonById(id: $id) { 
+            id
+            count
+            lastchange
+            topic { id }
+            type { id }
     }}'''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values = {"id": id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
     data = resp.data
     data = data['aclessonById']
 
@@ -530,15 +573,19 @@ async def test_query_lesson_type():
     data = get_demodata()
     table = data['aclessontypes']
     row = table[0]
-    query = 'query{aclessonTypeById(id: "' + row['id'] + '''") { 
-        id
-        name
-        nameEn
-        lastchange
+    id = row['id']
+    query = '''query($id: ID!){
+        aclessonTypeById(id: $id) { 
+            id
+            name
+            nameEn
+            lastchange
     }}'''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values = {"id": id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
     data = resp.data
     data = data['aclessonTypeById']
 
@@ -548,3 +595,307 @@ async def test_query_lesson_type():
     assert data['id'] == row['id']
     #for topic in data['topics']:
     #    assert topic['semester']['id'] == row['id']
+
+
+@pytest.mark.asyncio
+async def test_program_mutation():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    table = data['acprogramtypes']
+    row = table[0]
+    id = row['id']
+
+    name = "Program X"
+    query = '''
+            mutation(
+                $type_id: ID!,
+                $name: String!
+                ) {
+                programInsert(program: {
+                    typeId: $type_id,
+                    name: $name
+                }){
+                    id
+                    msg
+                    program {
+                        id
+                        name
+                        lastchange
+                        type { id }
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {"name": name, "type_id": id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    
+    print(resp, flush=True)
+
+    assert resp.errors is None
+    data = resp.data['programInsert']
+    assert data["msg"] == "ok"
+    data = data["program"]
+    assert data["type"]["id"] == id
+    assert data["name"] == name
+   
+    id = data["id"]
+    lastchange = data["lastchange"]
+    name = "NewName"
+    query = '''
+            mutation(
+                $id: ID!,
+                $lastchange: DateTime!
+                $name: String!
+                ) {
+                programUpdate(program: {
+                id: $id,
+                lastchange: $lastchange
+                name: $name
+            }){
+                id
+                msg
+                program {
+                    id
+                    name
+                    lastchange
+                }
+            }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {"id": id, "name": name, "lastchange": lastchange}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+
+    data = resp.data['programUpdate']
+    assert data['msg'] == "ok"
+    data = data["program"]
+    assert data["name"] == name
+
+    # lastchange je jine, musi fail
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    data = resp.data['programUpdate']
+    assert data['msg'] == "fail"
+
+    pass
+
+@pytest.mark.asyncio
+async def test_program_type_mutation():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    
+    table = data["acprogramforms"]
+    row = table[0]
+    form_id = row["id"]
+
+    table = data["acprogramlanguages"]
+    row = table[0]
+    language_id = row["id"]
+
+    table = data["acprogramlevels"]
+    row = table[0]
+    level_id = row["id"]
+
+    table = data["acprogramtitles"]
+    row = table[0]
+    title_id = row["id"]
+
+    name = "Program X"
+    query = '''
+            mutation(
+                $form_id: ID!,
+                $language_id: ID!,
+                $level_id: ID!,
+                $title_id: ID!,
+                $name: String!
+                ) {
+                programTypeInsert(programType: {
+                    formId: $form_id,
+                    languageId: $language_id,
+                    levelId: $level_id,
+                    titleId: $title_id,
+                    name: $name,
+                    nameEn: $name
+                }){
+                    id
+                    msg
+                    programType {
+                        id
+                        name
+                        lastchange
+                        form { id }
+                        language { id }
+                        level { id }
+                        title { id }
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {
+        "name": name, 
+        "form_id": form_id,
+        "language_id": language_id,
+        "title_id": title_id,
+        "level_id": level_id
+    }
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    
+    print(resp, flush=True)
+
+    assert resp.errors is None
+    data = resp.data['programTypeInsert']
+    assert data["msg"] == "ok"
+    data = data["programType"]
+    assert data["form"]["id"] == form_id
+    assert data["language"]["id"] == language_id
+    assert data["title"]["id"] == title_id
+    assert data["level"]["id"] == level_id
+    assert data["name"] == name
+   
+    id = data["id"]
+    lastchange = data["lastchange"]
+    name = "NewName"
+    query = '''
+            mutation(
+                $id: ID!,
+                $lastchange: DateTime!
+                $name: String!
+                ) {
+                programTypeUpdate(programType: {
+                id: $id,
+                lastchange: $lastchange
+                name: $name
+            }){
+                id
+                msg
+                programType {
+                    id
+                    name
+                    lastchange
+                }
+            }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {"id": id, "name": name, "lastchange": lastchange}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+
+    data = resp.data['programTypeUpdate']
+    assert data['msg'] == "ok"
+    data = data["programType"]
+    assert data["name"] == name
+
+    # lastchange je jine, musi fail
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    data = resp.data['programTypeUpdate']
+    assert data['msg'] == "fail"
+
+    pass
+
+@pytest.mark.asyncio
+async def test_subject_mutation():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    
+    table = data["acprograms"]
+    row = table[0]
+    id = row["id"]
+
+    name = "Subject X"
+    query = '''
+            mutation(
+                $id: ID!,
+                $name: String!
+                ) {
+                subjectInsert(subject: {
+                    programId: $id,
+                    name: $name,
+                    nameEn: $name
+                }){
+                    id
+                    msg
+                    subject {
+                        id
+                        name
+                        lastchange
+                        program { id }
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {
+        "name": name, 
+        "id": id,
+    }
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    
+    print(resp, flush=True)
+
+    assert resp.errors is None
+    data = resp.data['subjectInsert']
+    assert data["msg"] == "ok"
+    data = data["subject"]
+    assert data["program"]["id"] == id
+    assert data["name"] == name
+    
+   
+    id = data["id"]
+    lastchange = data["lastchange"]
+    name = "NewName"
+    query = '''
+            mutation(
+                $id: ID!,
+                $lastchange: DateTime!
+                $name: String!
+                ) {
+                subjectUpdate(subject: {
+                id: $id,
+                lastchange: $lastchange
+                name: $name
+            }){
+                id
+                msg
+                subject {
+                    id
+                    name
+                    lastchange
+                }
+            }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {"id": id, "name": name, "lastchange": lastchange}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+
+    data = resp.data['subjectUpdate']
+    assert data['msg'] == "ok"
+    data = data["subject"]
+    assert data["name"] == name
+
+    # lastchange je jine, musi fail
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    data = resp.data['subjectUpdate']
+    assert data['msg'] == "fail"
+
+    pass
+

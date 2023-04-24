@@ -45,7 +45,7 @@ import datetime
 class AcProgramGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).acprogram_by_id
+        loader = getLoaders(info).programs
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -78,8 +78,8 @@ class AcProgramGQLModel:
 
     @strawberryA.field(description="""subjects in the program""")
     async def subjects(self, info: strawberryA.types.Info) -> List["AcSubjectGQLModel"]:
-        loader = getLoaders(info).acsubject_for_program
-        result = await loader.load(self.id)
+        loader = getLoaders(info).subjects
+        result = await loader.filter_by(program_id=self.id)
         return result
 
     #################################################
@@ -94,7 +94,7 @@ from gql_granting.GraphResolvers import resolveFormTypeById
 class AcProgramFormTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).acprogramform_by_id
+        loader = getLoaders(info).programforms
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -124,7 +124,7 @@ from gql_granting.GraphResolvers import resolveLanguageTypeById
 class AcProgramLanguageTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).acprogramlanguage_by_id
+        loader = getLoaders(info).programlanguages
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -153,7 +153,7 @@ from gql_granting.GraphResolvers import resolveLevelTypeById
 class AcProgramLevelTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).acprogramlevel_by_id
+        loader = getLoaders(info).programleveltypes
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -183,7 +183,7 @@ from gql_granting.GraphResolvers import resolveTitleTypeById
 class AcProgramTitleTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).acprogramtitle_by_id
+        loader = getLoaders(info).programtitletypes
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -215,7 +215,7 @@ from gql_granting.GraphResolvers import resolveClassificationTypeById
 class AcClassificationTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).acclassificationtype_by_id
+        loader = getLoaders(info).classificationtypes
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -244,7 +244,7 @@ from gql_granting.GraphResolvers import resolveLessonTypeById
 class AcLessonTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).aclessontype_by_id
+        loader = getLoaders(info).lessontypes
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -275,7 +275,7 @@ from gql_granting.GraphResolvers import resolveGroupIdsForProgram
 class AcProgramEditorGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).acprogram_by_id
+        loader = getLoaders(info).programs
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -307,7 +307,7 @@ from gql_granting.GraphResolvers import subjectSelect
 class AcSubjectGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).acsubject_by_id
+        loader = getLoaders(info).subjects
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -316,6 +316,10 @@ class AcSubjectGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
+    @strawberryA.field(description="""time stamp""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
 
     @strawberryA.field(description="""name""")
     def name(self) -> str:
@@ -338,8 +342,8 @@ class AcSubjectGQLModel:
     async def semesters(
         self, info: strawberryA.types.Info
     ) -> List["AcSemesterGQLModel"]:
-        loader = getLoaders(info).acsemester_for_subject
-        result = await loader.load(self.id)
+        loader = getLoaders(info).semesters
+        result = await loader.filter_by(subject_id=self.id)
         return result
 
 
@@ -352,7 +356,7 @@ from gql_granting.GraphResolvers import resolveSemesterById, resolveTopicsForSem
 class AcSemesterGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).acsemester_by_id
+        loader = getLoaders(info).semesters
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -382,17 +386,18 @@ class AcSemesterGQLModel:
         return result
 
     @strawberryA.field(description="""Final classification of the semester""")
-    async def classification(
+    async def classifications(
         self, info: strawberryA.types.Info
     ) -> List["AcClassificationGQLModel"]:
-        loader = getLoaders(info).acclassification_for_semester
-        result = await loader.load(self.id)
+        #loader = getLoaders(info).acclassification_for_semester
+        loader = getLoaders(info).classifications
+        result = await loader.filter_by(semester_id=self.id)
         return result
 
     @strawberryA.field(description="""topics""")
     async def topics(self, info: strawberryA.types.Info) -> List["AcTopicGQLModel"]:
-        loader = getLoaders(info).actopics_for_semester
-        result = await loader.load(self.id)
+        loader = getLoaders(info).topics
+        result = await loader.filter_by(semester_id=self.id)
         return result
 
 
@@ -408,7 +413,7 @@ from gql_granting.GraphResolvers import resolveTopicById
 class AcTopicGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).actopic_by_id
+        loader = getLoaders(info).topics
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -441,8 +446,8 @@ class AcTopicGQLModel:
 
     @strawberryA.field(description="""Lessons for a topic""")
     async def lessons(self, info: strawberryA.types.Info) -> List["AcLessonGQLModel"]:
-        loader = getLoaders(info).aclessons_for_topic
-        result = await loader.load(self.id)
+        loader = getLoaders(info).lessons
+        result = await loader.filter_by(topic_id=self.id)
         return result
 
 from gql_granting.GraphResolvers import resolveLessonById
@@ -455,7 +460,7 @@ from gql_granting.GraphResolvers import resolveLessonById
 class AcLessonGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).aclesson_by_id
+        loader = getLoaders(info).lessons
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -493,7 +498,7 @@ class AcLessonGQLModel:
 class AcProgramTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).acprogramtype_by_id
+        loader = getLoaders(info).programtypes
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -544,7 +549,7 @@ class AcProgramTypeGQLModel:
 class AcClassificationGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).acclassification_by_id
+        loader = getLoaders(info).classifications
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -560,7 +565,7 @@ class AcClassificationGQLModel:
 
     @strawberryA.field(description="""User""")
     async def user(self, info: strawberryA.types.Info) -> "UserGQLModel":
-        return await UserGQLModel(id=self.user_id)
+        return await UserGQLModel.resolve_reference(id=self.user_id)
 
     @strawberryA.field(description="""Semester""")
     async def semester(self, info: strawberryA.types.Info) -> "AcSemesterGQLModel":
@@ -584,7 +589,7 @@ class AcClassificationGQLModel:
 class AcClassificationLevelGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).acclassificationlevel_by_id
+        loader = getLoaders(info).classificationlevels
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -758,7 +763,7 @@ class Query:
     async def acclassification_type_page(
         self, info: strawberryA.types.Info
     ) -> List["AcClassificationTypeGQLModel"]:
-        loader = getLoaders(info).acclassificationtype_by_id
+        loader = getLoaders(info).classificationtypes
         result = await loader.execute_select(classificationTypeSelect)
         return result
 
@@ -773,6 +778,164 @@ class Query:
 
 ###########################################################################################################################
 #
+#
+# Mutations
+#
+#
+###########################################################################################################################
+
+from typing import Optional
+
+@strawberryA.input
+class ProgramInsertGQLModel:
+    name: str
+    type_id: strawberryA.ID
+    id: Optional[strawberryA.ID] = None
+    pass
+
+@strawberryA.input
+class ProgramUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+    name: Optional[str] = None
+    name_en: Optional[str] = None
+    type_id: Optional[strawberryA.ID] = None
+    
+@strawberryA.type
+class ProgramResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of user operation""")
+    async def program(self, info: strawberryA.types.Info) -> Union[AcProgramGQLModel, None]:
+        result = await AcProgramGQLModel.resolve_reference(info, self.id)
+        return result
+
+@strawberryA.input
+class ProgramTypeInsertGQLModel:
+    name: str
+    name_en: str
+    language_id: strawberryA.ID
+    level_id: strawberryA.ID
+    form_id: strawberryA.ID
+    title_id: strawberryA.ID
+    id: Optional[strawberryA.ID] = None
+
+@strawberryA.input
+class ProgramTypeUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+    name: Optional[str] = None
+    name_en: Optional[str] = None
+    language_id: Optional[strawberryA.ID] = None
+    level_id: Optional[strawberryA.ID] = None
+    form_id: Optional[strawberryA.ID] = None
+    title_id: Optional[strawberryA.ID] = None
+
+@strawberryA.type
+class ProgramTypeResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of user operation""")
+    async def program_type(self, info: strawberryA.types.Info) -> Union[AcProgramTypeGQLModel, None]:
+        result = await AcProgramTypeGQLModel.resolve_reference(info, self.id)
+        return result
+
+@strawberryA.input
+class SubjectInsertGQLModel:
+    name: str
+    name_en: str
+    program_id: strawberryA.ID
+    id: Optional[strawberryA.ID] = None
+    valid: Optional[bool] = True
+
+@strawberryA.input
+class SubjectUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+    name: Optional[str] = None
+    name_en: Optional[str] = None
+    valid: Optional[bool] = True
+
+@strawberryA.type
+class SubjectResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of subject operation""")
+    async def subject(self, info: strawberryA.types.Info) -> Union[AcSubjectGQLModel, None]:
+        result = await AcSubjectGQLModel.resolve_reference(info, self.id)
+        return result
+    
+@strawberryA.type
+class Mutation:
+    @strawberryA.mutation
+    async def program_insert(self, info: strawberryA.types.Info, program: ProgramInsertGQLModel) -> ProgramResultGQLModel:
+        loader = getLoaders(info).programs
+        row = await loader.insert(program)
+        result = ProgramResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def program_update(self, info: strawberryA.types.Info, program: ProgramUpdateGQLModel) -> ProgramResultGQLModel:
+        loader = getLoaders(info).programs
+        row = await loader.update(program)
+        result = ProgramResultGQLModel()
+        result.msg = "ok"
+        result.id = program.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+    @strawberryA.mutation
+    async def program_type_insert(self, info: strawberryA.types.Info, program_type: ProgramTypeInsertGQLModel) -> ProgramTypeResultGQLModel:
+        loader = getLoaders(info).programtypes
+        row = await loader.insert(program_type)
+        result = ProgramTypeResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def program_type_update(self, info: strawberryA.types.Info, program_type: ProgramUpdateGQLModel) -> ProgramTypeResultGQLModel:
+        loader = getLoaders(info).programtypes
+        row = await loader.update(program_type)
+        result = ProgramTypeResultGQLModel()
+        result.msg = "ok"
+        result.id = program_type.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+    @strawberryA.mutation
+    async def subject_insert(self, info: strawberryA.types.Info, subject: SubjectInsertGQLModel) -> SubjectResultGQLModel:
+        loader = getLoaders(info).subjects
+        row = await loader.insert(subject)
+        result = SubjectResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def subject_update(self, info: strawberryA.types.Info, subject: SubjectUpdateGQLModel) -> SubjectResultGQLModel:
+        loader = getLoaders(info).subjects
+        row = await loader.update(subject)
+        result = SubjectResultGQLModel()
+        result.msg = "ok"
+        result.id = subject.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+
+###########################################################################################################################
+#
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
 # se ve schema objevi jen ty struktury, ktere si strawberry dokaze odvodit z Query. Protoze v teto konkretni implementaci
 # nektere modely nejsou s Query propojene je potreba je explicitne vyjmenovat. Jinak ve federativnim schematu nebude
@@ -780,7 +943,7 @@ class Query:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, 
+schema = strawberryA.federation.Schema(Query, mutation=Mutation,
     types=(GroupGQLModel, 
     AcClassificationLevelGQLModel, 
     AcClassificationGQLModel, 

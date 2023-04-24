@@ -57,17 +57,17 @@ class ProgramGroupModel(BaseModel):
     )  # can be a program, also can be a subject, this row can be in a table only once per program and once per subject
     group_id = UUIDFKey()#Column(ForeignKey("groups.id"))
 
-class ProgramStudents(BaseModel):
-    __tablename__ = "acprograms_student_histories"
-    id = UUIDColumn()
-    name = Column(String) # note
-    student_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    program_student_id = UUIDFKey(ForeignKey=ForeignKey("acprograms_students.id"))
+# class ProgramStudents(BaseModel):
+#     __tablename__ = "acprograms_student_histories"
+#     id = UUIDColumn()
+#     name = Column(String) # note
+#     student_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+#     program_student_id = UUIDFKey(ForeignKey=ForeignKey("acprograms_students.id"))
 
-    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+#     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+#     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+#     createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+#     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class ProgramStudents(BaseModel):
     __tablename__ = "acprograms_students"
@@ -77,7 +77,7 @@ class ProgramStudents(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class ProgramFormTypeModel(BaseModel):
