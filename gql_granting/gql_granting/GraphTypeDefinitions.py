@@ -868,7 +868,7 @@ class SubjectResultGQLModel:
         result = await AcSubjectGQLModel.resolve_reference(info, self.id)
         return result
     
-@strawberryA.type
+@strawberryA.federation.type(extend=True)
 class Mutation:
     @strawberryA.mutation
     async def program_insert(self, info: strawberryA.types.Info, program: ProgramInsertGQLModel) -> ProgramResultGQLModel:

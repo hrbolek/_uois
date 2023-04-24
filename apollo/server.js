@@ -25,9 +25,9 @@ const getENV = (name, defaultValue) => {
   const gateway = new ApolloGateway({
     supergraphSdl: new IntrospectAndCompose({
       subgraphs: [
-        { name: "usersAndGroups", url: "http://gql_ug:8000/gql" },
        // { name: "workflows", url: "http://gql_workflow:8000/gql" },
         { name: "events", url: "http://gql_events:8000/gql" },
+        { name: "granting", url: "http://gql_granting:8000/gql" },
         { name: "externalids", url: "http://gql_externalids:8000/gql" },
         { name: "facilities", url: "http://gql_facilities:8000/gql" },
         { name: "forms", url: "http://gql_forms:8000/gql" },
@@ -37,6 +37,7 @@ const getENV = (name, defaultValue) => {
         { name: "publications", url: "http://gql_publications:8000/gql" },
         { name: "personalities", url: "http://gql_personalities:8000/gql" },
         { name: "surveys", url: "http://gql_surveys:8000/gql" },
+        { name: "usersAndGroups", url: "http://gql_ug:8000/gql" },
 
         /*
         * ###########################################################################################################################

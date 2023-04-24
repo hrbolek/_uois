@@ -88,7 +88,6 @@ services:
     depends_on:
       # kontejnery, kter musi byt spusteny drive
       - postgres
-      - gql_ug
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
@@ -114,7 +113,6 @@ services:
     depends_on:
       # kontejnery, kter musi byt spusteny drive
       - postgres
-      - gql_ug
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
@@ -166,8 +164,6 @@ services:
       # kontejnery, ktere musi byt spusteny drive
       postgres:
         condition: service_started
-      gql_ug:
-        condition: service_started
 
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
@@ -193,10 +189,7 @@ services:
       - POSTGRES_DB=data
       # kontejnery, ktere musi byt spusteny drive
     depends_on:
-      postgres:
-        condition: service_started
-      gql_ug:
-        condition: service_started
+      - postgres
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
@@ -220,10 +213,7 @@ services:
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
     depends_on:
-      postgres:
-        condition: service_started
-      gql_ug:
-        condition: service_started
+      - postgres
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
@@ -247,10 +237,7 @@ services:
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
     depends_on:
-      postgres:
-        condition: service_started
-      gql_ug:
-        condition: service_started
+      - postgres
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
@@ -282,10 +269,7 @@ services:
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
     depends_on:
-      postgres:
-        condition: service_started
-      gql_ug:
-        condition: service_started
+      - postgres
 
   gql_forms:
     image: gql_forms
@@ -306,10 +290,7 @@ services:
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
     depends_on:
-      postgres:
-        condition: service_started
-      gql_ug:
-        condition: service_started
+      - postgres
 
   gql_personalities:
     image: gql_personalities
@@ -330,10 +311,7 @@ services:
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
     depends_on:
-      postgres:
-        condition: service_started
-      gql_ug:
-        condition: service_started
+      - postgres
 
   gql_projects:
     image: gql_projects
@@ -354,10 +332,7 @@ services:
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
     depends_on:
-      postgres:
-        condition: service_started
-      gql_ug:
-        condition: service_started
+      - postgres
 
   gql_publications:
     image: gql_publications
@@ -378,10 +353,7 @@ services:
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
     depends_on:
-      postgres:
-        condition: service_started
-      gql_ug:
-        condition: service_started
+      - postgres
 
   gql_surveys:
     image: gql_surveys
@@ -402,10 +374,7 @@ services:
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
     depends_on:
-      postgres:
-        condition: service_started
-      gql_ug:
-        condition: service_started
+      - postgres
 
   nogql:
     image: nogql
