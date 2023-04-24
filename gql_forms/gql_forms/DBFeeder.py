@@ -6,7 +6,12 @@ from functools import cache
 # next step define some resolver, how to use resolver in the file graptype
 # check all data strcture in database if it have -- (work)
 from gql_forms.DBDefinitions import (
-    BaseModel,
+    FormCategoryModel,
+    FormTypeModel,
+    ItemTypeModel,
+    ItemCategoryModel,
+    FormModel,
+    HistoryModel,
     RequestModel,
     SectionModel,
     PartModel,
@@ -149,5 +154,50 @@ def get_demodata():
     }
     return result
 
-async def createBasicDataStructure():
-    print()
+import os
+import json
+from uoishelpers.feeders import ImportModels
+import datetime
+
+def get_demodata():
+    def datetime_parser(json_dict):
+        for (key, value) in json_dict.items():
+            if key in ["startdate", "enddate", "lastchange", "created"]:
+                dateValue = datetime.datetime.fromisoformat(value)
+                dateValueWOtzinfo = dateValue.replace(tzinfo=None)
+                json_dict[key] = dateValueWOtzinfo
+        return json_dict
+
+
+    with open("./systemdata.json", "r") as f:
+        jsonData = json.load(f, object_hook=datetime_parser)
+
+    return jsonData
+
+async def initDB(asyncSessionMaker):
+
+    defaultNoDemo = "False"
+    if defaultNoDemo == os.environ.get("DEMO", defaultNoDemo):
+        dbModels = [
+            FormCategoryModel,
+            FormTypeModel,
+            ItemTypeModel,
+            ItemCategoryModel,
+            ]
+    else:
+        dbModels = [
+            FormCategoryModel,
+            FormTypeModel,
+            ItemTypeModel,
+            ItemCategoryModel,
+            FormModel,
+            HistoryModel,
+            RequestModel,
+            SectionModel,
+            PartModel,
+            ItemModel
+        ]
+        
+    jsonData = get_demodata()
+    await ImportModels(asyncSessionMaker, dbModels, jsonData)
+    pass

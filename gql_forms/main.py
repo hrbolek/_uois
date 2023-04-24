@@ -16,7 +16,7 @@ from gql_forms.GraphTypeDefinitions import Query
 ## https://docs.sqlalchemy.org/en/14/core/future.html?highlight=select#sqlalchemy.future.select
 from gql_forms.DBDefinitions import startEngine, ComposeConnectionString
 
-from gql_forms.DBFeeder import createBasicDataStructure
+from gql_forms.DBFeeder import initDB
 
 ## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
 # from gql_workflow.DBFeeder import createSystemDataStructureRoleTypes, createSystemDataStructureGroupTypes
@@ -55,15 +55,9 @@ async def RunOnceAndReturnSessionMaker():
     #
     # zde definujte do funkce asyncio.gather
     # vlozte asynchronni funkce, ktere maji data uvest do prvotniho konzistentniho stavu
-
-    await asyncio.gather(  # concurency running :)
-        # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
-        # musi byt asynchronniho typu (async def ...)
-        createBasicDataStructure()
-        # createSystemDataStructureRoleTypes(result),
-        # createSystemDataStructureGroupTypes(result)
-    )
-
+    await initDB(result)
+    #
+    #
     ###########################################################################################################################
     print(f"all done")
     return result

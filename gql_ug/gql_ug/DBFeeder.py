@@ -1,12 +1,14 @@
 from functools import cache
 from gql_ug.DBDefinitions import (
-    BaseModel,
+    GroupTypeModel, 
+    RoleTypeModel,
+    RoleCategoryModel,
     UserModel,
     GroupModel,
     MembershipModel,
     RoleModel,
 )
-from gql_ug.DBDefinitions import GroupTypeModel, RoleTypeModel
+
 
 import uuid
 
@@ -879,4 +881,51 @@ async def importUg(session, data):
         session.add_all(allEntitites)
     await session.commit()
 
+    pass
+
+
+
+
+import os
+import json
+from uoishelpers.feeders import ImportModels
+import datetime
+
+def get_demodata():
+    def datetime_parser(json_dict):
+        for (key, value) in json_dict.items():
+            if key in ["startdate", "enddate", "lastchange", "created"]:
+                dateValue = datetime.datetime.fromisoformat(value)
+                dateValueWOtzinfo = dateValue.replace(tzinfo=None)
+                json_dict[key] = dateValueWOtzinfo
+        return json_dict
+
+
+    with open("./systemdata.json", "r") as f:
+        jsonData = json.load(f, object_hook=datetime_parser)
+
+    return jsonData
+
+async def initDB(asyncSessionMaker):
+
+    defaultNoDemo = "False"
+    if defaultNoDemo == os.environ.get("DEMO", defaultNoDemo):
+        dbModels = [
+            GroupTypeModel, 
+            RoleCategoryModel,
+            RoleTypeModel,
+        ]
+    else:
+        dbModels = [
+            GroupTypeModel, 
+            RoleCategoryModel,
+            RoleTypeModel,
+            UserModel,
+            GroupModel,
+            MembershipModel,
+            RoleModel,
+        ]
+
+    jsonData = get_demodata()
+    await ImportModels(asyncSessionMaker, dbModels, jsonData)
     pass

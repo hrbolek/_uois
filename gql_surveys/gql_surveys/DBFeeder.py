@@ -1,6 +1,13 @@
 from doctest import master
 from functools import cache
-from gql_surveys.DBDefinitions import BaseModel
+from gql_surveys.DBDefinitions import (
+    QuestionTypeModel,
+    QuestionValueModel,
+    QuestionModel,
+    AnswerModel,
+    SurveyTypeModel,
+    SurveyModel,
+)
 
 import random
 import itertools
@@ -23,13 +30,7 @@ def singleCall(asyncFunc):
     return result
 
 
-from gql_surveys.DBDefinitions import (
-    BaseModel,
-    QuestionTypeModel,
-    QuestionModel,
-    AnswerModel,
-    SurveyModel,
-)
+
 
 
 @cache
@@ -244,103 +245,45 @@ async def SystemInitialization(asyncSessionMaker):
     )
 
 
-async def putPredefinedStructuresIntoTable(
-    asyncSessionMaker, DBModel, structureFunction
-):
-    """Zabezpeci prvotni inicicalizaci zaznamu v databazi
-    DBModel zprostredkovava tabulku,
-    structureFunction() dava data, ktera maji byt ulozena, predpoklada se list of dicts, pricemz dict obsahuje elementarni datove typy
-    """
+import os
+import json
+from uoishelpers.feeders import ImportModels
+import datetime
 
-    tableName = DBModel.__tablename__
-    # column names
-    cols = [col.name for col in DBModel.metadata.tables[tableName].columns]
+def get_demodata():
+    def datetime_parser(json_dict):
+        for (key, value) in json_dict.items():
+            if key in ["startdate", "enddate", "lastchange", "created"]:
+                dateValue = datetime.datetime.fromisoformat(value)
+                dateValueWOtzinfo = dateValue.replace(tzinfo=None)
+                json_dict[key] = dateValueWOtzinfo
+        return json_dict
 
-    def mapToCols(item):
-        """z item vybere jen atributy, ktere jsou v DBModel, zbytek je ignorovan"""
-        result = {}
-        for col in cols:
-            value = item.get(col, None)
-            if value is None:
-                continue
-            result[col] = value
-        return result
 
-    # ocekavane typy
-    externalIdTypes = structureFunction()
+    with open("./systemdata.json", "r") as f:
+        jsonData = json.load(f, object_hook=datetime_parser)
 
-    # dotaz do databaze
-    stmt = select(DBModel)
-    async with asyncSessionMaker() as session:
-        dbSet = await session.execute(stmt)
-        dbRows = list(dbSet.scalars())
+    return jsonData
 
-    # extrakce dat z vysledku dotazu
-    # vezmeme si jen atribut id, id je typu uuid, tak jej zkovertujeme na string
-    idsInDatabase = [f"{row.id}" for row in dbRows]
+async def initDB(asyncSessionMaker):
 
-    # zjistime, ktera id nejsou v databazi
-    unsavedRows = list(
-        filter(lambda row: not (f'{row["id"]}' in idsInDatabase), externalIdTypes)
-    )
+    defaultNoDemo = "False"
+    if defaultNoDemo == os.environ.get("DEMO", defaultNoDemo):
+        dbModels = [
+            QuestionTypeModel,
+            SurveyTypeModel,
+            SurveyModel,
+        ]
+    else:
+        dbModels = [
+            QuestionTypeModel,
+            SurveyTypeModel,
+            SurveyModel,
+            QuestionModel,
+            QuestionValueModel,
+            AnswerModel,
+        ]
 
-    async def saveChunk(rows):
-        # pro vsechna neulozena id vytvorime entity
-        # omezime se jen na atributy, ktere jsou definovane v modelu
-        mappedUnsavedRows = list(map(mapToCols, rows))
-        rowsToAdd = [DBModel(**row) for row in mappedUnsavedRows]
-
-        # a vytvorene entity jednou operaci vlozime do databaze
-        async with asyncSessionMaker() as session:
-            async with session.begin():
-                session.add_all(rowsToAdd)
-            await session.commit()
-
-    if len(unsavedRows) > 0:
-        # je co ukladat
-        if "_chunk" in unsavedRows[0]:
-            # existuje informace o rozfazovani ukladani do tabulky
-            nextPhase = [*unsavedRows]
-            while len(nextPhase) > 0:
-                # zjistime nejmensi cislo poradi ukladani
-                chunkNumber = min(map(lambda item: item["_chunk"], nextPhase))
-
-                print(tableName, "chunkNumber", chunkNumber)
-
-                # filtrujeme radky, ktere maji toto cislo
-                toSave = list(
-                    filter(lambda item: item["_chunk"] == chunkNumber, nextPhase)
-                )
-                # ostatni nechame na pozdeji
-                nextPhase = list(
-                    filter(lambda item: item["_chunk"] != chunkNumber, nextPhase)
-                )
-                # ulozime vybrane
-                await saveChunk(toSave)
-        else:
-            # vsechny zaznamy mohou byt ulozeny soucasne
-            await saveChunk(unsavedRows)
-
-    # jeste jednou se dotazeme do databaze
-    stmt = select(DBModel)
-    async with asyncSessionMaker() as session:
-        dbSet = await session.execute(stmt)
-        dbRows = dbSet.scalars()
-
-    # extrakce dat z vysledku dotazu
-    idsInDatabase = [f"{row.id}" for row in dbRows]
-
-    # znovu zaznamy, ktere dosud ulozeny nejsou, mely by byt ulozeny vsechny, takze prazdny list
-    unsavedRows = list(
-        filter(lambda row: not (f'{row["id"]}' in idsInDatabase), externalIdTypes)
-    )
-
-    # ted by melo byt pole prazdne
-    if not (len(unsavedRows) == 0):
-        print("SOMETHING is REALLY WRONG")
-
-    # print(structureFunction(), 'On the input')
-    # print(dbRowsDicts, 'Defined in database')
-    # nyni vsechny entity mame v pameti a v databazi synchronizovane
-    # print(structureFunction())
+    jsonData = get_demodata()
+    await ImportModels(asyncSessionMaker, dbModels, jsonData)
     pass

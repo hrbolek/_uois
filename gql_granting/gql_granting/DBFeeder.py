@@ -348,109 +348,82 @@ def prgtypes():
 #
 ###########################################################################################################################
 from gql_granting.DBDefinitions import (
+    
     ProgramFormTypeModel,
     ProgramLanguageTypeModel,
     ProgramLevelTypeModel,
     ProgramTitleTypeModel,
     ProgramTypeModel,
+    ProgramModel,
+    SubjectModel,
+    SemesterModel,
+    TopicModel,
+    LessonModel,
+    LessonTypeModel,
+    
+    ClassificationLevelModel,
+    ClassificationModel,
+    ClassificationTypeModel,
+
+
 )
-from gql_granting.DBDefinitions import LessonTypeModel
+
 import asyncio
+import os
+import json
+
+from uoishelpers.feeders import ImportModels
+
+def get_demodata():
+    def datetime_parser(json_dict):
+        for (key, value) in json_dict.items():
+            if key in ["startdate", "enddate", "lastchange", "created"]:
+                dateValue = datetime.datetime.fromisoformat(value)
+                dateValueWOtzinfo = dateValue.replace(tzinfo=None)
+                json_dict[key] = dateValueWOtzinfo
+        return json_dict
 
 
-async def predefineAllDataStructures(asyncSessionMaker):
-    await asyncio.gather(
-        putPredefinedStructuresIntoTable(
-            asyncSessionMaker, ProgramFormTypeModel, prgforms
-        ),  # prvni
-        putPredefinedStructuresIntoTable(
-            asyncSessionMaker, ProgramLanguageTypeModel, prglanguages
-        ),  # prvni
-        putPredefinedStructuresIntoTable(
-            asyncSessionMaker, ProgramLevelTypeModel, prglevels
-        ),  # prvni
-        putPredefinedStructuresIntoTable(
-            asyncSessionMaker, ProgramTitleTypeModel, prgtitles
-        ),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, ProgramTypeModel, prgtypes),
-        putPredefinedStructuresIntoTable(
-            asyncSessionMaker, LessonTypeModel, lessontypes
-        ),
-    )
-    return
+    with open("./systemdata.json", "r") as f:
+        jsonData = json.load(f, object_hook=datetime_parser)
 
+    return jsonData
 
-async def putPredefinedStructuresIntoTable(
-    asyncSessionMaker, DBModel, structureFunction
-):
-    """Zabezpeci prvotni inicicalizaci typu externích ids v databazi
-    DBModel zprostredkovava tabulku, je to sqlalchemy model
-    structureFunction() dava data, ktera maji byt ulozena
-    """
-    # ocekavane typy
-    externalIdTypes = structureFunction()
+async def initDB(asyncSessionMaker):
 
-    # dotaz do databaze
-    stmt = select(DBModel)
-    async with asyncSessionMaker() as session:
-        dbSet = await session.execute(stmt)
-        dbRows = list(dbSet.scalars())
+    defaultNoDemo = "_________"
+    if defaultNoDemo == os.environ.get("DEMO", defaultNoDemo):
+        dbModels = [
+            ProgramFormTypeModel,
+            ProgramLanguageTypeModel,
+            ProgramLevelTypeModel,
+            ProgramTitleTypeModel,
+            ProgramTypeModel,
+            LessonTypeModel,
 
-    # extrakce dat z vysledku dotazu
-    # vezmeme si jen atributy name a id, id je typu uuid, tak jej zkovertujeme na string
-    dbRowsDicts = [{"name": row.name, "id": f"{row.id}"} for row in dbRows]
+            ClassificationLevelModel,
+            ClassificationTypeModel,
+        ]
+    else:
+        dbModels = [
+            ProgramFormTypeModel,
+            ProgramLanguageTypeModel,
+            ProgramLevelTypeModel,
+            ProgramTitleTypeModel,
+            ProgramTypeModel,
+            LessonTypeModel,
+            ClassificationLevelModel,
+            ClassificationTypeModel,
 
-    print(structureFunction, "external id types found in database")
-    print(dbRowsDicts)
+            ProgramModel,
+            SubjectModel,
+            SemesterModel,
+            TopicModel,
+            LessonModel,
+            ClassificationModel,
 
-    # vytahneme si vektor (list) id, ten pouzijeme pro operator in nize
-    idsInDatabase = [row["id"] for row in dbRowsDicts]
-
-    # zjistime, ktera id nejsou v databazi
-    unsavedRows = list(
-        filter(lambda row: not (row["id"] in idsInDatabase), externalIdTypes)
-    )
-    print(structureFunction, "external id types not found in database")
-    print(unsavedRows)
-
-    # pro vsechna neulozena id vytvorime entity
-    rowsToAdd = [DBModel(**row) for row in unsavedRows]
-    print(rowsToAdd)
-    print(len(rowsToAdd))
-
-    # a vytvorene entity jednou operaci vlozime do databaze
-    async with asyncSessionMaker() as session:
-        async with session.begin():
-            session.add_all(rowsToAdd)
-        await session.commit()
-
-    # jeste jednou se dotazeme do databaze
-    stmt = select(DBModel)
-    async with asyncSessionMaker() as session:
-        dbSet = await session.execute(stmt)
-        dbRows = dbSet.scalars()
-
-    # extrakce dat z vysledku dotazu
-    dbRowsDicts = [{"name": row.name, "id": f"{row.id}"} for row in dbRows]
-
-    print(structureFunction, "found in database")
-    print(dbRowsDicts)
-
-    # znovu id, ktera jsou uz ulozena
-    idsInDatabase = [row["id"] for row in dbRowsDicts]
-
-    # znovu zaznamy, ktere dosud ulozeny nejsou, mely by byt ulozeny vsechny, takze prazdny list
-    unsavedRows = list(
-        filter(lambda row: not (row["id"] in idsInDatabase), externalIdTypes)
-    )
-
-    # ted by melo byt pole prazdne
-    print(structureFunction, "not found in database")
-    print(unsavedRows)
-    if not (len(unsavedRows) == 0):
-        print("SOMETHING is REALLY WRONG")
-
-    print(structureFunction, "Defined in database")
-    # nyni vsechny entity mame v pameti a v databazi synchronizovane
-    print(structureFunction())
+        ]
+        
+    jsonData = get_demodata()
+    await ImportModels(asyncSessionMaker, dbModels, jsonData)
     pass

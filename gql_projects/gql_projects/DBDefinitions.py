@@ -80,7 +80,7 @@ class ProjectTypeModel(BaseModel):
     name_en = Column(String)
 
     category_id = Column(ForeignKey("projectcategories.id"), index=True, nullable=True)
-    projects = relationship("ProjectModel", back_populates="projectType")
+    projects = relationship("ProjectModel", back_populates="projecttype")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())

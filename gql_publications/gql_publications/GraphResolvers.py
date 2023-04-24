@@ -70,20 +70,20 @@ resolveAuthorsForPublication = create1NGetter(
 resolvePublicationForUser = create1NGetter(
     AuthorModel,
     foreignKeyName="publication_id",
-    options=joinedload(AuthorModel.publication),
+    #options=joinedload(AuthorModel.publication),
 )
 # Subject resolvers
 
 resolvePublicationsForSubject = create1NGetter(
     SubjectModel,
     foreignKeyName="subject_id",
-    options=joinedload(SubjectModel.publication),
+    #options=joinedload(SubjectModel.publication),
 )
 
 resolveSubjectsFroPublication = create1NGetter(
     SubjectModel,
     foreignKeyName="publication_id",
-    options=joinedload(SubjectModel.subject),
+    #options=joinedload(SubjectModel.subject),
 )
 
 

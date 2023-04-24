@@ -33,7 +33,7 @@ def singleCall(asyncFunc):
     return result
 
 
-from gql_facilities.DBFeeder import predefineAllDataStructures
+from gql_facilities.DBFeeder import initDB
 
 
 @singleCall
@@ -60,7 +60,7 @@ async def RunOnceAndReturnSessionMaker():
     # createSystemDataStructureRoleTypes(result),
     # createSystemDataStructureGroupTypes(result)
     # )
-    await predefineAllDataStructures(result)
+    await initDB(result)
     ###########################################################################################################################
     print(f"all done")
     return result

@@ -13,7 +13,7 @@ from strawberry.fastapi import GraphQLRouter
 from gql_externalids.DBDefinitions import startEngine, ComposeConnectionString
 
 ## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
-from gql_externalids.DBFeeder import createSystemDataStructureExternalIdTypes
+from gql_externalids.DBFeeder import initDB
 
 connectionString = ComposeConnectionString()
 
@@ -59,13 +59,13 @@ async def RunOnceAndReturnSessionMaker():
     # zde definujte do funkce asyncio.gather
     # vlozte asynchronni funkce, ktere maji data uvest do prvotniho konzistentniho stavu
 
-    await asyncio.gather(  # concurency running :)
-        # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
-        # musi byt asynchronniho typu (async def ...)
-        createSystemDataStructureExternalIdTypes(result),
-        # createSystemDataStructureGroupTypes(result)
-    )
-
+    # await asyncio.gather(  # concurency running :)
+    #     # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
+    #     # musi byt asynchronniho typu (async def ...)
+    #     createSystemDataStructureExternalIdTypes(result),
+    #     # createSystemDataStructureGroupTypes(result)
+    # )
+    await initDB(result)
     ###########################################################################################################################
     print(f"all done")
     return result

@@ -385,6 +385,11 @@ class AcSemesterGQLModel:
         result = await AcSubjectGQLModel.resolve_reference(info, self.subject_id)
         return result
 
+    @strawberryA.field(description="""Subject related to the semester (semester owner)""")
+    async def classification_type(self, info: strawberryA.types.Info) -> "AcClassificationTypeGQLModel":
+        result = await AcClassificationTypeGQLModel.resolve_reference(info, self.classificationtype_id)
+        return result
+
     @strawberryA.field(description="""Final classification of the semester""")
     async def classifications(
         self, info: strawberryA.types.Info
@@ -856,7 +861,7 @@ class SubjectUpdateGQLModel:
     lastchange: datetime.datetime
     name: Optional[str] = None
     name_en: Optional[str] = None
-    valid: Optional[bool] = True
+    valid: Optional[bool] = None
 
 @strawberryA.type
 class SubjectResultGQLModel:
@@ -866,6 +871,34 @@ class SubjectResultGQLModel:
     @strawberryA.field(description="""Result of subject operation""")
     async def subject(self, info: strawberryA.types.Info) -> Union[AcSubjectGQLModel, None]:
         result = await AcSubjectGQLModel.resolve_reference(info, self.id)
+        return result
+    
+@strawberryA.input
+class SemesterInsertGQLModel:
+    subject_id: strawberryA.ID
+    classificationtype_id: strawberryA.ID
+    order: Optional[int] = 0
+    credits: Optional[int] = 0
+    id: Optional[strawberryA.ID] = None
+    valid: Optional[bool] = True
+
+@strawberryA.input
+class SemesterUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+    valid: Optional[bool] = None
+    order: Optional[int] = None
+    credits: Optional[int] = None
+    classificationtype_id: Optional[strawberryA.ID] = None
+
+@strawberryA.type
+class SemesterResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of semester operation""")
+    async def semester(self, info: strawberryA.types.Info) -> Union[AcSemesterGQLModel, None]:
+        result = await AcSemesterGQLModel.resolve_reference(info, self.id)
         return result
     
 @strawberryA.federation.type(extend=True)
@@ -928,6 +961,28 @@ class Mutation:
         result = SubjectResultGQLModel()
         result.msg = "ok"
         result.id = subject.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+    @strawberryA.mutation
+    async def semester_insert(self, info: strawberryA.types.Info, semester: SemesterInsertGQLModel) -> SemesterResultGQLModel:
+        loader = getLoaders(info).semesters
+        row = await loader.insert(semester)
+        print("semester_insert", row.id, row.classificationtype_id)
+        result = SemesterResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def semester_update(self, info: strawberryA.types.Info, semester: SemesterUpdateGQLModel) -> SemesterResultGQLModel:
+        loader = getLoaders(info).semesters
+        row = await loader.update(semester)
+        result = SemesterResultGQLModel()
+        result.msg = "ok"
+        result.id = semester.id
         if row is None:
             result.msg = "fail"
             

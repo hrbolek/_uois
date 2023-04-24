@@ -822,14 +822,14 @@ async def test_subject_mutation():
                 $id: ID!,
                 $name: String!
                 ) {
-                subjectInsert(subject: {
+                operation: subjectInsert(subject: {
                     programId: $id,
                     name: $name,
                     nameEn: $name
                 }){
                     id
                     msg
-                    subject {
+                    entity: subject {
                         id
                         name
                         lastchange
@@ -849,9 +849,9 @@ async def test_subject_mutation():
     print(resp, flush=True)
 
     assert resp.errors is None
-    data = resp.data['subjectInsert']
+    data = resp.data['operation']
     assert data["msg"] == "ok"
-    data = data["subject"]
+    data = data["entity"]
     assert data["program"]["id"] == id
     assert data["name"] == name
     
@@ -865,14 +865,14 @@ async def test_subject_mutation():
                 $lastchange: DateTime!
                 $name: String!
                 ) {
-                subjectUpdate(subject: {
+                operation: subjectUpdate(subject: {
                 id: $id,
                 lastchange: $lastchange
                 name: $name
             }){
                 id
                 msg
-                subject {
+                entity: subject {
                     id
                     name
                     lastchange
@@ -886,16 +886,114 @@ async def test_subject_mutation():
     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
     assert resp.errors is None
 
-    data = resp.data['subjectUpdate']
+    data = resp.data['operation']
     assert data['msg'] == "ok"
-    data = data["subject"]
+    data = data["entity"]
     assert data["name"] == name
 
     # lastchange je jine, musi fail
     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
     assert resp.errors is None
-    data = resp.data['subjectUpdate']
+    data = resp.data['operation']
     assert data['msg'] == "fail"
 
     pass
 
+@pytest.mark.asyncio
+async def test_semester_mutation():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    
+    table = data["acsubjects"]
+    row = table[0]
+    id = row["id"]
+
+    table = data["acclassificationtypes"]
+    row = table[0]
+    classification_id = row["id"]
+
+
+    name = "Semester X"
+    query = '''
+            mutation(
+                $id: ID!,
+                $classification_id: ID!
+                ) {
+                operation: semesterInsert(semester: {
+                    subjectId: $id,
+                    classificationtypeId: $classification_id
+                }){
+                    id
+                    msg
+                    entity: semester {
+                        id
+                        lastchange
+                        subject { id }
+                        classificationType { id }
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {
+        "id": id,
+        "classification_id": classification_id
+    }
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    
+    print(resp, flush=True)
+
+    assert resp.errors is None
+    data = resp.data['operation']
+    assert data["msg"] == "ok"
+    data = data["entity"]
+    assert data["subject"]["id"] == id
+    assert data["classificationType"]["id"] == classification_id
+    #assert data["name"] == name
+    
+   
+    id = data["id"]
+    lastchange = data["lastchange"]
+    name = "NewName"
+    query = '''
+            mutation(
+                $id: ID!,
+                $lastchange: DateTime!
+                $order: Int!
+                ) {
+                operation: semesterUpdate(semester: {
+                id: $id,
+                lastchange: $lastchange
+                order: $order
+            }){
+                id
+                msg
+                entity: semester {
+                    id
+                    order
+                    lastchange
+                }
+            }
+            }
+        '''
+    order = 2
+    context_value = await createContext(async_session_maker)
+    variable_values = {"id": id, "order": order, "lastchange": lastchange}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+
+    data = resp.data['operation']
+    assert data['msg'] == "ok"
+    data = data["entity"]
+    assert data["order"] == order
+
+    # lastchange je jine, musi fail
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    data = resp.data['operation']
+    assert data['msg'] == "fail"
+
+    pass

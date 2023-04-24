@@ -15,7 +15,7 @@ from gql_presences.GraphTypeDefinitions import Query
 ## SQLAlchemy zvoleno kvuli moznost komunikovat s DB asynchronne
 ## https://docs.sqlalchemy.org/en/14/core/future.html?highlight=select#sqlalchemy.future.select
 from gql_presences.DBDefinitions import startEngine, ComposeConnectionString
-from gql_presences.DBFeeder import predefineAllDataStructures
+from gql_presences.DBFeeder import initDB
 
 ## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
 # from gql_workflow.DBFeeder import createSystemDataStructureRoleTypes, createSystemDataStructureGroupTypes
@@ -61,7 +61,7 @@ async def RunOnceAndReturnSessionMaker():
     # createSystemDataStructureRoleTypes(result),
     # createSystemDataStructureGroupTypes(result)
     # )
-    await predefineAllDataStructures(result)
+    await initDB(result)
     ###########################################################################################################################
     print(f"all done")
     return result

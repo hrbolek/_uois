@@ -36,7 +36,7 @@ def singleCall(asyncFunc):
     return result
 
 
-from gql_personalities.DBFeeder import ensureAllTypes
+from gql_personalities.DBFeeder import initDB
 
 
 @singleCall
@@ -65,7 +65,7 @@ async def RunOnceAndReturnSessionMaker():
     # )
     #
     # Pokud je potreba provest jen jednu funkci, lze to takto:
-    await ensureAllTypes(result)
+    await initDB(result)
     #
     ###########################################################################################################################
     print(f"all done")

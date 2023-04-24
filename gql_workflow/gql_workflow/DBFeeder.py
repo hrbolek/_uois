@@ -1,6 +1,16 @@
 from functools import cache
 
-from gql_workflow.DBDefinitions import BaseModel
+from gql_workflow.DBDefinitions import (
+    AuthorizationModel,
+    AuthorizationGroupModel,
+    AuthorizationRoleTypeModel,
+    AuthorizationUserModel,
+    WorkflowModel,
+    WorkflowStateModel,
+    WorkflowStateRoleTypeModel,
+    WorkflowStateUserModel
+)
+
 from sqlalchemy.future import select
 
 
@@ -97,3 +107,50 @@ async def randomWorkflowData(session):
         session.add_all(usersToAdd)
     await session.commit()
     return None
+
+
+
+
+
+import os
+import json
+from uoishelpers.feeders import ImportModels
+import datetime
+
+def get_demodata():
+    def datetime_parser(json_dict):
+        for (key, value) in json_dict.items():
+            if key in ["startdate", "enddate", "lastchange", "created"]:
+                dateValue = datetime.datetime.fromisoformat(value)
+                dateValueWOtzinfo = dateValue.replace(tzinfo=None)
+                json_dict[key] = dateValueWOtzinfo
+        return json_dict
+
+
+    with open("./systemdata.json", "r") as f:
+        jsonData = json.load(f, object_hook=datetime_parser)
+
+    return jsonData
+
+async def initDB(asyncSessionMaker):
+
+    defaultNoDemo = "False"
+    if defaultNoDemo == os.environ.get("DEMO", defaultNoDemo):
+        dbModels = [
+            
+        ]
+    else:
+        dbModels = [
+            AuthorizationModel,
+            AuthorizationGroupModel,
+            AuthorizationRoleTypeModel,
+            AuthorizationUserModel,
+            WorkflowModel,
+            WorkflowStateModel,
+            WorkflowStateRoleTypeModel,
+            WorkflowStateUserModel
+        ]
+
+    jsonData = get_demodata()
+    await ImportModels(asyncSessionMaker, dbModels, jsonData)
+    pass

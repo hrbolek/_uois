@@ -1,6 +1,13 @@
 from functools import cache
 
-from gql_events.DBDefinitions import BaseModel, EventModel
+from gql_events.DBDefinitions import (
+    EventModel, 
+    EventTypeModel, 
+    EventGroupModel, 
+    PresenceModel, 
+    PresenceTypeModel, 
+    InvitationTypeModel
+    )
 from sqlalchemy.future import select
 
 ###########################################################################################################################
@@ -16,7 +23,7 @@ from sqlalchemy.future import select
 
 import datetime
 
-def get_demodata():
+def _get_demodata():
     result = {
         'eventtypes': EventTypes(),
         'eventinvitationtypes': EventInvitationTypes(),
@@ -121,3 +128,46 @@ def EventInvitationTypes():
         # {'id': "e8714294-a79c-11ed-b76e-0242ac110002" , 'name': '', 'name_en': ''},
     ]
     return result
+
+
+import asyncio
+import os
+import json
+
+from uoishelpers.feeders import ImportModels
+def get_demodata():
+    def datetime_parser(json_dict):
+        for (key, value) in json_dict.items():
+            if key in ["startdate", "enddate", "lastchange", "created"]:
+                dateValue = datetime.datetime.fromisoformat(value)
+                dateValueWOtzinfo = dateValue.replace(tzinfo=None)
+                json_dict[key] = dateValueWOtzinfo
+        return json_dict
+
+
+    with open("./systemdata.json", "r") as f:
+        jsonData = json.load(f, object_hook=datetime_parser)
+
+    return jsonData
+
+async def initDB(asyncSessionMaker):
+
+    defaultNoDemo = "_________"
+    if defaultNoDemo == os.environ.get("DEMO", defaultNoDemo):
+        dbModels = [
+            EventTypeModel,           
+            PresenceTypeModel, 
+            InvitationTypeModel        ]
+    else:
+        dbModels = [
+            EventTypeModel, 
+            PresenceTypeModel, 
+            InvitationTypeModel,
+            EventModel, 
+            EventGroupModel, 
+            PresenceModel, 
+        ]
+
+    jsonData = get_demodata()
+    await ImportModels(asyncSessionMaker, dbModels, jsonData)
+    pass

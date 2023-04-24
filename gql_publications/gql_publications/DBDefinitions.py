@@ -72,12 +72,12 @@ class SubjectModel(BaseModel):
     publication_id = Column(ForeignKey("publications.id"), index=True)
     subject_id = UUIDFKey(nullable=True)#Column(ForeignKey("plan_subjects.id"), index=True)
 
-    publication = relationship("PublicationModel")
-    subject = relationship("PlanSubjectModel")
+    #publication = relationship("PublicationModel")
+    #subject = relationship("PlanSubjectModel")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class PublicationModel(BaseModel):
@@ -95,13 +95,13 @@ class PublicationModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
-    author = relationship("AuthorModel", back_populates="publication")
-    publication_type = relationship(
-        "PublicationTypeModel", back_populates="publication"
-    )
+    #author = relationship("AuthorModel", back_populates="publication")
+    #publication_type = relationship(
+    #    "PublicationTypeModel", back_populates="publication"
+    #)
 
 
 class AuthorModel(BaseModel):
@@ -114,11 +114,11 @@ class AuthorModel(BaseModel):
     share = Column(Float)
 
     #user = relationship("UserModel", back_populates="author")
-    publication = relationship("PublicationModel", back_populates="author")
+    #publication = relationship("PublicationModel", back_populates="author")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class PublicationTypeModel(BaseModel):
@@ -129,11 +129,11 @@ class PublicationTypeModel(BaseModel):
     name_en = Column(String)
 
     category_id = Column(ForeignKey("publicationcategories.id"), index=True, nullable=True)
-    publication = relationship("PublicationModel", back_populates="publication_type")
+    #publication = relationship("PublicationModel", back_populates="publication_type")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class PublicationCategoryModel(BaseModel):
@@ -145,7 +145,7 @@ class PublicationCategoryModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 from sqlalchemy import create_engine

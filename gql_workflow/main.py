@@ -35,6 +35,7 @@ def singleCall(asyncFunc):
 
     return result
 
+from gql_workflow.DBFeeder import initDB
 
 @singleCall
 async def RunOnceAndReturnSessionMaker():
@@ -48,12 +49,20 @@ async def RunOnceAndReturnSessionMaker():
     )
 
     print(f"initializing system structures")
+
+    ###########################################################################################################################
+    #
+    # zde definujte do funkce asyncio.gather
+    # vlozte asynchronni funkce, ktere maji data uvest do prvotniho konzistentniho stavu
+    await initDB(result)
     # await asyncio.gather( # concurency running :)
     # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi
     # musi byt asynchronniho typu (async def ...)
     # createSystemDataStructureRoleTypes(result),
     # createSystemDataStructureGroupTypes(result)
     # )
+
+    ###########################################################################################################################
     print(f"all done")
     return result
 
