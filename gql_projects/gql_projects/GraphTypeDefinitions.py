@@ -22,7 +22,8 @@ def AsyncSessionFromInfo(info):
     )
     return info.context["session"]
 
-
+def getLoaders(info):
+    return info.context['all']
 ###########################################################################################################################
 #
 # zde definujte sve GQL modely
@@ -379,6 +380,80 @@ class Query:
 
 ###########################################################################################################################
 #
+#
+# Mutations
+#
+#
+###########################################################################################################################
+
+from typing import Optional
+
+@strawberryA.input
+class ProjectInsertGQLModel:
+    name: str
+    user_id: strawberryA.ID
+
+    brief_des: Optional[str] = ""
+    detailed_des: Optional[str] = ""
+    reference: Optional[str] = ""
+    date_of_entry: Optional[datetime.datetime] = datetime.datetime.now()
+    date_of_submission = None
+    date_of_fulfillment: Optional[datetime.datetime] = datetime.datetime.now() + datetime.timedelta(days=7)
+
+    event_id: Optional[strawberryA.ID] = None
+    id: Optional[strawberryA.ID] = None
+
+@strawberryA.input
+class ProjectUpdateGQLModel:
+    lastchange: datetime.datetime
+    id: strawberryA.ID
+    name: Optional[str]
+
+    brief_des: Optional[str] = None
+    detailed_des: Optional[str] = None
+    reference: Optional[str] = None
+    date_of_entry: Optional[datetime.datetime] = None
+    date_of_submission = None
+    date_of_fulfillment: Optional[datetime.datetime] = None
+    event_id: Optional[strawberryA.ID] = None
+    
+@strawberryA.type
+class ProjectResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of user operation""")
+    async def project(self, info: strawberryA.types.Info) -> Union[ProjectGQLModel, None]:
+        result = await ProjectGQLModel.resolve_reference(info, self.id)
+        return result
+
+
+    
+@strawberryA.federation.type(extend=True)
+class Mutation:
+    @strawberryA.mutation
+    async def project_insert(self, info: strawberryA.types.Info, project: ProjectInsertGQLModel) -> ProjectResultGQLModel:
+        loader = getLoaders(info).projects
+        row = await loader.insert(project)
+        result = ProjectResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def project_update(self, info: strawberryA.types.Info, project: ProjectUpdateGQLModel) -> ProjectResultGQLModel:
+        loader = getLoaders(info).projects
+        row = await loader.update(project)
+        result = ProjectResultGQLModel()
+        result.msg = "ok"
+        result.id = project.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+###########################################################################################################################
+#
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
 # se ve schema objevi jen ty struktury, ktere si strawberry dokaze odvodit z Query. Protoze v teto konkretni implementaci
 # nektere modely nejsou s Query propojene je potreba je explicitne vyjmenovat. Jinak ve federativnim schematu nebude
@@ -386,4 +461,4 @@ class Query:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, types=(GroupGQLModel,))
+schema = strawberryA.federation.Schema(Query, types=(GroupGQLModel,), mutation=Mutation)

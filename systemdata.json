@@ -501,7 +501,7 @@
             "share": 0.5
         },
         {
-            "id": "271b0b15-a9df-41dc-9138-2fbd1fe8a6ab",
+            "id": "0d80595f-5838-44d3-8de2-f0e143df429c",
             "user_id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
             "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
             "order": 2,
@@ -522,7 +522,7 @@
         {
             "id": "d4a960e9-d7e1-4139-a693-bed27bb46a05",
             "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
-            "subject_id": null
+            "subject_id": ""
         }
     ],
 
@@ -1001,7 +1001,9 @@
         {"id": "ba53d6b6-a7a0-11ed-b76e-0242ac110002", "name": "", "name_en": ""},
         {"id": "ba53d71a-a7a0-11ed-b76e-0242ac110002", "name": "", "name_en": ""}
     ],
-
+    "facilities_events": [
+        {"id": "", "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002", "facility_id": "6627654a-a7b3-11ed-b76e-0242ac110002"}
+    ],
 
     "acprogramforms": [
         {

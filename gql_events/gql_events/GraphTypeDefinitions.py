@@ -203,6 +203,10 @@ class EventGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""Time stamp""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+
     @strawberryA.field(description="""Event name""")
     def name(self) -> Union[str, None]:
         return self.name
@@ -345,6 +349,70 @@ class Query:
             result = await resolveEventsForGroup(session, id, startdate, enddate)
             return result
 
+
+###########################################################################################################################
+#
+#
+# Mutations
+#
+#
+###########################################################################################################################
+
+from typing import Optional
+
+@strawberryA.input
+class EventInsertGQLModel:
+    name: str
+    eventtype_id: strawberryA.ID
+    id: Optional[strawberryA.ID] = None
+    startdate: Optional[datetime.datetime] = datetime.datetime.now()
+    enddate: Optional[datetime.datetime] = datetime.datetime.now() + datetime.timedelta(minutes = 30)
+    pass
+
+@strawberryA.input
+class EventUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+    name: Optional[str] = None
+    eventtype_id: Optional[strawberryA.ID] = None
+    startdate: Optional[datetime.datetime] = None
+    enddate: Optional[datetime.datetime] = None
+    
+@strawberryA.type
+class EventResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of user operation""")
+    async def event(self, info: strawberryA.types.Info) -> Union[EventGQLModel, None]:
+        result = await EventGQLModel.resolve_reference(info, self.id)
+        return result
+
+
+    
+@strawberryA.federation.type(extend=True)
+class Mutation:
+    @strawberryA.mutation
+    async def event_insert(self, info: strawberryA.types.Info, event: EventInsertGQLModel) -> EventResultGQLModel:
+        loader = getLoaders(info).events
+        row = await loader.insert(event)
+        result = EventResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def event_update(self, info: strawberryA.types.Info, event: EventUpdateGQLModel) -> EventResultGQLModel:
+        loader = getLoaders(info).events
+        row = await loader.update(event)
+        result = EventResultGQLModel()
+        result.msg = "ok"
+        result.id = event.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+    
 ###########################################################################################################################
 #
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
@@ -354,4 +422,4 @@ class Query:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,))
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,), mutation=Mutation)

@@ -15,6 +15,11 @@ async def createLoaders_3(asyncSessionMaker):
 
         @property
         @cache
+        def facilities(self):
+            return createIdLoader(asyncSessionMaker, FacilityModel)
+
+        @property
+        @cache
         def facilitytype_by_id(self):
             return createIdLoader(asyncSessionMaker, FacilityTypeModel)
 

@@ -234,7 +234,9 @@ class FacilityEventGQLModel:
         return result
 
     @strawberryA.field(description="""the facility state (reserved for an event, lesson planned etc.)""")
-    async def state(self, info: strawberryA.types.Info) -> "FacilityEventStateTypeGQLModel":
+    async def state(self, info: strawberryA.types.Info) -> Union["FacilityEventStateTypeGQLModel", None]:
+        if self.state_id is None:
+            return None
         result = await FacilityEventStateTypeGQLModel.resolve_reference(info=info, id=self.state_id)
         return result
 
@@ -324,6 +326,92 @@ class Query:
 
 ###########################################################################################################################
 #
+#
+# Mutations
+#
+#
+###########################################################################################################################
+
+from typing import Optional
+
+@strawberryA.input
+class FacilityInsertGQLModel:
+    name: str
+    facilitytype_id: Optional[strawberryA.ID] = None
+    id: Optional[strawberryA.ID] = None
+    startdate: Optional[datetime.datetime] = datetime.datetime.now()
+    enddate: Optional[datetime.datetime] = datetime.datetime.now() + datetime.timedelta(minutes = 30)
+    name_en: Optional[str] = ""
+    label: Optional[str] = ""
+    address: Optional[str] = ""
+    valid: Optional[str] = True
+    capacity: Optional[int] = 0
+    geometry: Optional[str] = ""
+    geolocation: Optional[str] = ""
+
+    group_id: Optional[strawberryA.ID] = None
+    master_facility_id: Optional[strawberryA.ID] = None
+
+@strawberryA.input
+class FacilityUpdateGQLModel:
+    lastchange: datetime.datetime
+    id: strawberryA.ID
+    
+
+    name: Optional[str] = None
+    facilitytype_id: Optional[strawberryA.ID] = None
+    id: Optional[strawberryA.ID] = None
+    name_en: Optional[str] = None
+    label: Optional[str] = None
+    address: Optional[str] = None
+    valid: Optional[str] = None
+    capacity: Optional[int] = None
+    geometry: Optional[str] = None
+    geolocation: Optional[str] = None
+
+    group_id: Optional[strawberryA.ID] = None
+    master_facility_id: Optional[strawberryA.ID] = None
+
+    startdate: Optional[datetime.datetime] = None
+    enddate: Optional[datetime.datetime] = None
+    
+@strawberryA.type
+class FacilityResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of user operation""")
+    async def facility(self, info: strawberryA.types.Info) -> Union[FacilityGQLModel, None]:
+        result = await FacilityGQLModel.resolve_reference(info, self.id)
+        return result
+
+
+    
+@strawberryA.federation.type(extend=True)
+class Mutation:
+    @strawberryA.mutation
+    async def facility_insert(self, info: strawberryA.types.Info, facility: FacilityInsertGQLModel) -> FacilityResultGQLModel:
+        loader = getLoaders(info).facilities
+        row = await loader.insert(facility)
+        result = FacilityResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def facility_update(self, info: strawberryA.types.Info, facility: FacilityUpdateGQLModel) -> FacilityResultGQLModel:
+        loader = getLoaders(info).facilities
+        row = await loader.update(facility)
+        result = FacilityResultGQLModel()
+        result.msg = "ok"
+        result.id = facility.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+    
+###########################################################################################################################
+#
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
 # se ve schema objevi jen ty struktury, ktere si strawberry dokaze odvodit z Query. Protoze v teto konkretni implementaci
 # nektere modely nejsou s Query propojene je potreba je explicitne vyjmenovat. Jinak ve federativnim schematu nebude
@@ -331,4 +419,4 @@ class Query:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, types=(GroupGQLModel,))
+schema = strawberryA.federation.Schema(Query, types=(GroupGQLModel,), mutation = Mutation)

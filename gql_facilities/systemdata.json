@@ -1001,7 +1001,9 @@
         {"id": "ba53d6b6-a7a0-11ed-b76e-0242ac110002", "name": "", "name_en": ""},
         {"id": "ba53d71a-a7a0-11ed-b76e-0242ac110002", "name": "", "name_en": ""}
     ],
-
+    "facilities_events": [
+        {"id": "", "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002", "facility_id": "6627654a-a7b3-11ed-b76e-0242ac110002"}
+    ],
 
     "acprogramforms": [
         {

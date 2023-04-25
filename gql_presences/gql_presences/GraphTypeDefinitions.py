@@ -23,7 +23,8 @@ def AsyncSessionFromInfo(info):
     )
     return info.context["session"]
 
-
+def getLoaders(info):
+    return info.context['all']
 ###########################################################################################################################
 #
 # zde definujte sve GQL modely
@@ -60,6 +61,10 @@ class TaskGQLModel:
     @strawberryA.field(description="""Primary key of task""")
     def id(self) -> strawberryA.ID:
         return self.id
+
+    @strawberryA.field(description="""Timestamp""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
 
     @strawberryA.field(description="""Name of tasks""")
     def name(self) -> str:
@@ -244,6 +249,80 @@ class Query:
 
 ###########################################################################################################################
 #
+#
+# Mutations
+#
+#
+###########################################################################################################################
+
+from typing import Optional
+
+@strawberryA.input
+class TaskInsertGQLModel:
+    name: str
+    user_id: strawberryA.ID
+
+    brief_des: Optional[str] = ""
+    detailed_des: Optional[str] = ""
+    reference: Optional[str] = ""
+    date_of_entry: Optional[datetime.datetime] = datetime.datetime.now()
+    date_of_submission = None
+    date_of_fulfillment: Optional[datetime.datetime] = datetime.datetime.now() + datetime.timedelta(days=7)
+
+    event_id: Optional[strawberryA.ID] = None
+    id: Optional[strawberryA.ID] = None
+
+@strawberryA.input
+class TaskUpdateGQLModel:
+    lastchange: datetime.datetime
+    id: strawberryA.ID
+    name: Optional[str]
+
+    brief_des: Optional[str] = None
+    detailed_des: Optional[str] = None
+    reference: Optional[str] = None
+    date_of_entry: Optional[datetime.datetime] = None
+    date_of_submission = None
+    date_of_fulfillment: Optional[datetime.datetime] = None
+    event_id: Optional[strawberryA.ID] = None
+    
+@strawberryA.type
+class TaskResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of user operation""")
+    async def task(self, info: strawberryA.types.Info) -> Union[TaskGQLModel, None]:
+        result = await TaskGQLModel.resolve_reference(info, self.id)
+        return result
+
+
+    
+@strawberryA.federation.type(extend=True)
+class Mutation:
+    @strawberryA.mutation
+    async def task_insert(self, info: strawberryA.types.Info, task: TaskInsertGQLModel) -> TaskResultGQLModel:
+        loader = getLoaders(info).tasks
+        row = await loader.insert(task)
+        result = TaskResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def task_update(self, info: strawberryA.types.Info, task: TaskUpdateGQLModel) -> TaskResultGQLModel:
+        loader = getLoaders(info).tasks
+        row = await loader.update(task)
+        result = TaskResultGQLModel()
+        result.msg = "ok"
+        result.id = task.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+    
+###########################################################################################################################
+#
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
 # se ve schema objevi jen ty struktury, ktere si strawberry dokaze odvodit z Query. Protoze v teto konkretni implementaci
 # nektere modely nejsou s Query propojene je potreba je explicitne vyjmenovat. Jinak ve federativnim schematu nebude
@@ -251,4 +330,4 @@ class Query:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, EventGQLModel))
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, EventGQLModel), mutation=Mutation)

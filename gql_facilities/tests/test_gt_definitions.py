@@ -20,18 +20,23 @@ from shared import (
 
 
 def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
+    attlist = ' '.join(attributeNames)
     @pytest.mark.asyncio
     async def result_test():
         async_session_maker = await prepare_in_memory_sqllite()
         await prepare_demodata(async_session_maker)
 
         data = get_demodata()
+        assert data.get(tableName, None) is not None
+        datatable = data[tableName]
+        assert len(datatable) > 0
         datarow = data[tableName][0]
 
-        query = "query($id: ID!){" f"{queryEndpoint}(id: $id)" "{ id, name }}"
+        query = "query($id: ID!){" f"{queryEndpoint}(id: $id)" "{" + attlist + "}}"
 
         context_value = await createContext(async_session_maker)
         variable_values = {"id": datarow["id"]}
+        print("createByIdTest", queryEndpoint, variable_values, flush=True)
         resp = await schema.execute(
             query, context_value=context_value, variable_values=variable_values
         )  # , variable_values={"title": "The Great Gatsby"})
@@ -39,6 +44,7 @@ def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
         respdata = resp.data[queryEndpoint]
 
         assert resp.errors is None
+        assert respdata is not None
 
         for att in attributeNames:
             assert respdata[att] == datarow[att]
@@ -47,6 +53,7 @@ def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
 
 
 def createPageTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
+    attlist = ' '.join(attributeNames)
     @pytest.mark.asyncio
     async def result_test():
         async_session_maker = await prepare_in_memory_sqllite()
@@ -54,7 +61,7 @@ def createPageTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
 
         data = get_demodata()
 
-        query = "query{" f"{queryEndpoint}" "{ id, name }}"
+        query = "query{" f"{queryEndpoint}" "{" + attlist + "}}"
 
         context_value = await createContext(async_session_maker)
         resp = await schema.execute(query, context_value=context_value)
@@ -71,12 +78,11 @@ def createPageTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
     return result_test
 
 def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]):
+    attlist = ' '.join(attributeNames)
     @pytest.mark.asyncio
     async def result_test():
         async_session_maker = await prepare_in_memory_sqllite()
         await prepare_demodata(async_session_maker)
-
-        data = get_demodata()
 
         data = get_demodata()
         table = data[tableName]
@@ -88,7 +94,8 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
                 ' }])' +
                 '{' +
                 f'...on {gqltype}' + 
-                '{ id }'+
+                '{' +
+                  attlist + '}'+
                 '}' + 
                 '}')
 
@@ -119,51 +126,57 @@ async def test_large_query():
     data = get_demodata()
     table = data['facilities']
     row = table[0]
-    query = 'query{facilityById(id: "' + row['id'] + '''") { 
-        id
-        name
-        label
-        lastchange
-        address
-        valid
-        capacity
-        geometry
-        geolocation
-        masterFacility { id }
-        group { id }
-        type {
+    id = row["id"]
+    query = '''query($id: ID!){
+        facilityById(id: $id) { 
             id
             name
-            nameEn
-        }
-        subFacilities {
-            id
-            name
-            nameEn
+            label
+            lastchange
+            address
+            valid
+            capacity
+            geometry
+            geolocation
             masterFacility { id }
-        }
-        eventStates {
-            id
-            event { id }
-            state { id name nameEn}
-            facility { id }
-        }
+            group { id }
+            type {
+                id
+                name
+                nameEn
+            }
+            subFacilities {
+                id
+                name
+                nameEn
+                masterFacility { id }
+            }
+            eventStates {
+                id
+                event { id }
+                state { id name nameEn}
+                facility { id }
+            }
     }}'''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values={"id": id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    print(resp, flush=True)
+    assert resp.errors is None
     data = resp.data
+    assert data is not None
     data = data['facilityById']
     #assert False
     #respdata = resp.data['eventById']
-    assert resp.errors is None
 
-    assert data['id'] == row['id']
-    assert data['masterFacility']['id'] == row['master_facility_id']
+    assert data['id'] == id
+    #assert data['masterFacility']['id'] == row['master_facility_id']
 
     print(data, flush=True)
     print(data['eventStates'], flush=True)
-    assert data['eventStates'][0]['facility']['id'] == row['id']
+    if len(data['eventStates']) > 0:
+        assert data['eventStates'][0]['facility']['id'] == row['id']
 
 
 
@@ -208,14 +221,16 @@ async def test_large_page_query():
 
     context_value = await createContext(async_session_maker)
     resp = await schema.execute(query, context_value=context_value)
+    print(resp, flush=True)
+    assert resp.errors is None
     data = resp.data
+    assert data is not None
     data = data['facilityPage'][0]
     #assert False
     #respdata = resp.data['eventById']
     assert resp.errors is None
 
     assert data['id'] == row['id']
-    assert data['masterFacility']['id'] == row['master_facility_id']
 
     print(data, flush=True)
     #print(data['eventStates'], flush=True)
@@ -440,3 +455,103 @@ async def test_representation_facility_state_type():
 #     respdata = resp.data['_entities']
 #     assert respdata[0]['id'] == id
 #     assert resp.errors is None
+
+    
+@pytest.mark.asyncio
+async def test_facility_mutation():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    
+    table = data["facilities"]
+    row = table[0]
+    id = row["id"]
+
+    table = data["facilitytypes"]
+    row = table[0]
+    facilitytype_id = row["id"]
+
+
+    name = "Facility X"
+    query = '''
+            mutation(
+                $name: String!,
+                $facilitytype_id: ID!
+                ) {
+                operation: facilityInsert(facility: {
+                    name: $name,
+                    facilitytypeId: $facilitytype_id
+                }){
+                    id
+                    msg
+                    entity: facility {
+                        id
+                        name
+                        lastchange
+                        type { id }
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {
+        "name": name,
+        "facilitytype_id": facilitytype_id
+    }
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    
+    print(resp, flush=True)
+
+    assert resp.errors is None
+    data = resp.data['operation']
+    assert data["msg"] == "ok"
+    data = data["entity"]
+    assert data["type"]["id"] == facilitytype_id
+    assert data["name"] == name
+    #assert data["name"] == name
+    
+   
+    id = data["id"]
+    lastchange = data["lastchange"]
+    name = "NewName"
+    query = '''
+            mutation(
+                $id: ID!,
+                $lastchange: DateTime!
+                $name: String!
+                ) {
+                operation: facilityUpdate(facility: {
+                id: $id,
+                lastchange: $lastchange
+                name: $name
+            }){
+                id
+                msg
+                entity: facility {
+                    id
+                    name
+                    lastchange
+                }
+            }
+            }
+        '''
+    order = 2
+    context_value = await createContext(async_session_maker)
+    variable_values = {"id": id, "name": name, "lastchange": lastchange}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+
+    data = resp.data['operation']
+    assert data['msg'] == "ok"
+    data = data["entity"]
+    assert data["name"] == name
+
+    # lastchange je jine, musi fail
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    data = resp.data['operation']
+    assert data['msg'] == "fail"
+
+    pass

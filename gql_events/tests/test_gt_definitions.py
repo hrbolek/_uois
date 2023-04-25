@@ -450,3 +450,103 @@ async def test_event_editor():
     print(respdata, flush=True)
     assert respdata[0]['id'] == id
     assert resp.errors is None
+
+    
+@pytest.mark.asyncio
+async def test_event_mutation():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    
+    table = data["events"]
+    row = table[0]
+    id = row["id"]
+
+    table = data["eventtypes"]
+    row = table[0]
+    eventtype_id = row["id"]
+
+
+    name = "Event X"
+    query = '''
+            mutation(
+                $name: String!,
+                $eventtype_id: ID!
+                ) {
+                operation: eventInsert(event: {
+                    name: $name,
+                    eventtypeId: $eventtype_id
+                }){
+                    id
+                    msg
+                    entity: event {
+                        id
+                        name
+                        lastchange
+                        eventType { id }
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {
+        "name": name,
+        "eventtype_id": eventtype_id
+    }
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    
+    print(resp, flush=True)
+
+    assert resp.errors is None
+    data = resp.data['operation']
+    assert data["msg"] == "ok"
+    data = data["entity"]
+    assert data["eventType"]["id"] == eventtype_id
+    assert data["name"] == name
+    #assert data["name"] == name
+    
+   
+    id = data["id"]
+    lastchange = data["lastchange"]
+    name = "NewName"
+    query = '''
+            mutation(
+                $id: ID!,
+                $lastchange: DateTime!
+                $name: String!
+                ) {
+                operation: eventUpdate(event: {
+                id: $id,
+                lastchange: $lastchange
+                name: $name
+            }){
+                id
+                msg
+                entity: event {
+                    id
+                    name
+                    lastchange
+                }
+            }
+            }
+        '''
+    order = 2
+    context_value = await createContext(async_session_maker)
+    variable_values = {"id": id, "name": name, "lastchange": lastchange}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+
+    data = resp.data['operation']
+    assert data['msg'] == "ok"
+    data = data["entity"]
+    assert data["name"] == name
+
+    # lastchange je jine, musi fail
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    data = resp.data['operation']
+    assert data['msg'] == "fail"
+
+    pass

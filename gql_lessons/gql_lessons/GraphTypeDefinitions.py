@@ -4,7 +4,7 @@ from unittest import result
 import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
-
+import datetime
 
 @asynccontextmanager
 async def withInfo(info):
@@ -22,7 +22,8 @@ def AsyncSessionFromInfo(info):
     )
     return info.context["session"]
 
-
+def getLoaders(info):
+    return info.context['all']
 ###########################################################################################################################
 #
 # zde definujte sve GQL modely
@@ -126,6 +127,10 @@ class PlannedLessonGQLModel:
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
+    @strawberryA.field(description="""Timestap""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
 
     @strawberryA.field(description="""primary key""")
     def name(self) -> str:
@@ -244,13 +249,14 @@ from gql_lessons.GraphResolvers import (
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
-    @strawberryA.field(description="""Finds an workflow by their id""")
+    @strawberryA.field(description="""just a check""")
     async def say_hello(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union[str, None]:
         result = f"Hello {id}"
         return result
 
+    @strawberryA.field(description="""Planned lesson by its id""")
     async def planned_lesson_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union[PlannedLessonGQLModel, None]:
@@ -258,6 +264,7 @@ class Query:
             result = await resolvePlannedLessonById(session, id)
             return result
 
+    @strawberryA.field(description="""Planned lesson paged""")
     async def planned_lesson_page(
         self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
     ) -> List[PlannedLessonGQLModel]:
@@ -265,6 +272,7 @@ class Query:
             result = await resolvePlannedLessonPage(session, skip, limit)
             return result
 
+    @strawberryA.field(description="""Planned lesson by its semester (subject)""")
     async def planned_lessons_by_semester(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> List[PlannedLessonGQLModel]:
@@ -272,6 +280,7 @@ class Query:
             result = await resolvePlannedLessonBySemester(session, id)
             return result
 
+    @strawberryA.field(description="""Planned lesson by its topic""")
     async def planned_lessons_by_topic(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> List[PlannedLessonGQLModel]:
@@ -279,6 +288,7 @@ class Query:
             result = await resolvePlannedLessonByTopic(session, id)
             return result
 
+    @strawberryA.field(description="""Planned lesson """)
     async def planned_lessons_by_event(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> List[PlannedLessonGQLModel]:
@@ -289,6 +299,79 @@ class Query:
 
 ###########################################################################################################################
 #
+#
+# Mutations
+#
+#
+###########################################################################################################################
+
+from typing import Optional
+
+@strawberryA.input
+class PlannedLessonInsertGQLModel:
+    name: str
+
+    length: Optional[int] = 2
+    startproposal: Optional[datetime.datetime] = None
+
+    linkedlesson_id: Optional[strawberryA.ID] = None
+    topic_id: Optional[strawberryA.ID] = None
+    lessontype_id: Optional[strawberryA.ID] = None
+    semester_id: Optional[strawberryA.ID] = None
+    event_id: Optional[strawberryA.ID] = None
+    id: Optional[strawberryA.ID] = None
+
+@strawberryA.input
+class PlannedLessonUpdateGQLModel:
+    lastchange: datetime.datetime
+    id: strawberryA.ID
+    name: Optional[str] = None
+    length: Optional[int] = None
+    startproposal: Optional[datetime.datetime] = None
+
+    linkedlesson_id: Optional[strawberryA.ID] = None
+    topic_id: Optional[strawberryA.ID] = None
+    lessontype_id: Optional[strawberryA.ID] = None
+    semester_id: Optional[strawberryA.ID] = None
+    event_id: Optional[strawberryA.ID] = None
+    
+@strawberryA.type
+class PlannedLessonResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of user operation""")
+    async def lesson(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel, None]:
+        result = await PlannedLessonGQLModel.resolve_reference(info, self.id)
+        return result
+
+
+    
+@strawberryA.federation.type(extend=True)
+class Mutation:
+    @strawberryA.mutation
+    async def planned_lesson_insert(self, info: strawberryA.types.Info, lesson: PlannedLessonInsertGQLModel) -> PlannedLessonResultGQLModel:
+        loader = getLoaders(info).plans
+        row = await loader.insert(lesson)
+        result = PlannedLessonResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def planned_lesson_update(self, info: strawberryA.types.Info, lesson: PlannedLessonUpdateGQLModel) -> PlannedLessonResultGQLModel:
+        loader = getLoaders(info).plans
+        row = await loader.update(lesson)
+        result = PlannedLessonResultGQLModel()
+        result.msg = "ok"
+        result.id = lesson.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+    
+###########################################################################################################################
+#
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
 # se ve schema objevi jen ty struktury, ktere si strawberry dokaze odvodit z Query. Protoze v teto konkretni implementaci
 # nektere modely nejsou s Query propojene je potreba je explicitne vyjmenovat. Jinak ve federativnim schematu nebude
@@ -296,4 +379,4 @@ class Query:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,))
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,), mutation=Mutation)
