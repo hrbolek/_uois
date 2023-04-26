@@ -1121,8 +1121,8 @@ class GroupUpdateGQLModel:
 
 @strawberryA.input
 class GroupInsertGQLModel:
+    name: str
     id: Optional[strawberryA.ID] = None
-    name: Optional[str] = None
     type_id: Optional[strawberryA.ID] = None
     mastergroup_id: Optional[strawberryA.ID] = None
     valid: Optional[bool] = None
@@ -1136,6 +1136,7 @@ class GroupResultGQLModel:
     async def group(self, info: strawberryA.types.Info) -> Union[GroupGQLModel, None]:
         print("GroupResultGQLModel", "group", self.id, flush=True)
         result = await GroupGQLModel.resolve_reference(info, self.id)
+        print("GroupResultGQLModel", result.id, result.name, flush=True)
         return result
 
 @strawberryA.input
@@ -1311,14 +1312,12 @@ class Mutation:
         loader = getLoader(info).groups
         
         updatedrow = await loader.update(group)
-        result = GroupResultGQLModel()
-        result.id = group.id
-        result.msg = "ok"
-
+        #print(updatedrow, updatedrow.id, updatedrow.name, flush=True)
         if updatedrow is None:
-            result.msg = "fail"
+            return GroupResultGQLModel(id=group.id, msg="fail")
+        else:
+            return GroupResultGQLModel(id=group.id, msg="ok")
         
-        return result
 
     @strawberryA.mutation(description="""
         Allows a update of group, also it allows to change the mastergroup of the group

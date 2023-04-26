@@ -38,3 +38,29 @@ async def createLoaders_3(asyncSessionMaker):
 
     
     return Loaders()
+
+from uoishelpers.dataloaders import createIdLoader, createFkeyLoader
+
+
+dbmodels = {
+    "surveys": SurveyModel, 
+    "surveytypes": SurveyTypeModel, 
+    "questions": QuestionModel, 
+    "questiontypes": QuestionTypeModel, 
+    "questionvalues": QuestionValueModel, 
+    "answers": AnswerModel
+    
+}
+
+async def createLoaders(asyncSessionMaker, models=dbmodels):
+    def createLambda(loaderName, DBModel):
+        return lambda self: createIdLoader(asyncSessionMaker, DBModel)
+    
+    attrs = {}
+    for key, DBModel in models.items():
+        attrs[key] = property(cache(createLambda(key, DBModel)))
+    
+    Loaders = type('Loaders', (), attrs)   
+    return Loaders()
+
+from functools import cache

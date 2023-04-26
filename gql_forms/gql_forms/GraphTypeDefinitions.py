@@ -85,7 +85,7 @@ class RequestGQLModel:
     """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).request_by_id
+        loader = getLoaders(info).requests
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -109,8 +109,8 @@ class RequestGQLModel:
 
     @strawberryA.field(description="""Request's time of last update""")
     async def histories(self, info: strawberryA.types.Info) -> List["HistoryGQLModel"]:
-        loader = getLoaders(info).histories_by_request_id
-        result = await loader.load(self.id)
+        loader = getLoaders(info).histories
+        result = await loader.filter_by(form_id=self.id)
         return result
 
 
@@ -124,7 +124,7 @@ class HistoryGQLModel:
     """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).history_by_id
+        loader = getLoaders(info).histories
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -160,7 +160,7 @@ class FormCategoryGQLModel:
     """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).formcategory_by_id
+        loader = getLoaders(info).formcategories
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -191,7 +191,7 @@ class FormTypeGQLModel:
     """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).formtype_by_id
+        loader = getLoaders(info).formtypes
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -228,7 +228,7 @@ class FormGQLModel:
     """
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).form_by_id
+        loader = getLoaders(info).forms
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -262,7 +262,7 @@ class FormGQLModel:
     async def sections(
         self, info: strawberryA.types.Info
     ) -> typing.List["SectionGQLModel"]:
-        loader = getLoaders(info).section_by_form_id
+        loader = getLoaders(info).sections
         sections = await loader.load(self.id)
         return sections
 
@@ -285,7 +285,7 @@ from gql_forms.GraphResolvers import resolveUpdateForm
 from typing import Optional
 
 @strawberryA.input
-class FormUpdateGQLModel:
+class _FormUpdateGQLModel:
     lastchange: datetime.datetime
     name: Optional[str] = None
     name_en: Optional[str] = None
@@ -303,7 +303,7 @@ class FormEditorGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).form_by_id
+        loader = getLoaders(info).forms
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -318,7 +318,7 @@ class FormEditorGQLModel:
     @strawberryA.field(
         description="""Updates a form."""
     )
-    async def update(self, info: strawberryA.types.Info, form: FormUpdateGQLModel) -> "FormEditorGQLModel":
+    async def update(self, info: strawberryA.types.Info, form: "FormUpdateGQLModel") -> "FormEditorGQLModel":
         async with withInfo(info) as session:
             lastchange = form.lastchange
             # print(lastchange)
@@ -345,7 +345,7 @@ class FormEditorGQLModel:
 class SectionGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).section_by_id
+        loader = getLoaders(info).sections
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -369,8 +369,8 @@ class SectionGQLModel:
 
     @strawberryA.field(description="Retrieves the parts related to this section")
     async def parts(self, info: strawberryA.types.Info) -> typing.List["PartGQLModel"]:
-        loader = getLoaders(info).parts_by_section_id
-        result = await loader.load(self.id)
+        loader = getLoaders(info).parts
+        result = await loader.load(section_id=self.id)
         return result
 
     @strawberryA.field(description="Retrieves the form owning this section")
@@ -404,7 +404,7 @@ class SectionEditorGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).section_by_id
+        loader = getLoaders(info).sections
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -468,7 +468,7 @@ class PartUpdateGQLModel:
 class PartGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).part_by_id
+        loader = getLoaders(info).parts
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -497,8 +497,8 @@ class PartGQLModel:
 
     @strawberryA.field(description="Retrieves the items related to this part")
     async def items(self, info: strawberryA.types.Info) -> typing.List["ItemGQLModel"]:
-        loader = getLoaders(info).items_by_part_id
-        result = await loader.load(self.id)
+        loader = getLoaders(info).items
+        result = await loader.filer_by(part_id=self.id)
         return result
 
     @strawberryA.field(description="Retrieves the editor")
@@ -519,7 +519,7 @@ class PartEditorGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).part_by_id
+        loader = getLoaders(info).parts
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -576,7 +576,7 @@ class ItemUpdateGQLModel:
 class ItemGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).item_by_id
+        loader = getLoaders(info).items
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -629,7 +629,7 @@ class ItemEditorGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).item_by_id
+        loader = getLoaders(info).items
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -671,7 +671,7 @@ class ItemEditorGQLModel:
 class ItemTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).item_type_by_id
+        loader = getLoaders(info).itemtypes
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -696,7 +696,7 @@ class ItemTypeGQLModel:
 class ItemCategoryGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).item_category_by_id
+        loader = getLoaders(info).itemcategories
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -741,7 +741,7 @@ class Query:
     async def requests_page(
         self, info: strawberryA.types.Info, skip: int=0, limit: int=10
     ) -> List[RequestGQLModel]:
-        loader = getLoaders(info).request_by_id
+        loader = getLoaders(info).requests
         result = await loader.execute_select(requestselect.offset(skip).limit(limit))
         return result
 
@@ -749,8 +749,8 @@ class Query:
     async def requests_by_creator(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> List[RequestGQLModel]:
-        loader = getLoaders(info).requests_by_createdby
-        result = await loader.load(id)
+        loader = getLoaders(info).requests
+        result = await loader.filter_by(createdby=id)
         return result
 
     @strawberryA.field(description="Retrieves requests by three letters in their name")
@@ -772,7 +772,7 @@ class Query:
     async def form_category_page(
         self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
     ) -> List[FormCategoryGQLModel]:
-        loader = getLoaders(info).formcategory_by_id
+        loader = getLoaders(info).formcategories
         stmt = formcategorySelect.offset(skip).limit(limit)
         result = await loader.execute_select(stmt)
         return result
@@ -788,7 +788,7 @@ class Query:
     async def form_type_page(
         self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
     ) -> List[FormTypeGQLModel]:
-        loader = getLoaders(info).formtype_by_id
+        loader = getLoaders(info).formtypes
         stmt = formtypeselect.offset(skip).limit(limit)
         result = await loader.execute_select(stmt)
         return result
@@ -797,7 +797,7 @@ class Query:
     async def item_category_page(
         self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
     ) -> List[ItemCategoryGQLModel]:
-        loader = getLoaders(info).item_category_by_id
+        loader = getLoaders(info).itemcategories
         stmt = itemcategoryselect.offset(skip).limit(limit)
         result = await loader.execute_select(stmt)
         return result
@@ -813,7 +813,7 @@ class Query:
     async def item_type_page(
         self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
     ) -> List[ItemCategoryGQLModel]:
-        loader = getLoaders(info).item_type_by_id
+        loader = getLoaders(info).itemtypes
         stmt = itemtypeselect.offset(skip).limit(limit)
         result = await loader.execute_select(stmt)
         return result
@@ -845,6 +845,75 @@ class Query:
 
 ###########################################################################################################################
 #
+#
+# Mutations
+#
+#
+###########################################################################################################################
+
+from typing import Optional
+import datetime
+
+@strawberryA.input
+class FormInsertGQLModel:
+    name: str
+    
+    id: Optional[strawberryA.ID] = None
+    form_type_id: Optional[strawberryA.ID] = None
+    place: Optional[str] = ""
+    published_date: Optional[datetime.datetime] = datetime.datetime.now()
+    reference: Optional[str] = ""
+    valid: Optional[bool] = True
+
+@strawberryA.input
+class FormUpdateGQLModel:
+    lastchange: datetime.datetime
+    id: strawberryA.ID
+
+    name: Optional[str] = None
+    form_type_id: Optional[strawberryA.ID] = None
+    place: Optional[str] = None
+    published_date: Optional[datetime.datetime] = None
+    reference: Optional[str] = None
+    valid: Optional[bool] = None
+    
+    
+@strawberryA.type
+class FormResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of form operation""")
+    async def form(self, info: strawberryA.types.Info) -> Union[FormGQLModel, None]:
+        result = await FormGQLModel.resolve_reference(info, self.id)
+        return result
+   
+@strawberryA.federation.type(extend=True)
+class Mutation:
+    @strawberryA.mutation
+    async def form_insert(self, info: strawberryA.types.Info, form: FormInsertGQLModel) -> FormResultGQLModel:
+        loader = getLoaders(info).forms
+        row = await loader.insert(form)
+        result = FormResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def form_update(self, info: strawberryA.types.Info, form: FormUpdateGQLModel) -> FormResultGQLModel:
+        loader = getLoaders(info).forms
+        row = await loader.update(form)
+        result = FormResultGQLModel()
+        result.msg = "ok"
+        result.id = form.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+
+###########################################################################################################################
+#
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
 # se ve schema objevi jen ty struktury, ktere si strawberry dokaze odvodit z Query. Protoze v teto konkretni implementaci
 # nektere modely nejsou s Query propojene je potreba je explicitne vyjmenovat. Jinak ve federativnim schematu nebude
@@ -852,4 +921,4 @@ class Query:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,))
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,), mutation=Mutation)

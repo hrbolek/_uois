@@ -1,17 +1,12 @@
 import sqlalchemy
-import sys
 import asyncio
-
-# setting path
-sys.path.append("../gql_events")
-
 import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
 
-from gql_surveys.GraphTypeDefinitions import schema
+from gql_workflow.GraphTypeDefinitions import schema
 
-from shared import (
+from tests.shared import (
     prepare_demodata,
     prepare_in_memory_sqllite,
     get_demodata,
@@ -20,23 +15,18 @@ from shared import (
 
 
 def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
-    attlist = ' '.join(attributeNames)
     @pytest.mark.asyncio
     async def result_test():
         async_session_maker = await prepare_in_memory_sqllite()
         await prepare_demodata(async_session_maker)
 
         data = get_demodata()
-        assert data.get(tableName, None) is not None
-        datatable = data[tableName]
-        assert len(datatable) > 0
         datarow = data[tableName][0]
 
-        query = "query($id: ID!){" f"{queryEndpoint}(id: $id)" "{" + attlist + "}}"
+        query = "query($id: ID!){" f"{queryEndpoint}(id: $id)" "{ id, name }}"
 
         context_value = await createContext(async_session_maker)
         variable_values = {"id": datarow["id"]}
-        print("createByIdTest", queryEndpoint, variable_values, flush=True)
         resp = await schema.execute(
             query, context_value=context_value, variable_values=variable_values
         )  # , variable_values={"title": "The Great Gatsby"})
@@ -44,7 +34,6 @@ def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
         respdata = resp.data[queryEndpoint]
 
         assert resp.errors is None
-        assert respdata is not None
 
         for att in attributeNames:
             assert respdata[att] == datarow[att]
@@ -53,7 +42,6 @@ def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
 
 
 def createPageTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
-    attlist = ' '.join(attributeNames)
     @pytest.mark.asyncio
     async def result_test():
         async_session_maker = await prepare_in_memory_sqllite()
@@ -61,7 +49,7 @@ def createPageTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
 
         data = get_demodata()
 
-        query = "query{" f"{queryEndpoint}" "{" + attlist + "}}"
+        query = "query{" f"{queryEndpoint}" "{ id, name }}"
 
         context_value = await createContext(async_session_maker)
         resp = await schema.execute(query, context_value=context_value)
@@ -78,11 +66,12 @@ def createPageTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
     return result_test
 
 def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]):
-    attlist = ' '.join(attributeNames)
     @pytest.mark.asyncio
     async def result_test():
         async_session_maker = await prepare_in_memory_sqllite()
         await prepare_demodata(async_session_maker)
+
+        data = get_demodata()
 
         data = get_demodata()
         table = data[tableName]
@@ -94,8 +83,7 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
                 ' }])' +
                 '{' +
                 f'...on {gqltype}' + 
-                '{' +
-                  attlist + '}'+
+                '{ id }'+
                 '}' + 
                 '}')
 
@@ -109,36 +97,58 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
 
     return result_test
 
-test_query_event_by_id = createByIdTest(tableName="surveys", queryEndpoint="surveyById")
-test_answer_by_id = createByIdTest(tableName="surveyquestions", queryEndpoint="questionById")
-test_question_type_by_id = createByIdTest(tableName="surveyquestiontypes", queryEndpoint="questionTypeById")
-test_answer_by_id = createByIdTest(tableName="surveyanswers", queryEndpoint="answerById", attributeNames=['id'])
+# test_query_user_by_id = createByIdTest(tableName="users", queryEndpoint="userById")
+# test_query_group_by_id = createByIdTest(tableName="groups", queryEndpoint="groupById")
+# test_query_grouptype_by_id = createByIdTest(
+#     tableName="grouptypes", queryEndpoint="groupTypeById"
+# )
+# test_query_roletype_by_id = createByIdTest(
+#     tableName="roletypes", queryEndpoint="roleTypeById"
+# )
+
+# test_query_user_page = createPageTest(tableName="users", queryEndpoint="userPage")
+# test_query_group_page = createPageTest(tableName="groups", queryEndpoint="groupPage")
+# test_query_grouptype_page = createPageTest(
+#     tableName="grouptypes", queryEndpoint="groupTypePage"
+# )
+# test_query_roletype_page = createPageTest(
+#     tableName="roletypes", queryEndpoint="roleTypePage"
+# )
+
+
+# test_reference_user = createResolveReferenceTest(tableName="users", gqltype="UserGQLModel")
+# test_reference_group = createResolveReferenceTest(tableName="groups", gqltype="GroupGQLModel")
+# test_reference_group_type = createResolveReferenceTest(tableName="grouptypes", gqltype="GroupTypeGQLModel")
+# test_reference_role = createResolveReferenceTest(tableName="roles", gqltype="RoleGQLModel")
+# test_reference_role_type = createResolveReferenceTest(tableName="roletypes", gqltype="RoleTypeGQLModel")
+# test_reference_membership = createResolveReferenceTest(tableName="memberships", gqltype="MembershipGQLModel")
+
 
 @pytest.mark.asyncio
-async def test_survey_mutation():
+async def test_workflow_mutation():
     async_session_maker = await prepare_in_memory_sqllite()
     await prepare_demodata(async_session_maker)
 
     data = get_demodata()
     
-    table = data["surveys"]
+    table = data["awworkflows"]
     row = table[0]
     user_id = row["id"]
 
 
-    name = "survey X"
+    name = "workflow X"
     query = '''
             mutation(
                 $name: String!
                 
                 ) {
-                operation: surveyInsert(survey: {
+                operation: workflowInsert(workflow: {
                     name: $name
                     
                 }){
                     id
                     msg
-                    entity: survey {
+                    entity: workflow {
                         id
                         name
                         lastchange
@@ -173,14 +183,14 @@ async def test_survey_mutation():
                 $lastchange: DateTime!
                 $name: String!
                 ) {
-                operation: surveyUpdate(survey: {
+                operation: workflowUpdate(workflow: {
                 id: $id,
                 lastchange: $lastchange
                 name: $name
             }){
                 id
                 msg
-                entity: survey {
+                entity: workflow {
                     id
                     name
                     lastchange

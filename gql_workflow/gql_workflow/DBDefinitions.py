@@ -49,16 +49,10 @@ class AuthorizationModel(BaseModel):
     __tablename__ = "awauthorizations"
 
     id = UUIDColumn()
-    workflow = relationship("WorkflowModel", back_populates="authorization")
-    useraccesses = relationship(
-        "AuthorizationUserModel", back_populates="authorization"
-    )
-    groupaccesses = relationship(
-        "AuthorizationGroupModel", back_populates="authorization"
-    )
-    roletypeacesses = relationship(
-        "AuthorizationRoleTypeModel", back_populates="authorization"
-    )
+    #workflow = relationship("WorkflowModel", back_populates="authorization")
+    #useraccesses = relationship("AuthorizationUserModel", back_populates="authorization")
+    #groupaccesses = relationship("AuthorizationGroupModel", back_populates="authorization")
+    #roletypeacesses = relationship("AuthorizationRoleTypeModel", back_populates="authorization")
 
 
 class AuthorizationUserModel(BaseModel):
@@ -68,14 +62,14 @@ class AuthorizationUserModel(BaseModel):
 
     id = UUIDColumn()
     authorization_id = Column(ForeignKey("awauthorizations.id"), index=True)
-    authorization = relationship("AuthorizationModel", back_populates="useraccesses")
+    #authorization = relationship("AuthorizationModel", back_populates="useraccesses")
     user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
     accesslevel = Column(Integer)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 
@@ -86,14 +80,14 @@ class AuthorizationGroupModel(BaseModel):
 
     id = UUIDColumn()
     authorization_id = Column(ForeignKey("awauthorizations.id"), index=True)
-    authorization = relationship("AuthorizationModel", back_populates="groupaccesses")
+    #authorization = relationship("AuthorizationModel", back_populates="groupaccesses")
     group_id = UUIDFKey(nullable=True)#Column(ForeignKey("groups.id"), index=True)
     accesslevel = Column(Integer)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class AuthorizationRoleTypeModel(BaseModel):
@@ -103,15 +97,15 @@ class AuthorizationRoleTypeModel(BaseModel):
 
     id = UUIDColumn()
     authorization_id = Column(ForeignKey("awauthorizations.id"), index=True)
-    authorization = relationship("AuthorizationModel", back_populates="roletypeacesses")
-    group_id = Column(ForeignKey("groups.id"), index=True)
+    #authorization = relationship("AuthorizationModel", back_populates="roletypeacesses")
+    group_id = UUIDFKey(nullable=True)#ForeignKey("groups.id"), index=True)
     roletype_id = UUIDFKey(nullable=True)#Column(ForeignKey("roletypes.id"), index=True)
     accesslevel = Column(Integer)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class WorkflowModel(BaseModel):
@@ -124,14 +118,14 @@ class WorkflowModel(BaseModel):
     name_en = Column(String)
 
     authorization_id = Column(ForeignKey("awauthorizations.id"), index=True)
-    authorization = relationship("AuthorizationModel", back_populates="workflow")
+    #authorization = relationship("AuthorizationModel", back_populates="workflow")
 
-    states = relationship("WorkflowStateModel", back_populates="workflow")
+    #states = relationship("WorkflowStateModel", back_populates="workflow")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 
@@ -145,16 +139,16 @@ class WorkflowStateModel(BaseModel):
     name_en = Column(String)
 
     workflow_id = Column(ForeignKey("awworkflows.id"), index=True)
-    workflow = relationship("WorkflowModel", back_populates="states")
-    roletypes = relationship("WorkflowStateRoleModel", back_populates="workflowstate")
-    users = relationship("WorkflowStateUserModel", back_populates="workflowstate")
+    #workflow = relationship("WorkflowModel", back_populates="states")
+    #roletypes = relationship("WorkflowStateRoleModel", back_populates="workflowstate")
+    #users = relationship("WorkflowStateUserModel", back_populates="workflowstate")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
-class WorkflowStateModel(BaseModel):
+class WorkflowTransitionModel(BaseModel):
     """zmena stav - prechod (hrana)"""
 
     __tablename__ = "awworkflowtransitions"
@@ -170,7 +164,7 @@ class WorkflowStateModel(BaseModel):
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class WorkflowStateRoleTypeModel(BaseModel):
@@ -183,14 +177,14 @@ class WorkflowStateRoleTypeModel(BaseModel):
     accesslevel = Column(Integer)
 
     workflowstate_id = Column(ForeignKey("awworkflowstates.id"), index=True)
-    workflowstate = relationship("WorkflowStateModel", back_populates="roletypes")
+    #workflowstate = relationship("WorkflowStateModel", back_populates="roletypes")
 
     roletype_id = UUIDFKey(nullable=True)#Column(ForeignKey("roletypes.id"), index=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 class WorkflowStateUserModel(BaseModel):
@@ -203,7 +197,7 @@ class WorkflowStateUserModel(BaseModel):
     accesslevel = Column(Integer)
 
     workflowstate_id = Column(ForeignKey("awworkflowstates.id"), index=True)
-    workflowstate = relationship("WorkflowStateModel", back_populates="users")
+    #workflowstate = relationship("WorkflowStateModel", back_populates="users")
 
     user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
     group_id = UUIDFKey(nullable=True)#Column(ForeignKey("groups.id"), index=True)
@@ -211,7 +205,7 @@ class WorkflowStateUserModel(BaseModel):
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
 from sqlalchemy import create_engine

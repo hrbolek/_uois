@@ -1,10 +1,18 @@
 from uoishelpers.dataloaders import createIdLoader, createFkeyLoader
 from functools import cache
 
-from gql_forms.DBDefinitions import FormModel, FormTypeModel, FormCategoryModel
-from gql_forms.DBDefinitions import RequestModel, HistoryModel
-from gql_forms.DBDefinitions import SectionModel, PartModel
-from gql_forms.DBDefinitions import ItemModel, ItemTypeModel, ItemCategoryModel
+from gql_forms.DBDefinitions import (
+    FormModel, 
+    FormTypeModel, 
+    FormCategoryModel,
+    RequestModel, 
+    HistoryModel,
+    SectionModel, 
+    PartModel,
+    ItemModel, 
+    ItemTypeModel, 
+    ItemCategoryModel
+)
 
 async def createLoaders_3(asyncSessionMaker):
 
@@ -89,3 +97,31 @@ async def createLoaders_3(asyncSessionMaker):
         # def facilities_by_master_id(self):
         #     return createFkeyLoader(asyncSessionMaker, FacilityModel, foreignKeyName="master_facility_id")
     return Loaders()
+
+
+
+dbmodels = {
+    "forms": FormModel, 
+    "formtypes": FormTypeModel, 
+    "formcategories": FormCategoryModel,
+    "requests": RequestModel, 
+    "histories": HistoryModel,
+    "sections": SectionModel, 
+    "parts": PartModel,
+    "items": ItemModel, 
+    "itemtypes": ItemTypeModel, 
+    "itemcategories": ItemCategoryModel
+}
+
+async def createLoaders(asyncSessionMaker, models=dbmodels):
+    def createLambda(loaderName, DBModel):
+        return lambda self: createIdLoader(asyncSessionMaker, DBModel)
+    
+    attrs = {}
+    for key, DBModel in models.items():
+        attrs[key] = property(cache(createLambda(key, DBModel)))
+    
+    Loaders = type('Loaders', (), attrs)   
+    return Loaders()
+
+from functools import cache

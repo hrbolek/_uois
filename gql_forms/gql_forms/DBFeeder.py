@@ -183,16 +183,17 @@ async def initDB(asyncSessionMaker):
             FormTypeModel,
             ItemTypeModel,
             ItemCategoryModel,
+            ItemTypeModel
             ]
     else:
         dbModels = [
             FormCategoryModel,
             FormTypeModel,
-            ItemTypeModel,
             ItemCategoryModel,
+            ItemTypeModel,
             FormModel,
-            HistoryModel,
             RequestModel,
+            HistoryModel,
             SectionModel,
             PartModel,
             ItemModel

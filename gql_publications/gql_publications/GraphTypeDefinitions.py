@@ -22,6 +22,9 @@ def AsyncSessionFromInfo(info):
     )
     return info.context["session"]
 
+def getLoaders(info):
+    return info.context['all']
+
 
 ###########################################################################################################################
 #
@@ -143,6 +146,10 @@ class PublicationGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""Timestamp""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+
     @strawberryA.field(description="""name""")
     def name(self) -> str:
         return self.name
@@ -198,7 +205,7 @@ from typing import Optional
 
 
 @strawberryA.input
-class PublicationUpdateGQLModel:
+class _PublicationUpdateGQLModel:
     name: Optional[str] = None
     place: Optional[str] = None
     published_date: Optional[datetime.date] = None
@@ -208,7 +215,7 @@ class PublicationUpdateGQLModel:
 
 
 @strawberryA.input
-class PublicationInsertGQLModel:
+class _PublicationInsertGQLModel:
     id: Optional[strawberryA.ID] = None
     name: Optional[str] = None
     place: Optional[str] = None
@@ -247,7 +254,7 @@ class PublicationEditorGQLModel:
 
     @strawberryA.field(description="""Updates publication data""")
     async def update(
-        self, info: strawberryA.types.Info, data: PublicationUpdateGQLModel
+        self, info: strawberryA.types.Info, data: "PublicationUpdateGQLModel"
     ) -> "PublicationGQLModel":
         async with withInfo(info) as session:
             result = await resolveUpdatePublication(session, id=self.id, data=data)
@@ -403,6 +410,74 @@ class Query:
 
 ###########################################################################################################################
 #
+#
+# Mutations
+#
+#
+###########################################################################################################################
+
+from typing import Optional
+import datetime
+
+@strawberryA.input
+class PublicationInsertGQLModel:
+    name: str
+    
+    id: Optional[strawberryA.ID] = None
+    publication_type_id: Optional[strawberryA.ID] = None
+    place: Optional[str] = ""
+    published_date: Optional[datetime.datetime] = datetime.datetime.now()
+    reference: Optional[str] = ""
+    valid: Optional[bool] = True
+
+@strawberryA.input
+class PublicationUpdateGQLModel:
+    lastchange: datetime.datetime
+    id: strawberryA.ID
+
+    name: Optional[str] = None
+    publication_type_id: Optional[strawberryA.ID] = None
+    place: Optional[str] = None
+    published_date: Optional[datetime.datetime] = None
+    reference: Optional[str] = None
+    valid: Optional[bool] = None
+    
+    
+@strawberryA.type
+class PublicationResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of publication operation""")
+    async def publication(self, info: strawberryA.types.Info) -> Union[PublicationGQLModel, None]:
+        result = await PublicationGQLModel.resolve_reference(info, self.id)
+        return result
+   
+@strawberryA.federation.type(extend=True)
+class Mutation:
+    @strawberryA.mutation
+    async def publication_insert(self, info: strawberryA.types.Info, publication: PublicationInsertGQLModel) -> PublicationResultGQLModel:
+        loader = getLoaders(info).publications
+        row = await loader.insert(publication)
+        result = PublicationResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def publication_update(self, info: strawberryA.types.Info, publication: PublicationUpdateGQLModel) -> PublicationResultGQLModel:
+        loader = getLoaders(info).publications
+        row = await loader.update(publication)
+        result = PublicationResultGQLModel()
+        result.msg = "ok"
+        result.id = publication.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+###########################################################################################################################
+#
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
 # se ve schema objevi jen ty struktury, ktere si strawberry dokaze odvodit z Query. Protoze v teto konkretni implementaci
 # nektere modely nejsou s Query propojene je potreba je explicitne vyjmenovat. Jinak ve federativnim schematu nebude
@@ -410,4 +485,4 @@ class Query:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,))
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,), mutation=Mutation)

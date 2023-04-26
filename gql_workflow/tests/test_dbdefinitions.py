@@ -3,8 +3,6 @@ import sys
 import asyncio
 
 # setting path
-sys.path.append("../gql_workflow")
-
 import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
@@ -13,7 +11,7 @@ from gql_workflow.DBDefinitions import BaseModel
 from gql_workflow.DBDefinitions import AuthorizationModel, AuthorizationGroupModel, AuthorizationUserModel, AuthorizationRoleTypeModel
 from gql_workflow.DBDefinitions import WorkflowModel, WorkflowStateModel, WorkflowStateRoleTypeModel, WorkflowStateUserModel
 
-from shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
+from tests.shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
 
 
 @pytest.mark.asyncio

@@ -222,9 +222,11 @@ async def test_large_query():
     await prepare_demodata(async_session_maker)
 
     data = get_demodata()
-    table = data['users']
+    table = data['formrequests']
     row = table[0]
-    query = 'query{requestsByCreator(id: "' + row['id'] + '''") { 
+    user_id = row["createdby"]
+    query = '''query($user_id: ID!){
+        requestsByCreator(id: $user_id) { 
         id
         lastchange
         creator {
@@ -238,15 +240,18 @@ async def test_large_query():
     }}'''
 
     context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
+    variable_values = {"user_id": user_id}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    print(resp)
+    assert resp.errors is None
     data = resp.data
     data = data['requestsByCreator']
     data = data[0]
     #assert False
     #respdata = resp.data['eventById']
-    assert resp.errors is None
+    
 
-    assert data['creator']['id'] == row['id']
+    assert data['creator']['id'] == row['createdby']
 
 
 @pytest.mark.asyncio
@@ -528,3 +533,96 @@ async def test_say_hello_forms():
     print(data, flush=True)
     data = data['sayHelloForms']
     assert 'ello' in data
+
+@pytest.mark.asyncio
+async def test_form_mutation():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    
+    table = data["forms"]
+    row = table[0]
+    user_id = row["id"]
+
+
+    name = "form X"
+    query = '''
+            mutation(
+                $name: String!
+                
+                ) {
+                operation: formInsert(form: {
+                    name: $name
+                    
+                }){
+                    id
+                    msg
+                    entity: form {
+                        id
+                        name
+                        lastchange
+                    }
+                }
+            }
+        '''
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {
+        "name": name
+    }
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    
+    print(resp, flush=True)
+
+    assert resp.errors is None
+    data = resp.data['operation']
+    assert data["msg"] == "ok"
+    data = data["entity"]
+    assert data["name"] == name
+    
+    #assert data["name"] == name
+    
+   
+    id = data["id"]
+    lastchange = data["lastchange"]
+    name = "NewName"
+    query = '''
+            mutation(
+                $id: ID!,
+                $lastchange: DateTime!
+                $name: String!
+                ) {
+                operation: formUpdate(form: {
+                id: $id
+                lastchange: $lastchange
+                name: $name
+            }){
+                id
+                msg
+                entity: form {
+                    name
+                    id
+                    lastchange
+                }
+            }
+            }
+        '''
+    newName = "newName"
+    context_value = await createContext(async_session_maker)
+    variable_values = {"id": id, "name": newName, "lastchange": lastchange}
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+
+    data = resp.data['operation']
+    assert data['msg'] == "ok"
+    data = data["entity"]
+    assert data["name"] == newName
+
+    # lastchange je jine, musi fail
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    data = resp.data['operation']
+    assert data['msg'] == "fail"
+
+    pass

@@ -9,7 +9,7 @@ import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
 
-from gql_surveys.GraphTypeDefinitions import schema
+from gql_publications.GraphTypeDefinitions import schema
 
 from shared import (
     prepare_demodata,
@@ -109,36 +109,36 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
 
     return result_test
 
-test_query_event_by_id = createByIdTest(tableName="surveys", queryEndpoint="surveyById")
-test_answer_by_id = createByIdTest(tableName="surveyquestions", queryEndpoint="questionById")
-test_question_type_by_id = createByIdTest(tableName="surveyquestiontypes", queryEndpoint="questionTypeById")
-test_answer_by_id = createByIdTest(tableName="surveyanswers", queryEndpoint="answerById", attributeNames=['id'])
+#test_query_event_by_id = createByIdTest(tableName="surveys", queryEndpoint="surveyById")
+#test_answer_by_id = createByIdTest(tableName="surveyquestions", queryEndpoint="questionById")
+#test_question_type_by_id = createByIdTest(tableName="surveyquestiontypes", queryEndpoint="questionTypeById")
+#test_answer_by_id = createByIdTest(tableName="surveyanswers", queryEndpoint="answerById", attributeNames=['id'])
 
 @pytest.mark.asyncio
-async def test_survey_mutation():
+async def test_publication_mutation():
     async_session_maker = await prepare_in_memory_sqllite()
     await prepare_demodata(async_session_maker)
 
     data = get_demodata()
     
-    table = data["surveys"]
+    table = data["publications"]
     row = table[0]
     user_id = row["id"]
 
 
-    name = "survey X"
+    name = "publication X"
     query = '''
             mutation(
                 $name: String!
                 
                 ) {
-                operation: surveyInsert(survey: {
+                operation: publicationInsert(publication: {
                     name: $name
                     
                 }){
                     id
                     msg
-                    entity: survey {
+                    entity: publication {
                         id
                         name
                         lastchange
@@ -173,16 +173,16 @@ async def test_survey_mutation():
                 $lastchange: DateTime!
                 $name: String!
                 ) {
-                operation: surveyUpdate(survey: {
-                id: $id,
+                operation: publicationUpdate(publication: {
+                id: $id
                 lastchange: $lastchange
                 name: $name
             }){
                 id
                 msg
-                entity: survey {
-                    id
+                entity: publication {
                     name
+                    id
                     lastchange
                 }
             }
