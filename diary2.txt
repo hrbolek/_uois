@@ -1,0 +1,55 @@
+8. Vytvořte datové struktury pro popis prázdné a vyplněné žádosti, (formulář, sekce, položka, formulář -> oddíl -> blok/tabulka -> položka), 
+pro autorizaci (uživatelé s právem čtení, uživatelé s právem zápisu, role s právem čtení, role s právem zápisu, role vezměte z 1.). 
+Struktura autorizace je dostupná pro každou položku.
+
+8.Create data structures to describe a blank and completed request, (form, section, item, form -> section -> block/table -> item), 
+for authorization (users with read permission, users with write permission, roles with read permission, roles with write permission, roles take from 1.)
+The authorization structure is available for each item.
+
+8. Tạo cấu trúc dữ liệu để mô tả yêu cầu trống và đã hoàn thành, (biểu mẫu, phần, mục, biểu mẫu -> phần -> khối / bảng -> mục), 
+để ủy quyền (người dùng có quyền đọc, người dùng có quyền ghi, vai trò với quyền đọc quyền, vai có quyền viết, nhận các vai từ 1.). 
+Cấu trúc ủy quyền có sẵn cho mỗi mục.
+
+
+20/10: đặt câu hỏi cho thầy, làm rõ đề bài
+    1. kết quả: bảng chứa cấu trúc dữ liệu trong đó: các cột là các zadost, các hàng là các: user, các role, trạng thái.???
+    2. Phần uois này có phải là demo của chúng tôi ko? chúng tôi sẽ dựa vào nó và làm tiếp project??
+    Chúng tôi xin lỗi và thực sự chúng tôi chưa hiểu hết cấu trúc của nhánh 2.1 này, chúng tôi cần biết nó gồm những cái gì?
+
+    - Tôi ko thể chạy được phần này???? nếu chạy thì kết quả chúng tôi có là gì???
+    - phần gql_events này chứa những gì?
+    - phần gql_ug này chưas những gì??
+    - phần tests này, main.py có phải nơi chúng tôi thực hiện tiếp project ko?
+    - phần demo.pdf sẽ giúp chúng tôi như thế nào?
+
+26/10:
+
+https://docs.google.com/document/d/1aVXl42oWuis0QJDfmtMFM5GtKLK1swo_ILMsjVWWZek/edit
+https://unob-my.sharepoint.com/personal/alexandr_stefek_unob_cz/_layouts/15/stream.aspx?id=%2Fpersonal%2Falexandr_stefek_unob_cz%2FDocuments%2FNahrávky%2FInformatika%2022-5KB%28C%29%20_%202021-22-20221027_201438-Záznam%20schůzky%2Emp4&ga=1
+
+
+https://github.com/Phamsianh/diplomova_prace/blob/experiment_abstract_api/backend/ORM/Model.py
+
+
+- Bước 1: DBDefinitions.py, tạo các class FormModel, SectionModel, BlockModel, ItemModel, UserModel, RoleModel, PermissionModel,...
+- Bước 2: create Resolver, inherit from gql_forms.DBDefinitions các BaseModel,
+
+
+1/11:
+-Create er diagram for the project
+
+3/11: first ER diagram
++have:
+- shows basic entities: users, forms, blocks, items, positions...
+- shows relationships between entities: one-to-many, many-to-many
+- shows attributes of entities
+
+11/11: second ER diagram
+
+1. Create data structures to define user, group, user group membership, group type, user role in group, user role type in group, group subordination to group. 
+Implemented as a pattern (gql_ug container)
+
+https://apl.unob.cz/EprihlaskaV3/Eprihlaska - online application form
+
+- conzultation with the teacher: thầy yêu cầu xây dựng cấu trúc dữ liệu cho file JSON
+

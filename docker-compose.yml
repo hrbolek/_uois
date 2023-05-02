@@ -1,23 +1,69 @@
 version: "3.9"
 
 services:
-  python_fastapi:
-    image: python_fastapi
+  apollo:
+    image: apollo
     build:
-      context: ./pyf
+      context: ./apollo
+    depends_on:
+      - gql_ug
+      - gql_workflow
+      - gql_events
+      - gql_forms
+    ports:
+      - 31121:3000
+
+  gql_ug:
+    image: gql_ug
+    build:
+      context: ./gql_ug
     environment: 
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
     depends_on:
       - postgres
+    ports:
+      - 31120:8000
 
-  js:
-    image: js
-    build: 
-      context: ./js
-    environment:
-      NODE_ENV: development
+  gql_workflow:
+    image: gql_workflow
+    build:
+      context: ./gql_workflow
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    depends_on:
+      - postgres
+      - gql_ug
+    ports:
+      - 31123:8000
+
+  gql_forms:
+    image: gql_forms
+    build:
+      context: ./gql_forms
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    depends_on:
+      - postgres
+      - gql_ug
+    ports:
+      - 31128:8000
+
+  gql_events:
+    image: gql_events
+    build:
+      context: ./gql_events
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    depends_on:
+      - postgres
 
   postgres:
     image: postgres
@@ -26,12 +72,22 @@ services:
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
     
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=anoyne@anywhere.com
+      - PGADMIN_DEFAULT_PASSWORD=example
+    ports:
+      - 31122:80
+
   nginx:
     build:
       context: ./nginx
     ports:
-      - 50080:80
+      - 31180:80
     depends_on:
       - postgres
-      - js
-      - python_fastapi
+      - apollo
+
+
