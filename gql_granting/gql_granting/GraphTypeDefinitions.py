@@ -924,6 +924,31 @@ class SemesterResultGQLModel:
         result = await AcSemesterGQLModel.resolve_reference(info, self.id)
         return result
     
+@strawberryA.input
+class ClassificationInsertGQLModel:
+    semester_id: strawberryA.ID
+    user_id: strawberryA.ID
+    classificationlevel_id: strawberryA.ID
+    classificationtype_id: strawberryA.ID
+    id: Optional[strawberryA.ID] = None
+
+@strawberryA.input
+class ClassificationUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+    classificationlevel_id: strawberryA.ID
+
+
+@strawberryA.type
+class ClassificationResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of semester operation""")
+    async def classification(self, info: strawberryA.types.Info) -> Union[AcClassificationGQLModel, None]:
+        result = await AcClassificationGQLModel.resolve_reference(info, self.id)
+        return result
+
 @strawberryA.federation.type(extend=True)
 class Mutation:
     @strawberryA.mutation
@@ -1006,6 +1031,27 @@ class Mutation:
         result = SemesterResultGQLModel()
         result.msg = "ok"
         result.id = semester.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+    @strawberryA.mutation
+    async def classification_insert(self, info: strawberryA.types.Info, classification: ClassificationInsertGQLModel) -> ClassificationResultGQLModel:
+        loader = getLoaders(info).classifications
+        row = await loader.insert(classification)
+        result = ClassificationResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def classification_update(self, info: strawberryA.types.Info, classification: ClassificationUpdateGQLModel) -> ClassificationResultGQLModel:
+        loader = getLoaders(info).classifications
+        row = await loader.update(classification)
+        result = ClassificationResultGQLModel()
+        result.msg = "ok"
+        result.id = classification.id
         if row is None:
             result.msg = "fail"
             

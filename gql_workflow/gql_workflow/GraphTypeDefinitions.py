@@ -345,20 +345,41 @@ class WorkflowUpdateGQLModel:
     name_en: Optional[str] = None
     type_id: Optional[strawberryA.ID] = None
     
-    
 @strawberryA.type
 class WorkflowResultGQLModel:
     id: strawberryA.ID = None
     msg: str = None
 
-    @strawberryA.field(description="""Result of user operation""")
+    @strawberryA.field(description="""Result of workflow operation""")
     async def workflow(self, info: strawberryA.types.Info) -> Union[WorkflowGQLModel, None]:
         result = await WorkflowGQLModel.resolve_reference(info, self.id)
         return result
 
+@strawberryA.input
+class WorkflowStateInsertGQLModel:
+    workflow_id: strawberryA.ID
+    name: str
+    name_en: Optional[str] = ""   
+    id: Optional[strawberryA.ID] = None
 
+@strawberryA.input
+class WorkflowStateUpdateGQLModel:
+    lastchange: datetime.datetime
+    id: strawberryA.ID
+    name: Optional[str] = None
+    name_en: Optional[str] = None
     
-@strawberryA.federation.type(extend=True)
+@strawberryA.type
+class WorkflowStateResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of workflow state operation""")
+    async def workflow(self, info: strawberryA.types.Info) -> Union[WorkflowStateGQLModel, None]:
+        result = await WorkflowStateGQLModel.resolve_reference(info, self.id)
+        return result
+    
+@strawberryA.type
 class Mutation:
     @strawberryA.mutation
     async def workflow_insert(self, info: strawberryA.types.Info, workflow: WorkflowInsertGQLModel) -> WorkflowResultGQLModel:
@@ -381,6 +402,27 @@ class Mutation:
             
         return result
 
+    @strawberryA.mutation
+    async def workflow_state_insert(self, info: strawberryA.types.Info, state: WorkflowStateInsertGQLModel) -> WorkflowStateResultGQLModel:
+        loader = getLoaders(info).workflowstates
+        row = await loader.insert(state)
+        result = WorkflowStateResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def workflow_state_update(self, info: strawberryA.types.Info, state: WorkflowStateUpdateGQLModel) -> WorkflowStateResultGQLModel:
+        loader = getLoaders(info).workflowstates
+        row = await loader.update(state)
+        result = WorkflowStateResultGQLModel()
+        result.msg = "ok"
+        result.id = state.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
 ###########################################################################################################################
 #
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
@@ -390,5 +432,5 @@ class Mutation:
 #
 ###########################################################################################################################
 
-#schema = strawberryA.federation.Schema(query=Query, types=(UserGQLModel,), mutation=Mutation)
-schema = strawberryA.federation.Schema(query=Query, mutation=Mutation)
+schema = strawberryA.federation.Schema(query=Query, types=(UserGQLModel,), mutation=Mutation)
+#schema = strawberryA.federation.Schema(query=Query, mutation=Mutation)

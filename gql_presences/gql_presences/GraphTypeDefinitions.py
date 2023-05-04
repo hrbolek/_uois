@@ -301,10 +301,8 @@ class TaskResultGQLModel:
     async def task(self, info: strawberryA.types.Info) -> Union[TaskGQLModel, None]:
         result = await TaskGQLModel.resolve_reference(info, self.id)
         return result
-
-
-    
-@strawberryA.federation.type(extend=True)
+   
+@strawberryA.type
 class Mutation:
     @strawberryA.mutation
     async def task_insert(self, info: strawberryA.types.Info, task: TaskInsertGQLModel) -> TaskResultGQLModel:

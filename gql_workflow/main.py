@@ -97,9 +97,10 @@ class MyGraphQL(GraphQL):
         return {**parentResult, **localResult, "user": self._user}
 
 
+from gql_workflow.GraphTypeDefinitions import schema
 ## ASGI app, kterou "moutneme"
 graphql_app = MyGraphQL(
-    strawberry.federation.Schema(Query), graphiql=True, allow_queries_via_get=True
+    schema, graphiql=True, allow_queries_via_get=True
 )
 
 app = FastAPI()

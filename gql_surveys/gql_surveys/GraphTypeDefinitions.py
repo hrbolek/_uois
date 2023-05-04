@@ -204,7 +204,11 @@ class AnswerGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
-    @strawberryA.field(description="""answer""")
+    @strawberryA.field(description="""Timestamp""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+
+    @strawberryA.field(description="""answer content / value""")
     def value(self) -> Union[str, None]:
         return self.value
 
@@ -332,14 +336,29 @@ class SurveyResultGQLModel:
     id: strawberryA.ID = None
     msg: str = None
 
-    @strawberryA.field(description="""Result of user operation""")
+    @strawberryA.field(description="""Result of survey operation""")
     async def survey(self, info: strawberryA.types.Info) -> Union[SurveyGQLModel, None]:
         result = await SurveyGQLModel.resolve_reference(info, self.id)
         return result
 
-
+@strawberryA.input
+class AnswerUpdateGQLModel:
+    lastchange: datetime.datetime
+    id: strawberryA.ID
+    value: Optional[str] = None
+    aswered: Optional[bool] = None   
     
-@strawberryA.federation.type(extend=True)
+@strawberryA.type
+class AnswerResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of answer operation""")
+    async def answer(self, info: strawberryA.types.Info) -> Union[AnswerGQLModel, None]:
+        result = await AnswerGQLModel.resolve_reference(info, self.id)
+        return result
+    
+@strawberryA.type
 class Mutation:
     @strawberryA.mutation
     async def survey_insert(self, info: strawberryA.types.Info, survey: SurveyInsertGQLModel) -> SurveyResultGQLModel:
@@ -358,9 +377,33 @@ class Mutation:
         result.msg = "ok"
         result.id = survey.id
         if row is None:
-            result.msg = "fail"
+            result.msg = "fail"           
+        return result
+
+    @strawberryA.mutation
+    async def survey_assing_to(self, info: strawberryA.types.Info, survey_id: strawberryA.ID, user_id: strawberryA.ID) -> SurveyResultGQLModel:
+        loader = getLoaders(info).questions
+        questions = await loader.filter_by(survey_id=survey_id)
+        loader = getLoaders(info).answers
+        for q in questions:
+            rowa = await loader.insert(None, {"question_id": q.id, "user_id": user_id})
+        result = SurveyResultGQLModel()
+        result.msg = "ok"
+        result.id = survey_id
             
         return result
+
+    @strawberryA.mutation
+    async def answer_update(self, info: strawberryA.types.Info, answer: AnswerUpdateGQLModel) -> AnswerResultGQLModel:
+        loader = getLoaders(info).answers
+        row = await loader.update(answer)
+        result = AnswerResultGQLModel()
+        result.msg = "ok"
+        result.id = answer.id
+        if row is None:
+            result.msg = "fail"           
+        return result
+
 
 ###########################################################################################################################
 #

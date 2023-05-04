@@ -62,7 +62,7 @@ services:
       - POSTGRES_DB=data
       - DEMO=true
     depends_on:
-      # kontejnery, kter musi byt spusteny drive
+      # kontejnery, ktere musi byt spusteny drive
       - postgres
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
@@ -231,9 +231,9 @@ services:
       start_period: 60s
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
-    # ports: #v deploymentu by nebylo zadne mapovani portu
+    ports: #v deploymentu by nebylo zadne mapovani portu
     #   # vnejsi port : port, kde sluzbu poskytuje kontejner
-    #   - 31123:8000
+      - 31123:8000
 
   gql_empty:
     image: gql_empty
