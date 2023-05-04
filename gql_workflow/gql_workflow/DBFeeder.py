@@ -8,7 +8,8 @@ from gql_workflow.DBDefinitions import (
     WorkflowModel,
     WorkflowStateModel,
     WorkflowStateRoleTypeModel,
-    WorkflowStateUserModel
+    WorkflowStateUserModel,
+    WorkflowTransitionModel
 )
 
 from sqlalchemy.future import select
@@ -148,7 +149,8 @@ async def initDB(asyncSessionMaker):
             WorkflowModel,
             WorkflowStateModel,
             WorkflowStateRoleTypeModel,
-            WorkflowStateUserModel
+            WorkflowStateUserModel,
+            WorkflowTransitionModel
         ]
 
     jsonData = get_demodata()

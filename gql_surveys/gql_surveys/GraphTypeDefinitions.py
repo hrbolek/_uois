@@ -90,6 +90,32 @@ import datetime
     keys=["id"],
     description="""Entity representing a relation between an user and a group""",
 )
+class SurveyTypeGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).surveytypes
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition
+        return result
+
+    @strawberryA.field(description="""primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Timestamp""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+
+    @strawberryA.field(description="""Survey name""")
+    def name(self) -> str:
+        return self.name
+
+
+@strawberryA.federation.type(
+    keys=["id"],
+    description="""Entity representing a relation between an user and a group""",
+)
 class SurveyGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -208,12 +234,34 @@ from gql_surveys.DBFeeder import randomSurveyData
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
+    @strawberryA.field(description="""Page of survey types""")
+    async def survey_type_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 20
+    ) -> List[SurveyTypeGQLModel]:
+        loader = getLoaders(info).surveytypes
+        result = await loader.page(skip, limit)
+        return result
+    
+    @strawberryA.field(description="""Finds a survey type by its id""")
+    async def survey_type_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[SurveyTypeGQLModel, None]:
+        return await SurveyTypeGQLModel.resolve_reference(info, id)
+    
     @strawberryA.field(description="""Finds a survey by its id""")
     async def survey_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union[SurveyGQLModel, None]:
         return await SurveyGQLModel.resolve_reference(info, id)
 
+    @strawberryA.field(description="""Page of surveys""")
+    async def survey_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 20
+    ) -> List[SurveyGQLModel]:
+        loader = getLoaders(info).surveys
+        result = await loader.page(skip, limit)
+        return result
+    
     @strawberryA.field(description="""Question by id""")
     async def question_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
@@ -225,6 +273,14 @@ class Query:
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union[QuestionTypeGQLModel, None]:
         return await QuestionTypeGQLModel.resolve_reference(info, id)
+
+    @strawberryA.field(description="""Question type by id""")
+    async def question_type_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 20
+    ) -> List[QuestionTypeGQLModel]:
+        loader = getLoaders(info).questiontypes
+        result = await loader.page(skip, limit)
+        return result
 
     @strawberryA.field(description="""Answer by id""")
     async def answer_by_id(

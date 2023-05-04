@@ -494,14 +494,14 @@
     ],
     "publication_authors": [
         {
-            "id": "0d80595f-5838-44d3-8de2-f0e143df429c",
+            "id": "0d80595a-5838-44d3-8de2-f0e143df429c",
             "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
             "order": 1,
             "share": 0.5
         },
         {
-            "id": "271b0b15-a9df-41dc-9138-2fbd1fe8a6ab",
+            "id": "0d80595f-5838-44d3-8de2-f0e143df429c",
             "user_id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
             "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
             "order": 2,
@@ -511,6 +511,7 @@
     "publications": [
         {
             "id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
+            "name": "IT Technologie",
             "publication_type_id": "478bf500-a90d-411a-a5aa-5546475c3992",
             "published_date": "2023-04-24T00:00:00",
             "reference": "https://google.com",
@@ -522,7 +523,7 @@
         {
             "id": "d4a960e9-d7e1-4139-a693-bed27bb46a05",
             "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
-            "subject_id": null
+            "subject_id": ""
         }
     ],
 
@@ -833,74 +834,88 @@
     "awworkflowstates": [
         {
             "id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Student"
         },
         {
             "id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "VK"
         },
         {
             "id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Proděkan"
         },
         {
             "id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Děkan"
         },
         {
             "id": "607e4f0d-af42-422c-a4f0-09163242e89e",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Student"
         },
         {
             "id": "7d701986-9bb1-435d-ac00-42679d31f496",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Archiv"
         }
     ],
     "awworkflowtransitions": [
         {
             "id": "22b0aec9-a0d4-4a8b-a34d-6481fe45f14b",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Podat",
             "sourcestate_id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0",
             "destinationstate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe"
         },
         {
             "id": "a4ebc241-73eb-4a93-b939-be77d891d92a",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Vrátit",
             "sourcestate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
             "destinationstate_id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0"
         },
         {
             "id": "8c16f48f-7984-478e-a833-60890b4eb3e8",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Doporučit",
             "sourcestate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
             "destinationstate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8"
         },
         {
             "id": "58542bd0-9693-465b-8092-364da49e97e7",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Vrátit",
             "sourcestate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
             "destinationstate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe"
         },
         {
             "id": "9a76cc80-f0df-4875-849b-ef515808ee09",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Doporučit",
             "sourcestate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
             "destinationstate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb"
         },
         {
             "id": "8dc5c8c6-e862-4738-8238-068cd1b7a9e3",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Vrátit",
             "sourcestate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
             "destinationstate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8"
         },
         {
             "id": "0f09ee14-6e26-45f0-9f2b-770201a8dfc3",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Schválit",
             "sourcestate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
             "destinationstate_id": "607e4f0d-af42-422c-a4f0-09163242e89e"
         },
         {
             "id": "db38ab50-4f69-44c5-bfec-8195ac7e7557",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Archivovat",
             "sourcestate_id": "607e4f0d-af42-422c-a4f0-09163242e89e",
             "destinationstate_id": "7d701986-9bb1-435d-ac00-42679d31f496"
@@ -1001,7 +1016,9 @@
         {"id": "ba53d6b6-a7a0-11ed-b76e-0242ac110002", "name": "", "name_en": ""},
         {"id": "ba53d71a-a7a0-11ed-b76e-0242ac110002", "name": "", "name_en": ""}
     ],
-
+    "facilities_events": [
+        {"id": "", "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002", "facility_id": "6627654a-a7b3-11ed-b76e-0242ac110002"}
+    ],
 
     "acprogramforms": [
         {
@@ -1307,6 +1324,123 @@
             "facility_id": "6627654a-a7b3-11ed-b76e-0242ac110002",
             "planlesson_id": "704e7bc2-b1d6-4fe3-95ce-b008b352dd59"
         }
-    ]
+    ],
 
+
+    "formcategories": [
+        {"id": "37675bd4-afb0-11ed-9bd8-0242ac110002", "name": "Studentské žádosti", "name_en": ""},
+        {"id": "37675fe4-afb0-11ed-9bd8-0242ac110002", "name": "Ostatní", "name_en": ""}
+    ],
+    "formtypes": [
+        {"id": "2e1140f4-afb0-11ed-9bd8-0242ac110002", "category_id": "37675bd4-afb0-11ed-9bd8-0242ac110002", "name": "Žádost", "name_en": ""},
+        {"id": "2e113e88-afb0-11ed-9bd8-0242ac110002", "category_id": "37675fe4-afb0-11ed-9bd8-0242ac110002", "name": "Zadání DP", "name_en": ""}
+    ],
+    "formitemcategories": [
+        {"id": "b1cb0f80-afb8-11ed-9bd8-0242ac110002", "name": "GQL_API", "name_en": ""},
+        {"id": "b1cb1462-afb8-11ed-9bd8-0242ac110002", "name": "Text", "name_en": ""}
+    ],
+    "formitemtypes": [
+        {"id": "9bdb916a-afb6-11ed-9bd8-0242ac110002", 
+            "category_id": "b1cb0f80-afb8-11ed-9bd8-0242ac110002",
+            "name": "student", "query": "", "selector": "" },
+        {"id": "9bdb93a4-afb6-11ed-9bd8-0242ac110002", 
+            "category_id": "b1cb0f80-afb8-11ed-9bd8-0242ac110002",
+            "name": "program", "query": "", "selector": "" },
+        {"id": "9bdb9426-afb6-11ed-9bd8-0242ac110002", 
+            "category_id": "b1cb1462-afb8-11ed-9bd8-0242ac110002",
+           "name": "obsah", "query": "", "selector": "" },
+        {"id": "9bdb9476-afb6-11ed-9bd8-0242ac110002", 
+            "category_id": "b1cb1462-afb8-11ed-9bd8-0242ac110002",
+            "name": "doporučení", "query": "", "selector": "" }
+    ],
+
+    "formrequests": [
+        {"id": "13181566-afb0-11ed-9bd8-0242ac110002", 
+            "type_id": "2e1140f4-afb0-11ed-9bd8-0242ac110002",
+            "createdby": "a79ee8ce-b085-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "name": "Žádost o přerušení studia", "name_en": ""}
+    ],
+
+    "forms": [
+        {"id": "190d578c-afb1-11ed-9bd8-0242ac110002", 
+            "type_id": "2e1140f4-afb0-11ed-9bd8-0242ac110002",
+            "name": "Žádost", "name_en": "" },
+        {"id": "190d5a7a-afb1-11ed-9bd8-0242ac110002", 
+            "type_id": "2e1140f4-afb0-11ed-9bd8-0242ac110002",
+            "name": "Žádost", "name_en": "" }
+    ],
+    "formsections": [
+        {"id": "48bbc7d4-afb1-11ed-9bd8-0242ac110002", 
+            "form_id": "190d578c-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Student" },
+        {"id": "48bbca18-afb1-11ed-9bd8-0242ac110002", 
+            "form_id": "190d578c-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 2, "name": "Znění" },
+        {"id": "48bbca9a-afb1-11ed-9bd8-0242ac110002", 
+            "form_id": "190d5a7a-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Student" },
+        {"id": "48bbcaea-afb1-11ed-9bd8-0242ac110002", 
+            "form_id": "190d5a7a-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 2, "name": "Znění" }
+    ],
+    "formparts": [
+        {"id": "52e3ee26-afb1-11ed-9bd8-0242ac110002", 
+            "section_id": "48bbc7d4-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Identifikace" },
+        {"id": "52e3f22c-afb1-11ed-9bd8-0242ac110002", 
+            "section_id": "48bbca18-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Znění" },
+        {"id": "52e3f2d6-afb1-11ed-9bd8-0242ac110002", 
+            "section_id": "48bbca9a-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Identifikace" },
+        {"id": "52e3f344-afb1-11ed-9bd8-0242ac110002", 
+            "section_id": "48bbcaea-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Znění" }
+    ],
+    "formitems": [
+        {"id": "72a3d4b0-afb1-11ed-9bd8-0242ac110002", 
+            "part_id": "52e3ee26-afb1-11ed-9bd8-0242ac110002",
+            "type_id": "9bdb916a-afb6-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "user_id", "value": "45678" },
+        {"id": "72a3d7b2-afb1-11ed-9bd8-0242ac110002", 
+            "part_id": "52e3f22c-afb1-11ed-9bd8-0242ac110002", 
+            "type_id": "9bdb9426-afb6-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Znění", "value": "Žádám o ..." },
+        {"id": "72a3d85c-afb1-11ed-9bd8-0242ac110002", 
+            "part_id": "52e3f2d6-afb1-11ed-9bd8-0242ac110002", 
+            "type_id": "9bdb916a-afb6-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "user_id", "value": "45678" },
+        {"id": "72a3d8de-afb1-11ed-9bd8-0242ac110002", 
+            "part_id": "52e3f344-afb1-11ed-9bd8-0242ac110002", 
+            "type_id": "9bdb9426-afb6-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Znění", "value": "Žádám o ..." }
+    ],
+
+
+
+    "formhistories": [
+        {"id": "84c35266-afb5-11ed-9bd8-0242ac110002", 
+            "request_id": "13181566-afb0-11ed-9bd8-0242ac110002", 
+            "form_id": "190d578c-afb1-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "name": "" },
+        {"id": "84c35504-afb5-11ed-9bd8-0242ac110002", 
+            "request_id": "13181566-afb0-11ed-9bd8-0242ac110002", 
+            "form_id": "190d5a7a-afb1-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "name": "" }
+    ]
 }

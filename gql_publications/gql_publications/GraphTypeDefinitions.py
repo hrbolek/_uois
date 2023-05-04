@@ -329,11 +329,11 @@ class AuthorGQLModel:
 
     @strawberryA.field(description="""user""")
     async def user(self) -> "UserGQLModel":
-        return self.user
+        return await UserGQLModel.resolve_reference(self.user_id)
 
     @strawberryA.field(description="""publication""")
-    async def publication(self) -> "PublicationGQLModel":
-        return self.publication
+    async def publication(self, info: strawberryA.types.Info) -> "PublicationGQLModel":
+        return await PublicationGQLModel.resolve_reference(info, self.publication_id)
 
     @strawberryA.field(description="""If an author is valid""")
     def valid(self) -> bool:

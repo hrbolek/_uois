@@ -3,7 +3,7 @@ import sys
 import asyncio
 
 # setting path
-sys.path.append("../gql_surveys")
+#sys.path.append("../gql_surveys")
 
 import pytest
 

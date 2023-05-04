@@ -71,15 +71,15 @@ class TaskGQLModel:
         return self.name
 
     @strawberryA.field(description="""Brief description""")
-    def brief_desc(self) -> str:
-        return self.brief_desc
+    def brief_desc(self) -> Union[str, None]:
+        return self.brief_des
 
     @strawberryA.field(description="""Full description""")
-    def detailed_desc(self) -> str:
-        return self.detailed_desc
+    def detailed_desc(self) -> Union[str, None]:
+        return self.detailed_des
 
     @strawberryA.field(description=""" Reference""")
-    def reference(self) -> str:
+    def reference(self) -> Union[str, None]:
         return self.reference
 
     @strawberryA.field(description="""Date of entry""")
@@ -87,11 +87,11 @@ class TaskGQLModel:
         return self.date_of_entry
 
     @strawberryA.field(description="""Date of submission""")
-    def date_of_submission(self) -> datetime.date:
+    def date_of_submission(self) -> Union[datetime.date, None]:
         return self.date_of_submission
 
     @strawberryA.field(description="""Date of fullfilment""")
-    def date_of_fulfillment(self) -> datetime.date:
+    def date_of_fulfillment(self) -> Union[datetime.date, None]:
         return self.date_of_fulfillment
 
     @strawberryA.field(description="""event id""")
@@ -100,6 +100,14 @@ class TaskGQLModel:
             result = None
         else:
             result = EventGQLModel(id=self.event_id)
+        return result
+
+    @strawberryA.field(description="""event id""")
+    async def user(self, info: strawberryA.types.Info) -> Union["UserGQLModel", None]:
+        if self.event_id is None:
+            result = None
+        else:
+            result = UserGQLModel(id=self.user_id)
         return result
 
 
@@ -118,11 +126,11 @@ class ContentGQLModel:
 
     @strawberryA.field(description="""Brief description""")
     def brief_desc(self) -> str:
-        return self.brief_desc
+        return self.brief_des
 
     @strawberryA.field(description="""Full description""")
     def detailed_desc(self) -> str:
-        return self.detailed_desc
+        return self.detailed_des
 
     @strawberryA.field(description="""event id""")
     async def event(self, info: strawberryA.types.Info) -> Union["EventGQLModel", None]:
@@ -199,41 +207,39 @@ class Query:
     async def task_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union[TaskGQLModel, None]:
-        async with withInfo(info) as session:
-            result = await resolveTaskModelById(session, id)
-            return result
+        result = await TaskGQLModel.resolve_reference(info, id)
+        return result
 
     @strawberryA.field(description="""Finds tasks by their page""")
     async def task_page(
-        self, info: strawberryA.types.Info, id: strawberryA.ID
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
     ) -> List[TaskGQLModel]:
-        async with withInfo(info) as session:
-            result = await resolveTaskModelByPage(session, id)
-            return result
+        loader = getLoaders(info).tasks
+        result = await loader.page(skip=skip, limit=limit)
+        return result
 
     @strawberryA.field(description="""Finds presence by their id""")
     async def tasks_by_event(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> List[TaskGQLModel]:
-        async with withInfo(info) as session:
-            result = await resolveTasksForEvent(session, id)
-            return result
+        loader = getLoaders(info).tasks
+        result = await loader.filter_by(event_id=id)
+        return result
 
     @strawberryA.field(description="""Finds content by their id""")
     async def content_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union[ContentGQLModel, None]:
-        async with withInfo(info) as session:
-            result = await resolveContentModelById(session, id)
-            return result
+        result = await ContentGQLModel.resolve_reference(info, id)
+        return result
 
     @strawberryA.field(description="""Finds content by their page""")
     async def content_page(
-        self, info: strawberryA.types.Info, id: strawberryA.ID
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
     ) -> List[ContentGQLModel]:
-        async with withInfo(info) as session:
-            result = await resolveContentModelByPage(session, id)
-            return result
+        loader = getLoaders(info).contents
+        result = await loader.page(skip=skip, limit=limit)
+        return result
 
     # 264 - 267
     # volat funkci

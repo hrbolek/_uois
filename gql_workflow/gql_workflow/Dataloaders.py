@@ -22,7 +22,7 @@ dbmodels = {
     "authorizationgroups": AuthorizationGroupModel,
     "authorizations": AuthorizationModel,
     "authorizationroletypes": AuthorizationRoleTypeModel,
-    "authorizationuser": AuthorizationUserModel
+    "authorizationusers": AuthorizationUserModel
 }
 
 async def createLoaders(asyncSessionMaker, models=dbmodels):

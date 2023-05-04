@@ -3,7 +3,8 @@ import sys
 import asyncio
 
 # setting path
-sys.path.append("../gql_surveys")
+
+#sys.path.append("../gql_surveys")
 
 import pytest
 
@@ -12,7 +13,7 @@ import pytest
 from gql_surveys.DBDefinitions import BaseModel
 from gql_surveys.DBDefinitions import AnswerModel, SurveyModel, SurveyTypeModel, QuestionModel, QuestionTypeModel, QuestionValueModel
 
-from shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
+from tests.shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
 
 
 @pytest.mark.asyncio

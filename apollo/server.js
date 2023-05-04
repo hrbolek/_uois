@@ -38,6 +38,7 @@ const getENV = (name, defaultValue) => {
         { name: "personalities", url: "http://gql_personalities:8000/gql" },
         { name: "surveys", url: "http://gql_surveys:8000/gql" },
         { name: "usersAndGroups", url: "http://gql_ug:8000/gql" },
+        { name: "workflows", url: "http://gql_workflow:8000/gql" },
 
         /*
         * ###########################################################################################################################

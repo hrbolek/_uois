@@ -119,10 +119,11 @@ from gql_lessons.GraphResolvers import (
 class PlannedLessonGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolvePlannedLessonById(session, id)
+        loader = getLoaders(info).plans
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
@@ -137,7 +138,7 @@ class PlannedLessonGQLModel:
         return self.name
 
     @strawberryA.field(description="""primary key""")
-    def length(self) -> int:
+    def length(self) -> Union[int, None]:
         return self.length
 
     @strawberryA.field(
@@ -146,80 +147,62 @@ class PlannedLessonGQLModel:
     async def linked_to(
         self, info: strawberryA.types.Info
     ) -> Union["PlannedLessonGQLModel", None]:
-        async with withInfo(info) as session:
-            if self.linkedlesson_id is None:
-                result = None
-            else:
-                result = await resolvePlannedLessonById(session, self.linkedlesson_id)
-            return result
+        loader = getLoaders(info).plans
+        result = None
+        if self.linkedlesson_id is not None:
+            result = await loader.load(self.linkedlesson_id)
+        return result
 
     @strawberryA.field(
-        description="""planned lessons linked with, even trought master, including self"""
+        description="""planned lessons linked with, even trought master, excluding self"""
     )
     async def linked_with(
         self, info: strawberryA.types.Info
     ) -> List["PlannedLessonGQLModel"]:
-        async with withInfo(info) as session:
-            if self.linkedlesson_id is None:
-                # I am the master, but possibly without followers
-                result = await resolvePlannedLessonsByLink(session, self.id)
-                result = list(result)
-                result2 = [self, *result]
-            else:
-                # I am the follower
-                master = await resolvePlannedLessonById(session, self.linkedlesson_id)
-                result = await resolvePlannedLessonsByLink(
-                    session, self.linkedlesson_id
-                )
-                result = list(result)
-                result2 = [master, *result]
-            return result2
+        loader = getLoaders(info).plans
+        result1 = await loader.load(self.id)
+        if self.linkedlesson_id is not None:
+            result2 = await loader.filter_by(linkedlesson_id=self.id)
+            result1 = [result1, *result2]
+        return result1
 
     @strawberryA.field(description="""teachers""")
     async def users(self, info: strawberryA.types.Info) -> List["UserGQLModel"]:
-        async with withInfo(info) as session:
-            result = await resolveUserLinksForPlannedLesson(session, self.id)
-            result2 = [UserGQLModel(id=item.user_id) for item in result]
-            return result2
+        loader = getLoaders(info).userplans
+        result = await loader.filter_by(planlesson_id=self.id)
+        return [UserGQLModel(id=item.user_id) for item in result]
 
     @strawberryA.field(description="""study groups""")
     async def groups(self, info: strawberryA.types.Info) -> List["GroupGQLModel"]:
-        async with withInfo(info) as session:
-            result = await resolveGroupLinksForPlannedLesson(session, self.id)
-            result2 = [GroupGQLModel(id=item.user_id) for item in result]
-            return result2
+        loader = getLoaders(info).groupplans
+        result = await loader.filter_by(planlesson_id=self.id)
+        return [GroupGQLModel(id=item.group_id) for item in result]
 
     @strawberryA.field(description="""facilities""")
     async def facilities(
         self, info: strawberryA.types.Info
     ) -> List["FacilityGQLModel"]:
-        async with withInfo(info) as session:
-            result = await resolveFacilityLinksForPlannedLesson(session, self.id)
-            result2 = [FacilityGQLModel(id=item.user_id) for item in result]
-            return result2
+        loader = getLoaders(info).facilityplans
+        result = await loader.filter_by(planlesson_id=self.id)
+        return [FacilityGQLModel(id=item.facility_id) for item in result]
 
     @strawberryA.field(description="""linked event""")
     async def event(self, info: strawberryA.types.Info) -> Union["EventGQLModel", None]:
-        async with withInfo(info) as session:
-            # result = await resolveEventLinksForPlannedLesson(session, self.id)
-            # result2 = [EventGQLModel(id=item.user_id) for item in result]
-            # return result2
-            if self.event_id is None:
-                result = None
-            else:
-                result = EventGQLModel(id=self.event_id)
-            return result
+        if self.event_id is None:
+            result = None
+        else:
+            result = EventGQLModel(id=self.event_id)
+        return result
 
     @strawberryA.field(description="""linked topic from accreditation""")
     async def topic(
         self, info: strawberryA.types.Info
     ) -> Union["AcTopicGQLModel", None]:
-        async with withInfo(info) as session:
-            if self.topic_id is None:
-                result = None
-            else:
-                result = AcTopicGQLModel(id=self.topic_id)
-            return result
+        if self.topic_id is None:
+            result = None
+        else:
+            result = AcTopicGQLModel(id=self.topic_id)
+        return result
 
     @strawberryA.field(
         description="""linked subject semester from program (accreditation)"""
@@ -227,12 +210,11 @@ class PlannedLessonGQLModel:
     async def semester(
         self, info: strawberryA.types.Info
     ) -> Union["AcSemesterGQLModel", None]:
-        async with withInfo(info) as session:
-            if self.semester_id is None:
-                result = None
-            else:
-                result = AcSemesterGQLModel(id=self.semester_id)
-            return result
+        if self.semester_id is None:
+            result = None
+        else:
+            result = AcSemesterGQLModel(id=self.semester_id)
+        return result
 
 
 ###########################################################################################################################

@@ -47,10 +47,11 @@ from gql_projects.GraphResolvers import (
 class ProjectGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveProjectById(session, id)
+        loader = getLoaders(info).projects
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
@@ -61,38 +62,37 @@ class ProjectGQLModel:
         return self.name
 
     @strawberryA.field(description="""Start date""")
-    def startDate(self) -> datetime.date:
-        return self.startDate
+    def startdate(self) -> datetime.date:
+        return self.startdate
 
     @strawberryA.field(description="""End date""")
-    def endDate(self) -> datetime.date:
-        return self.endDate
+    def enddate(self) -> datetime.date:
+        return self.enddate
 
     @strawberryA.field(description="""Last change""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
     @strawberryA.field(description="""Project type of project""")
-    async def projectType(self, info: strawberryA.types.Info) -> "ProjectTypeGQLModel":
-        async with withInfo(info) as session:
-            result = await resolveProjectTypeById(session, self.projectType_id)
-            return result
+    async def project_type(self, info: strawberryA.types.Info) -> "ProjectTypeGQLModel":
+        result = await ProjectTypeGQLModel.resolve_reference(info, self.projecttype_id)
+        return result
 
     @strawberryA.field(description="""List of finances, related to a project""")
     async def finances(
         self, info: strawberryA.types.Info
     ) -> typing.List["FinanceGQLModel"]:
-        async with withInfo(info) as session:
-            result = await resolveFinancesForProject(session, self.id)
-            return result
+        loader = getLoaders(info).financies
+        result = await loader.filter_by(project_id=self.id)
+        return result
 
     @strawberryA.field(description="""List of milestones, related to a project""")
     async def milestones(
         self, info: strawberryA.types.Info
     ) -> typing.List["MilestoneGQLModel"]:
-        async with withInfo(info) as session:
-            result = await resolveMilestonesForProject(session, self.id)
-            return result
+        loader = getLoaders(info).milestones
+        result = await loader.filter_by(project_id=self.id)
+        return result
 
     @strawberryA.field(description="""Group, related to a project""")
     async def group(self, info: strawberryA.types.Info) -> "GroupGQLModel":
@@ -117,10 +117,11 @@ from gql_projects.GraphResolvers import (
 class ProjectTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveProjectTypeById(session, id)
+        loader = getLoaders(info).projecttypes
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
@@ -158,10 +159,11 @@ from gql_projects.GraphResolvers import (
 class FinanceGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveFinanceById(session, id)
+        loader = getLoaders(info).financies
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
@@ -188,7 +190,7 @@ class FinanceGQLModel:
     @strawberryA.field(description="""Finance type of finance""")
     async def financeType(self, info: strawberryA.types.Info) -> "FinanceTypeGQLModel":
         async with withInfo(info) as session:
-            result = await resolveFinanceTypeById(session, self.financeType_id)
+            result = await resolveFinanceTypeById(session, self.financetype_id)
             return result
 
 
@@ -208,10 +210,11 @@ from gql_projects.GraphResolvers import (
 class FinanceTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveFinanceTypeById(session, id)
+        loader = getLoaders(info).financetypes
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
@@ -249,10 +252,11 @@ from gql_projects.GraphResolvers import (
 class MilestoneGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveMilestoneById(session, id)
+        loader = getLoaders(info).milestones
+        result = await loader.load(id)
+        if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
-            return result
+        return result
 
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:

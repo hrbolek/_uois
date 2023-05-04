@@ -689,9 +689,8 @@ class Query:
     async def program_page(
         self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
     ) -> List["AcProgramGQLModel"]:
-        loader = getLoaders(info).acprogram_by_id
-        stmt = programSelect.offset(skip).limit(limit)
-        result = loader.execute_select(stmt)
+        loader = getLoaders(info).programs
+        result = await loader.page(skip=skip, limit=limit)
         return result
 
     @strawberryA.field(description="""Finds a program type its id""")
@@ -743,6 +742,14 @@ class Query:
         result = await AcSemesterGQLModel.resolve_reference(info, id)
         return result
 
+    @strawberryA.field(description="""Finds a subject semester by its id""")
+    async def acsemester_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
+    ) -> List["AcSemesterGQLModel"]:
+        loader = getLoaders(info).semesters
+        result = await loader.page(skip=skip, limit=limit)
+        return result
+
     @strawberryA.field(description="""Finds a topic by its id""")
     async def actopic_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
@@ -770,6 +777,22 @@ class Query:
     ) -> List["AcClassificationTypeGQLModel"]:
         loader = getLoaders(info).classificationtypes
         result = await loader.execute_select(classificationTypeSelect)
+        return result
+
+    @strawberryA.field(description="""Lists classifications""")
+    async def acclassification_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
+    ) -> List["AcClassificationGQLModel"]:
+        loader = getLoaders(info).classifications
+        result = await loader.page(skip=skip, limit=limit)
+        return result
+
+    @strawberryA.field(description="""Lists classifications for the user""")
+    async def acclassification_page_user(
+        self, info: strawberryA.types.Info, user_id: strawberryA.ID, skip: int = 0, limit: int = 10
+    ) -> List["AcClassificationGQLModel"]:
+        loader = getLoaders(info).classifications
+        result = await loader.filter_by(user_id=user_id)
         return result
 
     @strawberryA.field(description="""""")
@@ -998,7 +1021,7 @@ class Mutation:
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, mutation=Mutation,
+schema = strawberryA.federation.Schema(query=Query, mutation=Mutation,
     types=(GroupGQLModel, 
     AcClassificationLevelGQLModel, 
     AcClassificationGQLModel, 

@@ -494,7 +494,7 @@
     ],
     "publication_authors": [
         {
-            "id": "0d80595f-5838-44d3-8de2-f0e143df429c",
+            "id": "0d80595a-5838-44d3-8de2-f0e143df429c",
             "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
             "order": 1,
@@ -511,6 +511,7 @@
     "publications": [
         {
             "id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
+            "name": "IT Technologie",
             "publication_type_id": "478bf500-a90d-411a-a5aa-5546475c3992",
             "published_date": "2023-04-24T00:00:00",
             "reference": "https://google.com",
@@ -804,6 +805,7 @@
     "awauthorizationusers": [
         {
             "id": "16c92914-0f71-437d-ace3-9661abe4c6cd",
+            "authorization_id": "a854adb9-b29a-4062-95b3-cfd685071f16",
             "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "accesslevel": 2
         }
@@ -811,6 +813,7 @@
     "awauthorizationgroups": [
         {
             "id": "4390a9cc-4751-482c-932b-908f0354380e",
+            "authorization_id": "a854adb9-b29a-4062-95b3-cfd685071f16",
             "group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
             "accesslevel": 1
         }
@@ -818,6 +821,7 @@
     "awauthorizationroletypes": [
         {
             "id": "1125f3ed-cf55-4a57-9eb7-7e8f1447b9b0",
+            "authorization_id": "a854adb9-b29a-4062-95b3-cfd685071f16",
             "group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
             "roletype_id": "05a3e0f5-f71e-4caa-8012-229d868aa8ca",
             "accesslevel": 2
@@ -833,74 +837,88 @@
     "awworkflowstates": [
         {
             "id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Student"
         },
         {
             "id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "VK"
         },
         {
             "id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Proděkan"
         },
         {
             "id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Děkan"
         },
         {
             "id": "607e4f0d-af42-422c-a4f0-09163242e89e",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Student"
         },
         {
             "id": "7d701986-9bb1-435d-ac00-42679d31f496",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Archiv"
         }
     ],
     "awworkflowtransitions": [
         {
             "id": "22b0aec9-a0d4-4a8b-a34d-6481fe45f14b",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Podat",
             "sourcestate_id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0",
             "destinationstate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe"
         },
         {
             "id": "a4ebc241-73eb-4a93-b939-be77d891d92a",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Vrátit",
             "sourcestate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
             "destinationstate_id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0"
         },
         {
             "id": "8c16f48f-7984-478e-a833-60890b4eb3e8",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Doporučit",
             "sourcestate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
             "destinationstate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8"
         },
         {
             "id": "58542bd0-9693-465b-8092-364da49e97e7",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Vrátit",
             "sourcestate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
             "destinationstate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe"
         },
         {
             "id": "9a76cc80-f0df-4875-849b-ef515808ee09",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Doporučit",
             "sourcestate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
             "destinationstate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb"
         },
         {
             "id": "8dc5c8c6-e862-4738-8238-068cd1b7a9e3",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Vrátit",
             "sourcestate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
             "destinationstate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8"
         },
         {
             "id": "0f09ee14-6e26-45f0-9f2b-770201a8dfc3",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Schválit",
             "sourcestate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
             "destinationstate_id": "607e4f0d-af42-422c-a4f0-09163242e89e"
         },
         {
             "id": "db38ab50-4f69-44c5-bfec-8195ac7e7557",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Archivovat",
             "sourcestate_id": "607e4f0d-af42-422c-a4f0-09163242e89e",
             "destinationstate_id": "7d701986-9bb1-435d-ac00-42679d31f496"

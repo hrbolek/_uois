@@ -70,26 +70,31 @@ async def RunOnceAndReturnSessionMaker():
 from strawberry.asgi import GraphQL
 
 from gql_workflow.Dataloaders import createLoaders
+async def createContext():
+    asyncSessionMaker = await RunOnceAndReturnSessionMaker()
+    loaders = await createLoaders(asyncSessionMaker)
+    return {
+        "asyncSessionMaker": await RunOnceAndReturnSessionMaker(),
+        "all": await createLoaders(asyncSessionMaker),
+        #**loaders,
+    }
+
+
 class MyGraphQL(GraphQL):
     """Rozsirena trida zabezpecujici praci se session"""
 
     async def __call__(self, scope, receive, send):
-        asyncSessionMaker = await RunOnceAndReturnSessionMaker()
-        async with asyncSessionMaker() as session:
-            self._session = session
-            self._user = {"id": "?"}
-            return await GraphQL.__call__(self, scope, receive, send)
+        # print("another gql call (ug)")
+        # for item in scope['headers']:
+        #    print(item)
+        self._user = "?"
+        result = await GraphQL.__call__(self, scope, receive, send)
+        return result
 
     async def get_context(self, request, response):
         parentResult = await GraphQL.get_context(self, request, response)
-        asyncSessionMaker = await RunOnceAndReturnSessionMaker(),
-        return {
-            **parentResult,
-            "session": self._session,
-            "asyncSessionMaker": asyncSessionMaker,
-            "user": self._user,
-            "all": await createLoaders(asyncSessionMaker)
-        }
+        localResult = await createContext()
+        return {**parentResult, **localResult, "user": self._user}
 
 
 ## ASGI app, kterou "moutneme"

@@ -53,11 +53,11 @@ def createPageTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
 
         context_value = await createContext(async_session_maker)
         resp = await schema.execute(query, context_value=context_value)
+        assert resp.errors is None
 
         respdata = resp.data[queryEndpoint]
         datarows = data[tableName]
 
-        assert resp.errors is None
 
         for rowa, rowb in zip(respdata, datarows):
             for att in attributeNames:
@@ -123,6 +123,9 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
 # test_reference_role_type = createResolveReferenceTest(tableName="roletypes", gqltype="RoleTypeGQLModel")
 # test_reference_membership = createResolveReferenceTest(tableName="memberships", gqltype="MembershipGQLModel")
 
+test_reference_workflow = createResolveReferenceTest(tableName="awworkflows", gqltype="WorkflowGQLModel")
+test_query_workflow_by_id = createByIdTest(tableName="awworkflows", queryEndpoint="workflowById")
+test_query_workflow_page = createPageTest(tableName="awworkflows", queryEndpoint="workflowPage")
 
 @pytest.mark.asyncio
 async def test_workflow_mutation():
