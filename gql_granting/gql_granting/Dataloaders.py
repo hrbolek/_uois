@@ -9,6 +9,7 @@ from gql_granting.DBDefinitions import (
     ProgramModel,
     ProgramTitleTypeModel,
     ProgramTypeModel,
+    ProgramStudents,
 
     ClassificationLevelModel,
     ClassificationModel,
@@ -133,6 +134,7 @@ dbmodels = {
     "programs": ProgramModel,
     "programtitletypes": ProgramTitleTypeModel,
     "programtypes": ProgramTypeModel,
+    "programstudents": ProgramStudents,
 
     "classificationlevels": ClassificationLevelModel,
     "classifications": ClassificationModel,

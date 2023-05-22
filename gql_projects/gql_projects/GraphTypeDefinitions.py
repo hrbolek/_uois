@@ -431,11 +431,137 @@ class ProjectResultGQLModel:
         result = await ProjectGQLModel.resolve_reference(info, self.id)
         return result
 
+@strawberryA.input
+class FinanceInsertGQLModel:
+    name: str
+    type_id: strawberryA.ID
+    id: Optional[strawberryA.ID] = None
+    amount: Optional[float] = 0
 
+@strawberryA.input
+class FinanceUpdateGQLModel:
+    lastchange: datetime.datetime
+    id: strawberryA.ID
+
+    name: Optional[str]
+    type_id: Optional[strawberryA.ID]
+    amount: Optional[float] = None
+    
+@strawberryA.type
+class FinanceResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of user operation""")
+    async def finance(self, info: strawberryA.types.Info) -> Union[FinanceGQLModel, None]:
+        result = await FinanceGQLModel.resolve_reference(info, self.id)
+        return result
+
+@strawberryA.input
+class MilestoneInsertGQLModel:
+    name: str
+    project_id: strawberryA.ID
+    startdate: Optional[datetime.datetime] = datetime.datetime.now()
+    enddate: Optional[datetime.datetime] = datetime.datetime.now() + datetime.timedelta(days=30)
+    id: Optional[strawberryA.ID] = None
+
+@strawberryA.input
+class MilestoneUpdateGQLModel:
+    lastchange: datetime.datetime
+    id: strawberryA.ID
+
+    name: Optional[str] = None
+    startdate: Optional[datetime.datetime] = None
+    enddate: Optional[datetime.datetime] = None
+    
+@strawberryA.type
+class MilestoneResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of user operation""")
+    async def milestone(self, info: strawberryA.types.Info) -> Union[MilestoneGQLModel, None]:
+        result = await MilestoneGQLModel.resolve_reference(info, self.id)
+        return result
+
+@strawberryA.input
+class MilestoneLinkAddGQLModel:
+    previous_id: strawberryA.ID
+    next_id: strawberryA.ID
     
 @strawberryA.federation.type(extend=True)
 class Mutation:
-    @strawberryA.mutation
+    @strawberryA.mutation(description="Adds a new milestones link.")
+    async def milestones_link_add(self, info: strawberryA.types.Info, link: MilestoneLinkAddGQLModel) -> MilestoneResultGQLModel:
+        loader = getLoaders(info).milestonelinks
+        rows = await loader.filter_by(previous_id=link.previous_id, next_id=link.next_id)
+        row = next(rows, None)
+        result = MilestoneResultGQLModel()
+        if row is None:
+            row = await loader.insert(link)
+            result.msg = "ok"
+        else:
+            result.msg = "exists"
+        result.id = link.previous_id
+        return result
+
+    @strawberryA.mutation(description="Removes the milestones link.")
+    async def milestones_link_remove(self, info: strawberryA.types.Info, link: MilestoneLinkAddGQLModel) -> MilestoneResultGQLModel:
+        loader = getLoaders(info).milestonelinks
+        rows = await loader.filter_by(previous_id=link.previous_id, next_id=link.next_id)
+        row = next(rows, None)
+        result = MilestoneResultGQLModel()
+        if row is None:
+            result.msg = "fail"
+        else:
+            await loader.delete(row.id)
+            result.msg = "ok"
+        result.id = link.previous_id
+        return result
+
+    @strawberryA.mutation(description="Adds a new milestone.")
+    async def milestone_insert(self, info: strawberryA.types.Info, milestone: MilestoneInsertGQLModel) -> MilestoneResultGQLModel:
+        loader = getLoaders(info).milestones
+        row = await loader.insert(milestone)
+        result = MilestoneResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation(description="Update the milestone.")
+    async def milestone_update(self, info: strawberryA.types.Info, milestone: MilestoneUpdateGQLModel) -> MilestoneResultGQLModel:
+        loader = getLoaders(info).milestones
+        row = await loader.update(milestone)
+        result = MilestoneResultGQLModel()
+        result.msg = "ok"
+        result.id = milestone.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+    @strawberryA.mutation(description="Adds a new finance record.")
+    async def finance_insert(self, info: strawberryA.types.Info, finance: FinanceInsertGQLModel) -> FinanceResultGQLModel:
+        loader = getLoaders(info).finances
+        row = await loader.insert(finance)
+        result = FinanceResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation(description="Update the finance record.")
+    async def finance_update(self, info: strawberryA.types.Info, finance: FinanceUpdateGQLModel) -> FinanceResultGQLModel:
+        loader = getLoaders(info).finances
+        row = await loader.update(finance)
+        result = FinanceResultGQLModel()
+        result.msg = "ok"
+        result.id = finance.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+    @strawberryA.mutation(description="Adds a new project.")
     async def project_insert(self, info: strawberryA.types.Info, project: ProjectInsertGQLModel) -> ProjectResultGQLModel:
         loader = getLoaders(info).projects
         row = await loader.insert(project)
@@ -444,7 +570,7 @@ class Mutation:
         result.id = row.id
         return result
 
-    @strawberryA.mutation
+    @strawberryA.mutation(description="Update the project.")
     async def project_update(self, info: strawberryA.types.Info, project: ProjectUpdateGQLModel) -> ProjectResultGQLModel:
         loader = getLoaders(info).projects
         row = await loader.update(project)

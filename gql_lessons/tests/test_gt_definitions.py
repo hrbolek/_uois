@@ -3,7 +3,7 @@ import sys
 import asyncio
 
 # setting path
-sys.path.append("../gql_granting")
+#sys.path.append("../gql_granting")
 
 import pytest
 
@@ -11,7 +11,7 @@ import pytest
 
 from gql_lessons.GraphTypeDefinitions import schema
 
-from shared import (
+from tests.shared import (
     prepare_demodata,
     prepare_in_memory_sqllite,
     get_demodata,

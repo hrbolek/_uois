@@ -472,7 +472,6 @@ async def test_query_classification_via_semester():
                 lastchange
                 user { id }
                 level { id name nameEn }
-                type { id name nameEn }
                 semester { id }
             }
         }

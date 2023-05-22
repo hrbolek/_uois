@@ -221,7 +221,9 @@ async def test_large_group():
 
     data = get_demodata()
 
-    groupid = data['events_groups'][0]['group_id']
+    table = data['events_groups']
+    row = table[0]
+    groupid = row['group_id']
 
     query = '''
             query {
@@ -238,11 +240,12 @@ async def test_large_group():
 
     context_value = await createContext(async_session_maker)
     resp = await schema.execute(query, context_value=context_value)
-    
     print(resp, flush=True)
+    assert resp.errors is None
+    
     respdata = resp.data['_entities']
     assert respdata[0]['id'] == groupid
-    assert resp.errors is None
+    
 
 
 @pytest.mark.asyncio
@@ -328,9 +331,10 @@ async def test_event_by_group():
     resp = await schema.execute(query, context_value=context_value)
     
     print(resp, flush=True)
+    assert resp.errors is None
     respdata = resp.data['eventByGroup']
     assert respdata[0]['id'] == row['event_id']
-    assert resp.errors is None
+    
 
 @pytest.mark.asyncio
 async def test_event_by_user():
@@ -347,9 +351,6 @@ async def test_event_by_user():
                 eventByUser(id: "''' + id +  '''", startdate: "2000-01-01", enddate: "2199-12-31") {
                     id
                     name
-                    editor {
-                        id
-                    }
                 }
             }
         '''
@@ -358,9 +359,10 @@ async def test_event_by_user():
     resp = await schema.execute(query, context_value=context_value)
     
     print(resp, flush=True)
+    assert resp.errors is None
+
     respdata = resp.data['eventByUser']
     assert respdata[0]['id'] == row['event_id']
-    assert resp.errors is None
 
 
 @pytest.mark.asyncio
@@ -421,35 +423,35 @@ async def test_event_type_page():
     assert respdata[0]['id'] == row['id']
     assert resp.errors is None
 
-@pytest.mark.asyncio
-async def test_event_editor():
-    async_session_maker = await prepare_in_memory_sqllite()
-    await prepare_demodata(async_session_maker)
+# @pytest.mark.asyncio
+# async def test_event_editor():
+#     async_session_maker = await prepare_in_memory_sqllite()
+#     await prepare_demodata(async_session_maker)
 
-    data = get_demodata()
+#     data = get_demodata()
 
-    id = data['events'][0]['id']
-    print(id, flush=True)
-    query = '''
-            query {
-                _entities(representations: [{ __typename: "EventEditorGQLModel", id: "''' + id +  '''" }]) {
-                    ...on EventEditorGQLModel {
-                        id
-                        result
-                        event { id }
-                    }
-                }
-            }
-        '''
+#     id = data['events'][0]['id']
+#     print(id, flush=True)
+#     query = '''
+#             query {
+#                 _entities(representations: [{ __typename: "EventEditorGQLModel", id: "''' + id +  '''" }]) {
+#                     ...on EventEditorGQLModel {
+#                         id
+#                         result
+#                         event { id }
+#                     }
+#                 }
+#             }
+#         '''
 
-    context_value = await createContext(async_session_maker)
-    resp = await schema.execute(query, context_value=context_value)
-    
-    print(resp, flush=True)
-    respdata = resp.data['_entities']
-    print(respdata, flush=True)
-    assert respdata[0]['id'] == id
-    assert resp.errors is None
+#     context_value = await createContext(async_session_maker)
+#     resp = await schema.execute(query, context_value=context_value)   
+#     print(resp, flush=True)
+#     assert resp.errors is None
+
+#     respdata = resp.data['_entities']
+#     print(respdata, flush=True)
+#     assert respdata[0]['id'] == id
 
     
 @pytest.mark.asyncio

@@ -17,7 +17,7 @@ dbmodels = {
     "workflows": WorkflowModel,
     "workflowstates": WorkflowStateModel,
     "workflowstateroletypes": WorkflowStateRoleTypeModel,
-    "workflowstateuser": WorkflowStateUserModel,
+    "workflowstateusers": WorkflowStateUserModel,
     "workflowtransitions": WorkflowTransitionModel,
     "authorizationgroups": AuthorizationGroupModel,
     "authorizations": AuthorizationModel,

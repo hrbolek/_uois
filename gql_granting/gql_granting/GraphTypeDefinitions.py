@@ -568,6 +568,10 @@ class AcClassificationGQLModel:
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
+    @strawberryA.field(description="""datetime of classification""")
+    def date(self) -> datetime.datetime:
+        return self.date
+
     @strawberryA.field(description="""User""")
     async def user(self, info: strawberryA.types.Info) -> "UserGQLModel":
         return await UserGQLModel.resolve_reference(id=self.user_id)
@@ -577,10 +581,10 @@ class AcClassificationGQLModel:
         result = await AcSemesterGQLModel.resolve_reference(info, id=self.semester_id)
         return result
 
-    @strawberryA.field(description="""Type""")
-    async def type(self, info: strawberryA.types.Info) -> "AcClassificationTypeGQLModel":
-        result = await AcClassificationTypeGQLModel.resolve_reference(info, id=self.classificationtype_id)
-        return result
+    # @strawberryA.field(description="""Type""")
+    # async def type(self, info: strawberryA.types.Info) -> "AcClassificationTypeGQLModel":
+    #     result = await AcClassificationTypeGQLModel.resolve_reference(info, id=self.classificationtype_id)
+    #     return result
 
     @strawberryA.field(description="""Level""")
     async def level(self, info: strawberryA.types.Info) -> "AcClassificationLevelGQLModel":
@@ -650,6 +654,14 @@ class UserGQLModel:
 #     async def external_ids(self, info: strawberryA.types.Info) -> List['ExternalIdGQLModel']:
 #         result = await resolveExternalIds(session,self.id)
 #         return result
+
+    
+    @strawberryA.field(description="""List of programs which the user is studying""")
+    async def study_programs(self, info: strawberryA.types.Info) -> List['AcProgramGQLModel']:
+        loader = getLoaders(info).programstudents
+        result = await loader.filter_by(student_id=self.id)       
+        return result
+
 
 
 ###########################################################################################################################
@@ -795,13 +807,13 @@ class Query:
         result = await loader.filter_by(user_id=user_id)
         return result
 
-    @strawberryA.field(description="""""")
-    async def program_for_group(
-        self, info: strawberryA.types.Info, group_id: strawberryA.ID
-    ) -> List["AcProgramGQLModel"]:
-        async with withInfo(info) as session:
-            result = await resolveProgramForGroup(session, id=group_id)
-            return result
+    # @strawberryA.field(description="""""")
+    # async def program_for_group(
+    #     self, info: strawberryA.types.Info, group_id: strawberryA.ID
+    # ) -> List["AcProgramGQLModel"]:
+    #     async with withInfo(info) as session:
+    #         result = await resolveProgramForGroup(session, id=group_id)
+    #         return result
 
 
 ###########################################################################################################################
@@ -930,6 +942,7 @@ class ClassificationInsertGQLModel:
     user_id: strawberryA.ID
     classificationlevel_id: strawberryA.ID
     classificationtype_id: strawberryA.ID
+    order: int
     id: Optional[strawberryA.ID] = None
 
 @strawberryA.input
@@ -937,7 +950,6 @@ class ClassificationUpdateGQLModel:
     id: strawberryA.ID
     lastchange: datetime.datetime
     classificationlevel_id: strawberryA.ID
-
 
 @strawberryA.type
 class ClassificationResultGQLModel:
@@ -949,9 +961,103 @@ class ClassificationResultGQLModel:
         result = await AcClassificationGQLModel.resolve_reference(info, self.id)
         return result
 
+@strawberryA.input
+class TopicInsertGQLModel:
+    semester_id: strawberryA.ID
+    order: Optional[int] = 0
+    name: Optional[str] = "New Topic"
+    name_en: Optional[str] = "New Topic"
+    id: Optional[strawberryA.ID] = None
+
+@strawberryA.input
+class TopicUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+    order: Optional[int] = None
+    name: Optional[str] = None
+    name_en: Optional[str] = None
+
+@strawberryA.type
+class TopicResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of topic operation""")
+    async def topic(self, info: strawberryA.types.Info) -> Union[AcTopicGQLModel, None]:
+        result = await AcTopicGQLModel.resolve_reference(info, self.id)
+        return result
+    
+@strawberryA.input
+class LessonInsertGQLModel:
+    topic_id: strawberryA.ID
+    type_id: strawberryA.ID = strawberryA.field(description="type of the lesson")
+    count: Optional[int] = strawberryA.field(description="count of the lessons", default=2)
+    id: Optional[strawberryA.ID] = None
+
+@strawberryA.input
+class LessonUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+    type_id: Optional[strawberryA.ID] = None
+    count: Optional[int] = None
+
+@strawberryA.type
+class LessonResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of topic operation""")
+    async def topic(self, info: strawberryA.types.Info) -> Union[AcLessonGQLModel, None]:
+        result = await AcLessonGQLModel.resolve_reference(info, self.id)
+        return result
+    
 @strawberryA.federation.type(extend=True)
 class Mutation:
-    @strawberryA.mutation
+    @strawberryA.mutation(description="""Adds new study lesson""")
+    async def lesson_insert(self, info: strawberryA.types.Info, lesson: LessonInsertGQLModel) -> LessonResultGQLModel:
+        loader = getLoaders(info).lessons
+        row = await loader.insert(lesson)
+        result = LessonResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation(description="""Update the study lesson""")
+    async def lesson_update(self, info: strawberryA.types.Info, lesson: LessonUpdateGQLModel) -> TopicResultGQLModel:
+        loader = getLoaders(info).lessons
+        row = await loader.update(lesson)
+        result = LessonResultGQLModel()
+        result.msg = "ok"
+        result.id = lesson.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+
+    @strawberryA.mutation(description="""Adds new study topic""")
+    async def topic_insert(self, info: strawberryA.types.Info, topic: TopicInsertGQLModel) -> TopicResultGQLModel:
+        loader = getLoaders(info).topics
+        row = await loader.insert(topic)
+        result = TopicResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation(description="""Update the study topic""")
+    async def topic_update(self, info: strawberryA.types.Info, topic: TopicUpdateGQLModel) -> TopicResultGQLModel:
+        loader = getLoaders(info).topics
+        row = await loader.update(topic)
+        result = TopicResultGQLModel()
+        result.msg = "ok"
+        result.id = topic.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+
+    @strawberryA.mutation(description="""Adds new study program""")
     async def program_insert(self, info: strawberryA.types.Info, program: ProgramInsertGQLModel) -> ProgramResultGQLModel:
         loader = getLoaders(info).programs
         row = await loader.insert(program)
@@ -960,7 +1066,7 @@ class Mutation:
         result.id = row.id
         return result
 
-    @strawberryA.mutation
+    @strawberryA.mutation(description="""Update thestudy program""")
     async def program_update(self, info: strawberryA.types.Info, program: ProgramUpdateGQLModel) -> ProgramResultGQLModel:
         loader = getLoaders(info).programs
         row = await loader.update(program)
@@ -972,7 +1078,7 @@ class Mutation:
             
         return result
 
-    @strawberryA.mutation
+    @strawberryA.mutation(description="""Adds a new study program type""")
     async def program_type_insert(self, info: strawberryA.types.Info, program_type: ProgramTypeInsertGQLModel) -> ProgramTypeResultGQLModel:
         loader = getLoaders(info).programtypes
         row = await loader.insert(program_type)
@@ -981,7 +1087,7 @@ class Mutation:
         result.id = row.id
         return result
 
-    @strawberryA.mutation
+    @strawberryA.mutation(description="""Update the study program type""")
     async def program_type_update(self, info: strawberryA.types.Info, program_type: ProgramUpdateGQLModel) -> ProgramTypeResultGQLModel:
         loader = getLoaders(info).programtypes
         row = await loader.update(program_type)
@@ -993,7 +1099,7 @@ class Mutation:
             
         return result
 
-    @strawberryA.mutation
+    @strawberryA.mutation(description="""Adds a new study subject""")
     async def subject_insert(self, info: strawberryA.types.Info, subject: SubjectInsertGQLModel) -> SubjectResultGQLModel:
         loader = getLoaders(info).subjects
         row = await loader.insert(subject)
@@ -1002,7 +1108,7 @@ class Mutation:
         result.id = row.id
         return result
 
-    @strawberryA.mutation
+    @strawberryA.mutation(description="""Update the study subject""")
     async def subject_update(self, info: strawberryA.types.Info, subject: SubjectUpdateGQLModel) -> SubjectResultGQLModel:
         loader = getLoaders(info).subjects
         row = await loader.update(subject)
@@ -1014,7 +1120,7 @@ class Mutation:
             
         return result
 
-    @strawberryA.mutation
+    @strawberryA.mutation(description="""Adds a new semester to study program""")
     async def semester_insert(self, info: strawberryA.types.Info, semester: SemesterInsertGQLModel) -> SemesterResultGQLModel:
         loader = getLoaders(info).semesters
         row = await loader.insert(semester)
@@ -1024,7 +1130,7 @@ class Mutation:
         result.id = row.id
         return result
 
-    @strawberryA.mutation
+    @strawberryA.mutation(description="""Update the semester of study program""")
     async def semester_update(self, info: strawberryA.types.Info, semester: SemesterUpdateGQLModel) -> SemesterResultGQLModel:
         loader = getLoaders(info).semesters
         row = await loader.update(semester)
@@ -1036,7 +1142,7 @@ class Mutation:
             
         return result
 
-    @strawberryA.mutation
+    @strawberryA.mutation(description="""Adds new classification (a mark for student)""")
     async def classification_insert(self, info: strawberryA.types.Info, classification: ClassificationInsertGQLModel) -> ClassificationResultGQLModel:
         loader = getLoaders(info).classifications
         row = await loader.insert(classification)
@@ -1045,7 +1151,7 @@ class Mutation:
         result.id = row.id
         return result
 
-    @strawberryA.mutation
+    @strawberryA.mutation(description="""Update the classification (a mark for student)""")
     async def classification_update(self, info: strawberryA.types.Info, classification: ClassificationUpdateGQLModel) -> ClassificationResultGQLModel:
         loader = getLoaders(info).classifications
         row = await loader.update(classification)

@@ -138,6 +138,8 @@ class WorkflowStateModel(BaseModel):
     name = Column(String)
     name_en = Column(String)
 
+    valid = Column(Boolean)
+
     workflow_id = Column(ForeignKey("awworkflows.id"), index=True)
     #workflow = relationship("WorkflowModel", back_populates="states")
     #roletypes = relationship("WorkflowStateRoleModel", back_populates="workflowstate")
@@ -156,7 +158,8 @@ class WorkflowTransitionModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
     name_en = Column(String)
-
+    valid = Column(Boolean)
+    
     workflow_id = Column(ForeignKey("awworkflows.id"), index=True)
     sourcestate_id = Column(ForeignKey("awworkflowstates.id"), index=True)
     destinationstate_id = Column(ForeignKey("awworkflowstates.id"), index=True)

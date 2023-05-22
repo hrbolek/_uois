@@ -69,10 +69,40 @@ class ProgramGroupModel(BaseModel):
 #     createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 #     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
+class ProgramStudentStates(BaseModel):
+    __tablename__ = "acprograms_studentstates"
+    id = UUIDColumn()
+    name = Column(String)
+    name_en = Column(String)
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    
+
+class ProgramStudentMessages(BaseModel):
+    __tablename__ = "acprograms_studentmessages"
+    id = UUIDColumn()
+    name = Column(String)
+    description = Column(String)
+    student_id = Column(ForeignKey("acprograms_students.id"), index=True)
+    program_id = Column(ForeignKey("acprograms.id"), index=True)
+    date = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    
+
 class ProgramStudents(BaseModel):
     __tablename__ = "acprograms_students"
     id = UUIDColumn()
     student_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    state_id = Column(ForeignKey("acprograms_studentstates.id"), index=True)
+    semester = Column(Integer)
+
     valid = Column(Boolean, default=lambda item: True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
@@ -96,7 +126,7 @@ class ProgramFormTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 
@@ -116,7 +146,7 @@ class ProgramLanguageTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class ProgramLevelTypeModel(BaseModel):
@@ -139,7 +169,7 @@ class ProgramLevelTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class ProgramTitleTypeModel(BaseModel):
@@ -158,7 +188,7 @@ class ProgramTitleTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class ProgramTypeModel(BaseModel):
@@ -185,7 +215,7 @@ class ProgramTypeModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 class ProgramModel(BaseModel):
@@ -249,8 +279,10 @@ class ClassificationModel(BaseModel):
 
     semester_id = Column(ForeignKey("acsemesters.id"), index=True)
     user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
-    classificationtype_id = Column(ForeignKey("acclassificationtypes.id"), index=True)
+    #classificationtype_id = Column(ForeignKey("acclassificationtypes.id"), index=True)
     classificationlevel_id = Column(ForeignKey("acclassificationlevels.id"), index=True)
+
+    date = Column(DateTime, server_default=sqlalchemy.sql.func.now())
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())

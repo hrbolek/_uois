@@ -70,18 +70,93 @@ class WorkflowStateGQLModel:
     def name(self) -> str:
         return self.name
     
-    @strawberryA.field(description="""forward transitions""")
+    @strawberryA.field(description="""outcomming transitions""")
     async def next_transitions(self, info: strawberryA.types.Info) -> List["WorkflowTransitionGQLModel"]:
         loader = getLoaders(info).workflowtransitions
         result = await loader.filter_by(sourcestate_id=self.id)
         return result
 
-    @strawberryA.field(description="""forward transitions""")
+    @strawberryA.field(description="""incomming transitions""")
     async def previous_transitions(self, info: strawberryA.types.Info) -> List["WorkflowTransitionGQLModel"]:
         loader = getLoaders(info).workflowtransitions
         result = await loader.filter_by(destinationstate_id=self.id)
         return result
     
+    @strawberryA.field(description="""User rights""")
+    async def users(self, info: strawberryA.types.Info) -> List["WorkflowStateUserGQLModel"]:
+        loader = getLoaders(info).workflowstateusers
+        result = await loader.filter_by(workflowstate_id=self.id)
+        return result
+    
+    @strawberryA.field(description="""User rights""")
+    async def roletypes(self, info: strawberryA.types.Info) -> List["WorkflowStateRoleTypeGQLModel"]:
+        loader = getLoaders(info).workflowstateroletypes
+        result = await loader.filter_by(workflowstate_id=self.id)
+        return result
+    
+
+@strawberryA.federation.type(keys=["id"], description="""Entity defining users with some rights for the state in dataflow (node in graph)""")
+class WorkflowStateUserGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).workflowstateusers
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Timestamp""")
+    def lastchange(self) -> strawberryA.ID:
+        return self.lastchange
+   
+    @strawberryA.field(description="""User""")
+    async def user(self, info: strawberryA.types.Info) -> Union["UserGQLModel", None]:
+        result = await UserGQLModel.resolve_reference(id=self.user_id)
+        return result
+
+    @strawberryA.field(description="""Group for which the user has some right""")
+    async def group(self, info: strawberryA.types.Info) -> Union["GroupGQLModel", None]:
+        result = await GroupGQLModel.resolve_reference(id=self.group_id)
+        return result
+
+    @strawberryA.field(description="""State""")
+    async def state(self, info: strawberryA.types.Info) -> Union["WorkflowStateGQLModel", None]:
+        result = await WorkflowStateGQLModel.resolve_reference(info, self.workflowstate_id)
+        return result
+
+@strawberryA.federation.type(keys=["id"], description="""Entity defining role types with some rights for the state in dataflow (node in graph)""")
+class WorkflowStateRoleTypeGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).workflowstateusers
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+
+    @strawberryA.field(description="""primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Timestamp""")
+    def lastchange(self) -> strawberryA.ID:
+        return self.lastchange
+   
+    @strawberryA.field(description="""State""")
+    async def state(self, info: strawberryA.types.Info) -> Union["WorkflowStateGQLModel", None]:
+        result = await WorkflowStateGQLModel.resolve_reference(info, self.workflowstate_id)
+        return result
+
+    @strawberryA.field(description="""Role type with some rights""")
+    async def role_type(self, info: strawberryA.types.Info) -> Union["RoleTypeGQLModel", None]:
+        result = await RoleTypeGQLModel.resolve_reference(id=self.roletype_id)
+        return result
+
+
 @strawberryA.federation.type(keys=["id"], description="""Entity defining a possible state change""")
 class WorkflowTransitionGQLModel:
     @classmethod
@@ -360,12 +435,14 @@ class WorkflowStateInsertGQLModel:
     workflow_id: strawberryA.ID
     name: str
     name_en: Optional[str] = ""   
+    valid: Optional[bool] = True
     id: Optional[strawberryA.ID] = None
 
 @strawberryA.input
 class WorkflowStateUpdateGQLModel:
     lastchange: datetime.datetime
     id: strawberryA.ID
+    valid: Optional[bool] = None
     name: Optional[str] = None
     name_en: Optional[str] = None
     
@@ -375,13 +452,195 @@ class WorkflowStateResultGQLModel:
     msg: str = None
 
     @strawberryA.field(description="""Result of workflow state operation""")
-    async def workflow(self, info: strawberryA.types.Info) -> Union[WorkflowStateGQLModel, None]:
+    async def state(self, info: strawberryA.types.Info) -> Union[WorkflowStateGQLModel, None]:
         result = await WorkflowStateGQLModel.resolve_reference(info, self.id)
         return result
+
+@strawberryA.input
+class WorkflowTransitionInsertGQLModel:
+    workflow_id: strawberryA.ID
+    sourcestate_id: strawberryA.ID
+    destinationstate_id: strawberryA.ID
+    name: str
+    name_en: Optional[str] = ""   
+    valid: Optional[bool] = True
+    id: Optional[strawberryA.ID] = None
+
+@strawberryA.input
+class WorkflowTransitionUpdateGQLModel:
+    lastchange: datetime.datetime
+    id: strawberryA.ID
+    sourcestate_id: Optional[strawberryA.ID]
+    destinationstate_id: Optional[strawberryA.ID]
+    valid: Optional[bool] = None
+    name: Optional[str] = None
+    name_en: Optional[str] = None
     
 @strawberryA.type
+class WorkflowTransitionResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of workflow transition operation""")
+    async def transition(self, info: strawberryA.types.Info) -> Union[WorkflowTransitionGQLModel, None]:
+        result = await WorkflowTransitionGQLModel.resolve_reference(info, self.id)
+        return result
+
+
+@strawberryA.input
+class AuthorizationInsertGQLModel:
+    id: Optional[strawberryA.ID] = None
+
+@strawberryA.input
+class AuthorizationAddUserGQLModel:
+    authorization_id: strawberryA.ID
+    user_id: strawberryA.ID
+    accesslevel: int
+
+@strawberryA.input
+class AuthorizationAddGroupGQLModel:
+    authorization_id: strawberryA.ID
+    group_id: strawberryA.ID
+    accesslevel: int
+
+@strawberryA.input
+class AuthorizationAddRoleGQLModel:
+    authorization_id: strawberryA.ID
+    roletype_id: strawberryA.ID
+    group_id: strawberryA.ID
+    accesslevel: int
+
+@strawberryA.input
+class AuthorizationRemoveUserGQLModel:
+    authorization_id: strawberryA.ID
+    user_id: strawberryA.ID
+
+@strawberryA.input
+class AuthorizationRemoveGroupGQLModel:
+    authorization_id: strawberryA.ID
+    group_id: strawberryA.ID
+
+@strawberryA.input
+class AuthorizationRemoveRoleGQLModel:
+    authorization_id: strawberryA.ID
+    role_type_id: strawberryA.ID
+    group_id: strawberryA.ID
+
+    
+@strawberryA.type
+class AuthorizationResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of authorization operation""")
+    async def authorization(self, info: strawberryA.types.Info) -> Union[AuthorizationGQLModel, None]:
+        result = await AuthorizationGQLModel.resolve_reference(info, self.id)
+        return result
+
+
+
+@strawberryA.type
 class Mutation:
-    @strawberryA.mutation
+    @strawberryA.mutation(description="""Creates a new authorization""")
+    async def authorization_insert(self, info: strawberryA.types.Info, authorization: AuthorizationInsertGQLModel) -> AuthorizationResultGQLModel:
+        loader = getLoaders(info).authorizations
+        row = await loader.insert(authorization)
+        result = AuthorizationResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation(description="""Adds or updates a user at the authorization""")
+    async def authorization_add_user(self, info: strawberryA.types.Info, authorization: AuthorizationAddUserGQLModel) -> AuthorizationResultGQLModel:
+        loader = getLoaders(info).authorizationusers
+        existing = await loader.filter_by(authorization_id=authorization.authorization_id, user_id=authorization.user_id)
+        result = AuthorizationResultGQLModel()
+        result.msg = "ok"
+        row = next(existing, None)
+        if  row is None:
+            row = await loader.insert(authorization)
+            result.id = authorization.authorization_id
+        else:
+            row = await loader.update(row, {"accesslevel": authorization.accesslevel})
+            if row is None:
+                result.id = None
+                result.msg = "fail"
+            result.id = authorization.authorization_id
+        return result
+
+    @strawberryA.mutation(description="""Remove the user from the authorization""")
+    async def authorization_remove_user(self, info: strawberryA.types.Info, authorization: AuthorizationAddUserGQLModel) -> AuthorizationResultGQLModel:
+        loader = getLoaders(info).authorizationusers
+        existing = await loader.filter_by(authorization_id=authorization.authorization_id, user_id=authorization.user_id)
+        result = AuthorizationResultGQLModel()
+        if existing is None:
+            result.msg = "fail"
+        else:
+            await loader.delete(existing.id)
+            result.msg = "ok"
+        return result
+
+    @strawberryA.mutation(description="""Adds or updates a group at the authorization""")
+    async def authorization_add_group(self, info: strawberryA.types.Info, authorization: AuthorizationAddGroupGQLModel) -> AuthorizationResultGQLModel:
+        loader = getLoaders(info).authorizationgroups
+        existing = await loader.filter_by(authorization_id=authorization.authorization_id, group_id=authorization.group_id)
+        result = AuthorizationResultGQLModel()
+        result.msg = "ok"
+        row = next(existing, None)
+        if  row is None:
+            row = await loader.insert(authorization)
+            result.id = authorization.authorization_id
+        else:
+            row = await loader.update(row, {"accesslevel": authorization.accesslevel})
+            if row is None:
+                result.id = None
+                result.msg = "fail"
+            result.id = authorization.authorization_id
+        return result
+
+    @strawberryA.mutation(description="""Remove the group from the authorization""")
+    async def authorization_remove_group(self, info: strawberryA.types.Info, authorization: AuthorizationAddGroupGQLModel) -> AuthorizationResultGQLModel:
+        loader = getLoaders(info).authorizationgroups
+        existing = await loader.filter_by(authorization_id=authorization.authorization_id, group_id=authorization.group_id)
+        result = AuthorizationResultGQLModel()
+        if existing is None:
+            result.msg = "fail"
+        else:
+            await loader.delete(existing.id)
+            result.msg = "ok"
+        return result
+
+    @strawberryA.mutation(description="""Adds or updates a roletype at group at the authorization""")
+    async def authorization_add_role(self, info: strawberryA.types.Info, authorization: AuthorizationAddRoleGQLModel) -> AuthorizationResultGQLModel:
+        loader = getLoaders(info).authorizationroles
+        existing = await loader.filter_by(authorization_id=authorization.authorization_id, group_id=authorization.group_id, roletype_id=authorization.roletype_id)
+        result = AuthorizationResultGQLModel()
+        result.msg = "ok"
+        row = next(existing, None)
+        if  row is None:
+            row = await loader.insert(authorization)
+            result.id = authorization.authorization_id
+        else:
+            row = await loader.update(row, {"accesslevel": authorization.accesslevel})
+            if row is None:
+                result.id = None
+                result.msg = "fail"
+            result.id = authorization.authorization_id
+        return result
+
+    @strawberryA.mutation(description="""Remove the group from the authorization""")
+    async def authorization_remove_role(self, info: strawberryA.types.Info, authorization: AuthorizationAddRoleGQLModel) -> AuthorizationResultGQLModel:
+        loader = getLoaders(info).authorizationroles
+        existing = await loader.filter_by(authorization_id=authorization.authorization_id, group_id=authorization.group_id, roletype_id=authorization.roletype_id)
+        result = AuthorizationResultGQLModel()
+        if existing is None:
+            result.msg = "fail"
+        else:
+            await loader.delete(existing.id)
+            result.msg = "ok"
+        return result
+
+    @strawberryA.mutation(description="""Creates a new workflow""")
     async def workflow_insert(self, info: strawberryA.types.Info, workflow: WorkflowInsertGQLModel) -> WorkflowResultGQLModel:
         loader = getLoaders(info).workflows
         row = await loader.insert(workflow)
@@ -416,6 +675,27 @@ class Mutation:
         loader = getLoaders(info).workflowstates
         row = await loader.update(state)
         result = WorkflowStateResultGQLModel()
+        result.msg = "ok"
+        result.id = state.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+    @strawberryA.mutation
+    async def workflow_transition_insert(self, info: strawberryA.types.Info, state: WorkflowTransitionInsertGQLModel) -> WorkflowTransitionResultGQLModel:
+        loader = getLoaders(info).workflowtransitions
+        row = await loader.insert(state)
+        result = WorkflowTransitionResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def workflow_transition_update(self, info: strawberryA.types.Info, state: WorkflowTransitionUpdateGQLModel) -> WorkflowTransitionResultGQLModel:
+        loader = getLoaders(info).workflowtransitions
+        row = await loader.update(state)
+        result = WorkflowTransitionResultGQLModel()
         result.msg = "ok"
         result.id = state.id
         if row is None:

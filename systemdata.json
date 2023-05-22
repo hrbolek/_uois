@@ -1219,6 +1219,15 @@
         }
     ],
 
+    "acprograms_studentstates": [
+        {"id": "6c96b893-ca09-4b6f-9fbb-5359c589927b", "name": "Přijat", "name_en": ""},
+        {"id": "1be13622-c57c-4484-a113-2ad3c4866eaf", "name": "Zapsán", "name_en": ""},
+        {"id": "8a443983-bcac-4b73-a258-4b98ec58043f", "name": "Studuje", "name_en": ""},
+        {"id": "4d05ac93-3dc6-49a6-acf8-afa3d41bee7e", "name": "Přerušeno", "name_en": ""},
+        {"id": "472ef32f-aaa8-4488-b750-c27af9f20192", "name": "Ukončeno řádně", "name_en": ""},
+        {"id": "9d3537b9-d644-4c35-8c46-9ab88a7a5022", "name": "Ukončeno z moci úřední", "name_en": ""}
+    ],
+
     "acprogramgroups": [
         {"id": "ce250798-b095-11ed-9bd8-0242ac110002" }
     ],
@@ -1269,7 +1278,6 @@
             "id": "ce250bd0-b095-11ed-9bd8-0242ac110002", 
             "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
-            "classificationtype_id": "a00a0322-b095-11ed-9bd8-0242ac110002",
             "classificationlevel_id": "5faea396-b095-11ed-9bd8-0242ac110002",
             "lastchange": "2023-04-19T08:00:00",
             "order": 1
@@ -1278,7 +1286,6 @@
             "id": "ce250bd1-b095-11ed-9bd8-0242ac110002", 
             "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
-            "classificationtype_id": "a00a0322-b095-11ed-9bd8-0242ac110002",
             "classificationlevel_id": "5faea21a-b095-11ed-9bd8-0242ac110002",
             "lastchange": "2023-04-19T08:00:00",
             "order": 2

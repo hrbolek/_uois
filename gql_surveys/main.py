@@ -45,9 +45,10 @@ async def RunOnceAndReturnSessionMaker():
     Protoze je dekorovana, volani teto funkce se provede jen jednou a vystup se zapamatuje a vraci se pri dalsich volanich.
     """
     print(f'starting engine for "{connectionString}"')
-
+    import os
+    makeDrop = os.environ.get("DEMO", "") == "true"
     result = await startEngine(
-        connectionstring=connectionString, makeDrop=False, makeUp=True
+        connectionstring=connectionString, makeDrop=makeDrop, makeUp=True
     )
 
     print(f"initializing system structures")

@@ -87,3 +87,56 @@ resolveFacilityLinksForPlannedLesson = create1NGetter(
 # resolveUnavailabilityFacilityAll = createEntityGetter(UnavailabilityFacility)
 # resolverUpdateUnavailabilityFacility = createUpdateResolver(UnavailabilityFacility)
 # resolveInsertUnavailabilityFacility = createInsertResolver(UnavailabilityFacility)
+
+from sqlalchemy import delete, insert
+
+async def resolveRemoveUsersFromPlan(asyncSessionMaker, plan_id, usersids):
+    deleteStmt = (delete(UserPlanModel)
+        .where(UserPlanModel.planlesson_id==plan_id)
+        .where(UserPlanModel.user_id.in_(usersids)))
+    async with asyncSessionMaker() as session:
+        await session.execute(deleteStmt)
+        await session.commit()
+
+async def resolveAddUsersToPlan(asyncSessionMaker, plan_id, usersids):
+    async with asyncSessionMaker() as session:
+        await session.execute(insert(UserPlanModel), [{"plan_id": plan_id, "user_id": user_id} for user_id in usersids])
+        await session.commit()
+
+async def resolveRemoveGroupsFromPlan(asyncSessionMaker, plan_id, groupids):
+    deleteStmt = (delete(GroupPlanModel)
+        .where(GroupPlanModel.planlesson_id==plan_id)
+        .where(GroupPlanModel.group_id.in_(groupids)))
+    async with asyncSessionMaker() as session:
+        await session.execute(deleteStmt)
+        await session.commit()
+
+async def resolveAddGroupsToPlan(asyncSessionMaker, plan_id, groupids):
+    async with asyncSessionMaker() as session:
+        await session.execute(insert(GroupPlanModel), [{"plan_id": plan_id, "group_id": group_id} for group_id in groupids])
+        await session.commit()
+
+async def resolveRemoveFacilitiesFromPlan(asyncSessionMaker, plan_id, facilityids):
+    deleteStmt = (delete(FacilityPlanModel)
+        .where(FacilityPlanModel.planlesson_id==plan_id)
+        .where(FacilityPlanModel.facility_id.in_(facilityids)))
+    async with asyncSessionMaker() as session:
+        await session.execute(deleteStmt)
+        await session.commit()
+
+async def resolveAddFacilitiesToPlan(asyncSessionMaker, plan_id, facilityids):
+    async with asyncSessionMaker() as session:
+        await session.execute(insert(FacilityPlanModel), [{"plan_id": plan_id, "facility_id": facility_id} for facility_id in facilityids])
+        await session.commit()
+
+async def resolveRemovePlan(asyncSessionMaker, plan_id):
+    deleteAStmt = delete(UserPlanModel).where(UserPlanModel.planlesson_id==plan_id)
+    deleteBStmt = delete(GroupPlanModel).where(GroupPlanModel.planlesson_id==plan_id)
+    deleteCStmt = delete(FacilityPlanModel).where(FacilityPlanModel.planlesson_id==plan_id)
+    deleteDStmt = delete(PlannedLessonModel).where(PlannedLessonModel.id==plan_id)
+    async with asyncSessionMaker() as session:
+        await session.execute(deleteAStmt)
+        await session.execute(deleteBStmt)
+        await session.execute(deleteCStmt)
+        await session.execute(deleteDStmt)
+        await session.commit()

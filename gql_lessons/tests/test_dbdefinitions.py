@@ -3,7 +3,7 @@ import sys
 import asyncio
 
 # setting path
-sys.path.append("../gql_lessons")
+#sys.path.append("../gql_lessons")
 
 import pytest
 
@@ -12,7 +12,7 @@ import pytest
 from gql_lessons.DBDefinitions import BaseModel
 from gql_lessons.DBDefinitions import UserPlanModel, GroupPlanModel, PlannedLessonModel
 
-from shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
+from tests.shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
 
 
 @pytest.mark.asyncio

@@ -453,9 +453,62 @@ class PublicationResultGQLModel:
         result = await PublicationGQLModel.resolve_reference(info, self.id)
         return result
    
+
+@strawberryA.input
+class AuthorInsertGQLModel:
+    user_id: strawberryA.ID
+    publication_id: strawberryA.ID
+    id: Optional[strawberryA.ID] = None
+    share: Optional[float] = 0.1
+    order: Optional[int] = 1000
+
+@strawberryA.input
+class AuthorUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+    share: Optional[float] = None
+    order: Optional[int] = None
+    
+@strawberryA.type
+class AuthorResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of publication operation""")
+    async def author(self, info: strawberryA.types.Info) -> Union[AuthorGQLModel, None]:
+        result = await AuthorGQLModel.resolve_reference(info, self.id)
+        return result
+   
 @strawberryA.federation.type(extend=True)
 class Mutation:
-    @strawberryA.mutation
+    @strawberryA.mutation(description="Adds the authorship to the publication, Currently it does not check if the authorship exists.")
+    async def author_insert(self, info: strawberryA.types.Info, author: AuthorInsertGQLModel) -> AuthorResultGQLModel:
+        loader = getLoaders(info).authors
+        row = await loader.insert(author)
+        result = AuthorResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation(description="Updates the authorship.")
+    async def author_update(self, info: strawberryA.types.Info, author: AuthorUpdateGQLModel) -> AuthorResultGQLModel:
+        loader = getLoaders(info).authors
+        row = await loader.update(author)
+        result = AuthorResultGQLModel()
+        result.msg = "ok"
+        result.id = author.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+    @strawberryA.mutation(description="Delete the authorship.")
+    async def author_delete(self, info: strawberryA.types.Info, authorship_id: strawberryA.ID) -> str:
+        loader = getLoaders(info).authors
+        await loader.delete(authorship_id)
+        return "ok"
+
+    @strawberryA.mutation(description="Create a new publication.")
     async def publication_insert(self, info: strawberryA.types.Info, publication: PublicationInsertGQLModel) -> PublicationResultGQLModel:
         loader = getLoaders(info).publications
         row = await loader.insert(publication)
@@ -464,7 +517,7 @@ class Mutation:
         result.id = row.id
         return result
 
-    @strawberryA.mutation
+    @strawberryA.mutation(description="Update the publication.")
     async def publication_update(self, info: strawberryA.types.Info, publication: PublicationUpdateGQLModel) -> PublicationResultGQLModel:
         loader = getLoaders(info).publications
         row = await loader.update(publication)

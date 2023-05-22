@@ -15,6 +15,9 @@ async def withInfo(info):
         finally:
             pass
 
+def asyncSessionMakerFromInfo(info):
+    asyncSessionMaker = info.context["asyncSessionMaker"]
+    return asyncSessionMaker
 
 def AsyncSessionFromInfo(info):
     print(
@@ -326,11 +329,146 @@ class PlannedLessonResultGQLModel:
     async def lesson(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel, None]:
         result = await PlannedLessonGQLModel.resolve_reference(info, self.id)
         return result
-
-
     
+@strawberryA.input
+class PlannedLessonUserInsertGQLModel:
+    user_id: strawberryA.ID
+    planlesson_id: strawberryA.ID
+    id: Optional[strawberryA.ID] = None
+    
+@strawberryA.input
+class PlannedLessonUserDeleteGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+
+@strawberryA.input
+class PlannedLessonGroupInsertGQLModel:
+    group_id: strawberryA.ID
+    planlesson_id: strawberryA.ID
+    id: Optional[strawberryA.ID] = None
+    
+@strawberryA.input
+class PlannedLessonGroupDeleteGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+
+@strawberryA.input
+class PlannedLessonFacilityInsertGQLModel:
+    facility_id: strawberryA.ID
+    planlesson_id: strawberryA.ID
+    id: Optional[strawberryA.ID] = None
+    
+@strawberryA.input
+class PlannedLessonFacilityDeleteGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+
+
+@strawberryA.input
+class PlannedLessonAssignmentGQLModel:
+    lastchange: datetime.datetime
+    id: strawberryA.ID
+    users: Optional[List[strawberryA.ID]] = None
+    facilities: Optional[List[strawberryA.ID]] = None
+    groups: Optional[List[strawberryA.ID]] = None
+    
+@strawberryA.type
+class PlannedLessonAssignmentResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of user operation""")
+    async def lesson(self, info: strawberryA.types.Info) -> Union[PlannedLessonGQLModel, None]:
+        result = await PlannedLessonGQLModel.resolve_reference(info, self.id)
+        return result
+
+from gql_lessons.GraphResolvers import resolveRemovePlan
 @strawberryA.federation.type(extend=True)
 class Mutation:
+    @strawberryA.mutation
+    async def planned_lesson_change_assignment(self, info: strawberryA.types.Info, assignment: PlannedLessonAssignmentGQLModel) -> PlannedLessonAssignmentResultGQLModel:
+        # loader = getLoaders(info).plans
+        # row = await loader.insert(lesson)
+        if assignment.users is not None:
+            loader = getLoaders(info).userplans
+            rows = await loader.filter_by(planlesson_id=assignment.id)
+            rowids = set(list(map(lambda item: item.id, rows)))
+            inputids = set(assignment.users)
+            toAdd = inputids - rowids
+            toRemove = rowids - inputids
+
+
+        result = PlannedLessonResultGQLModel()
+        result.msg = "not implemented"
+        result.id = None
+        return result
+
+    @strawberryA.mutation(description="Assings a teacher to the planned lesson")
+    async def planned_lesson_user_insert(self, info: strawberryA.types.Info, userlesson: PlannedLessonUserInsertGQLModel) -> PlannedLessonResultGQLModel:
+        loader = getLoaders(info).userplans
+        row = await loader.insert(userlesson)
+        result = PlannedLessonResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation(description="Removes the teacher to the planned lesson")
+    async def planned_lesson_user_delete(self, info: strawberryA.types.Info, userlesson: PlannedLessonUserDeleteGQLModel) -> PlannedLessonResultGQLModel:
+        resolveRemovePlan
+        loader = getLoaders(info).userplans
+        row = await loader.delete(userlesson)
+        result = PlannedLessonResultGQLModel()
+        result.msg = "ok"
+        result.id = userlesson.planlesson_id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+    
+    @strawberryA.mutation(description="Assings a group to the planned lesson")
+    async def planned_lesson_group_insert(self, info: strawberryA.types.Info, grouplesson: PlannedLessonGroupInsertGQLModel) -> PlannedLessonResultGQLModel:
+        loader = getLoaders(info).groupplans
+        row = await loader.insert(grouplesson)
+        result = PlannedLessonResultGQLModel()
+        result.msg = "ok"
+        result.id = row.planlesson_id
+        return result
+
+    @strawberryA.mutation(description="Removes the group to the planned lesson")
+    async def planned_lesson_group_delete(self, info: strawberryA.types.Info, grouplesson: PlannedLessonGroupDeleteGQLModel) -> PlannedLessonResultGQLModel:
+        resolveRemovePlan
+        loader = getLoaders(info).groupplans
+        row = await loader.delete(grouplesson)
+        result = PlannedLessonResultGQLModel()
+        result.msg = "ok"
+        result.id = grouplesson.planlesson_id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+    
+    @strawberryA.mutation(description="Assigns a facility to the planned lesson")
+    async def planned_lesson_facility_insert(self, info: strawberryA.types.Info, facilitylesson: PlannedLessonGroupInsertGQLModel) -> PlannedLessonResultGQLModel:
+        loader = getLoaders(info).facilityplans
+        row = await loader.insert(facilitylesson)
+        result = PlannedLessonResultGQLModel()
+        result.msg = "ok"
+        result.id = row.planlesson_id
+        return result
+
+    @strawberryA.mutation(description="Removes the facility to the planned lesson")
+    async def planned_lesson_facility_delete(self, info: strawberryA.types.Info, facilitylesson: PlannedLessonGroupDeleteGQLModel) -> PlannedLessonResultGQLModel:
+        resolveRemovePlan
+        loader = getLoaders(info).facilityplans
+        row = await loader.delete(facilitylesson)
+        result = PlannedLessonResultGQLModel()
+        result.msg = "ok"
+        result.id = facilitylesson.planlesson_id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+    
     @strawberryA.mutation
     async def planned_lesson_insert(self, info: strawberryA.types.Info, lesson: PlannedLessonInsertGQLModel) -> PlannedLessonResultGQLModel:
         loader = getLoaders(info).plans
@@ -342,6 +480,7 @@ class Mutation:
 
     @strawberryA.mutation
     async def planned_lesson_update(self, info: strawberryA.types.Info, lesson: PlannedLessonUpdateGQLModel) -> PlannedLessonResultGQLModel:
+        resolveRemovePlan
         loader = getLoaders(info).plans
         row = await loader.update(lesson)
         result = PlannedLessonResultGQLModel()
@@ -349,6 +488,16 @@ class Mutation:
         result.id = lesson.id
         if row is None:
             result.msg = "fail"
+            
+        return result
+    
+    @strawberryA.mutation
+    async def planned_lesson_remove(self, info: strawberryA.types.Info, lesson_id: strawberryA.ID) -> PlannedLessonResultGQLModel:       
+        asyncSessionMaker = asyncSessionMakerFromInfo(info)
+        await resolveRemovePlan(asyncSessionMaker, lesson_id)
+        result = PlannedLessonResultGQLModel()
+        result.msg = "ok"
+        result.id = None
             
         return result
     

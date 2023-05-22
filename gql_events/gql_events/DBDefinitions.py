@@ -66,7 +66,7 @@ class EventModel(BaseModel):
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-
+    masterevent_id = Column(ForeignKey("events.id"), index=True, nullable=True)
     eventtype_id = Column(ForeignKey("eventtypes.id"), index=True)
     eventtype = relationship("EventTypeModel", back_populates="events")
 
@@ -111,7 +111,7 @@ class PresenceModel(BaseModel):
     user_id = UUIDFKey()#Column(ForeignKey("users.id"), index=True)
     
     invitation_id = Column(ForeignKey("eventinvitationtypes.id"), index=True)
-    presencetype_id = Column(ForeignKey("eventpresencetypes.id"), index=True)
+    presencetype_id = Column(ForeignKey("eventpresencetypes.id"), index=True, nullable=True)
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())

@@ -168,7 +168,7 @@ class GroupGQLModel:
 
     @classmethod
     async def resolve_reference(cls, id: strawberryA.ID):
-        return await GroupGQLModel(id=id)
+        return GroupGQLModel(id=id)
 
     @strawberryA.field(description="""Events related to a group""")
     async def events(
@@ -240,10 +240,23 @@ class EventGQLModel:
         result = await EventTypeGQLModel.resolve_reference(info=info, id=self.eventtype_id)
         return result
 
-    @strawberryA.field(description="""Editor for the event""")
-    async def editor(self, info: strawberryA.types.Info) -> "EventEditorGQLModel":
-        result = await EventEditorGQLModel.resolve_reference(info=info, id=self.id)
+    @strawberryA.field(description="""event which contains this event (aka semester of this lesson)""")
+    async def master_event(self, info: strawberryA.types.Info) -> Union["EventGQLModel", None]:
+        result = await EventGQLModel.resolve_reference(info=info, id=self.masterevent_id)
         return result
+
+    @strawberryA.field(description="""events which are contained by this event (aka all lessons for the semester)""")
+    async def sub_events(self, info: strawberryA.types.Info, startdate: datetime.datetime, enddate: datetime.datetime) -> List["EventGQLModel"]:
+        loader = getLoaders(info).events
+        #TODO
+        result = await loader.filter_by(masterevent_id=self.id)
+        return result
+
+    
+    # @strawberryA.field(description="""Editor for the event""")
+    # async def editor(self, info: strawberryA.types.Info) -> "EventEditorGQLModel":
+    #     result = await EventEditorGQLModel.resolve_reference(info=info, id=self.id)
+    #     return result
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing events""")
 class EventEditorGQLModel:
@@ -284,6 +297,7 @@ class EventEditorGQLModel:
 from typing import Optional
 import datetime
 from gql_events.GraphResolvers import resolveEventPage, resolveEventTypePage
+from sqlalchemy import and_, or_
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
@@ -349,6 +363,47 @@ class Query:
             result = await resolveEventsForGroup(session, id, startdate, enddate)
             return result
 
+    @strawberryA.field(description="""Finds all presences for the event""")
+    async def presences_by_event(
+        self,
+        info: strawberryA.types.Info,
+        event_id: strawberryA.ID
+    ) -> List[PresenceGQLModel]:
+        loader = getLoaders(info).presences
+        result = loader.filter_by(event_id=event_id)
+        return result
+
+    @strawberryA.field(description="""Finds all presences for the user in the period""")
+    async def presences_by_user(
+        self,
+        info: strawberryA.types.Info,
+        user_id: strawberryA.ID,
+        startdate: datetime.datetime,
+        enddate: datetime.datetime
+    ) -> List[PresenceGQLModel]:
+        assert startdate < enddate, "startdate must be sooner than enddate"
+        loader = getLoaders(info).presences
+        # stmt = loader.getSelectStatement()
+        # model = loader.getModel()
+        # filterstmt = or_(
+        #     and_(model.startdate >= startdate, model.enddate <= startdate),
+        #     and_(model.startdate >= enddate, model.enddate <= enddate))
+        
+        # result = loader.execute_select(stmt.filter(filterstmt))
+        result = await loader.filter_by(user_id=user_id)
+        return result
+
+    # @strawberryA.field(description="""Finds all events for a group""")
+    # async def presences_by_user(
+    #     self,
+    #     info: strawberryA.types.Info,
+    #     event_id: strawberryA.ID,
+    #     startdate: datetime.datetime,
+    #     enddate: datetime.datetime,
+    # ) -> List[PresenceGQLModel]:
+    #     loader = getLoaders(info).presences
+    #     result = loader.filter_by(event_id=event_id)
+    #     return result
 
 ###########################################################################################################################
 #
@@ -389,9 +444,56 @@ class EventResultGQLModel:
         return result
 
 
+@strawberryA.input
+class PresenceInsertGQLModel:
+    user_id: strawberryA.ID
+    event_id: strawberryA.ID
+    invitation_id: strawberryA.ID
+    presencetype_id: Optional[strawberryA.ID] = None
+    id: Optional[strawberryA.ID] = None
+
+@strawberryA.input
+class PresenceUpdateGQLModel:
+    id: strawberryA.ID
+    lastchange: datetime.datetime
+    invitation_id: Optional[strawberryA.ID] = None
+    presencetype_id: Optional[strawberryA.ID] = None
+    
+@strawberryA.type
+class PresenceResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of presence operation""")
+    async def event(self, info: strawberryA.types.Info) -> Union[PresenceGQLModel, None]:
+        result = await PresenceGQLModel.resolve_reference(info, self.id)
+        return result
+
     
 @strawberryA.federation.type(extend=True)
 class Mutation:
+    @strawberryA.mutation
+    async def presence_insert(self, info: strawberryA.types.Info, presence: PresenceInsertGQLModel) -> PresenceResultGQLModel:
+        loader = getLoaders(info).presences
+        row = await loader.insert(presence)
+        result = PresenceResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        return result
+
+    @strawberryA.mutation
+    async def presence_update(self, info: strawberryA.types.Info, presence: PresenceUpdateGQLModel) -> PresenceResultGQLModel:
+        loader = getLoaders(info).presences
+        row = await loader.update(presence)
+        result = PresenceResultGQLModel()
+        result.msg = "ok"
+        result.id = presence.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+
     @strawberryA.mutation
     async def event_insert(self, info: strawberryA.types.Info, event: EventInsertGQLModel) -> EventResultGQLModel:
         loader = getLoaders(info).events

@@ -272,7 +272,7 @@ class TaskInsertGQLModel:
     detailed_des: Optional[str] = ""
     reference: Optional[str] = ""
     date_of_entry: Optional[datetime.datetime] = datetime.datetime.now()
-    date_of_submission = None
+    date_of_submission: Optional[datetime.datetime] = datetime.datetime.now()
     date_of_fulfillment: Optional[datetime.datetime] = datetime.datetime.now() + datetime.timedelta(days=7)
 
     event_id: Optional[strawberryA.ID] = None
@@ -288,7 +288,7 @@ class TaskUpdateGQLModel:
     detailed_des: Optional[str] = None
     reference: Optional[str] = None
     date_of_entry: Optional[datetime.datetime] = None
-    date_of_submission = None
+    date_of_submission: Optional[datetime.datetime] = None
     date_of_fulfillment: Optional[datetime.datetime] = None
     event_id: Optional[strawberryA.ID] = None
     
@@ -304,7 +304,7 @@ class TaskResultGQLModel:
    
 @strawberryA.type
 class Mutation:
-    @strawberryA.mutation
+    @strawberryA.mutation(description="Adds a task.")
     async def task_insert(self, info: strawberryA.types.Info, task: TaskInsertGQLModel) -> TaskResultGQLModel:
         loader = getLoaders(info).tasks
         row = await loader.insert(task)
@@ -313,7 +313,7 @@ class Mutation:
         result.id = row.id
         return result
 
-    @strawberryA.mutation
+    @strawberryA.mutation(description="Update the task.")
     async def task_update(self, info: strawberryA.types.Info, task: TaskUpdateGQLModel) -> TaskResultGQLModel:
         loader = getLoaders(info).tasks
         row = await loader.update(task)
