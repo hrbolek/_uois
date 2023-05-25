@@ -20,7 +20,9 @@
     "uuid": "^9.0.0",
     "web-vitals": "^2.1.4",
     "graphiql": "2.4.5",
+    "graphql": "^16.5.0",
     "@graphiql/plugin-explorer": "^0.1.19",
+    "@fullcalendar/core": "6.1.7",
     "@fullcalendar/react": "6.1.7",
     "@fullcalendar/daygrid": "6.1.7",
     "@fullcalendar/timegrid": "6.1.7"
