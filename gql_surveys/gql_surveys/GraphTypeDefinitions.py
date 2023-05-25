@@ -204,7 +204,7 @@ class QuestionGQLModel:
     @strawberryA.field(description="""List of values for closed or similar type questions""")
     async def values(
         self, info: strawberryA.types.Info
-    ) -> typing.List["QuestionValueGQLModel", None]:
+    ) -> typing.List["QuestionValueGQLModel"]:
         loader = getLoaders(info).questionvalues
         result = await loader.filter_by(question_id=self.id)
         return result
