@@ -179,7 +179,7 @@ class QuestionGQLModel:
     def order(self) -> int:
         return self.order
 
-    @strawberryA.field(description="""List""")
+    @strawberryA.field(description="""List of answers""")
     async def answers(
         self, info: strawberryA.types.Info
     ) -> typing.List["AnswerGQLModel"]:
@@ -187,6 +187,27 @@ class QuestionGQLModel:
             result = await resolveAnswersForQuestion(session, self.id)
             return result
 
+    @strawberryA.field(description="""Survey which owns this question""")
+    async def survey(
+        self, info: strawberryA.types.Info
+    ) -> typing.Union["SurveyGQLModel", None]:
+        result = await SurveyGQLModel.resolve_reference(info, self.survey_id)
+        return result
+
+    @strawberryA.field(description="""Type of question""")
+    async def type(
+        self, info: strawberryA.types.Info
+    ) -> typing.Union["QuestionTypeGQLModel", None]:
+        result = await QuestionTypeGQLModel.resolve_reference(info, self.type_id)
+        return result
+
+    @strawberryA.field(description="""List of values for closed or similar type questions""")
+    async def values(
+        self, info: strawberryA.types.Info
+    ) -> typing.List["QuestionValueGQLModel", None]:
+        loader = getLoaders(info).questionvalues
+        result = await loader.filter_by(question_id=self.id)
+        return result
 
 @strawberryA.federation.type(
     keys=["id"], description="""Entity representing an access to information"""
@@ -327,6 +348,15 @@ class Query:
     ) -> Union[AnswerGQLModel, None]:
         print(id, flush=True)
         return await AnswerGQLModel.resolve_reference(info, id)
+    
+
+    @strawberryA.field(description="""Answer by user""")
+    async def answers_by_user(
+        self, info: strawberryA.types.Info, user_id: strawberryA.ID
+    ) -> Union[AnswerGQLModel, None]:
+        loader = getLoaders(info).answers
+        result = await loader.filter_by(user_id=user_id)
+        return result  
 
     @strawberryA.field(description="""Answer by id""")
     async def load_survey(
@@ -365,7 +395,6 @@ class SurveyUpdateGQLModel:
     name_en: Optional[str] = None
     type_id: Optional[strawberryA.ID] = None
     
-    
 @strawberryA.type
 class SurveyResultGQLModel:
     id: strawberryA.ID = None
@@ -382,6 +411,7 @@ class AnswerUpdateGQLModel:
     id: strawberryA.ID
     value: Optional[str] = None
     aswered: Optional[bool] = None   
+    expired: Optional[bool] = None   
     
 @strawberryA.type
 class AnswerResultGQLModel:
@@ -392,11 +422,11 @@ class AnswerResultGQLModel:
     async def answer(self, info: strawberryA.types.Info) -> Union[AnswerGQLModel, None]:
         result = await AnswerGQLModel.resolve_reference(info, self.id)
         return result
-    
 
 @strawberryA.input
 class QuestionInsertGQLModel:
     name: str
+    survey_id: strawberryA.ID
     name_en: Optional[str] = ""
     type_id: Optional[strawberryA.ID] = None
     order: Optional[int] = 1
@@ -469,6 +499,18 @@ class Mutation:
             result.msg = "fail"           
         return result
 
+    @strawberryA.mutation(description="""Updates question value / possible answer""")
+    async def question_value_delete(self, info: strawberryA.types.Info, question_value_id: strawberryA.ID) -> QuestionResultGQLModel:
+        loader = getLoaders(info).questionvalues
+        row = await loader.load(question_value_id)
+        await loader.delete(question_value_id)
+        result = QuestionResultGQLModel()
+        result.msg = "ok"
+        result.id = row.id
+        if row is None:
+            result.msg = "fail"           
+        return result
+
     @strawberryA.mutation(description="""Creates new question in the survey""")
     async def question_insert(self, info: strawberryA.types.Info, question: QuestionInsertGQLModel) -> QuestionResultGQLModel:
         loader = getLoaders(info).questions
@@ -488,8 +530,6 @@ class Mutation:
         if row is None:
             result.msg = "fail"           
         return result
-
-
 
     @strawberryA.mutation(description="""Creates new survey""")
     async def survey_insert(self, info: strawberryA.types.Info, survey: SurveyInsertGQLModel) -> SurveyResultGQLModel:
