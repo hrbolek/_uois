@@ -122,20 +122,25 @@ async def test_task_mutation():
 
     data = get_demodata()
     
-    table = data["users"]
+    table = data["groups"]
     row = table[0]
-    user_id = row["id"]
+    group_id = row["id"]
 
+    table = data["projecttypes"]
+    row = table[0]
+    type_id = row["id"]
 
     name = "task X"
     query = '''
             mutation(
                 $name: String!
-                $user_id: ID!
+                $group_id: ID!
+                $type_id: ID!
                 ) {
                 operation: projectInsert(project: {
                     name: $name
-                    userId: $user_id
+                    groupId: $group_id
+                    projecttypeId: $type_id
                 }){
                     id
                     msg
@@ -150,7 +155,8 @@ async def test_task_mutation():
 
     context_value = await createContext(async_session_maker)
     variable_values = {
-        "user_id": user_id,
+        "group_id": group_id,
+        "type_id": type_id,
         "name": name
     }
     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)

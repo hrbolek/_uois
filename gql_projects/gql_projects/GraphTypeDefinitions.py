@@ -73,6 +73,11 @@ class ProjectGQLModel:
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
+    @strawberryA.field(description="""Last change""")
+    async def team(self) -> Union["GroupGQLModel", None]:
+        result = await GroupGQLModel.resolve_reference(self.group_id)
+        return result
+
     @strawberryA.field(description="""Project type of project""")
     async def project_type(self, info: strawberryA.types.Info) -> "ProjectTypeGQLModel":
         result = await ProjectTypeGQLModel.resolve_reference(info, self.projecttype_id)
@@ -394,32 +399,25 @@ from typing import Optional
 
 @strawberryA.input
 class ProjectInsertGQLModel:
+    projecttype_id: strawberryA.ID
     name: str
-    user_id: strawberryA.ID
 
-    brief_des: Optional[str] = ""
-    detailed_des: Optional[str] = ""
-    reference: Optional[str] = ""
-    date_of_entry: Optional[datetime.datetime] = datetime.datetime.now()
-    date_of_submission = None
-    date_of_fulfillment: Optional[datetime.datetime] = datetime.datetime.now() + datetime.timedelta(days=7)
-
-    event_id: Optional[strawberryA.ID] = None
     id: Optional[strawberryA.ID] = None
+    name: Optional[str] = "Project"
+    startdate: Optional[datetime.datetime] = datetime.datetime.now()
+    enddate: Optional[datetime.datetime] = datetime.datetime.now()
+
+    group_id: Optional[strawberryA.ID] = None
 
 @strawberryA.input
 class ProjectUpdateGQLModel:
     lastchange: datetime.datetime
     id: strawberryA.ID
-    name: Optional[str]
-
-    brief_des: Optional[str] = None
-    detailed_des: Optional[str] = None
-    reference: Optional[str] = None
-    date_of_entry: Optional[datetime.datetime] = None
-    date_of_submission = None
-    date_of_fulfillment: Optional[datetime.datetime] = None
-    event_id: Optional[strawberryA.ID] = None
+    name: Optional[str] = None
+    projecttype_id: Optional[strawberryA.ID] = None
+    startdate: Optional[datetime.datetime] = None
+    enddate: Optional[datetime.datetime] = None
+    group_id: Optional[strawberryA.ID] = None
     
 @strawberryA.type
 class ProjectResultGQLModel:
