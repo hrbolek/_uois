@@ -87,7 +87,7 @@ class ProjectGQLModel:
     async def finances(
         self, info: strawberryA.types.Info
     ) -> typing.List["FinanceGQLModel"]:
-        loader = getLoaders(info).financies
+        loader = getLoaders(info).finances
         result = await loader.filter_by(project_id=self.id)
         return result
 
@@ -164,7 +164,7 @@ from gql_projects.GraphResolvers import (
 class FinanceGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        loader = getLoaders(info).financies
+        loader = getLoaders(info).finances
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -173,6 +173,10 @@ class FinanceGQLModel:
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
+    @strawberryA.field(description="""Time stamp""")
+    def lastchange(self) -> strawberryA.ID:
+        return self.lastchange
 
     @strawberryA.field(description="""Name""")
     def name(self) -> str:
@@ -266,6 +270,10 @@ class MilestoneGQLModel:
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+
+    @strawberryA.field(description="""Time stamp""")
+    def lastchange(self) -> strawberryA.ID:
+        return self.lastchange
 
     @strawberryA.field(description="""Name""")
     def name(self) -> str:

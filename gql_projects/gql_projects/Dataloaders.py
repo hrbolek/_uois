@@ -20,7 +20,7 @@ dbmodels = {
     "milestonelinks": MilestoneLinkModel,
     "financecategory": FinanceCategory,
     "financetypes": FinanceTypeModel,
-    "financies": FinanceModel
+    "finances": FinanceModel
 }
 
 async def createLoaders(asyncSessionMaker, models=dbmodels):
