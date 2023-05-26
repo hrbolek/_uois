@@ -171,6 +171,10 @@ class QuestionGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""time stamp""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+
     @strawberryA.field(description="""Question""")
     def name(self) -> str:
         return self.name

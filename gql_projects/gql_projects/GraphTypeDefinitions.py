@@ -433,6 +433,7 @@ class ProjectResultGQLModel:
 class FinanceInsertGQLModel:
     name: str
     type_id: strawberryA.ID
+    project_id: strawberryA.ID
     id: Optional[strawberryA.ID] = None
     amount: Optional[float] = 0
 
