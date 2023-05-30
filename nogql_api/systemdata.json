@@ -1,0 +1,3141 @@
+{
+    "acclassificationlevels": [
+        {
+            "id": "5fae9dd8-b095-11ed-9bd8-0242ac110002",
+            "name": "A",
+            "name_en": "A",
+            "ordervalue": null
+        },
+        {
+            "id": "5faea134-b095-11ed-9bd8-0242ac110002",
+            "name": "B",
+            "name_en": "B",
+            "ordervalue": null
+        },
+        {
+            "id": "5faea21a-b095-11ed-9bd8-0242ac110002",
+            "name": "C",
+            "name_en": "C",
+            "ordervalue": null
+        },
+        {
+            "id": "5faea2d8-b095-11ed-9bd8-0242ac110002",
+            "name": "D",
+            "name_en": "D",
+            "ordervalue": null
+        },
+        {
+            "id": "5faea332-b095-11ed-9bd8-0242ac110002",
+            "name": "E",
+            "name_en": "E",
+            "ordervalue": null
+        },
+        {
+            "id": "5faea396-b095-11ed-9bd8-0242ac110002",
+            "name": "F",
+            "name_en": "F",
+            "ordervalue": null
+        }
+    ],
+    "acclassifications": [
+        {
+            "id": "ce250bd0-b095-11ed-9bd8-0242ac110002",
+            "order": 1,
+            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "classificationlevel_id": "5faea396-b095-11ed-9bd8-0242ac110002",
+            "date": "2023-05-30T09:59:35.753876",
+            "created": "2023-05-30T09:59:35.753876",
+            "lastchange": "2023-04-19T08:00:00",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "ce250bd1-b095-11ed-9bd8-0242ac110002",
+            "order": 2,
+            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "classificationlevel_id": "5faea21a-b095-11ed-9bd8-0242ac110002",
+            "date": "2023-05-30T09:59:35.753876",
+            "created": "2023-05-30T09:59:35.753876",
+            "lastchange": "2023-04-19T08:00:00",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "acclassificationtypes": [
+        {
+            "id": "a00a0322-b095-11ed-9bd8-0242ac110002",
+            "name": "Z",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.635599",
+            "lastchange": "2023-05-30T09:59:35.635599",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "a00a0642-b095-11ed-9bd8-0242ac110002",
+            "name": "Z+Zk",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.635599",
+            "lastchange": "2023-05-30T09:59:35.635599",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "a00a06f6-b095-11ed-9bd8-0242ac110002",
+            "name": "Zk",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.635599",
+            "lastchange": "2023-05-30T09:59:35.635599",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "a00a076e-b095-11ed-9bd8-0242ac110002",
+            "name": "KZ",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.635599",
+            "lastchange": "2023-05-30T09:59:35.635599",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "aclessons": [
+        {
+            "id": "ce250b8a-b095-11ed-9bd8-0242ac110002",
+            "topic_id": "ce250b44-b095-11ed-9bd8-0242ac110002",
+            "type_id": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002",
+            "count": 1,
+            "created": "2023-05-30T09:59:35.744151",
+            "lastchange": "2023-04-19T08:00:00",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "aclessontypes": [
+        {
+            "id": "e2b7c66a-95e1-11ed-a1eb-0242ac120002",
+            "name": "cvi\u010den\u00ed",
+            "name_en": "",
+            "abbr": null,
+            "created": "2023-05-30T09:59:35.609479",
+            "lastchange": "2023-05-30T09:59:35.609479",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002",
+            "name": "p\u0159edn\u00e1\u0161ka",
+            "name_en": "",
+            "abbr": null,
+            "created": "2023-05-30T09:59:35.609479",
+            "lastchange": "2023-05-30T09:59:35.609479",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "e2b7cfac-95e1-11ed-a1eb-0242ac120002",
+            "name": "laboratorn\u00ed cvi\u010den\u00ed",
+            "name_en": "",
+            "abbr": null,
+            "created": "2023-05-30T09:59:35.609479",
+            "lastchange": "2023-05-30T09:59:35.609479",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "e2b7d1fa-95e1-11ed-a1eb-0242ac120002",
+            "name": "semin\u00e1\u0159",
+            "name_en": "",
+            "abbr": null,
+            "created": "2023-05-30T09:59:35.609479",
+            "lastchange": "2023-05-30T09:59:35.609479",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "e2b7d48e-95e1-11ed-a1eb-0242ac120002",
+            "name": "konzultace",
+            "name_en": "",
+            "abbr": null,
+            "created": "2023-05-30T09:59:35.609479",
+            "lastchange": "2023-05-30T09:59:35.609479",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "e2b7d88a-95e1-11ed-a1eb-0242ac120002",
+            "name": "poln\u00ed v\u00fdcvik",
+            "name_en": "",
+            "abbr": null,
+            "created": "2023-05-30T09:59:35.609479",
+            "lastchange": "2023-05-30T09:59:35.609479",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "acprogramforms": [
+        {
+            "id": "19018d2c-930e-11ed-9b95-0242ac110002",
+            "name": "prezen\u010dn\u00ed",
+            "name_en": "present",
+            "created": "2023-05-30T09:59:35.553998",
+            "lastchange": "2023-05-30T09:59:35.553998",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "19019286-930e-11ed-9b95-0242ac110002",
+            "name": "distan\u010dn\u00ed",
+            "name_en": "distant",
+            "created": "2023-05-30T09:59:35.553998",
+            "lastchange": "2023-05-30T09:59:35.553998",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "19019704-930e-11ed-9b95-0242ac110002",
+            "name": "kombinovan\u00fd",
+            "name_en": "combined",
+            "created": "2023-05-30T09:59:35.553998",
+            "lastchange": "2023-05-30T09:59:35.553998",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "acprogramgroups": [],
+    "acprogramlanguages": [
+        {
+            "id": "36e9a40a-930e-11ed-9b95-0242ac110002",
+            "name": "\u010de\u0161tina",
+            "name_en": "czech",
+            "created": "2023-05-30T09:59:35.563982",
+            "lastchange": "2023-05-30T09:59:35.563982",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "36e9aa04-930e-11ed-9b95-0242ac110002",
+            "name": "angli\u010dtina",
+            "name_en": "english",
+            "created": "2023-05-30T09:59:35.563982",
+            "lastchange": "2023-05-30T09:59:35.563982",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "acprogramlevels": [
+        {
+            "id": "5c5495ce-930e-11ed-9b95-0242ac110002",
+            "name": "magistersk\u00fd",
+            "name_en": "MSc.",
+            "length": 5,
+            "priority": 1,
+            "created": "2023-05-30T09:59:35.574224",
+            "lastchange": "2023-05-30T09:59:35.574224",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "5c549aec-930e-11ed-9b95-0242ac110002",
+            "name": "magistersk\u00fd navazuj\u00edc\u00ed na bakal\u00e1\u0159sk\u00fd",
+            "name_en": "MSc.",
+            "length": 2,
+            "priority": 2,
+            "created": "2023-05-30T09:59:35.574224",
+            "lastchange": "2023-05-30T09:59:35.574224",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "5c549cae-930e-11ed-9b95-0242ac110002",
+            "name": "bakal\u00e1\u0159sk\u00fd",
+            "name_en": "Bac.",
+            "length": 3,
+            "priority": 1,
+            "created": "2023-05-30T09:59:35.574224",
+            "lastchange": "2023-05-30T09:59:35.574224",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "79530a3e-930e-11ed-9b95-0242ac110002",
+            "name": "doktorsk\u00fd",
+            "name_en": "PhD.",
+            "length": 3,
+            "priority": 3,
+            "created": "2023-05-30T09:59:35.574224",
+            "lastchange": "2023-05-30T09:59:35.574224",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "795313da-930e-11ed-9b95-0242ac110002",
+            "name": "doktorsk\u00fd",
+            "name_en": "PhD.",
+            "length": 4,
+            "priority": 3,
+            "created": "2023-05-30T09:59:35.574224",
+            "lastchange": "2023-05-30T09:59:35.574224",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "acprograms": [
+        {
+            "id": "2766fc9a-b095-11ed-9bd8-0242ac110002",
+            "name": "IT Technologie",
+            "name_en": "",
+            "type_id": "fd4f0980-9315-11ed-9b95-0242ac110002",
+            "created": "2023-05-30T09:59:35.648748",
+            "lastchange": "2023-04-19T08:00:00",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "acprograms_studentmessages": [],
+    "acprograms_students": [],
+    "acprograms_studentstates": [],
+    "acprogramtitles": [
+        {
+            "id": "d1431644-930e-11ed-9b95-0242ac110002",
+            "name": "Ing.",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.584204",
+            "lastchange": "2023-05-30T09:59:35.584204",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "d1431bd0-930e-11ed-9b95-0242ac110002",
+            "name": "Mgr.",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.584204",
+            "lastchange": "2023-05-30T09:59:35.584204",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "d1431d9c-930e-11ed-9b95-0242ac110002",
+            "name": "Bc.",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.584204",
+            "lastchange": "2023-05-30T09:59:35.584204",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "dc5bd804-930e-11ed-9b95-0242ac110002",
+            "name": "Ph.D.",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.584204",
+            "lastchange": "2023-05-30T09:59:35.584204",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "2509ab28-95e2-11ed-a1eb-0242ac120002",
+            "name": "MUDr.",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.584204",
+            "lastchange": "2023-05-30T09:59:35.584204",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "dc5bdd68-930e-11ed-9b95-0242ac110002",
+            "name": "doc.",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.584204",
+            "lastchange": "2023-05-30T09:59:35.584204",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "dc5bdf3e-930e-11ed-9b95-0242ac110002",
+            "name": "prof.",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.584204",
+            "lastchange": "2023-05-30T09:59:35.584204",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "acprogramtypes": [
+        {
+            "id": "fd4f0980-9315-11ed-9b95-0242ac110002",
+            "name": "bakal\u00e1\u0159sk\u00fd prezen\u010dn\u00ed 3 roky \u010de\u0161tina",
+            "name_en": "bachelor present 3 years czech",
+            "form_id": "19018d2c-930e-11ed-9b95-0242ac110002",
+            "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
+            "level_id": "5c549cae-930e-11ed-9b95-0242ac110002",
+            "title_id": "d1431d9c-930e-11ed-9b95-0242ac110002",
+            "created": "2023-05-30T09:59:35.595021",
+            "lastchange": "2023-05-30T09:59:35.595021",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "fd4f1d4e-9315-11ed-9b95-0242ac110002",
+            "name": "bakal\u00e1\u0159sk\u00fd kombinovan\u00fd 3 roky \u010de\u0161tina",
+            "name_en": "bachelor combined 3 years czech",
+            "form_id": "19019704-930e-11ed-9b95-0242ac110002",
+            "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
+            "level_id": "5c549cae-930e-11ed-9b95-0242ac110002",
+            "title_id": "d1431d9c-930e-11ed-9b95-0242ac110002",
+            "created": "2023-05-30T09:59:35.595021",
+            "lastchange": "2023-05-30T09:59:35.595021",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "fd4f1eb6-9315-11ed-9b95-0242ac110002",
+            "name": "magistersk\u00fd navazuj\u00edc\u00ed na bakal\u00e1\u0159sk\u00fd prezen\u010dn\u00ed 2 roky \u010de\u0161tina",
+            "name_en": "master extending bachelor present 2 years czech",
+            "form_id": "19018d2c-930e-11ed-9b95-0242ac110002",
+            "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
+            "level_id": "5c5495ce-930e-11ed-9b95-0242ac110002",
+            "title_id": "d1431644-930e-11ed-9b95-0242ac110002",
+            "created": "2023-05-30T09:59:35.595021",
+            "lastchange": "2023-05-30T09:59:35.595021",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "fd4f1f4c-9315-11ed-9b95-0242ac110002",
+            "name": "magistersk\u00fd navazuj\u00edc\u00ed na bakal\u00e1\u0159sk\u00fd kombinovan\u00fd 2 roky \u010de\u0161tina",
+            "name_en": "master extending bachelor combined 2 years czech",
+            "form_id": "19019704-930e-11ed-9b95-0242ac110002",
+            "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
+            "level_id": "5c5495ce-930e-11ed-9b95-0242ac110002",
+            "title_id": "d1431644-930e-11ed-9b95-0242ac110002",
+            "created": "2023-05-30T09:59:35.595021",
+            "lastchange": "2023-05-30T09:59:35.595021",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "fd4f1fba-9315-11ed-9b95-0242ac110002",
+            "name": "doktorsk\u00fd prezen\u010dn\u00ed 4 roky \u010de\u0161tina",
+            "name_en": "doctoral present 4 years czech",
+            "form_id": "19018d2c-930e-11ed-9b95-0242ac110002",
+            "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
+            "level_id": "79530a3e-930e-11ed-9b95-0242ac110002",
+            "title_id": "dc5bd804-930e-11ed-9b95-0242ac110002",
+            "created": "2023-05-30T09:59:35.595021",
+            "lastchange": "2023-05-30T09:59:35.595021",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "fd4f2028-9315-11ed-9b95-0242ac110002",
+            "name": "doktorsk\u00fd kombinovan\u00fd 4 roky \u010de\u0161tina",
+            "name_en": "doctoral combined 4 years czech",
+            "form_id": "19019704-930e-11ed-9b95-0242ac110002",
+            "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
+            "level_id": "79530a3e-930e-11ed-9b95-0242ac110002",
+            "title_id": "dc5bd804-930e-11ed-9b95-0242ac110002",
+            "created": "2023-05-30T09:59:35.595021",
+            "lastchange": "2023-05-30T09:59:35.595021",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "fd4f2082-9315-11ed-9b95-0242ac110002",
+            "name": "magistersk\u00fd prezen\u010dn\u00ed 5 let \u010de\u0161tina",
+            "name_en": "master present 5 years czech",
+            "form_id": "19018d2c-930e-11ed-9b95-0242ac110002",
+            "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
+            "level_id": "5c5495ce-930e-11ed-9b95-0242ac110002",
+            "title_id": "d1431644-930e-11ed-9b95-0242ac110002",
+            "created": "2023-05-30T09:59:35.595021",
+            "lastchange": "2023-05-30T09:59:35.595021",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "fd4f20dc-9315-11ed-9b95-0242ac110002",
+            "name": "magistersk\u00fd prezen\u010dn\u00ed 6 let \u010de\u0161tina",
+            "name_en": "master present 6 years czech",
+            "form_id": "19018d2c-930e-11ed-9b95-0242ac110002",
+            "language_id": "36e9a40a-930e-11ed-9b95-0242ac110002",
+            "level_id": "5c5495ce-930e-11ed-9b95-0242ac110002",
+            "title_id": "2509ab28-95e2-11ed-a1eb-0242ac120002",
+            "created": "2023-05-30T09:59:35.595021",
+            "lastchange": "2023-05-30T09:59:35.595021",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "acsemesters": [
+        {
+            "id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+            "order": 1,
+            "credits": 24,
+            "subject_id": "ce250a68-b095-11ed-9bd8-0242ac110002",
+            "classificationtype_id": "a00a0642-b095-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:35.723573",
+            "lastchange": "2023-04-19T08:00:00",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "acsubjects": [
+        {
+            "id": "ce250a68-b095-11ed-9bd8-0242ac110002",
+            "name": "Programov\u00e1n\u00ed",
+            "name_en": "",
+            "program_id": "2766fc9a-b095-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:35.658190",
+            "lastchange": "2023-04-19T08:00:00",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "actopics": [
+        {
+            "id": "ce250b44-b095-11ed-9bd8-0242ac110002",
+            "name": "\u00davod",
+            "name_en": "",
+            "order": 1,
+            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:35.733809",
+            "lastchange": "2023-04-19T08:00:00",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "awauthorizationgroups": [
+        {
+            "id": "4390a9cc-4751-482c-932b-908f0354380e",
+            "authorization_id": "a854adb9-b29a-4062-95b3-cfd685071f16",
+            "group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
+            "accesslevel": 1,
+            "created": "2023-05-30T09:59:35.689960",
+            "lastchange": "2023-05-30T09:59:35.689960",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "awauthorizationroletypes": [
+        {
+            "id": "1125f3ed-cf55-4a57-9eb7-7e8f1447b9b0",
+            "authorization_id": "a854adb9-b29a-4062-95b3-cfd685071f16",
+            "group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
+            "roletype_id": "05a3e0f5-f71e-4caa-8012-229d868aa8ca",
+            "accesslevel": 2,
+            "created": "2023-05-30T09:59:35.700136",
+            "lastchange": "2023-05-30T09:59:35.700136",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "awauthorizations": [
+        {
+            "id": "a854adb9-b29a-4062-95b3-cfd685071f16"
+        }
+    ],
+    "awauthorizationusers": [
+        {
+            "id": "16c92914-0f71-437d-ace3-9661abe4c6cd",
+            "authorization_id": "a854adb9-b29a-4062-95b3-cfd685071f16",
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "accesslevel": 2,
+            "created": "2023-05-30T09:59:35.709805",
+            "lastchange": "2023-05-30T09:59:35.709805",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "awworkflows": [
+        {
+            "id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "name": "another workflow",
+            "name_en": null,
+            "authorization_id": null,
+            "created": "2023-05-30T09:59:35.719870",
+            "lastchange": "2023-05-30T09:59:35.719870",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "awworkflowstateroletypes": [
+        {
+            "id": "c7dffbfd-48eb-416f-9bf6-0f0ff6fef44f",
+            "name": null,
+            "accesslevel": 2,
+            "workflowstate_id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0",
+            "roletype_id": "05a3e0f5-f71e-4caa-8012-229d868aa8ca",
+            "created": "2023-05-30T09:59:35.740877",
+            "lastchange": "2023-05-30T09:59:35.740877",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "f8a46c25-73e2-4d43-bb54-471570be3657",
+            "name": null,
+            "accesslevel": 2,
+            "workflowstate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
+            "roletype_id": "ae3f29ee-6159-11ed-b753-0242ac120003",
+            "created": "2023-05-30T09:59:35.740877",
+            "lastchange": "2023-05-30T09:59:35.740877",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "8d5883cc-06ef-41c8-b5af-1741bc33a0f4",
+            "name": null,
+            "accesslevel": 2,
+            "workflowstate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
+            "roletype_id": "ae3f2980-6159-11ed-b753-0242ac120003",
+            "created": "2023-05-30T09:59:35.740877",
+            "lastchange": "2023-05-30T09:59:35.740877",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "4f2b5742-60d8-4a71-8513-09dfc3c7e888",
+            "name": null,
+            "accesslevel": 2,
+            "workflowstate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
+            "roletype_id": "ae3f2912-6159-11ed-b753-0242ac120003",
+            "created": "2023-05-30T09:59:35.740877",
+            "lastchange": "2023-05-30T09:59:35.740877",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "a891ae8c-5e93-4383-868f-daa3db23a23d",
+            "name": null,
+            "accesslevel": 2,
+            "workflowstate_id": "607e4f0d-af42-422c-a4f0-09163242e89e",
+            "roletype_id": "05a3e0f5-f71e-4caa-8012-229d868aa8ca",
+            "created": "2023-05-30T09:59:35.740877",
+            "lastchange": "2023-05-30T09:59:35.740877",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "awworkflowstates": [
+        {
+            "id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0",
+            "name": "Student",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "created": "2023-05-30T09:59:35.729946",
+            "lastchange": "2023-05-30T09:59:35.729946",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
+            "name": "VK",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "created": "2023-05-30T09:59:35.729946",
+            "lastchange": "2023-05-30T09:59:35.729946",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
+            "name": "Prod\u011bkan",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "created": "2023-05-30T09:59:35.729946",
+            "lastchange": "2023-05-30T09:59:35.729946",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
+            "name": "D\u011bkan",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "created": "2023-05-30T09:59:35.729946",
+            "lastchange": "2023-05-30T09:59:35.729946",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "607e4f0d-af42-422c-a4f0-09163242e89e",
+            "name": "Student",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "created": "2023-05-30T09:59:35.729946",
+            "lastchange": "2023-05-30T09:59:35.729946",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "7d701986-9bb1-435d-ac00-42679d31f496",
+            "name": "Archiv",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "created": "2023-05-30T09:59:35.729946",
+            "lastchange": "2023-05-30T09:59:35.729946",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "awworkflowstateusers": [
+        {
+            "id": "b1f578cc-7738-4c5c-acd4-045430b808e3",
+            "name": null,
+            "accesslevel": null,
+            "workflowstate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-30T09:59:35.752495",
+            "lastchange": "2023-05-30T09:59:35.752495",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "awworkflowtransitions": [
+        {
+            "id": "22b0aec9-a0d4-4a8b-a34d-6481fe45f14b",
+            "name": "Podat",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "sourcestate_id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0",
+            "destinationstate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
+            "created": "2023-05-30T09:59:35.761920",
+            "lastchange": "2023-05-30T09:59:35.761920",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "a4ebc241-73eb-4a93-b939-be77d891d92a",
+            "name": "Vr\u00e1tit",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "sourcestate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
+            "destinationstate_id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0",
+            "created": "2023-05-30T09:59:35.761920",
+            "lastchange": "2023-05-30T09:59:35.761920",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "8c16f48f-7984-478e-a833-60890b4eb3e8",
+            "name": "Doporu\u010dit",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "sourcestate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
+            "destinationstate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
+            "created": "2023-05-30T09:59:35.761920",
+            "lastchange": "2023-05-30T09:59:35.761920",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "58542bd0-9693-465b-8092-364da49e97e7",
+            "name": "Vr\u00e1tit",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "sourcestate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
+            "destinationstate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
+            "created": "2023-05-30T09:59:35.761920",
+            "lastchange": "2023-05-30T09:59:35.761920",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "9a76cc80-f0df-4875-849b-ef515808ee09",
+            "name": "Doporu\u010dit",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "sourcestate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
+            "destinationstate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
+            "created": "2023-05-30T09:59:35.761920",
+            "lastchange": "2023-05-30T09:59:35.761920",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "8dc5c8c6-e862-4738-8238-068cd1b7a9e3",
+            "name": "Vr\u00e1tit",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "sourcestate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
+            "destinationstate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
+            "created": "2023-05-30T09:59:35.761920",
+            "lastchange": "2023-05-30T09:59:35.761920",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "0f09ee14-6e26-45f0-9f2b-770201a8dfc3",
+            "name": "Schv\u00e1lit",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "sourcestate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
+            "destinationstate_id": "607e4f0d-af42-422c-a4f0-09163242e89e",
+            "created": "2023-05-30T09:59:35.761920",
+            "lastchange": "2023-05-30T09:59:35.761920",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "db38ab50-4f69-44c5-bfec-8195ac7e7557",
+            "name": "Archivovat",
+            "name_en": null,
+            "valid": null,
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
+            "sourcestate_id": "607e4f0d-af42-422c-a4f0-09163242e89e",
+            "destinationstate_id": "7d701986-9bb1-435d-ac00-42679d31f496",
+            "created": "2023-05-30T09:59:35.761920",
+            "lastchange": "2023-05-30T09:59:35.761920",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "eventinvitationtypes": [
+        {
+            "id": "e8713b6e-a79c-11ed-b76e-0242ac110002",
+            "name": "organiz\u00e1tor",
+            "name_en": "organizer",
+            "created": "2023-05-30T09:59:35.253135",
+            "lastchange": "2023-05-30T09:59:35.253135",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "e8713f06-a79c-11ed-b76e-0242ac110002",
+            "name": "pozvan\u00fd",
+            "name_en": "invited mandatory",
+            "created": "2023-05-30T09:59:35.253135",
+            "lastchange": "2023-05-30T09:59:35.253135",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "e8713fce-a79c-11ed-b76e-0242ac110002",
+            "name": "pozvan\u00fd nepovinn\u011b",
+            "name_en": "invited voluntary",
+            "created": "2023-05-30T09:59:35.253135",
+            "lastchange": "2023-05-30T09:59:35.253135",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "e871403c-a79c-11ed-b76e-0242ac110002",
+            "name": "p\u0159ijal",
+            "name_en": "accepted",
+            "created": "2023-05-30T09:59:35.253135",
+            "lastchange": "2023-05-30T09:59:35.253135",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "e87140aa-a79c-11ed-b76e-0242ac110002",
+            "name": "p\u0159ijal nejist\u011b",
+            "name_en": "tentatively accepted",
+            "created": "2023-05-30T09:59:35.253135",
+            "lastchange": "2023-05-30T09:59:35.253135",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "e8714104-a79c-11ed-b76e-0242ac110002",
+            "name": "odm\u00edtl",
+            "name_en": "rejected",
+            "created": "2023-05-30T09:59:35.253135",
+            "lastchange": "2023-05-30T09:59:35.253135",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "eventpresencetypes": [
+        {
+            "id": "466398c6-a79c-11ed-b76e-0242ac110002",
+            "name": "P\u0159\u00edtomen",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.205883",
+            "lastchange": "2023-05-30T09:59:35.205883",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "4663988a-a79c-11ed-b76e-0242ac110002",
+            "name": "Neomluven",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.205883",
+            "lastchange": "2023-05-30T09:59:35.205883",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "4663984e-a79c-11ed-b76e-0242ac110002",
+            "name": "Dovolen\u00e1",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.205883",
+            "lastchange": "2023-05-30T09:59:35.205883",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "46639812-a79c-11ed-b76e-0242ac110002",
+            "name": "",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.205883",
+            "lastchange": "2023-05-30T09:59:35.205883",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "466397d6-a79c-11ed-b76e-0242ac110002",
+            "name": "",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.205883",
+            "lastchange": "2023-05-30T09:59:35.205883",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "events": [
+        {
+            "id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Zkou\u0161ka",
+            "startdate": "2023-04-19T08:00:00",
+            "enddate": "2023-04-19T09:00:00",
+            "created": "2023-05-30T09:59:35.285785",
+            "lastchange": "2023-05-30T09:59:35.285785",
+            "createdby": null,
+            "changedby": null,
+            "masterevent_id": null,
+            "eventtype_id": "b87d3ff0-8fd4-11ed-a6d4-0242ac110002"
+        }
+    ],
+    "events_groups": [
+        {
+            "id": "9baf3aaa-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "9baf3b54-ae0f-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:35.300354",
+            "lastchange": "2023-05-30T09:59:35.300354",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3d34-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "9baf3d70-ae0f-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:35.300354",
+            "lastchange": "2023-05-30T09:59:35.300354",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3dca-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "9baf3de8-ae0f-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:35.300354",
+            "lastchange": "2023-05-30T09:59:35.300354",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3e24-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "9baf3e42-ae0f-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:35.300354",
+            "lastchange": "2023-05-30T09:59:35.300354",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3e7e-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "9baf3e92-ae0f-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:35.300354",
+            "lastchange": "2023-05-30T09:59:35.300354",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3ece-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "9baf3eec-ae0f-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:35.300354",
+            "lastchange": "2023-05-30T09:59:35.300354",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3f28-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "9baf3f3c-ae0f-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:35.300354",
+            "lastchange": "2023-05-30T09:59:35.300354",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3f82-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "9baf3f96-ae0f-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:35.300354",
+            "lastchange": "2023-05-30T09:59:35.300354",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3fd2-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "9baf3fe6-ae0f-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:35.300354",
+            "lastchange": "2023-05-30T09:59:35.300354",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf402c-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "9baf4040-ae0f-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:35.300354",
+            "lastchange": "2023-05-30T09:59:35.300354",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "events_users": [
+        {
+            "id": "89d1e684-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "user_id": "89d1e724-ae0f-11ed-9bd8-0242ac110002",
+            "invitation_id": "e871403c-a79c-11ed-b76e-0242ac110002",
+            "presencetype_id": "466398c6-a79c-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T09:59:35.314463",
+            "lastchange": "2023-05-30T09:59:35.314463",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f2d2-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "user_id": "89d1f34a-ae0f-11ed-9bd8-0242ac110002",
+            "invitation_id": "e871403c-a79c-11ed-b76e-0242ac110002",
+            "presencetype_id": "466398c6-a79c-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T09:59:35.314463",
+            "lastchange": "2023-05-30T09:59:35.314463",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f3ae-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "user_id": "89d1f3cc-ae0f-11ed-9bd8-0242ac110002",
+            "invitation_id": "e871403c-a79c-11ed-b76e-0242ac110002",
+            "presencetype_id": "466398c6-a79c-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T09:59:35.314463",
+            "lastchange": "2023-05-30T09:59:35.314463",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f412-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "user_id": "89d1f430-ae0f-11ed-9bd8-0242ac110002",
+            "invitation_id": "e871403c-a79c-11ed-b76e-0242ac110002",
+            "presencetype_id": "466398c6-a79c-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T09:59:35.314463",
+            "lastchange": "2023-05-30T09:59:35.314463",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f46c-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "user_id": "89d1f48a-ae0f-11ed-9bd8-0242ac110002",
+            "invitation_id": "e871403c-a79c-11ed-b76e-0242ac110002",
+            "presencetype_id": "466398c6-a79c-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T09:59:35.314463",
+            "lastchange": "2023-05-30T09:59:35.314463",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f4c6-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "user_id": "89d1f4e4-ae0f-11ed-9bd8-0242ac110002",
+            "invitation_id": "e871403c-a79c-11ed-b76e-0242ac110002",
+            "presencetype_id": "466398c6-a79c-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T09:59:35.314463",
+            "lastchange": "2023-05-30T09:59:35.314463",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f520-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "user_id": "89d1f534-ae0f-11ed-9bd8-0242ac110002",
+            "invitation_id": "e871403c-a79c-11ed-b76e-0242ac110002",
+            "presencetype_id": "466398c6-a79c-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T09:59:35.314463",
+            "lastchange": "2023-05-30T09:59:35.314463",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f570-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "user_id": "89d1f58e-ae0f-11ed-9bd8-0242ac110002",
+            "invitation_id": "e871403c-a79c-11ed-b76e-0242ac110002",
+            "presencetype_id": "466398c6-a79c-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T09:59:35.314463",
+            "lastchange": "2023-05-30T09:59:35.314463",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f5ca-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "user_id": "89d1f5de-ae0f-11ed-9bd8-0242ac110002",
+            "invitation_id": "e871403c-a79c-11ed-b76e-0242ac110002",
+            "presencetype_id": "466398c6-a79c-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T09:59:35.314463",
+            "lastchange": "2023-05-30T09:59:35.314463",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f624-ae0f-11ed-9bd8-0242ac110002",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "user_id": "89d1f638-ae0f-11ed-9bd8-0242ac110002",
+            "invitation_id": "e871403c-a79c-11ed-b76e-0242ac110002",
+            "presencetype_id": "466398c6-a79c-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T09:59:35.314463",
+            "lastchange": "2023-05-30T09:59:35.314463",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "eventtypes": [
+        {
+            "id": "c0a12392-ae0e-11ed-9bd8-0242ac110002",
+            "name": "P",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87d3ff0-8fd4-11ed-a6d4-0242ac110002",
+            "name": "Ostatn\u00ed",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87d7b28-8fd4-11ed-a6d4-0242ac110002",
+            "name": "LAB",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87d7be6-8fd4-11ed-a6d4-0242ac110002",
+            "name": "P",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87d7c2c-8fd4-11ed-a6d4-0242ac110002",
+            "name": "CV",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87d7ce0-8fd4-11ed-a6d4-0242ac110002",
+            "name": "SEM",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87d7eb6-8fd4-11ed-a6d4-0242ac110002",
+            "name": "PV",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87d82e4-8fd4-11ed-a6d4-0242ac110002",
+            "name": "ZK",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87d8442-8fd4-11ed-a6d4-0242ac110002",
+            "name": "EX",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87d90e0-8fd4-11ed-a6d4-0242ac110002",
+            "name": "ST\u017d",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87d9266-8fd4-11ed-a6d4-0242ac110002",
+            "name": "KON",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87d9400-8fd4-11ed-a6d4-0242ac110002",
+            "name": "PX",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87d98c4-8fd4-11ed-a6d4-0242ac110002",
+            "name": "TER",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87e1010-8fd4-11ed-a6d4-0242ac110002",
+            "name": "KRZ",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87e5796-8fd4-11ed-a6d4-0242ac110002",
+            "name": "J",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87e6380-8fd4-11ed-a6d4-0242ac110002",
+            "name": "SMP",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87e69b6-8fd4-11ed-a6d4-0242ac110002",
+            "name": "KOL",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87e6c04-8fd4-11ed-a6d4-0242ac110002",
+            "name": "SKP",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b87f7cac-8fd4-11ed-a6d4-0242ac110002",
+            "name": "SZK",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b8803df4-8fd4-11ed-a6d4-0242ac110002",
+            "name": "SMS",
+            "name_en": "",
+            "created": "2023-05-30T09:59:35.190366",
+            "lastchange": "2023-05-30T09:59:35.190366",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "externalidcategories": [],
+    "externalids": [],
+    "externalidtypes": [],
+    "facilities": [
+        {
+            "id": "66275ffa-a7b3-11ed-b76e-0242ac110002",
+            "name": "Hlavn\u00ed komplex",
+            "name_en": "",
+            "label": null,
+            "address": null,
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "capacity": null,
+            "geometry": null,
+            "geolocation": null,
+            "group_id": "480f2802-a869-11ed-924c-0242ac110002",
+            "facilitytype_id": "764217ee-a7a0-11ed-b76e-0242ac110002",
+            "master_facility_id": null,
+            "created": "2023-05-30T11:46:04.698434",
+            "lastchange": "2023-05-30T11:46:04.698434",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "662763a6-a7b3-11ed-b76e-0242ac110002",
+            "name": "Budova A",
+            "name_en": "",
+            "label": null,
+            "address": null,
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "capacity": null,
+            "geometry": null,
+            "geolocation": null,
+            "group_id": null,
+            "facilitytype_id": "76421cf8-a7a0-11ed-b76e-0242ac110002",
+            "master_facility_id": "66275ffa-a7b3-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T11:46:04.725806",
+            "lastchange": "2023-05-30T11:46:04.725806",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "66276464-a7b3-11ed-b76e-0242ac110002",
+            "name": "Patro 1",
+            "name_en": "",
+            "label": null,
+            "address": null,
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "capacity": null,
+            "geometry": null,
+            "geolocation": null,
+            "group_id": "480f2802-a869-11ed-924c-0242ac110002",
+            "facilitytype_id": "76421e10-a7a0-11ed-b76e-0242ac110002",
+            "master_facility_id": "662763a6-a7b3-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T11:46:04.735234",
+            "lastchange": "2023-05-30T11:46:04.735234",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "662764dc-a7b3-11ed-b76e-0242ac110002",
+            "name": "M\u00edstnost 101",
+            "name_en": "",
+            "label": null,
+            "address": null,
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "capacity": null,
+            "geometry": null,
+            "geolocation": null,
+            "group_id": "480f2802-a869-11ed-924c-0242ac110002",
+            "facilitytype_id": "76421faa-a7a0-11ed-b76e-0242ac110002",
+            "master_facility_id": "66276464-a7b3-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T11:46:04.746789",
+            "lastchange": "2023-05-30T11:46:04.746789",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "6627654a-a7b3-11ed-b76e-0242ac110002",
+            "name": "M\u00edstnost 102",
+            "name_en": "",
+            "label": null,
+            "address": null,
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "capacity": null,
+            "geometry": null,
+            "geolocation": null,
+            "group_id": "480f2802-a869-11ed-924c-0242ac110002",
+            "facilitytype_id": "76421faa-a7a0-11ed-b76e-0242ac110002",
+            "master_facility_id": "66276464-a7b3-11ed-b76e-0242ac110002",
+            "created": "2023-05-30T11:46:04.754246",
+            "lastchange": "2023-05-30T11:46:04.754246",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "facilities_events": [
+        {
+            "id": "",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "facility_id": "6627654a-a7b3-11ed-b76e-0242ac110002",
+            "state_id": null,
+            "created": "2023-05-30T11:46:04.777790",
+            "lastchange": "2023-05-30T11:46:04.777790",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "facilityeventstatetypes": [
+        {
+            "id": "ba53d10c-a7a0-11ed-b76e-0242ac110002",
+            "name": "rozvrh",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.658210",
+            "lastchange": "2023-05-30T11:46:04.658210",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ba53d4c2-a7a0-11ed-b76e-0242ac110002",
+            "name": "pl\u00e1n",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.658210",
+            "lastchange": "2023-05-30T11:46:04.658210",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ba53d580-a7a0-11ed-b76e-0242ac110002",
+            "name": "po\u017e\u00e1d\u00e1no",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.658210",
+            "lastchange": "2023-05-30T11:46:04.658210",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ba53d5f8-a7a0-11ed-b76e-0242ac110002",
+            "name": "schv\u00e1leno",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.658210",
+            "lastchange": "2023-05-30T11:46:04.658210",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ba53d65c-a7a0-11ed-b76e-0242ac110002",
+            "name": "zru\u0161eno",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.658210",
+            "lastchange": "2023-05-30T11:46:04.658210",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ba53d6b6-a7a0-11ed-b76e-0242ac110002",
+            "name": "",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.658210",
+            "lastchange": "2023-05-30T11:46:04.658210",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ba53d71a-a7a0-11ed-b76e-0242ac110002",
+            "name": "",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.658210",
+            "lastchange": "2023-05-30T11:46:04.658210",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "facilitytypes": [
+        {
+            "id": "764217ee-a7a0-11ed-b76e-0242ac110002",
+            "name": "are\u00e1l",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.643116",
+            "lastchange": "2023-05-30T11:46:04.643116",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "76421cf8-a7a0-11ed-b76e-0242ac110002",
+            "name": "budova",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.643116",
+            "lastchange": "2023-05-30T11:46:04.643116",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "76421e10-a7a0-11ed-b76e-0242ac110002",
+            "name": "patro",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.643116",
+            "lastchange": "2023-05-30T11:46:04.643116",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "76421ee2-a7a0-11ed-b76e-0242ac110002",
+            "name": "skupina m\u00edstnost\u00ed",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.643116",
+            "lastchange": "2023-05-30T11:46:04.643116",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "76421faa-a7a0-11ed-b76e-0242ac110002",
+            "name": "u\u010debna",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.643116",
+            "lastchange": "2023-05-30T11:46:04.643116",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "7642209a-a7a0-11ed-b76e-0242ac110002",
+            "name": "laborato\u0159",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.643116",
+            "lastchange": "2023-05-30T11:46:04.643116",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "formcategories": [
+        {
+            "id": "37675bd4-afb0-11ed-9bd8-0242ac110002",
+            "name": "Studentsk\u00e9 \u017e\u00e1dosti",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.947118",
+            "lastchange": "2023-05-30T11:46:04.947118",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "37675fe4-afb0-11ed-9bd8-0242ac110002",
+            "name": "Ostatn\u00ed",
+            "name_en": "",
+            "created": "2023-05-30T11:46:04.947118",
+            "lastchange": "2023-05-30T11:46:04.947118",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "formhistories": [
+        {
+            "id": "84c35266-afb5-11ed-9bd8-0242ac110002",
+            "name": "",
+            "request_id": "13181566-afb0-11ed-9bd8-0242ac110002",
+            "form_id": "190d578c-afb1-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:05.010946",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "84c35504-afb5-11ed-9bd8-0242ac110002",
+            "name": "",
+            "request_id": "13181566-afb0-11ed-9bd8-0242ac110002",
+            "form_id": "190d5a7a-afb1-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:05.010946",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "formitemcategories": [
+        {
+            "id": "b1cb0f80-afb8-11ed-9bd8-0242ac110002",
+            "name": "GQL_API",
+            "name__en": null,
+            "created": "2023-05-30T11:46:04.970052",
+            "lastchange": "2023-05-30T11:46:04.970052",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b1cb1462-afb8-11ed-9bd8-0242ac110002",
+            "name": "Text",
+            "name__en": null,
+            "created": "2023-05-30T11:46:04.970052",
+            "lastchange": "2023-05-30T11:46:04.970052",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "formitems": [
+        {
+            "id": "72a3d4b0-afb1-11ed-9bd8-0242ac110002",
+            "name": "user_id",
+            "order": 1,
+            "value": "45678",
+            "part_id": "52e3ee26-afb1-11ed-9bd8-0242ac110002",
+            "type_id": "9bdb916a-afb6-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:05.047006",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "72a3d7b2-afb1-11ed-9bd8-0242ac110002",
+            "name": "Zn\u011bn\u00ed",
+            "order": 1,
+            "value": "\u017d\u00e1d\u00e1m o ...",
+            "part_id": "52e3f22c-afb1-11ed-9bd8-0242ac110002",
+            "type_id": "9bdb9426-afb6-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:05.047006",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "72a3d85c-afb1-11ed-9bd8-0242ac110002",
+            "name": "user_id",
+            "order": 1,
+            "value": "45678",
+            "part_id": "52e3f2d6-afb1-11ed-9bd8-0242ac110002",
+            "type_id": "9bdb916a-afb6-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:05.047006",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "72a3d8de-afb1-11ed-9bd8-0242ac110002",
+            "name": "Zn\u011bn\u00ed",
+            "order": 1,
+            "value": "\u017d\u00e1d\u00e1m o ...",
+            "part_id": "52e3f344-afb1-11ed-9bd8-0242ac110002",
+            "type_id": "9bdb9426-afb6-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:05.047006",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "formitemtypes": [
+        {
+            "id": "9bdb916a-afb6-11ed-9bd8-0242ac110002",
+            "name": "student",
+            "name__en": null,
+            "query": "",
+            "selector": "",
+            "category_id": "b1cb0f80-afb8-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:04.978824",
+            "lastchange": "2023-05-30T11:46:04.978824",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9bdb93a4-afb6-11ed-9bd8-0242ac110002",
+            "name": "program",
+            "name__en": null,
+            "query": "",
+            "selector": "",
+            "category_id": "b1cb0f80-afb8-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:04.978824",
+            "lastchange": "2023-05-30T11:46:04.978824",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9bdb9426-afb6-11ed-9bd8-0242ac110002",
+            "name": "obsah",
+            "name__en": null,
+            "query": "",
+            "selector": "",
+            "category_id": "b1cb1462-afb8-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:04.978824",
+            "lastchange": "2023-05-30T11:46:04.978824",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9bdb9476-afb6-11ed-9bd8-0242ac110002",
+            "name": "doporu\u010den\u00ed",
+            "name__en": null,
+            "query": "",
+            "selector": "",
+            "category_id": "b1cb1462-afb8-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:04.978824",
+            "lastchange": "2023-05-30T11:46:04.978824",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "formparts": [
+        {
+            "id": "52e3ee26-afb1-11ed-9bd8-0242ac110002",
+            "name": "Identifikace",
+            "order": 1,
+            "section_id": "48bbc7d4-afb1-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:05.034309",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "52e3f22c-afb1-11ed-9bd8-0242ac110002",
+            "name": "Zn\u011bn\u00ed",
+            "order": 1,
+            "section_id": "48bbca18-afb1-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:05.034309",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "52e3f2d6-afb1-11ed-9bd8-0242ac110002",
+            "name": "Identifikace",
+            "order": 1,
+            "section_id": "48bbca9a-afb1-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:05.034309",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "52e3f344-afb1-11ed-9bd8-0242ac110002",
+            "name": "Zn\u011bn\u00ed",
+            "order": 1,
+            "section_id": "48bbcaea-afb1-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:05.034309",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "formrequests": [
+        {
+            "id": "13181566-afb0-11ed-9bd8-0242ac110002",
+            "name": "\u017d\u00e1dost o p\u0159eru\u0161en\u00ed studia",
+            "created": "2023-05-30T11:46:04.999529",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": "a79ee8ce-b085-11ed-9bd8-0242ac110002",
+            "changedby": null
+        }
+    ],
+    "forms": [
+        {
+            "id": "190d578c-afb1-11ed-9bd8-0242ac110002",
+            "name": "\u017d\u00e1dost",
+            "name_en": "",
+            "status": null,
+            "valid": true,
+            "type_id": "2e1140f4-afb0-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:04.988707",
+            "lastchange": "2023-05-30T11:46:04.988707",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "190d5a7a-afb1-11ed-9bd8-0242ac110002",
+            "name": "\u017d\u00e1dost",
+            "name_en": "",
+            "status": null,
+            "valid": true,
+            "type_id": "2e1140f4-afb0-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:04.988707",
+            "lastchange": "2023-05-30T11:46:04.988707",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "formsections": [
+        {
+            "id": "48bbc7d4-afb1-11ed-9bd8-0242ac110002",
+            "name": "Student",
+            "form_id": "190d578c-afb1-11ed-9bd8-0242ac110002",
+            "order": 1,
+            "status": null,
+            "created": "2023-05-30T11:46:05.022732",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "48bbca18-afb1-11ed-9bd8-0242ac110002",
+            "name": "Zn\u011bn\u00ed",
+            "form_id": "190d578c-afb1-11ed-9bd8-0242ac110002",
+            "order": 2,
+            "status": null,
+            "created": "2023-05-30T11:46:05.022732",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "48bbca9a-afb1-11ed-9bd8-0242ac110002",
+            "name": "Student",
+            "form_id": "190d5a7a-afb1-11ed-9bd8-0242ac110002",
+            "order": 1,
+            "status": null,
+            "created": "2023-05-30T11:46:05.022732",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "48bbcaea-afb1-11ed-9bd8-0242ac110002",
+            "name": "Zn\u011bn\u00ed",
+            "form_id": "190d5a7a-afb1-11ed-9bd8-0242ac110002",
+            "order": 2,
+            "status": null,
+            "created": "2023-05-30T11:46:05.022732",
+            "lastchange": "2023-04-19T20:00:00",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "formtypes": [
+        {
+            "id": "2e1140f4-afb0-11ed-9bd8-0242ac110002",
+            "name": "\u017d\u00e1dost",
+            "name_en": "",
+            "category_id": "37675bd4-afb0-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:04.959525",
+            "lastchange": "2023-05-30T11:46:04.959525",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "2e113e88-afb0-11ed-9bd8-0242ac110002",
+            "name": "Zad\u00e1n\u00ed DP",
+            "name_en": "",
+            "category_id": "37675fe4-afb0-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T11:46:04.959525",
+            "lastchange": "2023-05-30T11:46:04.959525",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "groups": [
+        {
+            "id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
+            "name": "Uni",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e152-610c-11ed-9f29-001a7dda7110",
+            "mastergroup_id": null,
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "name": "Fac",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e153-610c-11ed-bf19-001a7dda7110",
+            "mastergroup_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "name": "Dep",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e155-610c-11ed-844e-001a7dda7110",
+            "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "2d9dd2ea-a4a2-11ed-b9df-0242ac120003",
+            "name": "St",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3b54-ae0f-11ed-9bd8-0242ac110002",
+            "name": "22-5KB-A",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3d70-ae0f-11ed-9bd8-0242ac110002",
+            "name": "22-5KB-B",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3de8-ae0f-11ed-9bd8-0242ac110002",
+            "name": "22-5KB-C",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3e42-ae0f-11ed-9bd8-0242ac110002",
+            "name": "22-5KB-D",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3e92-ae0f-11ed-9bd8-0242ac110002",
+            "name": "22-5KB-E",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3eec-ae0f-11ed-9bd8-0242ac110002",
+            "name": "22-5KB-F",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3f3c-ae0f-11ed-9bd8-0242ac110002",
+            "name": "22-5KB-G",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3f96-ae0f-11ed-9bd8-0242ac110002",
+            "name": "22-5KB-H",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf3fe6-ae0f-11ed-9bd8-0242ac110002",
+            "name": "22-5KB-I",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "9baf4040-ae0f-11ed-9bd8-0242ac110002",
+            "name": "22-5KB-J",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "480f2802-a869-11ed-924c-0242ac110002",
+            "name": "spr\u00e1va",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-26T20:46:25.730058",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "grouptypes": [
+        {
+            "id": "cd49e152-610c-11ed-9f29-001a7dda7110",
+            "name": "univerzita",
+            "name_en": "university",
+            "created": "2023-05-26T20:46:25.689897",
+            "lastchange": "2023-05-26T20:46:25.689897",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "cd49e153-610c-11ed-bf19-001a7dda7110",
+            "name": "fakulta",
+            "name_en": "faculty",
+            "created": "2023-05-26T20:46:25.689897",
+            "lastchange": "2023-05-26T20:46:25.689897",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "cd49e154-610c-11ed-bdbf-001a7dda7110",
+            "name": "\u00fastav",
+            "name_en": "institute",
+            "created": "2023-05-26T20:46:25.689897",
+            "lastchange": "2023-05-26T20:46:25.689897",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "cd49e155-610c-11ed-bdbf-001a7dda7110",
+            "name": "centrum",
+            "name_en": "centre",
+            "created": "2023-05-26T20:46:25.689897",
+            "lastchange": "2023-05-26T20:46:25.689897",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "cd49e155-610c-11ed-844e-001a7dda7110",
+            "name": "katedra",
+            "name_en": "department",
+            "created": "2023-05-26T20:46:25.689897",
+            "lastchange": "2023-05-26T20:46:25.689897",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "cd49e156-610c-11ed-87ef-001a7dda7110",
+            "name": "odd\u011blen\u00ed",
+            "name_en": "section",
+            "created": "2023-05-26T20:46:25.689897",
+            "lastchange": "2023-05-26T20:46:25.689897",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "name": "studijn\u00ed skupina",
+            "name_en": "study group",
+            "created": "2023-05-26T20:46:25.689897",
+            "lastchange": "2023-05-26T20:46:25.689897",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "cd49e157-610c-11ed-9f29-001a7dda7110",
+            "name": "stal\u00fd stav",
+            "name_en": "all teachers",
+            "created": "2023-05-26T20:46:25.689897",
+            "lastchange": "2023-05-26T20:46:25.689897",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "0eb35718-615b-11ed-b753-0242ac120003",
+            "name": "studenti",
+            "name_en": "all students",
+            "created": "2023-05-26T20:46:25.689897",
+            "lastchange": "2023-05-26T20:46:25.689897",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b1bedec8-931f-11ed-9b95-0242ac110002",
+            "name": "garance programu",
+            "name_en": "program grants",
+            "created": "2023-05-26T20:46:25.689897",
+            "lastchange": "2023-05-26T20:46:25.689897",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "b1bedf72-931f-11ed-9b95-0242ac110002",
+            "name": "garance p\u0159edm\u011btu",
+            "name_en": "subject grants",
+            "created": "2023-05-26T20:46:25.689897",
+            "lastchange": "2023-05-26T20:46:25.689897",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "memberships": [
+        {
+            "id": "7cea8596-a4a2-11ed-b9df-0242ac120003",
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "5dde7391-b719-417e-bc72-33a95804fd0c",
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "e911cce2-09f2-4c34-b7cf-649de4cd717a",
+            "user_id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "d90d6a8e-5327-44d3-8bae-ddb2556f81a6",
+            "user_id": "2d9dc9a8-a4a2-11ed-b9df-0242ac120003",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "6ef47c7f-7473-4ac2-b6d6-00b55a971a2b",
+            "user_id": "2d9dcbec-a4a2-11ed-b9df-0242ac120003",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "906ce1d3-516d-4f90-af2e-dc29619203b2",
+            "user_id": "89d1e724-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "3555044e-6a3d-4227-8cc5-fec3ae3c233a",
+            "user_id": "89d1f34a-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ab8b481f-d628-43bd-8c55-21558e5718ac",
+            "user_id": "89d1f3cc-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "fd49edf0-c206-44dd-ade2-249742160919",
+            "user_id": "89d1f430-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "6e787362-ac36-4fac-83e1-371250fd9d2c",
+            "user_id": "89d1f48a-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ab9a3304-698d-4e26-b8da-bae18370b802",
+            "user_id": "89d1f4e4-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "1f280ba9-4777-482c-887f-91532ad4f484",
+            "user_id": "89d1f534-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "d5a22c7c-8dfa-4c3e-a251-0274d5ae853f",
+            "user_id": "89d1f58e-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "d3fb66e4-ad9a-4ddf-8a3a-bca2a1d825de",
+            "user_id": "89d1f5de-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "7fa4bb34-6c1f-4d52-805b-7d2ec30e3150",
+            "user_id": "89d1f638-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "startdate": null,
+            "enddate": null,
+            "valid": true,
+            "created": "2023-05-26T20:46:25.743495",
+            "lastchange": "2023-05-26T20:46:25.743495",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "personalitiescertificatecategories": [],
+    "personalitiescertificates": [],
+    "personalitiescertificatetypes": [],
+    "personalitiesmedalcategories": [],
+    "personalitiesmedals": [],
+    "personalitiesmedaltypes": [],
+    "personalitiesranks": [],
+    "personalitiesranktypes": [],
+    "personalitiesrelateddocs": [],
+    "personalitiesstudies": [],
+    "personalitiesworkhistories": [],
+    "plan_lessons": [
+        {
+            "id": "704e7bc2-b1d6-4fe3-95ce-b008b352dd59",
+            "name": "\u00davod",
+            "length": null,
+            "startproposal": null,
+            "linkedlesson_id": null,
+            "topic_id": "ce250b44-b095-11ed-9bd8-0242ac110002",
+            "lessontype_id": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002",
+            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+            "event_id": "",
+            "created": "2023-05-30T09:59:35.082809",
+            "lastchange": "2023-05-30T09:59:35.082809",
+            "changedby": null,
+            "createdby": null
+        },
+        {
+            "id": "2042c68d-9b6f-4fce-9c35-d37bb36b4829",
+            "name": "Objekty",
+            "length": null,
+            "startproposal": null,
+            "linkedlesson_id": "704e7bc2-b1d6-4fe3-95ce-b008b352dd59",
+            "topic_id": "ce250b44-b095-11ed-9bd8-0242ac110002",
+            "lessontype_id": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002",
+            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+            "event_id": "",
+            "created": "2023-05-30T09:59:35.087698",
+            "lastchange": "2023-05-30T09:59:35.087698",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "plan_lessons_facilities": [
+        {
+            "id": "36deed79-b97f-4f1c-89a2-fa35cdddbbea",
+            "facility_id": "6627654a-a7b3-11ed-b76e-0242ac110002",
+            "planlesson_id": "704e7bc2-b1d6-4fe3-95ce-b008b352dd59",
+            "created": "2023-05-30T09:59:35.125428",
+            "lastchange": "2023-05-30T09:59:35.125428",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "plan_lessons_groups": [
+        {
+            "id": "f012ec54-8ee9-45d7-8779-d01aa8940050",
+            "group_id": "9baf3b54-ae0f-11ed-9bd8-0242ac110002",
+            "planlesson_id": "704e7bc2-b1d6-4fe3-95ce-b008b352dd59",
+            "created": "2023-05-30T09:59:35.110490",
+            "lastchange": "2023-05-30T09:59:35.110490",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "plan_lessons_users": [
+        {
+            "id": "4071bb0b-799d-466e-92ef-ecd9c8233dce",
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "planlesson_id": "704e7bc2-b1d6-4fe3-95ce-b008b352dd59",
+            "created": "2023-05-30T09:59:35.097610",
+            "lastchange": "2023-05-30T09:59:35.097610",
+            "changedby": null,
+            "createdby": null
+        }
+    ],
+    "plan_subjects": [],
+    "preferedtagentities": [],
+    "preferedtags": [],
+    "projectcategories": [
+        {
+            "id": "5c8c4c5a-df3b-44a9-ab90-396bdc84542b",
+            "name": "N\u00e1rodn\u00ed grant",
+            "name_en": "National grant",
+            "created": "2023-05-30T09:59:35.268334",
+            "lastchange": "2023-05-30T09:59:35.268334",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "projectfinancecategories": [
+        {
+            "id": "5a15450e-67e6-42a8-923a-aa7ed555b008",
+            "name": "\u00fa\u010delov\u00e1 podpora",
+            "name_en": null,
+            "created": "2023-05-30T09:59:35.313552",
+            "lastchange": "2023-05-30T09:59:35.313552",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "projectfinances": [
+        {
+            "id": "f911230f-7e1f-4e9b-90a9-b921996ceb87",
+            "name": "komplet",
+            "amount": 100000.0,
+            "project_id": "43dd2ff1-5c17-42a5-ba36-8b30e2a243bb",
+            "financetype_id": "9e37059c-de2c-4112-9009-559c8b0396f1",
+            "created": "2023-05-30T09:59:35.336963",
+            "lastchange": "2023-05-30T09:59:35.336963",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "projectfinancetypes": [
+        {
+            "id": "9e37059c-de2c-4112-9009-559c8b0396f1",
+            "name": "osobn\u00ed n\u00e1klady",
+            "name_en": "personal",
+            "created": "2023-05-30T09:59:35.325909",
+            "lastchange": "2023-05-30T09:59:35.325909",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "projectmilestonelinks": [
+        {
+            "id": "ae492131-917e-4634-9158-7341392b94ab",
+            "previous_id": "d7266936-17c1-4810-88d2-079ebb864d2e",
+            "next_id": "53633106-3a84-4c2f-8f9f-7ec359ba8584",
+            "created": "2023-05-30T09:59:35.357726",
+            "lastchange": "2023-05-30T09:59:35.357726",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "projectmilestones": [
+        {
+            "id": "d7266936-17c1-4810-88d2-079ebb864d2e",
+            "name": "Etapa 1",
+            "startdate": "2023-01-01T17:27:12",
+            "enddate": "2023-12-31T17:27:12",
+            "project_id": "43dd2ff1-5c17-42a5-ba36-8b30e2a243bb",
+            "created": "2023-05-30T09:59:35.348266",
+            "lastchange": "2023-05-30T09:59:35.348266",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "53633106-3a84-4c2f-8f9f-7ec359ba8584",
+            "name": "Etapa 2",
+            "startdate": "2024-01-01T17:27:12",
+            "enddate": "2025-12-31T17:27:12",
+            "project_id": "43dd2ff1-5c17-42a5-ba36-8b30e2a243bb",
+            "created": "2023-05-30T09:59:35.348266",
+            "lastchange": "2023-05-30T09:59:35.348266",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "projects": [
+        {
+            "id": "43dd2ff1-5c17-42a5-ba36-8b30e2a243bb",
+            "name": "Nukl\u00e9\u00e1rn\u00ed reakce pro budovy",
+            "startdate": "2023-01-01T17:27:12",
+            "enddate": "2025-12-31T17:27:12",
+            "projecttype_id": "a825d8e1-2e60-4884-afdb-25642db581d8",
+            "group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
+            "created": "2023-05-30T09:59:35.300632",
+            "lastchange": "2023-05-30T09:59:35.300632",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "projecttypes": [
+        {
+            "id": "a825d8e1-2e60-4884-afdb-25642db581d8",
+            "name": "GA\u010cR",
+            "name_en": "GA\u010cR",
+            "category_id": null,
+            "created": "2023-05-30T09:59:35.286698",
+            "lastchange": "2023-05-30T09:59:35.286698",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "publication_authors": [
+        {
+            "id": "0d80595a-5838-44d3-8de2-f0e143df429c",
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
+            "order": 1,
+            "share": 0.5,
+            "created": "2023-05-30T09:59:35.168810",
+            "lastchange": "2023-05-30T09:59:35.168810",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "0d80595f-5838-44d3-8de2-f0e143df429c",
+            "user_id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
+            "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
+            "order": 2,
+            "share": 0.5,
+            "created": "2023-05-30T09:59:35.168810",
+            "lastchange": "2023-05-30T09:59:35.168810",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "publication_subjects": [
+        {
+            "id": "d4a960e9-d7e1-4139-a693-bed27bb46a05",
+            "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
+            "subject_id": "",
+            "created": "2023-05-30T09:59:35.180570",
+            "lastchange": "2023-05-30T09:59:35.180570",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "publicationcategories": [
+        {
+            "id": "8b48ce1c-330d-4ba4-9779-065cf9fde5d9",
+            "name": "V\u011bdeck\u00e9",
+            "name_en": "Scientic",
+            "created": "2023-05-30T09:59:35.131708",
+            "lastchange": "2023-05-30T09:59:35.131708",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "publications": [
+        {
+            "id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
+            "name": "IT Technologie",
+            "publication_type_id": "478bf500-a90d-411a-a5aa-5546475c3992",
+            "place": "Prague",
+            "published_date": "2023-04-24",
+            "reference": "https://google.com",
+            "valid": true,
+            "created": "2023-05-30T09:59:35.155506",
+            "lastchange": "2023-05-30T09:59:35.155506",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "publicationtypes": [
+        {
+            "id": "478bf500-a90d-411a-a5aa-5546475c3992",
+            "name": "\u010cl\u00e1nek J",
+            "name_en": "Article J",
+            "category_id": "8b48ce1c-330d-4ba4-9779-065cf9fde5d9",
+            "created": "2023-05-30T09:59:35.143065",
+            "lastchange": "2023-05-30T09:59:35.143065",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "rolecategories": [
+        {
+            "id": "fd73596b-1043-46f0-837a-baa0734d64df",
+            "name": "academic",
+            "name_en": null,
+            "created": "2023-05-26T20:46:25.699019",
+            "lastchange": "2023-05-26T20:46:25.699019",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "roles": [
+        {
+            "id": "7cea8802-a4a2-11ed-b9df-0242ac120003",
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
+            "roletype_id": "ae3f0d74-6159-11ed-b753-0242ac120003",
+            "startdate": "2023-04-19T17:27:12",
+            "enddate": "2023-04-19T17:27:12",
+            "valid": true,
+            "created": "2023-05-26T20:46:25.760099",
+            "lastchange": "2023-05-26T20:46:25.760099",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "roletypes": [
+        {
+            "id": "05a3e0f5-f71e-4caa-8012-229d868aa8ca",
+            "name": "j\u00e1",
+            "name_en": "myself",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df",
+            "created": "2023-05-26T20:46:25.707082",
+            "lastchange": "2023-05-26T20:46:25.707082",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ae3f0d74-6159-11ed-b753-0242ac120003",
+            "name": "rektor",
+            "name_en": "rector",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df",
+            "created": "2023-05-26T20:46:25.707082",
+            "lastchange": "2023-05-26T20:46:25.707082",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ae3f2886-6159-11ed-b753-0242ac120003",
+            "name": "prorektor",
+            "name_en": "vicerector",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df",
+            "created": "2023-05-26T20:46:25.707082",
+            "lastchange": "2023-05-26T20:46:25.707082",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ae3f2912-6159-11ed-b753-0242ac120003",
+            "name": "d\u011bkan",
+            "name_en": "dean",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df",
+            "created": "2023-05-26T20:46:25.707082",
+            "lastchange": "2023-05-26T20:46:25.707082",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ae3f2980-6159-11ed-b753-0242ac120003",
+            "name": "prod\u011bkan",
+            "name_en": "vicedean",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df",
+            "created": "2023-05-26T20:46:25.707082",
+            "lastchange": "2023-05-26T20:46:25.707082",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ae3f29ee-6159-11ed-b753-0242ac120003",
+            "name": "vedouc\u00ed katedry",
+            "name_en": "head of department",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df",
+            "created": "2023-05-26T20:46:25.707082",
+            "lastchange": "2023-05-26T20:46:25.707082",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ae3f2a5c-6159-11ed-b753-0242ac120003",
+            "name": "vedouc\u00ed u\u010ditel",
+            "name_en": "leading teacher",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df",
+            "created": "2023-05-26T20:46:25.707082",
+            "lastchange": "2023-05-26T20:46:25.707082",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "5f0c247e-931f-11ed-9b95-0242ac110002",
+            "name": "garant",
+            "name_en": "grant",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df",
+            "created": "2023-05-26T20:46:25.707082",
+            "lastchange": "2023-05-26T20:46:25.707082",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "5f0c2532-931f-11ed-9b95-0242ac110002",
+            "name": "garant (z\u00e1stupce)",
+            "name_en": "grant (deputy)",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df",
+            "created": "2023-05-26T20:46:25.707082",
+            "lastchange": "2023-05-26T20:46:25.707082",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "5f0c255a-931f-11ed-9b95-0242ac110002",
+            "name": "garant p\u0159edm\u011btu",
+            "name_en": "subject's grant",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df",
+            "created": "2023-05-26T20:46:25.707082",
+            "lastchange": "2023-05-26T20:46:25.707082",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "5f0c2578-931f-11ed-9b95-0242ac110002",
+            "name": "p\u0159edn\u00e1\u0161ej\u00edc\u00ed",
+            "name_en": "lecturer",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df",
+            "created": "2023-05-26T20:46:25.707082",
+            "lastchange": "2023-05-26T20:46:25.707082",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "5f0c2596-931f-11ed-9b95-0242ac110002",
+            "name": "cvi\u010d\u00edc\u00ed",
+            "name_en": "trainer",
+            "category_id": "fd73596b-1043-46f0-837a-baa0734d64df",
+            "created": "2023-05-26T20:46:25.707082",
+            "lastchange": "2023-05-26T20:46:25.707082",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "surveyanswers": [
+        {
+            "id": "ad0f53fb-240b-47de-ab1d-871bbde6f972",
+            "value": "8",
+            "aswered": true,
+            "expired": false,
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "question_id": "5b7e4ae7-9bb9-4e2f-829b-c2763ac1092e",
+            "created": "2023-05-30T09:59:35.196863",
+            "lastchange": "2023-05-30T09:59:35.196863",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "dd7dc78f-534d-4c33-a979-2dfd41a53a84",
+            "value": "OK",
+            "aswered": true,
+            "expired": false,
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "question_id": "984120da-ab92-44bd-9389-5f47ed9b3225",
+            "created": "2023-05-30T09:59:35.196863",
+            "lastchange": "2023-05-30T09:59:35.196863",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "bb0cd1b9-15ba-4f80-a6a0-7a9dc65deb13",
+            "value": "Anal\u00fdza informa\u010dn\u00edch zdroj\u016f",
+            "aswered": true,
+            "expired": false,
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "question_id": "2b27adcc-0b7e-40c4-a430-8e0aa551ae3e",
+            "created": "2023-05-30T09:59:35.196863",
+            "lastchange": "2023-05-30T09:59:35.196863",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "e054d1a5-f259-429d-9f7a-f35d55caf2ab",
+            "value": null,
+            "aswered": false,
+            "expired": false,
+            "user_id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
+            "question_id": "5b7e4ae7-9bb9-4e2f-829b-c2763ac1092e",
+            "created": "2023-05-30T09:59:35.196863",
+            "lastchange": "2023-05-30T09:59:35.196863",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "600a7008-44b6-46e9-a546-d934731a0603",
+            "value": null,
+            "aswered": true,
+            "expired": false,
+            "user_id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
+            "question_id": "984120da-ab92-44bd-9389-5f47ed9b3225",
+            "created": "2023-05-30T09:59:35.196863",
+            "lastchange": "2023-05-30T09:59:35.196863",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "ed33c145-c295-41c2-be49-5037837ee974",
+            "value": null,
+            "aswered": true,
+            "expired": false,
+            "user_id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
+            "question_id": "2b27adcc-0b7e-40c4-a430-8e0aa551ae3e",
+            "created": "2023-05-30T09:59:35.196863",
+            "lastchange": "2023-05-30T09:59:35.196863",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "surveyquestions": [
+        {
+            "id": "5b7e4ae7-9bb9-4e2f-829b-c2763ac1092e",
+            "name": "Jak hodnot\u00edte p\u0159edm\u011bt xy",
+            "name_en": null,
+            "order": 1,
+            "survey_id": "910d54a9-7f2e-41ca-b811-3c600ef82fda",
+            "type_id": "2a6a1731-1efa-4644-a1d8-5848e4b29ce5",
+            "created": "2023-05-30T09:59:35.170335",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "984120da-ab92-44bd-9389-5f47ed9b3225",
+            "name": "Jak hodnot\u00edte v\u00fduku p\u0159edm\u011btu xy",
+            "name_en": null,
+            "order": 2,
+            "survey_id": "910d54a9-7f2e-41ca-b811-3c600ef82fda",
+            "type_id": "949d74a2-63b1-4478-82f1-e025d8bc6c8b",
+            "created": "2023-05-30T09:59:35.170335",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "2b27adcc-0b7e-40c4-a430-8e0aa551ae3e",
+            "name": "Kter\u00fd p\u0159edm\u011bt pova\u017eujete za nejv\u00edc p\u0159\u00ednosn\u00fd?",
+            "name_en": null,
+            "order": 3,
+            "survey_id": "910d54a9-7f2e-41ca-b811-3c600ef82fda",
+            "type_id": "ad0f53fb-240b-47de-ab1d-871bbde6f973",
+            "created": "2023-05-30T09:59:35.170335",
+            "lastchange": "2023-04-19T17:27:12",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "surveyquestiontypes": [
+        {
+            "id": "ad0f53fb-240b-47de-ab1d-871bbde6f973",
+            "name": "Uzav\u0159en\u00e9",
+            "created": "2023-05-30T09:59:35.133491",
+            "lastchange": "2023-05-30T09:59:35.133491",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "949d74a2-63b1-4478-82f1-e025d8bc6c8b",
+            "name": "Otev\u0159en\u00e9",
+            "created": "2023-05-30T09:59:35.133491",
+            "lastchange": "2023-05-30T09:59:35.133491",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "2a6a1731-1efa-4644-a1d8-5848e4b29ce5",
+            "name": "\u0160k\u00e1la",
+            "created": "2023-05-30T09:59:35.133491",
+            "lastchange": "2023-05-30T09:59:35.133491",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "surveyquestionvalues": [
+        {
+            "id": "872c40f6-de27-4ff3-98c0-dd7cc0f3df57",
+            "name": "Informatika",
+            "name_en": null,
+            "order": 1,
+            "question_id": "2b27adcc-0b7e-40c4-a430-8e0aa551ae3e",
+            "created": "2023-05-30T09:59:35.182617",
+            "lastchange": "2023-05-30T09:59:35.182617",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "5dee5260-7cd9-4433-b735-679871153205",
+            "name": "Angli\u010dtina",
+            "name_en": null,
+            "order": 2,
+            "question_id": "2b27adcc-0b7e-40c4-a430-8e0aa551ae3e",
+            "created": "2023-05-30T09:59:35.182617",
+            "lastchange": "2023-05-30T09:59:35.182617",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "surveys": [
+        {
+            "id": "910d54a9-7f2e-41ca-b811-3c600ef82fda",
+            "name": "Studentsk\u00e9 hodnocen\u00ed 2022",
+            "name_en": null,
+            "type_id": null,
+            "created": "2023-05-30T09:59:35.157240",
+            "lastchange": "2023-05-30T09:59:35.157240",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "surveytypes": [
+        {
+            "id": "712029b6-2dbc-4952-9d3e-e897899edf0a",
+            "name": "Kvalita v\u00fduky",
+            "name_en": null,
+            "created": "2023-05-30T09:59:35.147452",
+            "lastchange": "2023-05-30T09:59:35.147452",
+            "createdby": null,
+            "changedby": null
+        }
+    ],
+    "taskcontents": [
+        {
+            "id": "3eb467f0-97ce-4cdc-a3f2-257074038bd4",
+            "brief_des": "",
+            "detailed_des": null,
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:34.966679",
+            "lastchange": "2023-05-30T09:59:34.966679",
+            "changedby": null
+        }
+    ],
+    "tasks": [
+        {
+            "id": "adde473d-5c78-4171-bf16-8e7f97bef5f9",
+            "name": "",
+            "brief_des": "",
+            "detailed_des": null,
+            "reference": "https://google.com",
+            "date_of_entry": "2023-01-01T17:27:12",
+            "date_of_submission": "2023-01-21T17:27:12",
+            "date_of_fulfillment": "2023-01-20T17:27:12",
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002",
+            "created": "2023-05-30T09:59:34.987096",
+            "lastchange": "2023-05-30T09:59:34.987096",
+            "changedby": null
+        }
+    ],
+    "users": [
+        {
+            "id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "name": "John",
+            "surname": "Newbie",
+            "email": "john.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
+            "name": "Julia",
+            "surname": "Newbie",
+            "email": "julia.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "2d9dc9a8-a4a2-11ed-b9df-0242ac120003",
+            "name": "Johnson",
+            "surname": "Newbie",
+            "email": "johnson.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "2d9dcbec-a4a2-11ed-b9df-0242ac120003",
+            "name": "Jepeto",
+            "surname": "Newbie",
+            "email": "jepeto.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1e724-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Jana",
+            "surname": "Newbie",
+            "email": "jana.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f34a-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Jolana",
+            "surname": "Newbie",
+            "email": "jolana.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f3cc-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Jitka",
+            "surname": "Newbie",
+            "email": "jitka.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f430-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Jaroslava",
+            "surname": "Newbie",
+            "email": "jaroslava.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f48a-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Lada",
+            "surname": "Newbie",
+            "email": "lada.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f4e4-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Ludmila",
+            "surname": "Newbie",
+            "email": "ludmila.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f534-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Lucie",
+            "surname": "Newbie",
+            "email": "lucie.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f58e-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Nola",
+            "surname": "Newbie",
+            "email": "nola.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f5de-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Neva",
+            "surname": "Newbie",
+            "email": "neva.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        },
+        {
+            "id": "89d1f638-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Nora",
+            "surname": "Newbie",
+            "email": "nora.newbie@world.com",
+            "valid": true,
+            "startdate": null,
+            "enddate": null,
+            "created": "2023-05-26T20:46:25.717792",
+            "lastchange": "2023-05-26T20:46:25.717792",
+            "createdby": null,
+            "changedby": null
+        }
+    ]
+}

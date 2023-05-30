@@ -210,6 +210,100 @@ def SingleFile(source):
     return resultFile
 
 import os
+from sqlalchemy import select
+
+def ExportModels(sessionMaker, DBModels):
+    """returns a dict of lists of dict
+    it is a dict of tables (list) containing a rows (dict)
+    DBModels defines a list of models to export
+    """
+
+    def ToDict(dbRow, cols):
+        "Converts a row (sqlalchemy model) into dict"
+        result = {}
+        for col in cols:
+            result[col] = getattr(dbRow, col)
+        return result
+
+    result = {}
+    for tableName, DBModel in DBModels.items():  # iterate over all models
+        
+        cols = [col.name for col in DBModel.metadata.tables[tableName].columns]
+
+        # query for all items in a table
+        stm = select(DBModel)
+        with sessionMaker() as session:
+            dbRows = session.execute(stm)
+            dbData = dbRows.scalars()
+
+            # convert all rows into list of dicts and
+            # insert it as a new key-value pair into result
+            result[tableName] = [ToDict(row, cols) for row in dbData]
+
+    
+    import json
+    with open("systemdata.json", "w") as outfile:
+        json.dump(result, outfile, indent=4, default=json_serial)
+
+    return result
+
+import datetime
+import decimal
+import json
+
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.isoformat()
+    if isinstance(obj, decimal.Decimal):
+        return float(obj)
+    
+    raise TypeError ("Type %s not serializable" % type(obj))
+
+async def getSystemDataJSON():
+    from sqlalchemy import MetaData
+    from sqlalchemy.ext.automap import automap_base
+    from sqlalchemy import create_engine, inspect, select
+
+    from nogql_api.DBDefinitions import ComposeConnectionString
+    from sqlalchemy.orm import sessionmaker
+
+    Base = automap_base()
+    connectionstring = ComposeConnectionString()
+    connectionstring = connectionstring.replace(
+        "postgresql+asyncpg", "postgresql+psycopg2"
+    )
+    engine = create_engine(connectionstring)
+    print("Extracting metadata ...")
+    Base.prepare(
+        engine,
+        reflect=True,
+        # classname_for_table=fromTableToModelName,
+        # name_for_collection_relationship=fromTableToRelationNName,
+        # name_for_scalar_relationship=fromTableToRelation1Name
+    )
+
+    print("Creating graph for UML ...")
+
+    def getModels(SQLAlchemyBase=Base):
+        baseClasses = SQLAlchemyBase.classes
+        result = {}
+        for item in dir(baseClasses):
+            if item.startswith("_"):
+                continue
+            result[item] = getattr(baseClasses, item)
+        return result
+    
+    models = getModels()
+    Session = sessionmaker(engine)
+    result = ExportModels(Session, models)
+    
+    # print(models)
+    # print(result)
+    return json.dumps(result, indent=4, default=json_serial)
+
+
 async def create_upload_file_one(files: List[UploadFile]):
     filetemplate = files[0]
     filetemplatecontent = await filetemplate.read()   
@@ -230,9 +324,6 @@ async def create_upload_file_one(files: List[UploadFile]):
     headers = {"Content-Disposition": f'attachment; filename="{filetemplate.filename}"'}
     return Response(stream, media_type="application/vnd.ms-excel", headers=headers)    
     
-
-
-
 async def exportSchema():
     from sqlalchemy_schemadisplay import create_uml_graph
     from sqlalchemy import MetaData

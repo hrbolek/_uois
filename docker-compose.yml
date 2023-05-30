@@ -32,6 +32,7 @@ services:
       - gql_forms
       - gql_personalities
       - gql_presences
+      - gql_preferences
       - gql_projects
       - gql_publications
       - gql_surveys
@@ -77,6 +78,31 @@ services:
     ports: #v deploymentu by nebylo zadne mapovani portu
     #   # vnejsi port : port, kde sluzbu poskytuje kontejner
       - 31120:8000
+
+
+  gql_preferences:
+    image: gql_preferences
+    build:
+      # context definuje cestu k popisu
+      context: ./gql_preferences
+    environment:
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      - DEMO=true
+    depends_on:
+      # kontejnery, ktere musi byt spusteny drive
+      - postgres
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
 
   gql_lessons:
     image: gql_lessons
@@ -414,6 +440,8 @@ services:
     depends_on:
       # kontejnery, kter musi byt spusteny drive
       - postgres
+    volumes:
+      - ./_extradata:/app/extradata
 
   postgres:
     image: postgres

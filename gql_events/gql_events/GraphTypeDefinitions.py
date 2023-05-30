@@ -242,7 +242,10 @@ class EventGQLModel:
 
     @strawberryA.field(description="""event which contains this event (aka semester of this lesson)""")
     async def master_event(self, info: strawberryA.types.Info) -> Union["EventGQLModel", None]:
-        result = await EventGQLModel.resolve_reference(info=info, id=self.masterevent_id)
+        if (self.masterevent_id is None):
+            result = None
+        else:
+            result = await EventGQLModel.resolve_reference(info=info, id=self.masterevent_id)
         return result
 
     @strawberryA.field(description="""events which are contained by this event (aka all lessons for the semester)""")

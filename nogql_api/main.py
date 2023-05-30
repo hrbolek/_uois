@@ -74,7 +74,7 @@ def hello():
 
 
 from fastapi import UploadFile, File
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from typing import List
 
 from nogql_api.resolvers import create_upload_file_one
@@ -139,12 +139,18 @@ async def utils_vykazy_get():
     return HTMLResponse(content=content)
 
 
-from nogql_api.resolvers import exportSchema
+from nogql_api.resolvers import exportSchema, getSystemDataJSON
 
 
 @apiApp.get("/nogql/utils/umlschema")
 async def utils_umlschema_get():
     return await exportSchema()
+
+import json
+@apiApp.get("/nogql/system")
+async def utils_system_get(response_class=JSONResponse):
+    result = await getSystemDataJSON()
+    return (json.loads(result))
 
 
 app = FastAPI()
@@ -175,3 +181,8 @@ app.mount("/api", apiApp)
 #     )
 
 # app.add_route("/{path:path}", _reverse_proxy, ["GET", "POST"])
+
+# from nogql_api.resolvers import getSystemDataJSON
+# if __name__ == "__main__":
+#     import asyncio
+#     asyncio.run(getSystemDataJSON())
