@@ -227,6 +227,90 @@
             "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
             "valid": true
+        },
+        {
+            "id": "5dde7391-b719-417e-bc72-33a95804fd0c",
+            "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
+        },
+        {
+            "id": "e911cce2-09f2-4c34-b7cf-649de4cd717a",
+            "user_id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
+        },
+        {
+            "id": "d90d6a8e-5327-44d3-8bae-ddb2556f81a6",
+            "user_id": "2d9dc9a8-a4a2-11ed-b9df-0242ac120003",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
+        },
+        {
+            "id": "6ef47c7f-7473-4ac2-b6d6-00b55a971a2b",
+            "user_id": "2d9dcbec-a4a2-11ed-b9df-0242ac120003",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
+        },
+        {
+            "id": "906ce1d3-516d-4f90-af2e-dc29619203b2",
+            "user_id": "89d1e724-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
+        },
+        {
+            "id": "3555044e-6a3d-4227-8cc5-fec3ae3c233a",
+            "user_id": "89d1f34a-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
+        },
+        {
+            "id": "ab8b481f-d628-43bd-8c55-21558e5718ac",
+            "user_id": "89d1f3cc-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
+        },
+        {
+            "id": "fd49edf0-c206-44dd-ade2-249742160919",
+            "user_id": "89d1f430-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
+        },
+        {
+            "id": "6e787362-ac36-4fac-83e1-371250fd9d2c",
+            "user_id": "89d1f48a-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
+        },
+        {
+            "id": "ab9a3304-698d-4e26-b8da-bae18370b802",
+            "user_id": "89d1f4e4-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
+        },
+        { 
+            "id": "1f280ba9-4777-482c-887f-91532ad4f484",
+            "user_id": "89d1f534-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
+        },
+        {
+            "id": "d5a22c7c-8dfa-4c3e-a251-0274d5ae853f",
+            "user_id": "89d1f58e-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
+        },
+        {
+            "id": "d3fb66e4-ad9a-4ddf-8a3a-bca2a1d825de",
+            "user_id": "89d1f5de-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
+        },
+        {
+            "id": "7fa4bb34-6c1f-4d52-805b-7d2ec30e3150",
+            "user_id": "89d1f638-ae0f-11ed-9bd8-0242ac110002",
+            "group_id": "2d9dd1c8-a4a2-11ed-b9df-0242ac120003",
+            "valid": true
         }
     ],
     "grouptypes": [
@@ -494,7 +578,7 @@
     ],
     "publication_authors": [
         {
-            "id": "0d80595f-5838-44d3-8de2-f0e143df429c",
+            "id": "0d80595a-5838-44d3-8de2-f0e143df429c",
             "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
             "order": 1,
@@ -511,6 +595,7 @@
     "publications": [
         {
             "id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
+            "name": "IT Technologie",
             "publication_type_id": "478bf500-a90d-411a-a5aa-5546475c3992",
             "published_date": "2023-04-24T00:00:00",
             "reference": "https://google.com",
@@ -804,6 +889,7 @@
     "awauthorizationusers": [
         {
             "id": "16c92914-0f71-437d-ace3-9661abe4c6cd",
+            "authorization_id": "a854adb9-b29a-4062-95b3-cfd685071f16",
             "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "accesslevel": 2
         }
@@ -811,6 +897,7 @@
     "awauthorizationgroups": [
         {
             "id": "4390a9cc-4751-482c-932b-908f0354380e",
+            "authorization_id": "a854adb9-b29a-4062-95b3-cfd685071f16",
             "group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
             "accesslevel": 1
         }
@@ -818,6 +905,7 @@
     "awauthorizationroletypes": [
         {
             "id": "1125f3ed-cf55-4a57-9eb7-7e8f1447b9b0",
+            "authorization_id": "a854adb9-b29a-4062-95b3-cfd685071f16",
             "group_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
             "roletype_id": "05a3e0f5-f71e-4caa-8012-229d868aa8ca",
             "accesslevel": 2
@@ -833,74 +921,88 @@
     "awworkflowstates": [
         {
             "id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Student"
         },
         {
             "id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "VK"
         },
         {
             "id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Proděkan"
         },
         {
             "id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Děkan"
         },
         {
             "id": "607e4f0d-af42-422c-a4f0-09163242e89e",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Student"
         },
         {
             "id": "7d701986-9bb1-435d-ac00-42679d31f496",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Archiv"
         }
     ],
     "awworkflowtransitions": [
         {
             "id": "22b0aec9-a0d4-4a8b-a34d-6481fe45f14b",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Podat",
             "sourcestate_id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0",
             "destinationstate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe"
         },
         {
             "id": "a4ebc241-73eb-4a93-b939-be77d891d92a",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Vrátit",
             "sourcestate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
             "destinationstate_id": "eb46ece6-be1b-4142-a5c5-0aac31e681f0"
         },
         {
             "id": "8c16f48f-7984-478e-a833-60890b4eb3e8",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Doporučit",
             "sourcestate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe",
             "destinationstate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8"
         },
         {
             "id": "58542bd0-9693-465b-8092-364da49e97e7",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Vrátit",
             "sourcestate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
             "destinationstate_id": "31b95aba-4de0-43f5-91ec-ba69183b1ffe"
         },
         {
             "id": "9a76cc80-f0df-4875-849b-ef515808ee09",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Doporučit",
             "sourcestate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8",
             "destinationstate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb"
         },
         {
             "id": "8dc5c8c6-e862-4738-8238-068cd1b7a9e3",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Vrátit",
             "sourcestate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
             "destinationstate_id": "a52c61b5-9d13-4146-9dea-641ded47aff8"
         },
         {
             "id": "0f09ee14-6e26-45f0-9f2b-770201a8dfc3",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Schválit",
             "sourcestate_id": "c8f37369-2b30-4730-9ed5-e33b2cce51cb",
             "destinationstate_id": "607e4f0d-af42-422c-a4f0-09163242e89e"
         },
         {
             "id": "db38ab50-4f69-44c5-bfec-8195ac7e7557",
+            "workflow_id": "8299eeeb-99e7-4364-8cc2-88b83f900d32",
             "name": "Archivovat",
             "sourcestate_id": "607e4f0d-af42-422c-a4f0-09163242e89e",
             "destinationstate_id": "7d701986-9bb1-435d-ac00-42679d31f496"
@@ -1001,7 +1103,9 @@
         {"id": "ba53d6b6-a7a0-11ed-b76e-0242ac110002", "name": "", "name_en": ""},
         {"id": "ba53d71a-a7a0-11ed-b76e-0242ac110002", "name": "", "name_en": ""}
     ],
-
+    "facilities_events": [
+        {"id": "", "event_id": "45b2df80-ae0f-11ed-9bd8-0242ac110002", "facility_id": "6627654a-a7b3-11ed-b76e-0242ac110002"}
+    ],
 
     "acprogramforms": [
         {
@@ -1199,6 +1303,15 @@
         }
     ],
 
+    "acprograms_studentstates": [
+        {"id": "6c96b893-ca09-4b6f-9fbb-5359c589927b", "name": "Přijat", "name_en": ""},
+        {"id": "1be13622-c57c-4484-a113-2ad3c4866eaf", "name": "Zapsán", "name_en": ""},
+        {"id": "8a443983-bcac-4b73-a258-4b98ec58043f", "name": "Studuje", "name_en": ""},
+        {"id": "4d05ac93-3dc6-49a6-acf8-afa3d41bee7e", "name": "Přerušeno", "name_en": ""},
+        {"id": "472ef32f-aaa8-4488-b750-c27af9f20192", "name": "Ukončeno řádně", "name_en": ""},
+        {"id": "9d3537b9-d644-4c35-8c46-9ab88a7a5022", "name": "Ukončeno z moci úřední", "name_en": ""}
+    ],
+
     "acprogramgroups": [
         {"id": "ce250798-b095-11ed-9bd8-0242ac110002" }
     ],
@@ -1249,7 +1362,6 @@
             "id": "ce250bd0-b095-11ed-9bd8-0242ac110002", 
             "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
-            "classificationtype_id": "a00a0322-b095-11ed-9bd8-0242ac110002",
             "classificationlevel_id": "5faea396-b095-11ed-9bd8-0242ac110002",
             "lastchange": "2023-04-19T08:00:00",
             "order": 1
@@ -1258,13 +1370,18 @@
             "id": "ce250bd1-b095-11ed-9bd8-0242ac110002", 
             "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
-            "classificationtype_id": "a00a0322-b095-11ed-9bd8-0242ac110002",
             "classificationlevel_id": "5faea21a-b095-11ed-9bd8-0242ac110002",
             "lastchange": "2023-04-19T08:00:00",
             "order": 2
         }
     ],
 
+    "plans": [
+        {
+            "id": "a5085468-394f-4a8b-bf23-4e72a6a6d415",
+            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002"
+        }
+    ],
     "plan_lessons": [
         {
             "id": "704e7bc2-b1d6-4fe3-95ce-b008b352dd59",
@@ -1272,7 +1389,7 @@
             "linkedlesson_id": null,
             "topic_id": "ce250b44-b095-11ed-9bd8-0242ac110002",
             "lessontype_id": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002",
-            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+            "plan_id": "a5085468-394f-4a8b-bf23-4e72a6a6d415",
             "event_id": "",
             "_chunk": 0
         },
@@ -1282,7 +1399,7 @@
             "linkedlesson_id": "704e7bc2-b1d6-4fe3-95ce-b008b352dd59",
             "topic_id": "ce250b44-b095-11ed-9bd8-0242ac110002",
             "lessontype_id": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002",
-            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+            "plan_id": "a5085468-394f-4a8b-bf23-4e72a6a6d415",
             "event_id": "",
             "_chunk": 1
         }
@@ -1307,6 +1424,178 @@
             "facility_id": "6627654a-a7b3-11ed-b76e-0242ac110002",
             "planlesson_id": "704e7bc2-b1d6-4fe3-95ce-b008b352dd59"
         }
-    ]
+    ],
 
+
+    "formcategories": [
+        {"id": "37675bd4-afb0-11ed-9bd8-0242ac110002", "name": "Studentské žádosti", "name_en": ""},
+        {"id": "37675fe4-afb0-11ed-9bd8-0242ac110002", "name": "Ostatní", "name_en": ""}
+    ],
+    "formtypes": [
+        {"id": "2e1140f4-afb0-11ed-9bd8-0242ac110002", "category_id": "37675bd4-afb0-11ed-9bd8-0242ac110002", "name": "Žádost", "name_en": ""},
+        {"id": "2e113e88-afb0-11ed-9bd8-0242ac110002", "category_id": "37675fe4-afb0-11ed-9bd8-0242ac110002", "name": "Zadání DP", "name_en": ""}
+    ],
+    "formitemcategories": [
+        {"id": "b1cb0f80-afb8-11ed-9bd8-0242ac110002", "name": "GQL_API", "name_en": ""},
+        {"id": "b1cb1462-afb8-11ed-9bd8-0242ac110002", "name": "Text", "name_en": ""}
+    ],
+    "formitemtypes": [
+        {"id": "9bdb916a-afb6-11ed-9bd8-0242ac110002", 
+            "category_id": "b1cb0f80-afb8-11ed-9bd8-0242ac110002",
+            "name": "student", "query": "", "selector": "" },
+        {"id": "9bdb93a4-afb6-11ed-9bd8-0242ac110002", 
+            "category_id": "b1cb0f80-afb8-11ed-9bd8-0242ac110002",
+            "name": "program", "query": "", "selector": "" },
+        {"id": "9bdb9426-afb6-11ed-9bd8-0242ac110002", 
+            "category_id": "b1cb1462-afb8-11ed-9bd8-0242ac110002",
+           "name": "obsah", "query": "", "selector": "" },
+        {"id": "9bdb9476-afb6-11ed-9bd8-0242ac110002", 
+            "category_id": "b1cb1462-afb8-11ed-9bd8-0242ac110002",
+            "name": "doporučení", "query": "", "selector": "" }
+    ],
+
+    "formrequests": [
+        {"id": "13181566-afb0-11ed-9bd8-0242ac110002", 
+            "type_id": "2e1140f4-afb0-11ed-9bd8-0242ac110002",
+            "createdby": "a79ee8ce-b085-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "name": "Žádost o přerušení studia", "name_en": ""}
+    ],
+
+    "forms": [
+        {"id": "190d578c-afb1-11ed-9bd8-0242ac110002", 
+            "type_id": "2e1140f4-afb0-11ed-9bd8-0242ac110002",
+            "name": "Žádost", "name_en": "" },
+        {"id": "190d5a7a-afb1-11ed-9bd8-0242ac110002", 
+            "type_id": "2e1140f4-afb0-11ed-9bd8-0242ac110002",
+            "name": "Žádost", "name_en": "" }
+    ],
+    "formsections": [
+        {"id": "48bbc7d4-afb1-11ed-9bd8-0242ac110002", 
+            "form_id": "190d578c-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Student" },
+        {"id": "48bbca18-afb1-11ed-9bd8-0242ac110002", 
+            "form_id": "190d578c-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 2, "name": "Znění" },
+        {"id": "48bbca9a-afb1-11ed-9bd8-0242ac110002", 
+            "form_id": "190d5a7a-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Student" },
+        {"id": "48bbcaea-afb1-11ed-9bd8-0242ac110002", 
+            "form_id": "190d5a7a-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 2, "name": "Znění" }
+    ],
+    "formparts": [
+        {"id": "52e3ee26-afb1-11ed-9bd8-0242ac110002", 
+            "section_id": "48bbc7d4-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Identifikace" },
+        {"id": "52e3f22c-afb1-11ed-9bd8-0242ac110002", 
+            "section_id": "48bbca18-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Znění" },
+        {"id": "52e3f2d6-afb1-11ed-9bd8-0242ac110002", 
+            "section_id": "48bbca9a-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Identifikace" },
+        {"id": "52e3f344-afb1-11ed-9bd8-0242ac110002", 
+            "section_id": "48bbcaea-afb1-11ed-9bd8-0242ac110002", 
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Znění" }
+    ],
+    "formitems": [
+        {"id": "72a3d4b0-afb1-11ed-9bd8-0242ac110002", 
+            "part_id": "52e3ee26-afb1-11ed-9bd8-0242ac110002",
+            "type_id": "9bdb916a-afb6-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "user_id", "value": "45678" },
+        {"id": "72a3d7b2-afb1-11ed-9bd8-0242ac110002", 
+            "part_id": "52e3f22c-afb1-11ed-9bd8-0242ac110002", 
+            "type_id": "9bdb9426-afb6-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Znění", "value": "Žádám o ..." },
+        {"id": "72a3d85c-afb1-11ed-9bd8-0242ac110002", 
+            "part_id": "52e3f2d6-afb1-11ed-9bd8-0242ac110002", 
+            "type_id": "9bdb916a-afb6-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "user_id", "value": "45678" },
+        {"id": "72a3d8de-afb1-11ed-9bd8-0242ac110002", 
+            "part_id": "52e3f344-afb1-11ed-9bd8-0242ac110002", 
+            "type_id": "9bdb9426-afb6-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "order": 1, "name": "Znění", "value": "Žádám o ..." }
+    ],
+
+
+
+    "formhistories": [
+        {"id": "84c35266-afb5-11ed-9bd8-0242ac110002", 
+            "request_id": "13181566-afb0-11ed-9bd8-0242ac110002", 
+            "form_id": "190d578c-afb1-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "name": "" },
+        {"id": "84c35504-afb5-11ed-9bd8-0242ac110002", 
+            "request_id": "13181566-afb0-11ed-9bd8-0242ac110002", 
+            "form_id": "190d5a7a-afb1-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T20:00:00",
+            "name": "" }
+    ],
+
+    "preferedtagentities": [
+        {
+            "id": "6ec9a6ab-0bab-404d-a52e-f0ed76798219",
+            "author_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "entity_id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
+            "entity_type_id": "e8479a21-b7c4-4140-9562-217de2656d55",
+            "tag_id": "8148fd61-77b3-45d1-a382-ca3aadafb9a1"
+
+        },
+        {
+            "id": "98d372e3-6526-4ccf-8dee-283bc14c828f",
+            "author_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "entity_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
+            "entity_type_id": "2d3d9801-0017-4cf2-9272-2df7b59da667",
+            "tag_id": "7a4c0d3e-2e3a-4ea0-9037-baa38d8400d2"
+        },
+        {
+            "id": "cf7e9181-1f73-453b-80d5-70b9debbb842",
+            "author_id": "f8089aa6-2c4a-4746-9503-105fcc5d054c",
+            "entity_id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
+            "entity_type_id": "e8479a21-b7c4-4140-9562-217de2656d55",
+            "tag_id": "8148fd61-77b3-45d1-a382-ca3aadafb9a1"
+
+        },
+        {
+            "id": "8f22d834-5d74-4746-86f8-09f2989dc6a7",
+            "author_id": "f8089aa6-2c4a-4746-9503-105fcc5d054c",
+            "entity_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
+            "entity_type_id": "2d3d9801-0017-4cf2-9272-2df7b59da667",
+            "tag_id": "7a4c0d3e-2e3a-4ea0-9037-baa38d8400d2"
+        }
+    ],
+    "preferedtags": [
+        {
+            "id": "8148fd61-77b3-45d1-a382-ca3aadafb9a1",
+            "author_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "name": "partneři"
+        },
+        {
+            "id": "7a4c0d3e-2e3a-4ea0-9037-baa38d8400d2",
+            "author_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "name": "sledované"
+        },
+        {
+            "id": "b8eebb07-91d5-4d13-8adf-64f4b6de7d06",
+            "author_id": "f8089aa6-2c4a-4746-9503-105fcc5d054c",
+            "name": "partneři"
+        },
+        {
+            "id": "89838aab-d06e-445e-982e-d3c55bc7cb90",
+            "author_id": "f8089aa6-2c4a-4746-9503-105fcc5d054c",
+            "name": "sledované"
+        }
+    ]
 }

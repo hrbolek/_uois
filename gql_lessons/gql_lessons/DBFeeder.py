@@ -1,6 +1,7 @@
 from doctest import master
 from functools import cache
 from gql_lessons.DBDefinitions import (
+    PlanModel,
     PlannedLessonModel,
     UserPlanModel,
     GroupPlanModel,
@@ -94,6 +95,7 @@ async def initDB(asyncSessionMaker):
         ]
     else:
         dbModels = [
+            PlanModel,
             PlannedLessonModel,
             UserPlanModel,
             GroupPlanModel,

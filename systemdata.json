@@ -1376,14 +1376,20 @@
         }
     ],
 
+    "plans": [
+        {
+            "id": "a5085468-394f-4a8b-bf23-4e72a6a6d415",
+            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002"
+        }
+    ],
     "plan_lessons": [
         {
             "id": "704e7bc2-b1d6-4fe3-95ce-b008b352dd59",
             "name": "Úvod",
-            "linkedlesson_id": "",
+            "linkedlesson_id": null,
             "topic_id": "ce250b44-b095-11ed-9bd8-0242ac110002",
             "lessontype_id": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002",
-            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+            "plan_id": "a5085468-394f-4a8b-bf23-4e72a6a6d415",
             "event_id": "",
             "_chunk": 0
         },
@@ -1393,7 +1399,7 @@
             "linkedlesson_id": "704e7bc2-b1d6-4fe3-95ce-b008b352dd59",
             "topic_id": "ce250b44-b095-11ed-9bd8-0242ac110002",
             "lessontype_id": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002",
-            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+            "plan_id": "a5085468-394f-4a8b-bf23-4e72a6a6d415",
             "event_id": "",
             "_chunk": 1
         }

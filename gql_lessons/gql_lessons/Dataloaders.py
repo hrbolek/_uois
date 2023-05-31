@@ -1,6 +1,7 @@
 from uoishelpers.dataloaders import createIdLoader, createFkeyLoader
 
 from gql_lessons.DBDefinitions import (
+    PlanModel,
     PlannedLessonModel,
     UserPlanModel,
     GroupPlanModel,
@@ -9,6 +10,7 @@ from gql_lessons.DBDefinitions import (
 
 
 dbmodels = {
+    "psps": PlanModel,
     "plans": PlannedLessonModel,
     "userplans": UserPlanModel,
     "groupplans": GroupPlanModel,

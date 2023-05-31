@@ -572,6 +572,10 @@ class AcClassificationGQLModel:
     def date(self) -> datetime.datetime:
         return self.date
 
+    @strawberryA.field(description="""ORDER OF CLASSI""")
+    def order(self) -> int:
+        return self.order
+
     @strawberryA.field(description="""User""")
     async def user(self, info: strawberryA.types.Info) -> "UserGQLModel":
         return await UserGQLModel.resolve_reference(id=self.user_id)
@@ -661,6 +665,14 @@ class UserGQLModel:
         loader = getLoaders(info).programstudents
         result = await loader.filter_by(student_id=self.id)       
         return result
+    
+    @strawberryA.field(description="""List of programs which the user is studying""")
+    async def classifications(self, info: strawberryA.types.Info) -> List['AcClassificationGQLModel']:
+        loader = getLoaders(info).classifications
+        result = await loader.filter_by(user_id=self.id)       
+        return result
+    
+
 
 
 
@@ -800,12 +812,21 @@ class Query:
         return result
 
     @strawberryA.field(description="""Lists classifications for the user""")
-    async def acclassification_page_user(
+    async def acclassification_page_by_user(
         self, info: strawberryA.types.Info, user_id: strawberryA.ID, skip: int = 0, limit: int = 10
     ) -> List["AcClassificationGQLModel"]:
         loader = getLoaders(info).classifications
         result = await loader.filter_by(user_id=user_id)
         return result
+
+    @strawberryA.field(description="""Lists classifications types""")
+    async def acclassification_type_page(
+        self, info: strawberryA.types.Info, user_id: strawberryA.ID, skip: int = 0, limit: int = 10
+    ) -> List["AcClassificationTypeGQLModel"]:
+        loader = getLoaders(info).classificationtypes
+        result = await loader.page(skip, limit)
+        return result
+
 
     # @strawberryA.field(description="""""")
     # async def program_for_group(

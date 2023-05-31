@@ -114,7 +114,33 @@ from gql_lessons.GraphResolvers import (
     resolvePlannedLessonsByLink,
 )
 
+@strawberryA.federation.type(
+    keys=["id"],
+    description="""Entity representing a study plan for timetable creation""",
+)
+class PlanGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).psps
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
 
+    @strawberryA.field(description="""primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Timestap""")
+    def lastchange(self) -> datetime.datetime:
+        return self.lastchange
+    
+    @strawberryA.field(description="""Timestap""")
+    async def lessons(self, info: strawberryA.types.Info) -> List["PlannedLessonGQLModel"]:
+        loader = getLoaders(info).plans
+        result = await loader.filter_by(plan_id=self.id)
+        return result
+    
 @strawberryA.federation.type(
     keys=["id"],
     description="""Entity representing a planned lesson for timetable creation""",
@@ -239,6 +265,21 @@ class Query:
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union[str, None]:
         result = f"Hello {id}"
+        return result
+
+    @strawberryA.field(description="""Planned lesson by its id""")
+    async def plan_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[PlanGQLModel, None]:
+        result = await PlanGQLModel.resolve_reference(info, id)
+        return result
+
+    @strawberryA.field(description="""Planned lesson paged""")
+    async def plan_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
+    ) -> List[PlanGQLModel]:
+        loader = getLoaders(info).psps
+        result = await loader.page(skip, limit)
         return result
 
     @strawberryA.field(description="""Planned lesson by its id""")
