@@ -49,7 +49,7 @@ async def RunOnceAndReturnSessionMaker():
     )
 
     print(f"initializing system structures")
-
+        
     ###########################################################################################################################
     #
     # zde definujte do funkce asyncio.gather

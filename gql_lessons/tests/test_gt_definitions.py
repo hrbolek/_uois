@@ -246,3 +246,103 @@ async def _test_planned_lesson_mutation():
     assert False
 
     pass
+
+@pytest.mark.asyncio
+async def test_planned_lesson_group_delete():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    
+    table = data["plan_lessons_groups"]
+    row = table[0]
+
+    query = """mutation($group_id: ID! $lesson_id: ID!) {
+        result: plannedLessonGroupDelete(
+            grouplesson: {groupId: $group_id, planlessonId: $lesson_id }) {
+            id
+            msg
+            lesson {
+            plan {
+                __typename
+                id
+                lastchange
+                lessons {
+                    __typename
+                    id
+                    name
+                    users {
+                    __typename
+                    id
+                    }
+                    groups {
+                    __typename
+                    id
+                    }
+                    facilities {
+                    __typename
+                    id
+                    }
+                }
+            }
+            }
+        }
+        }"""
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {
+        "group_id": row["group_id"],
+        "lesson_id": row["planlesson_id"]
+        }
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    assert resp.data is not None
+
+    print(resp.data, flush=True)
+
+    data = resp.data
+    msg = data["result"]["msg"]
+    assert msg == "ok"
+
+@pytest.mark.asyncio
+async def test_planned_lesson_user_delete():
+    async_session_maker = await prepare_in_memory_sqllite()
+    await prepare_demodata(async_session_maker)
+
+    data = get_demodata()
+    
+    table = data["plan_lessons_users"]
+    row = table[0]
+
+    query = """mutation($user_id: ID! $lesson_id: ID!) {
+        result: plannedLessonUserDelete(
+            userlesson: {userId: $user_id, planlessonId: $lesson_id }) {
+            id
+            msg
+            lesson {
+                users {
+                    __typename
+                    id
+                }
+            }
+        }
+    }"""
+
+    context_value = await createContext(async_session_maker)
+    variable_values = {
+        "user_id": row["user_id"],
+        "lesson_id": row["planlesson_id"]
+        }
+    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+    assert resp.errors is None
+    assert resp.data is not None
+
+    print(resp.data, flush=True)
+
+    data = resp.data
+    msg = data["result"]["msg"]
+    assert msg == "ok"
+
+    users = data["result"]["lesson"]["users"]
+    userids = list(map(lambda item: item["id"], users))
+    assert row["user_id"] not in userids

@@ -10,7 +10,7 @@ import pytest
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_lessons.DBDefinitions import BaseModel
-from gql_lessons.DBDefinitions import UserPlanModel, GroupPlanModel, PlannedLessonModel
+from gql_lessons.DBDefinitions import UserPlanModel, GroupPlanModel, PlannedLessonModel, PlanModel
 
 async def prepare_in_memory_sqllite():
     from sqlalchemy.ext.asyncio import create_async_engine
@@ -38,6 +38,7 @@ async def prepare_demodata(async_session_maker):
     await ImportModels(
         async_session_maker,
         [
+            PlanModel,
             UserPlanModel, GroupPlanModel, PlannedLessonModel, 
         ],
         data,

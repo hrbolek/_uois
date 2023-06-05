@@ -323,6 +323,22 @@ class Query:
         result = await loader.execute_select(facilityStateTypePageStatement)
         return result
 
+    @strawberryA.field(description="""Returns all facility event states""")
+    async def facility_by_letters(
+        self, info: strawberryA.types.Info, letters: str, validity: Union[bool, None] = None, usename: Union[bool, None] = True
+    ) -> List[FacilityGQLModel]:
+        if len(letters) < 3:
+            return []
+        loader = getLoaders(info).facility_by_id
+        model = loader.getModel()
+        stmt = loader.getSelectStatement()
+        if usename:
+            facilitybyletters = stmt.where(model.name.like(f"%{letters}%"))
+        else:
+            facilitybyletters = stmt.where(model.label.like(f"%{letters}%"))
+        result = await loader.execute_select(facilitybyletters)
+        return result
+
 
 ###########################################################################################################################
 #

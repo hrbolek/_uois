@@ -795,6 +795,14 @@ class Query:
         result = await AcLessonTypeGQLModel.resolve_reference(info, id)
         return result
 
+    @strawberryA.field(description="""Gets all lesson types""")
+    async def aclesson_type_page(
+        self, info: strawberryA.types.Info
+    ) -> List["AcLessonTypeGQLModel"]:
+        loader = getLoaders(info).lessontypes
+        rows = await loader.execute_select(loader.getStatement())
+        return rows
+
     @strawberryA.field(description="""Lists classifications""")
     async def acclassification_type_page(
         self, info: strawberryA.types.Info

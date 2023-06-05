@@ -75,6 +75,7 @@ class PlannedLessonModel(BaseModel):
 
     id = UUIDColumn()
     name = Column(String)
+    order = Column(Integer, default=lambda:1)
     length = Column(Integer)
     startproposal = Column(DateTime)
     plan_id = Column(ForeignKey("plans.id"), index=True, nullable=True)
