@@ -380,7 +380,7 @@ class FacilityUpdateGQLModel:
     name_en: Optional[str] = None
     label: Optional[str] = None
     address: Optional[str] = None
-    valid: Optional[str] = None
+    valid: Optional[bool] = None
     capacity: Optional[int] = None
     geometry: Optional[str] = None
     geolocation: Optional[str] = None
