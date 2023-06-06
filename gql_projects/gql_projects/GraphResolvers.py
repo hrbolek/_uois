@@ -90,3 +90,19 @@ resolveInsertMilestone = createInsertResolver(MilestoneModel)
 # Group resolvers
 resolveProjectsForGroup = create1NGetter(ProjectModel, foreignKeyName="group_id")
 # ...
+
+
+async def resolveMilestoneDelete(milestonesLoader, milestonelinksLoader, id):
+    mlinksstmt = None
+    pass
+
+#     deleteAStmt = delete(UserPlanModel).where(UserPlanModel.planlesson_id==plan_id)
+#     deleteBStmt = delete(GroupPlanModel).where(GroupPlanModel.planlesson_id==plan_id)
+#     deleteCStmt = delete(FacilityPlanModel).where(FacilityPlanModel.planlesson_id==plan_id)
+#     deleteDStmt = delete(PlannedLessonModel).where(PlannedLessonModel.id==plan_id)
+#     async with asyncSessionMaker() as session:
+#         await session.execute(deleteAStmt)
+#         await session.execute(deleteBStmt)
+#         await session.execute(deleteCStmt)
+#         await session.execute(deleteDStmt)
+#         await session.commit()
