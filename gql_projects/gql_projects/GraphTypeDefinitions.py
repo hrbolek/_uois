@@ -254,6 +254,7 @@ from gql_projects.GraphResolvers import (
     resolveInsertMilestone,
 )
 
+import asyncio
 
 @strawberryA.federation.type(
     keys=["id"], description="""Entity representing a milestone"""
@@ -296,6 +297,26 @@ class MilestoneGQLModel:
         async with withInfo(info) as session:
             result = await resolveProjectById(session, self.project_id)
             return result
+
+    @strawberryA.field(description="""Milestones which has this one as follower""")
+    async def previous(self, info: strawberryA.types.Info) -> List["MilestoneGQLModel"]:
+        # async with withInfo(info) as session:
+        #     result = await resolveProjectById(session, self.project_id)
+        #     return result
+        loader = getLoaders(info).milestonelinks
+        rows = await loader.filter_by(next_id=self.id)
+        awaitable = (MilestoneGQLModel.resolve_reference(info, row.previous_id) for row in rows)
+        return await asyncio.gather(*awaitable)
+
+    @strawberryA.field(description="""Milestone which follow this milestone""")
+    async def nexts(self, info: strawberryA.types.Info) -> List["MilestoneGQLModel"]:
+        # async with withInfo(info) as session:
+        #     result = await resolveProjectById(session, self.project_id)
+        #     return result
+        loader = getLoaders(info).milestonelinks
+        rows = await loader.filter_by(previous_id=self.id)
+        awaitable = (MilestoneGQLModel.resolve_reference(info, row.next_id) for row in rows)
+        return await asyncio.gather(*awaitable)
 
 
 # GQL GROUP
@@ -546,6 +567,20 @@ class Mutation:
             result.msg = "fail"
             
         return result
+
+    @strawberryA.mutation(description="Delete the milestone.")
+    async def milestone_delete(self, info: strawberryA.types.Info, id: strawberryA.ID) -> MilestoneResultGQLModel:
+        loader = getLoaders(info).milestones
+        row = await loader.update(milestone)
+        result = MilestoneResultGQLModel()
+        result.msg = "ok"
+        result.id = milestone.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+
 
     @strawberryA.mutation(description="Adds a new finance record.")
     async def finance_insert(self, info: strawberryA.types.Info, finance: FinanceInsertGQLModel) -> FinanceResultGQLModel:
