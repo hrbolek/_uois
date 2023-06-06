@@ -615,7 +615,7 @@
         {
             "id": "43dd2ff1-5c17-42a5-ba36-8b30e2a243bb",
             "projecttype_id": "a825d8e1-2e60-4884-afdb-25642db581d8",
-            "name": "Nukléární reakce pro budovy",
+            "name": "Nukleární reaktor pro budovy",
             "name_en": "Nuclear fusion for buildings",
             "startdate": "2023-01-01T17:27:12",
             "enddate": "2025-12-31T17:27:12",
@@ -627,6 +627,21 @@
             "id": "a825d8e1-2e60-4884-afdb-25642db581d8",
             "name": "GAČR",
             "name_en": "GAČR"
+        },
+        {
+            "id": "6abcd26b-4f9b-4b49-8a5d-8ec9880acf3e",
+            "name": "TAČR",
+            "name_en": "TAČR"
+        },
+        {
+            "id": "d5d91230-6e52-4ebf-b467-bfe89311e31a",
+            "name": "MV",
+            "name_en": "MV"
+        },
+        {
+            "id": "4a9a0039-3363-4af7-866e-ee172bfb02ff",
+            "name": "MŠMT",
+            "name_en": "MŠMT"
         }
     ],
     "projectcategories": [
