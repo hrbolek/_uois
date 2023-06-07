@@ -400,12 +400,21 @@ class Query:
         result = await loader.filter_by(user_id=user_id)
         return result
 
-    @strawberryA.field(description="""Finds all presences for the user in the period""")
+    @strawberryA.field(description="""Returns presence types """)
     async def presence_type_page(
         self, info: strawberryA.types.Info, skip: int = 0, limit: int = 20
         
     ) -> List[PresenceTypeGQLModel]:
         loader = getLoaders(info).presencetypes
+        result = await loader.page(skip=skip, limit=limit)
+        return result
+
+    @strawberryA.field(description="""Returns invitation types """)
+    async def invitation_type_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 20
+        
+    ) -> List[InvitationTypeGQLModel]:
+        loader = getLoaders(info).invitationtypes
         result = await loader.page(skip=skip, limit=limit)
         return result
 
@@ -490,6 +499,7 @@ class PresenceResultGQLModel:
     
 @strawberryA.federation.type(extend=True)
 class Mutation:
+
     @strawberryA.mutation
     async def presence_insert(self, info: strawberryA.types.Info, presence: PresenceInsertGQLModel) -> PresenceResultGQLModel:
         loader = getLoaders(info).presences

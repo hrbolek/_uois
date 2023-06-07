@@ -238,11 +238,11 @@ class AnswerGQLModel:
         return self.value
 
     @strawberryA.field(description="""is the survey already answered?""")
-    async def aswered(self) -> bool:
+    async def aswered(self) -> Union[bool, None]:
         return self.aswered
 
     @strawberryA.field(description="""is the survey still available?""")
-    async def expired(self) -> bool:
+    async def expired(self) -> Union[bool, None]:
         return self.expired
 
     @strawberryA.field(

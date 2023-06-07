@@ -380,7 +380,7 @@ class Query:
             result = await resolveAuthorById(session, id)
             return result
 
-    @strawberryA.field(description="""Finds a publication by their id""")
+    @strawberryA.field(description="""Gets a list of publication types""")
     async def publication_type_page(
         self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
     ) -> List[PublicationTypeGQLModel]:

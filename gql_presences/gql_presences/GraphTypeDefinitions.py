@@ -104,7 +104,7 @@ class TaskGQLModel:
 
     @strawberryA.field(description="""event id""")
     async def user(self, info: strawberryA.types.Info) -> Union["UserGQLModel", None]:
-        if self.event_id is None:
+        if self.user_id is None:
             result = None
         else:
             result = UserGQLModel(id=self.user_id)

@@ -601,7 +601,26 @@
             "reference": "https://google.com",
             "valid": true,
             "place": "Prague"
+        },
+        {
+            "id": "e8b1962f-5494-40cf-9bd6-b7d700dfbd8e",
+            "name": "IT Technologie II",
+            "publication_type_id": "478bf500-a90d-411a-a5aa-5546475c3992",
+            "published_date": "2023-04-24T00:00:00",
+            "reference": "https://google.com",
+            "valid": true,
+            "place": "Prague"
+        },
+        {
+            "id": "b5cf7f26-5652-4fb2-b930-ecc959c005f4",
+            "name": "IT Technologie III",
+            "publication_type_id": "478bf500-a90d-411a-a5aa-5546475c3992",
+            "published_date": "2023-04-24T00:00:00",
+            "reference": "https://google.com",
+            "valid": true,
+            "place": "Prague"
         }
+
     ],
     "publication_subjects": [
         {
