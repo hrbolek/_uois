@@ -1114,7 +1114,7 @@ class GroupUpdateGQLModel:
     id: strawberryA.ID
     lastchange: datetime.datetime
     name: Optional[str] = None
-    type_id: Optional[strawberryA.ID] = None
+    grouptype_id: Optional[strawberryA.ID] = None
     mastergroup_id: Optional[strawberryA.ID] = None
     valid: Optional[bool] = None
 
@@ -1123,7 +1123,7 @@ class GroupUpdateGQLModel:
 class GroupInsertGQLModel:
     name: str
     id: Optional[strawberryA.ID] = None
-    type_id: Optional[strawberryA.ID] = None
+    grouptype_id: Optional[strawberryA.ID] = None
     mastergroup_id: Optional[strawberryA.ID] = None
     valid: Optional[bool] = None
 

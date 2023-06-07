@@ -11,7 +11,8 @@ sqlalchemy_utils==0.37.9
 pydantic==1.8.2
 starlette==0.22.0
 strawberry-graphql==0.119.0
-click==8.1.3
 aiodataloader
+click==8.1.3
+
 
 https://github.com/hrbolek/uoishelpers/archive/refs/heads/main.zip

@@ -417,7 +417,11 @@ class Mutation:
     @strawberryA.mutation
     async def facility_update(self, info: strawberryA.types.Info, facility: FacilityUpdateGQLModel) -> FacilityResultGQLModel:
         loader = getLoaders(info).facilities
+        
+        print("updating facility", facility.facilitytype_id, facility.master_facility_id)       
         row = await loader.update(facility)
+        print("updated facility", row.facilitytype_id, row.master_facility_id)
+
         result = FacilityResultGQLModel()
         result.msg = "ok"
         result.id = facility.id
