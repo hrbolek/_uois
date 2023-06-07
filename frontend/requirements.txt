@@ -3,5 +3,6 @@ fastapi[all]==0.70.0
 uvicorn[standard]==0.13.4
 gunicorn==20.0.4
 starlette==0.16.0
+aiohttp
 
 https://github.com/hrbolek/PyMockOAuthServer/archive/refs/heads/main.zip

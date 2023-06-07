@@ -62,6 +62,10 @@ class PresenceGQLModel:
     def id(self) -> strawberryA.ID:
         return self.id
 
+    @strawberryA.field(description="""Time stamp""")
+    def lastchange(self) -> Union[datetime.datetime, None]:
+        return self.lastchange
+
     @strawberryA.field(description="""Present, Vacation etc.""")
     async def presence_type(self, info: strawberryA.types.Info) -> 'PresenceTypeGQLModel':
         result = await PresenceTypeGQLModel.resolve_reference(info, self.presencetype_id)
@@ -396,6 +400,17 @@ class Query:
         result = await loader.filter_by(user_id=user_id)
         return result
 
+    @strawberryA.field(description="""Finds all presences for the user in the period""")
+    async def presence_type_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 20
+        
+    ) -> List[PresenceTypeGQLModel]:
+        loader = getLoaders(info).presencetypes
+        result = await loader.page(skip=skip, limit=limit)
+        return result
+
+
+
     # @strawberryA.field(description="""Finds all events for a group""")
     # async def presences_by_user(
     #     self,
@@ -468,7 +483,7 @@ class PresenceResultGQLModel:
     msg: str = None
 
     @strawberryA.field(description="""Result of presence operation""")
-    async def event(self, info: strawberryA.types.Info) -> Union[PresenceGQLModel, None]:
+    async def presence(self, info: strawberryA.types.Info) -> Union[PresenceGQLModel, None]:
         result = await PresenceGQLModel.resolve_reference(info, self.id)
         return result
 
