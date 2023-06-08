@@ -569,18 +569,22 @@ class Mutation:
         return result
 
     @strawberryA.mutation(description="Delete the milestone.")
-    async def milestone_delete(self, info: strawberryA.types.Info, id: strawberryA.ID) -> MilestoneResultGQLModel:
+    async def milestone_delete(self, info: strawberryA.types.Info, id: strawberryA.ID) -> ProjectResultGQLModel:
+        loader = getLoaders(info).milestonelinks
+        rows = await loader.filter_by(previous_id=id)
+        linksids = [row.id for row in rows]
+        rows = await loader.filter_by(next_id=id)
+        linksids.extend([row.id for row in rows])
+        for id in linksids:
+            await loader.delete(id)
+
         loader = getLoaders(info).milestones
-        row = await loader.update(milestone)
-        result = MilestoneResultGQLModel()
+        row = await loader.load(id)
+        result = ProjectResultGQLModel()
+        result.id = row.project_id
+        await loader.delete(id)       
         result.msg = "ok"
-        result.id = milestone.id
-        if row is None:
-            result.msg = "fail"
-            
         return result
-
-
 
     @strawberryA.mutation(description="Adds a new finance record.")
     async def finance_insert(self, info: strawberryA.types.Info, finance: FinanceInsertGQLModel) -> FinanceResultGQLModel:
