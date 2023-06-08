@@ -38,6 +38,14 @@ class Item(BaseModel):
     variables: dict = None
     operationName: str = None
 
+@app.get("/api/visualize/", response_class=FileResponse)
+async def gql_schema_visualizer():
+    realpath = os.path.realpath("./pyserver/voyager.html")
+    if os.path.isfile(realpath):
+        print(realpath)
+        return realpath
+    print(realpath)
+    return realpath
 
 @app.post("/api/gql/", response_class=JSONResponse)
 async def apigql_post(data: Item, request: Request):
