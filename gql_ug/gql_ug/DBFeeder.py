@@ -267,6 +267,7 @@ def randomUniversity(name):
     result = {
         "name": f"{name}",
         "grouptype": {"name": "univerzita"},
+        "valid": True,
         "subgroups": [randomFaculty(i + 1) for i in range(random.randint(3, 5))],
         "roles": [],
         "users": [],
@@ -290,7 +291,7 @@ def randomUniversity(name):
         for role in universityRoles
     ]
     result["roles"] = [
-        {"roletype": role, "user": random.choice(result["users"]), "group": result}
+        {"roletype": role, "user": random.choice(result["users"]), "group": result, "valid": True }
         for role in universityRolesLinkedToDb
     ]
 
@@ -302,6 +303,7 @@ def randomFaculty(index):
     result = {
         "name": f"Faculty {index}",
         "grouptype": {"name": "fakulta"},
+        "valid": True,
         "subgroups": [
             randomDepartment(index, i + 1) for i in range(random.randint(8, 15))
         ],
@@ -329,7 +331,7 @@ def randomFaculty(index):
         for role in facultyRoles
     ]
     result["roles"] = [
-        {"roletype": role, "user": random.choice(result["users"]), "group": result}
+        {"roletype": role, "user": random.choice(result["users"]), "group": result, "valid": True }
         for role in facultyRolesLinkedToDb
     ]
     # result['users'] = itertools.chain(map(result['subgroups'], lambda group: group['users']))
@@ -340,6 +342,7 @@ def randomStudyGroup(department):
     result = {
         "name": department["name"].replace("Department", "Studenti"),
         "grouptype": {"name": "studijní skupina"},
+        "valid": True,
         "subgroups": [],
         "roles": [],
         "users": [randomUser() for i in range(random.randint(15, 20))],
@@ -352,6 +355,7 @@ def randomDepartment(indexA, indexB):
     result = {
         "name": f"Department {indexA}-{indexB}",
         "grouptype": {"name": "katedra"},
+        "valid": True,
         "subgroups": [],
         "roles": [],
         "users": [randomUser() for i in range(random.randint(15, 20))],
@@ -361,6 +365,7 @@ def randomDepartment(indexA, indexB):
             "roletype": {"name": "vedoucí katedry"},
             "user": random.choice(result["users"]),
             "group": result,
+            "valid": True,
         }
     )
     return result
@@ -431,6 +436,7 @@ def randomUser():
         "name": f"{name1} {name2}",
         "surname": f"{name3}",
         "email": f"{name1}.{name2}.{name3}@university.world",
+        "valid": True,
     }
 
 
@@ -764,6 +770,7 @@ async def randomDataStructure(session, name):
             user_id=role["user"]["id"],
             group_id=role["group"]["id"],
             roletype_id=getTypeIdFromRoleTypeName(role["roletype"]["name"]),
+            valid=True
         )
         for role in allRoles(university)
     ]
@@ -780,6 +787,7 @@ async def createUniversity(session, id, name):
     university = {
         "id": id,
         "name": name,
+        "valid": True,
         "grouptype": {"name": "univerzita"},
         "subgroups": [],
         "roles": [],
@@ -861,15 +869,15 @@ async def importUg(session, data):
                 result[key] = data[key]
         return result
 
-    groupKeys = ["id", "name", "grouptype_id", "mastergroup_id"]
+    groupKeys = ["id", "name", "grouptype_id", "mastergroup_id", "valid"]
     groupsToAdd = [
         GroupModel(**justThoseKeys(group, groupKeys)) for group in data["groups"]
     ]
 
-    userKeys = ["id", "name", "surname", "email"]
+    userKeys = ["id", "name", "surname", "email", "valid"]
     usersToAdd = [UserModel(**justThoseKeys(user, userKeys)) for user in data["users"]]
 
-    membershipKeys = ["id", "group_id", "user_id"]
+    membershipKeys = ["id", "group_id", "user_id", "valid"]
     membershipsToAdd = [
         MembershipModel(**justThoseKeys(membership, membershipKeys))
         for membership in data["memberships"]

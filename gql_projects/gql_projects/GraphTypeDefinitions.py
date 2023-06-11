@@ -461,7 +461,7 @@ class ProjectResultGQLModel:
 @strawberryA.input
 class FinanceInsertGQLModel:
     name: str
-    type_id: strawberryA.ID
+    financetype_id: strawberryA.ID
     project_id: strawberryA.ID
     id: Optional[strawberryA.ID] = None
     amount: Optional[float] = 0
@@ -472,7 +472,7 @@ class FinanceUpdateGQLModel:
     id: strawberryA.ID
 
     name: Optional[str]
-    type_id: Optional[strawberryA.ID]
+    financetype_id: Optional[strawberryA.ID]
     amount: Optional[float] = None
     
 @strawberryA.type

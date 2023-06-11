@@ -53,9 +53,12 @@ class PresenceGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        if id is None:
+            return None
         loader = getLoaders(info).presences
         result = await loader.load(id)
-        result._type_definition = cls._type_definition  # little hack :)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
         return result
 
     @strawberryA.field(description="""Primary key""")
@@ -67,7 +70,7 @@ class PresenceGQLModel:
         return self.lastchange
 
     @strawberryA.field(description="""Present, Vacation etc.""")
-    async def presence_type(self, info: strawberryA.types.Info) -> 'PresenceTypeGQLModel':
+    async def presence_type(self, info: strawberryA.types.Info) -> Union['PresenceTypeGQLModel', None]:
         result = await PresenceTypeGQLModel.resolve_reference(info, self.presencetype_id)
         return result
 
@@ -123,6 +126,8 @@ class PresenceTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         loader = getLoaders(info).presencetypes
+        if id is None:
+            return None
         result = await loader.load(id)
         if result is not None:
             result._type_definition = cls._type_definition  # little hack :)
@@ -180,10 +185,12 @@ class GroupGQLModel:
         info: strawberryA.types.Info,
         startdate: datetime.datetime = None,
         enddate: datetime.datetime = None,
+        # eventtype_id: strawberryA.ID = None
     ) -> List["EventGQLModel"]:
         async with withInfo(info) as session:
             result = await resolveEventsForGroup(session, self.id, startdate, enddate)
             return result
+
 
 import datetime
 from gql_events.GraphResolvers import (
@@ -447,6 +454,7 @@ class EventInsertGQLModel:
     name: str
     eventtype_id: strawberryA.ID
     id: Optional[strawberryA.ID] = None
+    masterevent_id: Optional[strawberryA.ID] = None
     startdate: Optional[datetime.datetime] = datetime.datetime.now()
     enddate: Optional[datetime.datetime] = datetime.datetime.now() + datetime.timedelta(minutes = 30)
     pass
@@ -456,6 +464,7 @@ class EventUpdateGQLModel:
     id: strawberryA.ID
     lastchange: datetime.datetime
     name: Optional[str] = None
+    masterevent_id: Optional[strawberryA.ID] = None
     eventtype_id: Optional[strawberryA.ID] = None
     startdate: Optional[datetime.datetime] = None
     enddate: Optional[datetime.datetime] = None
@@ -502,8 +511,11 @@ class Mutation:
 
     @strawberryA.mutation
     async def presence_insert(self, info: strawberryA.types.Info, presence: PresenceInsertGQLModel) -> PresenceResultGQLModel:
+        print("presence_insert", presence)
         loader = getLoaders(info).presences
         row = await loader.insert(presence)
+        print("presence_insert", row)
+        print("presence_insert", row.id)
         result = PresenceResultGQLModel()
         result.msg = "ok"
         result.id = row.id

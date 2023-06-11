@@ -47,6 +47,13 @@ async def createLoaders_3(asyncSessionMaker):
 
         @property
         @cache
+        def eventgroups(self):
+            return createIdLoader(
+                asyncSessionMaker, EventGroupModel
+            )
+
+        @property
+        @cache
         def eventusers_user_id(self):
             return createFkeyLoader(
                 asyncSessionMaker, PresenceModel, foreignKeyName="user_id"

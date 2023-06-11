@@ -970,7 +970,7 @@ class ClassificationInsertGQLModel:
     semester_id: strawberryA.ID
     user_id: strawberryA.ID
     classificationlevel_id: strawberryA.ID
-    classificationtype_id: strawberryA.ID
+    # classificationtype_id: strawberryA.ID
     order: int
     id: Optional[strawberryA.ID] = None
 
