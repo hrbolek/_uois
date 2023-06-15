@@ -574,6 +574,7 @@ class Mutation:
         existing = await loader.filter_by(authorization_id=authorization.authorization_id, user_id=authorization.user_id)
         existing = next(existing, None)
         result = AuthorizationResultGQLModel()
+        result.id = authorization.authorization_id
         if existing is None:
             result.msg = "fail"
         else:
@@ -603,7 +604,9 @@ class Mutation:
     async def authorization_remove_group(self, info: strawberryA.types.Info, authorization: AuthorizationAddGroupGQLModel) -> AuthorizationResultGQLModel:
         loader = getLoaders(info).authorizationgroups
         existing = await loader.filter_by(authorization_id=authorization.authorization_id, group_id=authorization.group_id)
+        existing = next(existing, None)
         result = AuthorizationResultGQLModel()
+        result.id = authorization.authorization_id
         if existing is None:
             result.msg = "fail"
         else:
