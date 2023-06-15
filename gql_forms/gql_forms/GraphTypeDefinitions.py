@@ -110,7 +110,7 @@ class RequestGQLModel:
     @strawberryA.field(description="""Request's time of last update""")
     async def histories(self, info: strawberryA.types.Info) -> List["HistoryGQLModel"]:
         loader = getLoaders(info).histories
-        result = await loader.filter_by(form_id=self.id)
+        result = await loader.filter_by(request_id=self.id)
         return result
 
 
@@ -263,7 +263,7 @@ class FormGQLModel:
         self, info: strawberryA.types.Info
     ) -> typing.List["SectionGQLModel"]:
         loader = getLoaders(info).sections
-        sections = await loader.load(self.id)
+        sections = await loader.filter_by(form_id=self.id)
         return sections
 
     @strawberryA.field(description="Retrieves the user who has initiated this request")
@@ -370,7 +370,7 @@ class SectionGQLModel:
     @strawberryA.field(description="Retrieves the parts related to this section")
     async def parts(self, info: strawberryA.types.Info) -> typing.List["PartGQLModel"]:
         loader = getLoaders(info).parts
-        result = await loader.load(section_id=self.id)
+        result = await loader.filter_by(section_id=self.id)
         return result
 
     @strawberryA.field(description="Retrieves the form owning this section")
@@ -498,7 +498,7 @@ class PartGQLModel:
     @strawberryA.field(description="Retrieves the items related to this part")
     async def items(self, info: strawberryA.types.Info) -> typing.List["ItemGQLModel"]:
         loader = getLoaders(info).items
-        result = await loader.filer_by(part_id=self.id)
+        result = await loader.filter_by(part_id=self.id)
         return result
 
     @strawberryA.field(description="Retrieves the editor")
@@ -793,6 +793,23 @@ class Query:
         result = await loader.execute_select(stmt)
         return result
 
+    @strawberryA.field(description="Retrieves the form type")
+    async def form_by_id(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> Union[FormGQLModel, None]:
+        result = await FormGQLModel.resolve_reference(info=info, id=id)
+        return result
+
+    @strawberryA.field(description="Retrieves the form type")
+    async def form_page(
+        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
+    ) -> List[FormGQLModel]:
+        loader = getLoaders(info).forms
+        result = await loader.page(skip, limit)
+        return result
+
+
+
     @strawberryA.field(description="Retrieves the item categories")
     async def item_category_page(
         self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
@@ -888,6 +905,38 @@ class FormResultGQLModel:
         result = await FormGQLModel.resolve_reference(info, self.id)
         return result
    
+
+@strawberryA.input
+class FormItemInsertGQLModel:
+    part_id: strawberryA.ID
+    name: str
+
+    id: Optional[strawberryA.ID] = None
+    value: Optional[str] = None
+    order: Optional[int] = None
+    type_id: Optional[strawberryA.ID] = None
+    
+
+@strawberryA.input
+class FormItemUpdateGQLModel:
+    lastchange: datetime.datetime
+    id: strawberryA.ID
+
+    name: Optional[str] = None
+    value: Optional[str] = None
+    order: Optional[int] = None
+    type_id: Optional[strawberryA.ID] = None
+    
+@strawberryA.type
+class FormItemResultGQLModel:
+    id: strawberryA.ID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of item operation""")
+    async def item(self, info: strawberryA.types.Info) -> Union[ItemGQLModel, None]:
+        result = await ItemGQLModel.resolve_reference(info, self.id)
+        return result
+    
 @strawberryA.federation.type(extend=True)
 class Mutation:
     @strawberryA.mutation
@@ -906,6 +955,31 @@ class Mutation:
         result = FormResultGQLModel()
         result.msg = "ok"
         result.id = form.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+    @strawberryA.mutation
+    async def form_item_insert(self, info: strawberryA.types.Info, item: FormItemInsertGQLModel) -> FormItemResultGQLModel:
+        loader = getLoaders(info).items
+        row = await loader.insert(item)
+        result = FormItemResultGQLModel()
+        result.msg = "ok"
+        result.id = item.id
+        if row is None:
+            result.msg = "fail"
+            
+        return result
+
+
+    @strawberryA.mutation
+    async def form_item_update(self, info: strawberryA.types.Info, item: FormItemUpdateGQLModel) -> FormItemResultGQLModel:
+        loader = getLoaders(info).items
+        row = await loader.update(item)
+        result = FormItemResultGQLModel()
+        result.msg = "ok"
+        result.id = item.id
         if row is None:
             result.msg = "fail"
             

@@ -572,6 +572,7 @@ class Mutation:
     async def authorization_remove_user(self, info: strawberryA.types.Info, authorization: AuthorizationAddUserGQLModel) -> AuthorizationResultGQLModel:
         loader = getLoaders(info).authorizationusers
         existing = await loader.filter_by(authorization_id=authorization.authorization_id, user_id=authorization.user_id)
+        existing = next(existing, None)
         result = AuthorizationResultGQLModel()
         if existing is None:
             result.msg = "fail"

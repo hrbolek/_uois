@@ -212,6 +212,32 @@ def SingleFile(source):
 import os
 from sqlalchemy import select
 
+def CheckRelations(jsontable, masterkeyname):
+    index = {}
+    toSolve = []
+    for row in jsontable:
+        index[row["id"]] = row
+        if row.get(masterkeyname, None) is None:
+            row["_chunk"] = 0
+        else:
+            toSolve.append(row)
+            row["_chunk"] = 9999
+
+    chunk = 1
+    while len(toSolve) > 0 :
+        for row in toSolve:
+            masterid = row[masterkeyname]
+            masterrow = index[masterid]
+            masterchunk = masterrow["_chunk"]
+            if (masterchunk < chunk):
+                row["_chunk"] = chunk
+
+        toSolve = list(filter(lambda item: item["_chunk"], toSolve))
+        chunk = chunk + 1
+
+    return jsontable
+
+
 def ExportModels(sessionMaker, DBModels):
     """returns a dict of lists of dict
     it is a dict of tables (list) containing a rows (dict)
@@ -240,6 +266,9 @@ def ExportModels(sessionMaker, DBModels):
             # insert it as a new key-value pair into result
             result[tableName] = [ToDict(row, cols) for row in dbData]
 
+    CheckRelations(result["groups"], "mastergroup_id")
+    CheckRelations(result["facilities"], "master_facility_id")
+    CheckRelations(result["events"], "masterevent_id")
     
     import json
     with open("systemdata.json", "w") as outfile:

@@ -205,7 +205,7 @@
             "name": "správa",
             "lastchange": "2023-04-19T17:27:12",
             "valid": true,
-            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "grouptype_id": "de8654be-e776-4b6e-bb1e-2d5c949aa1eb",
             "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003"
         }
     ],
@@ -377,7 +377,13 @@
             "id": "b1bedf72-931f-11ed-9b95-0242ac110002",
             "name": "garance předmětu",
             "name_en": "subject grants"
+        },
+        {
+            "name": "správa nemovitosti",
+            "name_en": "facility management",
+            "id": "de8654be-e776-4b6e-bb1e-2d5c949aa1eb"
         }
+
     ],
     "roletypes": [
         {
@@ -1155,17 +1161,17 @@
             "facilitytype_id": "764217ee-a7a0-11ed-b76e-0242ac110002",
             "master_facility_id": null,
             "geometry": "[[49.210538858576676, 16.61837697029114], [49.21242408520478, 16.617239713668827], [49.21037935134335, 16.612304449081424], [49.209019270207335, 16.614074707031254]]",
-            "geolocation": "{location: [49.21056, 16.61667], zoom: 17}",
+            "geolocation": "{\"location\": [49.21056, 16.61667], \"zoom\": 17}",
             "group_id": "480f2802-a869-11ed-924c-0242ac110002",
             "_chunk": 0
         },
         {
-            "id": "662763a6-a7b3-11ed-b76e-0242ac110002" , "name": "Budova A", "name_en": "", 
+            "id": "662763a6-a7b3-11ed-b76e-0242ac110002" , "name": "Budova Q", "name_en": "", 
             "facilitytype_id": "76421cf8-a7a0-11ed-b76e-0242ac110002",
             "master_facility_id": "66275ffa-a7b3-11ed-b76e-0242ac110002",
-            "group_id": null,
+            "group_id": "480f2802-a869-11ed-924c-0242ac110002",
             "geometry": "[[49.209123972153186, 16.614074707031254], [49.20944253580456, 16.614975929260257], [49.21001365618171, 16.614493131637577], [49.20969165903944, 16.613591909408573]]",
-            "geolocation": "{location: [49.2095546287644, 16.614283919334415], zoom: 18}",
+            "geolocation": "{\"location\": [49.2095546287644, 16.614283919334415], \"zoom\": 18}",
             "_chunk": 1
         },
         {
