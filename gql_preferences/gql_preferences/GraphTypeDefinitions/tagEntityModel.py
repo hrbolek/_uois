@@ -12,7 +12,7 @@ def getUser(info):
 
 @strawberry.federation.type(
     keys=["id"],
-    description="""Entity representing a drone""",
+    description="""Entity representing a tag / label which can be assigned to entities""",
 )
 class PreferenceTagEntityGQLModel:
     @classmethod
@@ -51,7 +51,7 @@ class PreferenceTagEntityGQLModel:
     async def value(self, info: strawberry.types.Info) -> Union[str, None]:
         return self.value
 
-    @strawberry.field(description="""tag value, can be "red", "2023", etc. """)
+    @strawberry.field(description="""Entities associated with this tag""")
     async def entities(self, info: strawberry.types.Info) -> List[Union[UserGQLModel, GroupGQLModel]]:
         loader = getLoaders(info).tagentities
         rows = await loader.filter_by(tag_id=self.tag_id)
@@ -71,14 +71,14 @@ class PreferenceTagEntityGQLModel:
 # Special fields for query
 #
 #####################################################################
-@strawberry.type
+@strawberry.type(description="""represents a GQL model""")
 class PreferenceEntityIdGQLModel:
 
     @strawberry.field(description="""primary key""")
     async def model_id(self, info: strawberry.types.Info) -> strawberry.ID:
         return self["id"]
 
-    @strawberry.field(description="""time stamp""")
+    @strawberry.field(description="""GQL model name""")
     async def model_name(self, info: strawberry.types.Info) -> str:
         return self["name"]
 
@@ -97,12 +97,12 @@ async def preference_entity_tags(info: strawberry.types.Info) -> List["Preferenc
     result = list(map(lambda item: {"id": item[0], "name": item[1]._type_definition.name}, entity_type_ids.items()))
     return result
 
-tags_description = """Returns list of hardwired models for tags."""
+tags_description = """Returns list of tags for the entity."""
 @strawberry.field(description=tags_description)
 async def preference_tags_for_entity(info: strawberry.types.Info, entity_id: strawberry.ID) -> List["PreferenceTagEntityGQLModel"]:
     actingUser = getUser(info)
     actingUserId = actingUser["id"]
-    loader = getLoaders(info)
+    loader = getLoaders(info).tagentities
     result = await loader.filter_by(author_id=actingUserId, entity_id=entity_id)
     return result
 
@@ -147,24 +147,24 @@ async def preference_entities(info: strawberry.types.Info, tags: List[strawberry
 
 # import datetime
 
-@strawberry.input(description="""""")
+@strawberry.input(description="""allows to create link between an GQL entity, tag and user who defined it""")
 class EntityAddTagGQLModel:
-    entity_id: strawberry.ID
-    entity_type_id: strawberry.ID
-    tag_id: strawberry.ID
-    createdby: strawberry.Private[strawberry.ID] = None
+    entity_id: strawberry.ID = strawberry.field(default=None, description="GQL entity primary key value, aka GQL entity identification")
+    entity_type_id: strawberry.ID = strawberry.field(default=None, description="GQL entity type, aka UserGQLModel id")
+    tag_id: strawberry.ID = strawberry.field(default=None, description="tag identification")
+    createdby: strawberry.Private[strawberry.ID] = strawberry.field(default=None, description="User who created and assigned the tag")
 
-@strawberry.input(description="""""")
+@strawberry.input(description="""removes a tag from entity""")
 class EntityRemoveTagGQLModel:
-    entity_id: strawberry.ID
-    tag_id: strawberry.ID
-    id: Optional[strawberry.ID] = None
+    entity_id: strawberry.ID = strawberry.field(default=None, description="GQL entity primary key value, aka GQL entity identification")
+    tag_id: strawberry.ID = strawberry.field(default=None, description="tag identification")
+    id: Optional[strawberry.ID] = strawberry.field(default=None, description="direct identification of the link, if not given, other two ids are used together")
 
-@strawberry.type
+@strawberry.type(description="reports the result of operation")
 class EntityTagResultGQLModel:
-    msg: str = None
-    id: strawberry.ID = None
-    @strawberry.field(description="""Result of drone operation""")
+    msg: str = strawberry.field(default=None, description="""result of operation, should be "ok" or "fail" """)
+    id: Optional[strawberry.ID] = strawberry.field(default=None, description="tag id, could be undefined if the operation was delete")
+    @strawberry.field(description="""""")
     async def tag(self, info: strawberry.types.Info) -> Union[PreferenceTagEntityGQLModel, None]:
         result = await PreferenceTagEntityGQLModel.resolve_reference(info, self.id)
         return result

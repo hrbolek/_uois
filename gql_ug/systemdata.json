@@ -205,7 +205,7 @@
             "name": "správa",
             "lastchange": "2023-04-19T17:27:12",
             "valid": true,
-            "grouptype_id": "cd49e157-610c-11ed-9312-001a7dda7110",
+            "grouptype_id": "de8654be-e776-4b6e-bb1e-2d5c949aa1eb",
             "mastergroup_id": "2d9dced0-a4a2-11ed-b9df-0242ac120003"
         }
     ],
@@ -377,7 +377,13 @@
             "id": "b1bedf72-931f-11ed-9b95-0242ac110002",
             "name": "garance předmětu",
             "name_en": "subject grants"
+        },
+        {
+            "name": "správa nemovitosti",
+            "name_en": "facility management",
+            "id": "de8654be-e776-4b6e-bb1e-2d5c949aa1eb"
         }
+
     ],
     "roletypes": [
         {
@@ -385,6 +391,18 @@
             "name_en": "myself",
             "id": "05a3e0f5-f71e-4caa-8012-229d868aa8ca",
             "category_id": "fd73596b-1043-46f0-837a-baa0734d64df"
+        },
+        {
+            "name": "administrátor",
+            "name_en": "administrator",
+            "id": "ced46aa4-3217-4fc1-b79d-f6be7d21c6b6",
+            "category_id": "774690a0-56b3-45d9-9887-0989ed3de4c0"
+        },
+        {
+            "name": "zpracovatel gdpr",
+            "name_en": "gdpr user",
+            "id": "b87aed46-dfc3-40f8-ad49-03f4138c7478",
+            "category_id": "774690a0-56b3-45d9-9887-0989ed3de4c0"
         },
         {
             "name": "rektor",
@@ -454,7 +472,8 @@
         }
     ],
     "rolecategories": [
-        { "id": "fd73596b-1043-46f0-837a-baa0734d64df", "name": "academic" }
+        { "id": "fd73596b-1043-46f0-837a-baa0734d64df", "name": "academic" },
+        { "id": "774690a0-56b3-45d9-9887-0989ed3de4c0", "name": "system" }
     ],
 
 
@@ -601,7 +620,26 @@
             "reference": "https://google.com",
             "valid": true,
             "place": "Prague"
+        },
+        {
+            "id": "e8b1962f-5494-40cf-9bd6-b7d700dfbd8e",
+            "name": "IT Technologie II",
+            "publication_type_id": "478bf500-a90d-411a-a5aa-5546475c3992",
+            "published_date": "2023-04-24T00:00:00",
+            "reference": "https://google.com",
+            "valid": true,
+            "place": "Prague"
+        },
+        {
+            "id": "b5cf7f26-5652-4fb2-b930-ecc959c005f4",
+            "name": "IT Technologie III",
+            "publication_type_id": "478bf500-a90d-411a-a5aa-5546475c3992",
+            "published_date": "2023-04-24T00:00:00",
+            "reference": "https://google.com",
+            "valid": true,
+            "place": "Prague"
         }
+
     ],
     "publication_subjects": [
         {
@@ -615,7 +653,7 @@
         {
             "id": "43dd2ff1-5c17-42a5-ba36-8b30e2a243bb",
             "projecttype_id": "a825d8e1-2e60-4884-afdb-25642db581d8",
-            "name": "Nukléární reakce pro budovy",
+            "name": "Nukleární reaktor pro budovy",
             "name_en": "Nuclear fusion for buildings",
             "startdate": "2023-01-01T17:27:12",
             "enddate": "2025-12-31T17:27:12",
@@ -627,6 +665,21 @@
             "id": "a825d8e1-2e60-4884-afdb-25642db581d8",
             "name": "GAČR",
             "name_en": "GAČR"
+        },
+        {
+            "id": "6abcd26b-4f9b-4b49-8a5d-8ec9880acf3e",
+            "name": "TAČR",
+            "name_en": "TAČR"
+        },
+        {
+            "id": "d5d91230-6e52-4ebf-b467-bfe89311e31a",
+            "name": "MV",
+            "name_en": "MV"
+        },
+        {
+            "id": "4a9a0039-3363-4af7-866e-ee172bfb02ff",
+            "name": "MŠMT",
+            "name_en": "MŠMT"
         }
     ],
     "projectcategories": [
@@ -703,7 +756,10 @@
         {"id": "b87e69b6-8fd4-11ed-a6d4-0242ac110002", "name": "KOL", "name_en": ""},
         {"id": "b87e6c04-8fd4-11ed-a6d4-0242ac110002", "name": "SKP", "name_en": ""},
         {"id": "b87f7cac-8fd4-11ed-a6d4-0242ac110002", "name": "SZK", "name_en": ""},
-        {"id": "b8803df4-8fd4-11ed-a6d4-0242ac110002", "name": "SMS", "name_en": ""}
+        {"id": "b8803df4-8fd4-11ed-a6d4-0242ac110002", "name": "SMS", "name_en": ""},
+        
+        {"id": "69ec2b0b-a39d-40df-9cea-e295b36749c9", "name": "Semestr", "name_en": "Semester"},
+        {"id": "a517c2fd-8dc7-4a2e-a107-cbdb88ba2aa5", "name": "Školní rok", "name_en": "School year"}
     ],
     "eventinvitationtypes": [
         {"id": "e8713b6e-a79c-11ed-b76e-0242ac110002", "name": "organizátor", "name_en": "organizer"},
@@ -728,7 +784,70 @@
             "eventtype_id": "b87d3ff0-8fd4-11ed-a6d4-0242ac110002",
             
             "startdate": "2023-04-19T08:00:00", 
-            "enddate": "2023-04-19T09:00:00"
+            "enddate": "2023-04-19T09:00:00",
+            "_chunk": 2
+        },
+        {
+            "id": "4dccf52f-4117-403c-932a-5691c0d020b1" , 
+            "name": "2021/22", 
+            "name_en": "2021/22", 
+            "eventtype_id": "a517c2fd-8dc7-4a2e-a107-cbdb88ba2aa5",
+            
+            "startdate": "2021-09-01T00:00:00", 
+            "enddate": "2022-09-01T00:00:00",
+            "_chunk": 0
+        },
+        {
+            "id": "5194663f-11aa-4775-91ed-5f3d79269fed" , 
+            "name": "2022/23", 
+            "name_en": "2022/23", 
+            "eventtype_id": "a517c2fd-8dc7-4a2e-a107-cbdb88ba2aa5",
+            
+            "startdate": "2022-09-01T00:00:00", 
+            "enddate": "2023-09-01T00:00:00",
+            "_chunk": 0
+        },
+        {
+            "id": "a64871f8-2308-48ff-adb2-33fb0b0741f1" , 
+            "name": "2023/24", 
+            "name_en": "2023/24", 
+            "eventtype_id": "a517c2fd-8dc7-4a2e-a107-cbdb88ba2aa5",
+            
+            "startdate": "2023-09-01T00:00:00", 
+            "enddate": "2024-09-01T00:00:00",
+            "_chunk": 0
+        },
+        {
+            "id": "9d05f000-7a9d-495d-9257-b597c5c6cb6a" , 
+            "name": "2024/25", 
+            "name_en": "2024/25", 
+            "eventtype_id": "a517c2fd-8dc7-4a2e-a107-cbdb88ba2aa5",
+            
+            "startdate": "2024-09-01T00:00:00", 
+            "enddate": "2025-09-01T00:00:00",
+            "_chunk": 0
+        },
+        {
+            "id": "08ff1c5d-9891-41f6-a824-fc6272adc189" , 
+            "name": "2022/23 ZS", 
+            "name_en": "2022/23 WS", 
+            "eventtype_id": "69ec2b0b-a39d-40df-9cea-e295b36749c9",
+            "masterevent_id": "5194663f-11aa-4775-91ed-5f3d79269fed",
+
+            "startdate": "2022-09-01T00:00:00", 
+            "enddate": "2023-03-01T00:00:00",
+            "_chunk": 1
+        },
+        {
+            "id": "0945ad17-3a36-4d33-b849-ad88144415ba" , 
+            "name": "2022/23 LS", 
+            "name_en": "2022/23 SS", 
+            "eventtype_id": "69ec2b0b-a39d-40df-9cea-e295b36749c9",
+            "masterevent_id": "5194663f-11aa-4775-91ed-5f3d79269fed",
+            
+            "startdate": "2023-03-01T00:00:00", 
+            "enddate": "2023-09-01T00:00:00",
+            "_chunk": 1
         }
     ],
     "events_users": [
@@ -1054,14 +1173,18 @@
             "id": "66275ffa-a7b3-11ed-b76e-0242ac110002" , "name": "Hlavní komplex", "name_en": "", 
             "facilitytype_id": "764217ee-a7a0-11ed-b76e-0242ac110002",
             "master_facility_id": null,
+            "geometry": "[[49.210538858576676, 16.61837697029114], [49.21242408520478, 16.617239713668827], [49.21037935134335, 16.612304449081424], [49.209019270207335, 16.614074707031254]]",
+            "geolocation": "{\"location\": [49.21056, 16.61667], \"zoom\": 17}",
             "group_id": "480f2802-a869-11ed-924c-0242ac110002",
             "_chunk": 0
         },
         {
-            "id": "662763a6-a7b3-11ed-b76e-0242ac110002" , "name": "Budova A", "name_en": "", 
+            "id": "662763a6-a7b3-11ed-b76e-0242ac110002" , "name": "Budova Q", "name_en": "", 
             "facilitytype_id": "76421cf8-a7a0-11ed-b76e-0242ac110002",
             "master_facility_id": "66275ffa-a7b3-11ed-b76e-0242ac110002",
-            "group_id": null,
+            "group_id": "480f2802-a869-11ed-924c-0242ac110002",
+            "geometry": "[[49.209123972153186, 16.614074707031254], [49.20944253580456, 16.614975929260257], [49.21001365618171, 16.614493131637577], [49.20969165903944, 16.613591909408573]]",
+            "geolocation": "{\"location\": [49.2095546287644, 16.614283919334415], \"zoom\": 18}",
             "_chunk": 1
         },
         {
@@ -1329,6 +1452,12 @@
             "program_id": "2766fc9a-b095-11ed-9bd8-0242ac110002",
             "lastchange": "2023-04-19T08:00:00",
             "name": "Programování", "name_en": "" 
+        },
+        {
+            "id": "3ed497ea-ab40-4e94-a93e-9d9627497652",
+            "program_id": "2766fc9a-b095-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T08:00:00",
+            "name": "Databáze", "name_en": "" 
         }
     ],
     "acsemesters": [
@@ -1338,6 +1467,41 @@
             "classificationtype_id": "a00a0642-b095-11ed-9bd8-0242ac110002",
             "lastchange": "2023-04-19T08:00:00",
             "order": 1, "credits": 24 
+        },
+        {
+            "id": "85c0db4a-148c-477e-ad5b-3985eaba1f90",
+            "subject_id": "ce250a68-b095-11ed-9bd8-0242ac110002",
+            "classificationtype_id": "a00a0642-b095-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T08:00:00",
+            "order": 2, "credits": 24 
+        },
+        {
+            "id": "0e9ff40a-722c-472a-b08c-b7d892a41b59",
+            "subject_id": "ce250a68-b095-11ed-9bd8-0242ac110002",
+            "classificationtype_id": "a00a0642-b095-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T08:00:00",
+            "order": 3, "credits": 24 
+        },
+        {
+            "id": "f6f0cca7-d5b1-4ab6-881f-792b964fe261",
+            "subject_id": "3ed497ea-ab40-4e94-a93e-9d9627497652",
+            "classificationtype_id": "a00a0642-b095-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T08:00:00",
+            "order": 1, "credits": 24 
+        },
+        {
+            "id": "e1ab1551-0c3d-4f1c-b2d5-f5c053f28b95",
+            "subject_id": "3ed497ea-ab40-4e94-a93e-9d9627497652",
+            "classificationtype_id": "a00a0642-b095-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T08:00:00",
+            "order": 2, "credits": 24 
+        },
+        {
+            "id": "765eb469-6fab-4cd4-b536-288bb77c6e2d",
+            "subject_id": "3ed497ea-ab40-4e94-a93e-9d9627497652",
+            "classificationtype_id": "a00a0642-b095-11ed-9bd8-0242ac110002",
+            "lastchange": "2023-04-19T08:00:00",
+            "order": 3, "credits": 24 
         }
     ],
     "actopics": [
@@ -1376,14 +1540,20 @@
         }
     ],
 
+    "plans": [
+        {
+            "id": "a5085468-394f-4a8b-bf23-4e72a6a6d415",
+            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002"
+        }
+    ],
     "plan_lessons": [
         {
             "id": "704e7bc2-b1d6-4fe3-95ce-b008b352dd59",
             "name": "Úvod",
-            "linkedlesson_id": "",
+            "linkedlesson_id": null,
             "topic_id": "ce250b44-b095-11ed-9bd8-0242ac110002",
             "lessontype_id": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002",
-            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+            "plan_id": "a5085468-394f-4a8b-bf23-4e72a6a6d415",
             "event_id": "",
             "_chunk": 0
         },
@@ -1393,7 +1563,7 @@
             "linkedlesson_id": "704e7bc2-b1d6-4fe3-95ce-b008b352dd59",
             "topic_id": "ce250b44-b095-11ed-9bd8-0242ac110002",
             "lessontype_id": "e2b7cbf6-95e1-11ed-a1eb-0242ac120002",
-            "semester_id": "ce250af4-b095-11ed-9bd8-0242ac110002",
+            "plan_id": "a5085468-394f-4a8b-bf23-4e72a6a6d415",
             "event_id": "",
             "_chunk": 1
         }
@@ -1536,5 +1706,60 @@
             "form_id": "190d5a7a-afb1-11ed-9bd8-0242ac110002",
             "lastchange": "2023-04-19T20:00:00",
             "name": "" }
+    ],
+
+    "preferedtagentities": [
+        {
+            "id": "6ec9a6ab-0bab-404d-a52e-f0ed76798219",
+            "author_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "entity_id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
+            "entity_type_id": "e8479a21-b7c4-4140-9562-217de2656d55",
+            "tag_id": "8148fd61-77b3-45d1-a382-ca3aadafb9a1"
+
+        },
+        {
+            "id": "98d372e3-6526-4ccf-8dee-283bc14c828f",
+            "author_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "entity_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
+            "entity_type_id": "2d3d9801-0017-4cf2-9272-2df7b59da667",
+            "tag_id": "7a4c0d3e-2e3a-4ea0-9037-baa38d8400d2"
+        },
+        {
+            "id": "cf7e9181-1f73-453b-80d5-70b9debbb842",
+            "author_id": "f8089aa6-2c4a-4746-9503-105fcc5d054c",
+            "entity_id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
+            "entity_type_id": "e8479a21-b7c4-4140-9562-217de2656d55",
+            "tag_id": "8148fd61-77b3-45d1-a382-ca3aadafb9a1"
+
+        },
+        {
+            "id": "8f22d834-5d74-4746-86f8-09f2989dc6a7",
+            "author_id": "f8089aa6-2c4a-4746-9503-105fcc5d054c",
+            "entity_id": "2d9dcd22-a4a2-11ed-b9df-0242ac120003",
+            "entity_type_id": "2d3d9801-0017-4cf2-9272-2df7b59da667",
+            "tag_id": "7a4c0d3e-2e3a-4ea0-9037-baa38d8400d2"
+        }
+    ],
+    "preferedtags": [
+        {
+            "id": "8148fd61-77b3-45d1-a382-ca3aadafb9a1",
+            "author_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "name": "partneři"
+        },
+        {
+            "id": "7a4c0d3e-2e3a-4ea0-9037-baa38d8400d2",
+            "author_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "name": "sledované"
+        },
+        {
+            "id": "b8eebb07-91d5-4d13-8adf-64f4b6de7d06",
+            "author_id": "f8089aa6-2c4a-4746-9503-105fcc5d054c",
+            "name": "partneři"
+        },
+        {
+            "id": "89838aab-d06e-445e-982e-d3c55bc7cb90",
+            "author_id": "f8089aa6-2c4a-4746-9503-105fcc5d054c",
+            "name": "sledované"
+        }
     ]
 }

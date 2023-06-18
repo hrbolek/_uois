@@ -54,7 +54,7 @@ class PreferenceTagGQLModel:
     async def name(self, info: strawberry.types.Info) -> Union[str, None]:
         return self.name
 
-    @strawberry.field(description="""tag value, can be "red", "2023", etc. """)
+    @strawberry.field(description="""entities marked with this tag""")
     async def links(self, info: strawberry.types.Info) -> List["PreferenceTagEntityGQLModel"]:
         loader = getLoaders(info).tagentities
         result = await loader.filter_by(tag_id=self.id)
@@ -89,43 +89,43 @@ async def preference_tags(info: strawberry.types.Info) -> List["PreferenceTagGQL
 
 import datetime
 
-@strawberry.input(description="""""")
+@strawberry.input(description="""Creates a new tag""")
 class TagInsertGQLModel:
-    name: str
-    id: Optional[strawberry.ID] = None
-    createdby: strawberry.Private[strawberry.ID] = None
-    author_id: strawberry.Private[strawberry.ID] = None
+    name: str = strawberry.field(default="new tag", description="tag name")
+    id: Optional[strawberry.ID] = strawberry.field(default=None, description="optional primary key value of tag, UUID expected")
+    createdby: strawberry.Private[strawberry.ID] = strawberry.field(default=None, description="user who created this db record")
+    author_id: strawberry.Private[strawberry.ID] = strawberry.field(default=None, description="user who owns this tag")
 
-@strawberry.input(description="""""")
+@strawberry.input(description="""Updates the tag""")
 class TagUpdateGQLModel:
-    id: strawberry.ID
-    name: str
-    lastchange: datetime.datetime
-    updatedby: strawberry.Private[strawberry.ID] = None
+    id: strawberry.ID = strawberry.field(default=None, description="primary key value, aka tag identification")
+    name: str = strawberry.field(default=None, description="tag name")
+    lastchange: datetime.datetime = strawberry.field(default=None, description="timestamp")
+    updatedby: strawberry.Private[strawberry.ID] = strawberry.field(default=None, description="user who updates the tag")
 
-@strawberry.input(description="""""")
+@strawberry.input(description="""Removes the tag""")
 class TagDeleteGQLModel:
-    name: str
-    id: Optional[strawberry.ID] = None
+    name: str = strawberry.field(default=None, description="tag name, could be used as an identification")
+    id: Optional[strawberry.ID] = strawberry.field(default=None, description="primary key, aka tag identification")
 
-@strawberry.type
+@strawberry.type(description="""result of tag operation""")
 class TagResultGQLModel:
-    id: Union[strawberry.ID, None] = None
-    msg: str = None
+    id: Union[strawberry.ID, None] = strawberry.field(default=None, description="id of tag")
+    msg: str = strawberry.field(default=None, description="""result of operation, should be "ok" or "fail" """)
 
     @strawberry.field(description="""Result of drone operation""")
     async def tag(self, info: strawberry.types.Info) -> Union[PreferenceTagGQLModel, None]:
         result = await PreferenceTagGQLModel.resolve_reference(info, self.id)
         return result
 
-@strawberry.mutation
+@strawberry.mutation(description="inserts a new tag, if the name is already defined, operation will fail")
 async def tag_insert(self, info: strawberry.types.Info, tag: TagInsertGQLModel) -> TagResultGQLModel:
     actingUser = getUser(info)
     loader = getLoaders(info).tags
     tag.changedby = actingUser["id"]
     tag.author_id = actingUser["id"]
     result = TagResultGQLModel()
-    rows = await loader.filter_by(name=tag.name)
+    rows = await loader.filter_by(name=tag.name, author_id=actingUser["id"])
     row = next(rows, None)
     if row is None:
         row = await loader.insert(tag)
@@ -136,7 +136,7 @@ async def tag_insert(self, info: strawberry.types.Info, tag: TagInsertGQLModel) 
         result.msg = "fail"
     return result
 
-@strawberry.mutation("""""")
+@strawberry.mutation("""deletes the tag""")
 async def tag_delete(self, info: strawberry.types.Info, tag: TagDeleteGQLModel) -> TagResultGQLModel:
     actingUser = getUser(info)
     loader = getLoaders(info).tags
@@ -144,7 +144,7 @@ async def tag_delete(self, info: strawberry.types.Info, tag: TagDeleteGQLModel) 
     result = TagResultGQLModel()
     result.id = tag.id
     if tag.id is None:
-        rows = await loader.filter_by(author_id=actingUser["id"])
+        # rows = await loader.filter_by(author_id=actingUser["id"])
         rows = await loader.filter_by(name=tag.name, author_id=actingUser["id"])
         row = next(rows, None)
     else:
@@ -159,7 +159,7 @@ async def tag_delete(self, info: strawberry.types.Info, tag: TagDeleteGQLModel) 
         
     return result
 
-@strawberry.mutation("""""")
+@strawberry.mutation("""updates the tag""")
 async def tag_update(self, info: strawberry.types.Info, tag: TagUpdateGQLModel) -> TagResultGQLModel:
     actingUser = getUser(info)
     loader = getLoaders(info).tags
@@ -173,96 +173,3 @@ async def tag_update(self, info: strawberry.types.Info, tag: TagUpdateGQLModel) 
     else:
         result.msg = "ok"        
     return result
-
-# import datetime
-
-# @strawberry.input(description="""""")
-# class DroneInsertGQLModel:
-#     name: str
-#     id: Optional[strawberry.ID] = None
-#     createdby: strawberry.Private[strawberry.ID] = None
-#     longitude: Optional[float] = None
-#     latitude: Optional[float] = None
-#     z: Optional[float] = None
-
-# @strawberry.input(description="""""")
-# class DroneUpdateGQLModel:
-#     id: strawberry.ID
-#     name: Optional[str] = None
-#     lastchange: datetime.datetime
-#     changedby: strawberry.Private[strawberry.ID] = None
-#     longitude: Optional[float] = None
-#     latitude: Optional[float] = None
-#     z: Optional[float] = None
-#     scenario_id: Optional[Union[strawberry.ID, None]] = None
-    
-# @strawberry.type
-# class DroneResultGQLModel:
-#     id: strawberry.ID = None
-#     msg: str = None
-
-#     @strawberry.field(description="""Result of drone operation""")
-#     async def drone(self, info: strawberry.types.Info) -> Union[DroneGQLModel, None]:
-#         result = await DroneGQLModel.resolve_reference(info, self.id)
-#         return result
-
-# @strawberry.mutation
-# async def drone_insert(self, info: strawberry.types.Info, drone: DroneInsertGQLModel) -> DroneResultGQLModel:
-#     actingUser = getUser(info)
-#     loader = getLoaders(info).drones
-#     drone.createdby = actingUser["id"]
-#     row = await loader.insert(drone)
-#     result = DroneResultGQLModel()
-#     result.msg = "ok"
-#     result.id = row.id
-#     return result
-
-# @strawberry.mutation
-# async def drone_update(self, info: strawberry.types.Info, drone: DroneUpdateGQLModel) -> DroneResultGQLModel:
-#     actingUser = getUser(info)
-#     loader = getLoaders(info).drones
-#     drone.changedby = actingUser["id"]
-#     row = await loader.update(drone)
-#     result = DroneResultGQLModel()
-#     result.id = drone.id
-#     if row is None:
-#         result.msg = "fail"
-#     else:
-#         result.msg = "ok"
-#     return result
-
-
-# from api.resolvers import DroneRemoveFromScenario
-
-# @strawberry.mutation
-# async def drone_remove_from_scenario(self, info: strawberry.types.Info, drone_id: strawberry.ID) -> DroneResultGQLModel:
-#     asyncSessionMaker = info.context["asyncSessionMaker"]
-
-#     await DroneRemoveFromScenario(asyncSessionMaker, drone_id=drone_id)
-    
-#     # actingUser = getUser(info)
-#     # loader = getLoaders(info).drones
-#     # drone = await loader.load(drone_id)
-#     # drone.changedby = actingUser["id"]
-#     # drone.scenario_id = None
-#     # row = await loader.update(drone)
-#     # print(row.scenario_id)
-#     result = DroneResultGQLModel()
-#     # result.id = drone.id
-#     result.id = drone_id
-#     result.msg = "ok"
-#     # if row is None:
-#     #     result.msg = "fail"
-#     # else:
-#     #     result.msg = "ok"
-#     return result
-
-# #####################################################################
-# #
-# # Special resolvers
-# #
-# #####################################################################
-
-# # async def drone_by_root_drone_id(root, info: strawberry.types.Info) -> Union["DroneGQLModel", None]:
-# #     return await DroneGQLModel.resolve_reference(info=info, id=root.drone_id)
-
