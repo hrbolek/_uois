@@ -482,6 +482,7 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./nginx
+    restart: always
     ports:
       # vnejsi port : port, kde sluzbu poskytuje kontejner
       - 31180:80

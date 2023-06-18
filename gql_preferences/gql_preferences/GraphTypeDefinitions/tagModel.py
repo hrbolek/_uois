@@ -93,15 +93,15 @@ import datetime
 class TagInsertGQLModel:
     name: str = strawberry.field(default="new tag", description="tag name")
     id: Optional[strawberry.ID] = strawberry.field(default=None, description="optional primary key value of tag, UUID expected")
-    createdby: strawberry.Private[strawberry.ID] = strawberry.field(default=None, description="user who created this db record")
-    author_id: strawberry.Private[strawberry.ID] = strawberry.field(default=None, description="user who owns this tag")
+    createdby: strawberry.Private[strawberry.ID] = None #strawberry.field(default=None, description="user who created this db record")
+    author_id: strawberry.Private[strawberry.ID] = None #strawberry.field(default=None, description="user who owns this tag")
 
 @strawberry.input(description="""Updates the tag""")
 class TagUpdateGQLModel:
     id: strawberry.ID = strawberry.field(default=None, description="primary key value, aka tag identification")
     name: str = strawberry.field(default=None, description="tag name")
     lastchange: datetime.datetime = strawberry.field(default=None, description="timestamp")
-    updatedby: strawberry.Private[strawberry.ID] = strawberry.field(default=None, description="user who updates the tag")
+    updatedby: strawberry.Private[strawberry.ID] = None #strawberry.field(default=None, description="user who updates the tag")
 
 @strawberry.input(description="""Removes the tag""")
 class TagDeleteGQLModel:
@@ -136,7 +136,7 @@ async def tag_insert(self, info: strawberry.types.Info, tag: TagInsertGQLModel) 
         result.msg = "fail"
     return result
 
-@strawberry.mutation("""deletes the tag""")
+@strawberry.mutation(description="""deletes the tag""")
 async def tag_delete(self, info: strawberry.types.Info, tag: TagDeleteGQLModel) -> TagResultGQLModel:
     actingUser = getUser(info)
     loader = getLoaders(info).tags
@@ -159,7 +159,7 @@ async def tag_delete(self, info: strawberry.types.Info, tag: TagDeleteGQLModel) 
         
     return result
 
-@strawberry.mutation("""updates the tag""")
+@strawberry.mutation(description="""updates the tag""")
 async def tag_update(self, info: strawberry.types.Info, tag: TagUpdateGQLModel) -> TagResultGQLModel:
     actingUser = getUser(info)
     loader = getLoaders(info).tags

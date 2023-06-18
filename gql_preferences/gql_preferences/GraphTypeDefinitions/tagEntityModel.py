@@ -152,7 +152,7 @@ class EntityAddTagGQLModel:
     entity_id: strawberry.ID = strawberry.field(default=None, description="GQL entity primary key value, aka GQL entity identification")
     entity_type_id: strawberry.ID = strawberry.field(default=None, description="GQL entity type, aka UserGQLModel id")
     tag_id: strawberry.ID = strawberry.field(default=None, description="tag identification")
-    createdby: strawberry.Private[strawberry.ID] = strawberry.field(default=None, description="User who created and assigned the tag")
+    createdby: strawberry.Private[strawberry.ID] = None #strawberry.field(default=None, description="User who created and assigned the tag")
 
 @strawberry.input(description="""removes a tag from entity""")
 class EntityRemoveTagGQLModel:
