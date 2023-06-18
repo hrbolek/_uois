@@ -55,6 +55,20 @@ The project has several docker containers
 | H+L    |Student| gql_personalities        | 2022/9 - 2023/2 |
 | Ch+H   |Student| gql_projects             | 2022/9 - 2023/2 |
 | R+S    |Student| gql_surveys              | 2022/9 - 2023/2 |
+|        |       |                          |                 |
+| AS     |Teacher|                          | 2023/3 - 2023/6 |
+| AS     |Teacher| frontend                 | 2023/3 - 2023/6 |
+| AS     |Teacher| gql_preferences          | 2023/3 - 2023/6 |
+|        |       | frontend - lessons       | 2023/3 - 2023/6 |
+|        |       | frontend - users+groups  | 2023/3 - 2023/6 |
+|        |       | frontend - facilities    | 2023/3 - 2023/6 |
+|        |       | frontend - projects      | 2023/3 - 2023/6 |
+|        |       | frontend - publications  | 2023/3 - 2023/6 |
+|        |       | frontend - presences     | 2023/3 - 2023/6 |
+|        |       | frontend - events        | 2023/3 - 2023/6 |
+|        |       | frontend - surveys       | 2023/3 - 2023/6 |
+|        |       | frontend - workflow      | 2023/3 - 2023/6 |
+|        |       | frontend - authorizations| 2023/3 - 2023/6 |
 
 ## Current Notes
 To run this docker stack in some alpha mode you can run the docker-compose.yml. Be careful as it uses host volumes.
@@ -154,7 +168,7 @@ GRANT ALL ON SCHEMA public TO public;
 Strawberry has not support for multiple references resolution. This could slow down the response construction significantly.
 Dataloaders do not solve this problem. They can help only in some cases. Federation schema must be updated especially method resolve reference.
 
-Top on this, creation of Dataloaders working with Redis would make a miracle regarding the response time
+Top on this, creation of Dataloaders working with Redis would make a miracle regarding the server response time.
 
 ## Monitoring
 There are some libraries, included in Strawberry. Also Prometheus would be taken into account.
@@ -176,3 +190,21 @@ If the database is not initialized with SQL script, the containers should be run
 12. gql_projects
 
 some containers in the list can be run simultaneously
+
+latest versions introduced DB decoupling so all containers could run separate DB engines
+
+## UI Catalog
+Storybook in frontend is used
+
+## Monorepo
+Frontend is structured as nodejs monorepo. There are several libraries and two applications.
+
+- frontend UI itself
+- Storybook as component catalog
+
+both of them are located in apps directory
+All libraries are in directory packages.
+
+## Multistage dockefile
+Frontend has multistage dockerfile with stages related to python server (serving frontend files) 
+and stages for build particular js applications.

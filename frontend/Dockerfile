@@ -17,29 +17,52 @@ RUN python -m pip install -r requirements.txt
 # First phase
 #
 ###############################################################
-FROM node:14 as buildnode
+FROM node:16 as buildnode
 
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /usr/src
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
 
 # Bundle app source
 COPY jsconfig.json jsconfig.json
-COPY src ./src
-COPY public ./public
-RUN npm run build
-# RUN npm run build:dev
+COPY packages ./packages
+
 ###############################################################
 #
 # Second phase
+#
+###############################################################
+FROM buildnode as appdev
+
+WORKDIR /usr/src
+COPY apps/dev ./apps/dev
+RUN npm install
+WORKDIR /usr/src/apps/dev
+RUN npm run build3
+
+###############################################################
+#
+# Third phase
+#
+###############################################################
+FROM buildnode as appstorybook
+
+WORKDIR /usr/src
+COPY apps/storybook ./apps/storybook
+RUN npm install
+WORKDIR /usr/src/apps/storybook
+RUN npm run build
+
+###############################################################
+#
+# Last phase
 #
 ###############################################################
 FROM pythonbase as executepython
@@ -53,7 +76,12 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app/js
-COPY --from=buildnode /usr/src/app/build/ /app/js/
+# COPY --from=buildnode /usr/src/app/build/ /app/js/
+COPY --from=appdev /usr/src/apps/dev/build/ /app/js/
+
+WORKDIR /app/storybook
+# COPY --from=buildnode /usr/src/app/build/ /app/js/
+COPY --from=appstorybook /usr/src/apps/storybook/dist/ /app/storybook/
 
 WORKDIR /app
 COPY ./pyserver/ /app

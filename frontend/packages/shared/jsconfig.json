@@ -1,0 +1,6 @@
+{
+    "compilerOptions": {
+      "baseUrl": "src"
+    },
+    "include": ["src", "../user/src/Queries/UserEventsQuery.js", "../group/src/Components/GroupNameEditable.js"]
+}

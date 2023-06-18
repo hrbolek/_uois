@@ -6,6 +6,9 @@ services:
     build:
       # context definuje cestu k popisu
       context: ./frontend
+    environment:
+      # promenne, ktere lze cist v kontejneru
+      - GQL_PROXY=http://apollo:3000/api/gql/
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu)
       test: "curl -f -X GET http://localhost:8000/ui/ || exit 1"
