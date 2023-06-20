@@ -178,6 +178,13 @@ class EventGQLModel:
             )  # z tabulky obsahů hledáme event_id = event_id v Content
             return next(result, None)
 
+    @strawberryA.field(description="""tasks assiciated with this event""")
+    async def tasks(
+        self, info: strawberryA.types.Info, id: strawberryA.ID
+    ) -> List[TaskGQLModel]:
+        loader = getLoaders(info).tasks
+        result = await loader.filter_by(event_id=self.id)
+        return result
 
 #     zde je rozsireni o dalsi resolvery¨
 #     async def external_ids(self, info: strawberryA.types.Info) -> List['ExternalIdGQLModel']:
