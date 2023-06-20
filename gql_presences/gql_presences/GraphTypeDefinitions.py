@@ -71,11 +71,11 @@ class TaskGQLModel:
         return self.name
 
     @strawberryA.field(description="""Brief description""")
-    def brief_desc(self) -> Union[str, None]:
+    def brief_des(self) -> Union[str, None]:
         return self.brief_des
 
     @strawberryA.field(description="""Full description""")
-    def detailed_desc(self) -> Union[str, None]:
+    def detailed_des(self) -> Union[str, None]:
         return self.detailed_des
 
     @strawberryA.field(description=""" Reference""")
@@ -269,7 +269,7 @@ class TaskInsertGQLModel:
     user_id: strawberryA.ID
 
     brief_des: Optional[str] = ""
-    detailed_des: Optional[str] = ""
+    detailed_des: Optional[str] = "" 
     reference: Optional[str] = ""
     date_of_entry: Optional[datetime.datetime] = datetime.datetime.now()
     date_of_submission: Optional[datetime.datetime] = datetime.datetime.now()
