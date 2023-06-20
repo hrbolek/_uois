@@ -70,6 +70,10 @@ class WorkflowStateGQLModel:
     def name(self) -> str:
         return self.name
     
+    @strawberryA.field(description="""if teh state is enabled""")
+    def valid(self) -> str:
+        return self.valid
+    
     @strawberryA.field(description="""outcomming transitions""")
     async def next_transitions(self, info: strawberryA.types.Info) -> List["WorkflowTransitionGQLModel"]:
         loader = getLoaders(info).workflowtransitions
@@ -179,6 +183,10 @@ class WorkflowTransitionGQLModel:
     def name(self) -> str:
         return self.name
 
+    @strawberryA.field(description="""if the transition is enabled""")
+    def valid(self) -> str:
+        return self.valid
+    
     @strawberryA.field(description="""name""")
     async def source(self, info: strawberryA.types.Info) -> Union["WorkflowStateGQLModel", None]:
         result = await WorkflowStateGQLModel.resolve_reference(info, self.sourcestate_id)
