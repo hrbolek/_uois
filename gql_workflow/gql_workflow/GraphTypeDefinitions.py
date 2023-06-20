@@ -98,6 +98,11 @@ class WorkflowStateGQLModel:
         result = await loader.filter_by(workflowstate_id=self.id)
         return result
     
+    @strawberryA.field(description="""The owing workflow""")
+    async def workflow(self, info: strawberryA.types.Info) -> Union["WorkflowGQLModel", None]:
+        result = await WorkflowGQLModel.resolve_reference(info, id=self.workflow_id)
+        return result
+    
 
 @strawberryA.federation.type(keys=["id"], description="""Entity defining users with some rights for the state in dataflow (node in graph)""")
 class WorkflowStateUserGQLModel:
@@ -196,6 +201,12 @@ class WorkflowTransitionGQLModel:
     async def destination(self, info: strawberryA.types.Info) -> Union["WorkflowStateGQLModel", None]:
         result = await WorkflowStateGQLModel.resolve_reference(info, self.destinationstate_id)
         return result
+
+    @strawberryA.field(description="""The owing workflow""")
+    async def workflow(self, info: strawberryA.types.Info) -> Union["WorkflowGQLModel", None]:
+        result = await WorkflowGQLModel.resolve_reference(info, id=self.workflow_id)
+        return result
+    
 
 
 @strawberryA.federation.type(
