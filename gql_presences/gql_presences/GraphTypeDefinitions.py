@@ -99,7 +99,7 @@ class TaskGQLModel:
         if self.event_id is None:
             result = None
         else:
-            result = EventGQLModel(id=self.event_id)
+            result = await EventGQLModel(id=self.event_id)
         return result
 
     @strawberryA.field(description="""event id""")
@@ -107,7 +107,7 @@ class TaskGQLModel:
         if self.user_id is None:
             result = None
         else:
-            result = UserGQLModel(id=self.user_id)
+            result = await UserGQLModel(id=self.user_id)
         return result
 
 
