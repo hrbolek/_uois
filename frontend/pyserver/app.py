@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 
+from prometheus import prometheusClient, collectTime
+
 from mockoauthserver import server as OAuthServer
 
 # app = FastAPI(root_path="/apif")
@@ -38,10 +40,10 @@ async def read_docs_file(file_path: str):
     else:
         return FileResponse(f"./storybook/index.html")
 
-@app.get("/docs/visualize/", response_class=FileResponse)
-async def gql_schema_visualizer():
-    realpath = os.path.realpath("./voyager.html")
-    return realpath
+# @app.get("/docs/visualize/", response_class=FileResponse)
+# async def gql_schema_visualizer():
+#     realpath = os.path.realpath("./voyager.html")
+#     return realpath
 
 @app.get("/docs/")
 async def read_docs_file(file_path: str):
@@ -51,7 +53,7 @@ async def read_docs_file(file_path: str):
 # proxy = "http://10.0.2.27:31180/api/gql/"
 #proxy = os.environ.get("GQL_PROXY", "http://localhost:31180/api/gql/")
 proxy = os.environ.get("GQL_PROXY", "http://10.0.2.27:31180/api/gql/")
-@app.get("/api/gql/", response_class=FileResponse)
+@app.get("/api/gql", response_class=FileResponse)
 async def apigql_get():
     realpath = os.path.realpath("./graphiql.html")
     result = realpath
@@ -62,7 +64,8 @@ class Item(BaseModel):
     variables: dict = None
     operationName: str = None
 
-@app.post("/api/gql/", response_class=JSONResponse)
+@collectTime("gqlquery")
+@app.post("/api/gql", response_class=JSONResponse)
 async def apigql_post(data: Item, request: Request):
     gqlQuery = {"query": data.query}
     if (data.variables) is not None:
@@ -116,3 +119,6 @@ async def apigql_post(data: Item, request: Request):
 
 
 app.mount("/oauth", OAuthServer.createServer())
+from prometheus_fastapi_instrumentator import Instrumentator
+
+Instrumentator().instrument(app).expose(app, endpoint="/prometheus")

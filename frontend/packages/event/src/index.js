@@ -7,6 +7,8 @@ import { EventPlanEditPage }  from "./Pages/EventPlanEditPage"
 export { EventPage } from "./Pages/EventPage";
 export { EventEditPage } from "./Pages/EventEditPage";
 export { EventCard } from "./Components/EventCard";
+export { EventCalendar } from "./Components/EventCalendar";
+export { EventAddDialog } from "./Components/EventAddDialog";
 
 export const Pages = () => {
     return (

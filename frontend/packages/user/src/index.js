@@ -13,7 +13,7 @@ export { UserNameEditable } from "./Components/UserNameEditable"
 export { UserAttributesEditable } from "./Components/UserAttributesEditable"
 export { UserRoles } from "./Components/UserRoles"
 export { UserGroups } from "./Components/UserGroups"
-
+export { UserCard } from "./Components/UserCard";
 //import "./Pages/UserPageS";
 
 

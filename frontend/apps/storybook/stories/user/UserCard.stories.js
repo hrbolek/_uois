@@ -2,16 +2,16 @@ import { TextInput } from "@uoisfrontend/shared";
 import { CheckLg, TrashFill } from "react-bootstrap-icons";
 import { action } from '@storybook/addon-actions';
 import { withRouter } from 'storybook-addon-react-router-v6';
-import { UserNameEditable } from "@uoisfrontend/user";
+import { UserCard } from "@uoisfrontend/user";
 import { StorageDecorator } from "../StorageDecorator";
 import { UserDecorator, UserGet } from "./UserDecorator";
 // import { UserNameEditable } from "@uoisfrontend/user/UserNameEditable";
 
 const meta = {
     //👇 component which is all about
-    component: UserNameEditable,
+    component: UserCard,
     //👇 Tree position where those stories will be placed
-    title: "User/UserNameEditable",
+    title: "User/UserCard",
     
     //👇 Needed for componets using react-router library
     //   also for components using useDispatch hook
@@ -33,8 +33,8 @@ export default meta;
  * See https://storybook.js.org/docs/react/api/csf
  * to learn how to use render functions.
  */
-export const UserNameEditableStory = {
-    name: "Text Input",
+export const UserCardStory = {
+    name: "user readonly",
     //👇 Initial value for args
     args: {
         
@@ -54,6 +54,5 @@ export const UserNameEditableStory = {
       },
     
     //👇 how the component will be rendered
-    render: (args) => <UserNameEditable user={args.user}/>
-    
+    render: (args) => <UserCard user={args.user}/>
 };

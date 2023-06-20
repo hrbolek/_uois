@@ -10,6 +10,7 @@ import { UserGroups } from "./UserGroups"
 import { Link } from "@uoisfrontend/shared"
 import { UserEvent, UserEvents } from "./UserEvents"
 import { UserClassification, UserClassificationEditable, UserClassificationsTable, UserClassificationsTableEditable } from "./UserClassification"
+import { UserAddEventButton } from "./UserAddEventDialog"
 
 const UserEmail = ({user, subject="Info", body="Dobr%C3%BD%20den%2C "}) => {
     const hrefValue = `mailto:${user.email}?subject=${subject}&body=${body}`
@@ -19,6 +20,15 @@ const UserEmail = ({user, subject="Info", body="Dobr%C3%BD%20den%2C "}) => {
     )
 }
 
+/**
+ * Basic Element for user visualization
+ * 
+ * @function
+ * 
+ * @param {Object} props.user represents an entity to show
+ * 
+ * @returns JSX.Element
+ */
 export const UserCard = ({user}) => {
     return (
         <Card>
@@ -45,7 +55,16 @@ export const UserCard = ({user}) => {
                 <UserClassificationEditable user={user} />
             </Card.Body>
             <Card.Body>
+                <hr />
+                Kalendar
                 <UserEvents user={user} />
+                <br />
+                <UserAddEventButton user={user} />
+                <hr />
+                {/* Ukoly
+                <UserEvents user={user} />
+                <br />
+                <UserAddEventButton user={user} /> */}
                 {/* <Row>
                     <Col md={1}>
                         <Form.Label column={"lg"} htmlFor="basic-url">Role</Form.Label>
