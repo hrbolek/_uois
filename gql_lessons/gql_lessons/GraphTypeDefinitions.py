@@ -137,6 +137,16 @@ class AcSemesterGQLModel:
         return AcSemesterGQLModel(id=id)
 
 
+@strawberryA.federation.type(extend=True, keys=["id"])
+class AcLessonTypeGQLModel:
+
+    id: strawberryA.ID = strawberryA.federation.field(external=True)
+
+    @classmethod
+    async def resolve_reference(cls, id: strawberryA.ID):
+        return AcLessonTypeGQLModel(id=id)
+
+
 from gql_lessons.GraphResolvers import (
     resolvePlannedLessonById,
     resolvePlannedLessonPage,
@@ -212,6 +222,11 @@ class PlannedLessonGQLModel:
     @strawberryA.field(description="""primary key""")
     def length(self) -> Union[int, None]:
         return self.length
+
+    @strawberryA.field(description="""type of lesson (lecture, ...)""")
+    async def type(self, info) -> Optional["AcLessonTypeGQLModel"]:
+        result = AcLessonTypeGQLModel.resolve_reference(id=self.lessontype_id)
+        return result
 
     @strawberryA.field(
         description="""planned lesson linked to (aka master planned lesson)"""
