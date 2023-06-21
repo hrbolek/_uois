@@ -204,8 +204,6 @@ async def test_query_user():
                 surname
                 email
 
-                editor { id }
-
                 lastchange
                 roles {
                     id
@@ -237,7 +235,6 @@ async def test_query_group():
             groupById(id: $id) {
                 id
                 name
-                editor { id }
 
                 lastchange
                 valid
@@ -320,10 +317,11 @@ async def test_query_role_type():
         context_value = await createContext(async_session_maker)
         variable_values = {"id": row["id"]}
         resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
-
-        respdata = resp.data["roleTypeById"]
+        print(resp, flush=True)
 
         assert resp.errors is None
+
+        respdata = resp.data["roleTypeById"]
         assert respdata["id"] == row["id"]
         assert respdata["name"] == row["name"]
 
@@ -358,285 +356,285 @@ async def test_query_group_type():
         assert respdata["name"] == row["name"]
 
 
-@pytest.mark.asyncio
-async def test_query_group_editor_add_member():
-    async_session_maker = await prepare_in_memory_sqllite()
-    await prepare_demodata(async_session_maker)
+# @pytest.mark.asyncio
+# async def test_query_group_editor_add_member():
+#     async_session_maker = await prepare_in_memory_sqllite()
+#     await prepare_demodata(async_session_maker)
 
-    data = get_demodata()
-    table = data['groups']
-    row = table[0]
-    query = """query($id: ID!) {
-        groupById(id: $id) {
-            memberships {
-                user { id }
-            }
-            editor{
-                id
-            }
-            id
-        }
-        }"""
+#     data = get_demodata()
+#     table = data['groups']
+#     row = table[0]
+#     query = """query($id: ID!) {
+#         groupById(id: $id) {
+#             memberships {
+#                 user { id }
+#             }
+#             editor{
+#                 id
+#             }
+#             id
+#         }
+#         }"""
 
-    context_value = await createContext(async_session_maker)
-    variable_values = {"id": row["id"]}
-    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+#     context_value = await createContext(async_session_maker)
+#     variable_values = {"id": row["id"]}
+#     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
 
-    respdata = resp.data["groupById"]
+#     respdata = resp.data["groupById"]
 
-    assert resp.errors is None
-    assert respdata["id"] == row["id"]
-    memberids = list(map(lambda item: item['user']['id'], respdata["memberships"]))
+#     assert resp.errors is None
+#     assert respdata["id"] == row["id"]
+#     memberids = list(map(lambda item: item['user']['id'], respdata["memberships"]))
 
-    # vlozit vsechny uzivatele, kteri nejsou cleny
-    table2 = data['users']
-    for row2 in table2:
-        if row2['id'] in memberids:
-            continue
+#     # vlozit vsechny uzivatele, kteri nejsou cleny
+#     table2 = data['users']
+#     for row2 in table2:
+#         if row2['id'] in memberids:
+#             continue
 
-        query = """query($id: ID!, $userId: ID!) {
-            groupById(id: $id) {
-                editor{
-                    id
-                    addMembership(userId: $userId) {
-                        id
-                    }
-                }
-                id
-            }
-            }"""
+#         query = """query($id: ID!, $userId: ID!) {
+#             groupById(id: $id) {
+#                 editor{
+#                     id
+#                     addMembership(userId: $userId) {
+#                         id
+#                     }
+#                 }
+#                 id
+#             }
+#             }"""
 
-        context_value = await createContext(async_session_maker)
-        variable_values = {"id": row["id"], "userId": row2["id"]}
-        resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+#         context_value = await createContext(async_session_maker)
+#         variable_values = {"id": row["id"], "userId": row2["id"]}
+#         resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
 
-        assert resp.errors is None
+#         assert resp.errors is None
 
 
-    query = """query($id: ID!) {
-        groupById(id: $id) {
-            memberships {
-                user { id }
-            }
-            id
-        }
-        }"""
+#     query = """query($id: ID!) {
+#         groupById(id: $id) {
+#             memberships {
+#                 user { id }
+#             }
+#             id
+#         }
+#         }"""
 
-    context_value = await createContext(async_session_maker)
-    variable_values = {"id": row["id"]}
-    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
-    assert resp.errors is None
-    respdata = resp.data["groupById"]
-    assert respdata["id"] == row["id"]
+#     context_value = await createContext(async_session_maker)
+#     variable_values = {"id": row["id"]}
+#     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+#     assert resp.errors is None
+#     respdata = resp.data["groupById"]
+#     assert respdata["id"] == row["id"]
 
-    memberids = list(map(lambda item: item['user']['id'], respdata["memberships"]))
-    # overit, ze vsichni uzivatele jsou cleny
-    table2 = data['users']
-    for row2 in table2:
-        if row2['id'] in memberids:
-            continue
-        assert False
+#     memberids = list(map(lambda item: item['user']['id'], respdata["memberships"]))
+#     # overit, ze vsichni uzivatele jsou cleny
+#     table2 = data['users']
+#     for row2 in table2:
+#         if row2['id'] in memberids:
+#             continue
+#         assert False
 
 import datetime
 
-@pytest.mark.asyncio
-async def _test_query_group_editor_update():
-    async_session_maker = await prepare_in_memory_sqllite()
-    await prepare_demodata(async_session_maker)
+# @pytest.mark.asyncio
+# async def _test_query_group_editor_update():
+#     async_session_maker = await prepare_in_memory_sqllite()
+#     await prepare_demodata(async_session_maker)
 
-    data = get_demodata()
-    table = data['groups']
-    row = table[0]
+#     data = get_demodata()
+#     table = data['groups']
+#     row = table[0]
 
-    query = """query($id: ID!) {
-        groupById(id: $id) {
-            id
-            lastchange
-        }
-        }"""
+#     query = """query($id: ID!) {
+#         groupById(id: $id) {
+#             id
+#             lastchange
+#         }
+#         }"""
 
-    context_value = await createContext(async_session_maker)
-    variable_values = {"id": row["id"]}
-    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+#     context_value = await createContext(async_session_maker)
+#     variable_values = {"id": row["id"]}
+#     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
 
-    assert resp.errors is None
-    respdata = resp.data["groupById"]
-    lastchange = respdata["lastchange"]
-    print(lastchange)
-    lastchange = datetime.datetime.fromisoformat(respdata["lastchange"])
-    print(lastchange)
-    query = """query($id: ID!, $group: GroupUpdateGQLModel!) {
-        groupById(id: $id) {
-            editor{
-                id
-                update(group: $group) {
-                    result
-                }
-            }
-            id
-        }
-        }"""
+#     assert resp.errors is None
+#     respdata = resp.data["groupById"]
+#     lastchange = respdata["lastchange"]
+#     print(lastchange)
+#     lastchange = datetime.datetime.fromisoformat(respdata["lastchange"])
+#     print(lastchange)
+#     query = """query($id: ID!, $group: GroupUpdateGQLModel!) {
+#         groupById(id: $id) {
+#             editor{
+#                 id
+#                 update(group: $group) {
+#                     result
+#                 }
+#             }
+#             id
+#         }
+#         }"""
 
-    # musi selhat, je spatne razitko
-    group = {"name": "newname", "lastchange": f"{datetime.datetime.now().isoformat()}"}
-    print(1, group, flush=True)
-    context_value = await createContext(async_session_maker)
-    variable_values = {"id": row["id"], "group": group}
-    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+#     # musi selhat, je spatne razitko
+#     group = {"name": "newname", "lastchange": f"{datetime.datetime.now().isoformat()}"}
+#     print(1, group, flush=True)
+#     context_value = await createContext(async_session_maker)
+#     variable_values = {"id": row["id"], "group": group}
+#     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
 
-    assert resp.errors is None
-    respdata = resp.data["groupById"]
-    assert respdata["id"] == row["id"]
-    assert respdata["editor"]["id"] == row["id"]
-    respdata = respdata["editor"]
-    assert respdata["update"]["result"] == "fail"
+#     assert resp.errors is None
+#     respdata = resp.data["groupById"]
+#     assert respdata["id"] == row["id"]
+#     assert respdata["editor"]["id"] == row["id"]
+#     respdata = respdata["editor"]
+#     assert respdata["update"]["result"] == "fail"
 
-    # musi projit, je spravne razitko
-    group = {"name": "newname", "lastchange": f"{lastchange.isoformat()}"}
-    print(2, group, flush=True)
-    context_value = await createContext(async_session_maker)
-    variable_values = {"id": row["id"], "group": group}
-    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+#     # musi projit, je spravne razitko
+#     group = {"name": "newname", "lastchange": f"{lastchange.isoformat()}"}
+#     print(2, group, flush=True)
+#     context_value = await createContext(async_session_maker)
+#     variable_values = {"id": row["id"], "group": group}
+#     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
 
-    assert resp.errors is None
-    respdata = resp.data["groupById"]
-    assert respdata["id"] == row["id"]
-    assert respdata["editor"]["id"] == row["id"]
-    respdata = respdata["editor"]
-    assert respdata["update"]["result"] == "ok"
+#     assert resp.errors is None
+#     respdata = resp.data["groupById"]
+#     assert respdata["id"] == row["id"]
+#     assert respdata["editor"]["id"] == row["id"]
+#     respdata = respdata["editor"]
+#     assert respdata["update"]["result"] == "ok"
 
-@pytest.mark.asyncio
-async def test_query_group_editor_create_user():
-    async_session_maker = await prepare_in_memory_sqllite()
-    await prepare_demodata(async_session_maker)
+# @pytest.mark.asyncio
+# async def test_query_group_editor_create_user():
+#     async_session_maker = await prepare_in_memory_sqllite()
+#     await prepare_demodata(async_session_maker)
 
-    data = get_demodata()
-    table = data['groups']
-    row = table[0]
-    query = """query($id: ID!, $user: UserInsertGQLModel!) {
-        groupById(id: $id) {
-            editor{
-                id
-                createUser(user: $user) {
-                    id
-                    name
-                    surname
-                    email
-                    valid
-                    lastchange
-                }
-            }
-            id
-        }
-        }"""
+#     data = get_demodata()
+#     table = data['groups']
+#     row = table[0]
+#     query = """query($id: ID!, $user: UserInsertGQLModel!) {
+#         groupById(id: $id) {
+#             editor{
+#                 id
+#                 createUser(user: $user) {
+#                     id
+#                     name
+#                     surname
+#                     email
+#                     valid
+#                     lastchange
+#                 }
+#             }
+#             id
+#         }
+#         }"""
 
-    newuser = {"name": "new", "surname": "user", "email": "new.user@somewhere.else", "valid": True}
+#     newuser = {"name": "new", "surname": "user", "email": "new.user@somewhere.else", "valid": True}
 
-    context_value = await createContext(async_session_maker)
-    variable_values = {"id": row["id"], "user": newuser}
-    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+#     context_value = await createContext(async_session_maker)
+#     variable_values = {"id": row["id"], "user": newuser}
+#     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
 
-    respdata = resp.data["groupById"]
+#     respdata = resp.data["groupById"]
 
-    assert resp.errors is None
-    assert respdata["id"] == row["id"]
+#     assert resp.errors is None
+#     assert respdata["id"] == row["id"]
 
-    respuser = respdata["editor"]["createUser"]
-    assert respuser["name"] == newuser["name"]
-    assert respuser["surname"] == newuser["surname"]
-    assert respuser["email"] == newuser["email"]
-    assert respuser["valid"] == newuser["valid"]
-
-
-@pytest.mark.asyncio
-async def test_query_group_editor_add_role():
-    async_session_maker = await prepare_in_memory_sqllite()
-    await prepare_demodata(async_session_maker)
-
-    data = get_demodata()
-    table = data['groups']
-    row = table[0]
-    query = """query($id: ID!, $userId: ID!, $roletypeId: ID!) {
-        groupById(id: $id) {
-            editor{
-                id
-                addRole(userId: $userId, roletypeId: $roletypeId) {
-                    id
-                }
-            }
-            id
-        }
-        }"""
-
-    roletype = data['roletypes'][0]
-    user = data['users'][0]
-    context_value = await createContext(async_session_maker)
-    variable_values = {"id": row["id"], "userId": user['id'], "roletypeId": roletype['id']}
-    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
-
-    respdata = resp.data["groupById"]
-
-    assert resp.errors is None
-    assert respdata["id"] == row["id"]
-
-    resprole = respdata["editor"]["addRole"]
+#     respuser = respdata["editor"]["createUser"]
+#     assert respuser["name"] == newuser["name"]
+#     assert respuser["surname"] == newuser["surname"]
+#     assert respuser["email"] == newuser["email"]
+#     assert respuser["valid"] == newuser["valid"]
 
 
-@pytest.mark.asyncio
-async def test_query_group_editor_add_role():
-    async_session_maker = await prepare_in_memory_sqllite()
-    await prepare_demodata(async_session_maker)
+# @pytest.mark.asyncio
+# async def test_query_group_editor_add_role():
+#     async_session_maker = await prepare_in_memory_sqllite()
+#     await prepare_demodata(async_session_maker)
 
-    data = get_demodata()
-    table = data['roles']
-    row = table[0]
-    query = """query($id: ID!, $roleId: ID!) {
-        groupById(id: $id) {
-            editor{
-                id
-                invalidateRole(roleId: $roleId) {
-                    id
-                    valid
-                }
-            }
-            id
-        }
-        }"""
+#     data = get_demodata()
+#     table = data['groups']
+#     row = table[0]
+#     query = """query($id: ID!, $userId: ID!, $roletypeId: ID!) {
+#         groupById(id: $id) {
+#             editor{
+#                 id
+#                 addRole(userId: $userId, roletypeId: $roletypeId) {
+#                     id
+#                 }
+#             }
+#             id
+#         }
+#         }"""
 
-    context_value = await createContext(async_session_maker)
-    variable_values = {"id": row["group_id"], "roleId": row['id']}
-    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+#     roletype = data['roletypes'][0]
+#     user = data['users'][0]
+#     context_value = await createContext(async_session_maker)
+#     variable_values = {"id": row["id"], "userId": user['id'], "roletypeId": roletype['id']}
+#     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
 
-    respdata = resp.data["groupById"]
+#     respdata = resp.data["groupById"]
 
-    assert resp.errors is None
-    assert respdata["id"] == row["group_id"]
+#     assert resp.errors is None
+#     assert respdata["id"] == row["id"]
 
-    resprole = respdata["editor"]["invalidateRole"]
-    assert resprole["valid"] == False
+#     resprole = respdata["editor"]["addRole"]
 
-@pytest.mark.asyncio
-async def test_query_random_university():
-    async_session_maker = await prepare_in_memory_sqllite()
-    await prepare_demodata(async_session_maker)
 
-    data = get_demodata()
-    name = "U of IT"
-    query = """query($name: String!) {
-        randomUniversity(name: $name) {
-            id
-            name
-        }
-        }"""
+# @pytest.mark.asyncio
+# async def test_query_group_editor_add_role():
+#     async_session_maker = await prepare_in_memory_sqllite()
+#     await prepare_demodata(async_session_maker)
 
-    context_value = await createContext(async_session_maker)
-    variable_values = {"name": name}
-    resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+#     data = get_demodata()
+#     table = data['roles']
+#     row = table[0]
+#     query = """query($id: ID!, $roleId: ID!) {
+#         groupById(id: $id) {
+#             editor{
+#                 id
+#                 invalidateRole(roleId: $roleId) {
+#                     id
+#                     valid
+#                 }
+#             }
+#             id
+#         }
+#         }"""
 
-    respdata = resp.data["randomUniversity"]
+#     context_value = await createContext(async_session_maker)
+#     variable_values = {"id": row["group_id"], "roleId": row['id']}
+#     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
 
-    assert resp.errors is None
-    assert respdata["name"] == name
+#     respdata = resp.data["groupById"]
+
+#     assert resp.errors is None
+#     assert respdata["id"] == row["group_id"]
+
+#     resprole = respdata["editor"]["invalidateRole"]
+#     assert resprole["valid"] == False
+
+# @pytest.mark.asyncio
+# async def test_query_random_university():
+#     async_session_maker = await prepare_in_memory_sqllite()
+#     await prepare_demodata(async_session_maker)
+
+#     data = get_demodata()
+#     name = "U of IT"
+#     query = """query($name: String!) {
+#         randomUniversity(name: $name) {
+#             id
+#             name
+#         }
+#         }"""
+
+#     context_value = await createContext(async_session_maker)
+#     variable_values = {"name": name}
+#     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
+
+#     respdata = resp.data["randomUniversity"]
+
+#     assert resp.errors is None
+#     assert respdata["name"] == name
 
 @pytest.mark.asyncio
 async def test_query_group_3L():

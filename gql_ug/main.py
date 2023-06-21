@@ -73,7 +73,7 @@ class MyGraphQL(GraphQL):
         # print("another gql call (ug)")
         # for item in scope['headers']:
         #    print(item)
-        self._user = "?"
+        self._user = { "id": "f8089aa6-2c4a-4746-9503-105fcc5d054c" }
         result = await GraphQL.__call__(self, scope, receive, send)
         return result
 

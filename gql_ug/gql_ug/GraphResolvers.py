@@ -175,13 +175,18 @@ async def resolveAllRoleTypes(session):
     return result
 
 
-async def resolveUserByRoleTypeAndGroup(session, groupId, roleTypeId):
+def UserByRoleTypeAndGroupStatement(groupId, roleTypeId):
     stmt = (
         select(UserModel)
         .join(RoleModel)
         .where(RoleModel.group_id == groupId)
         .where(RoleModel.roletype_id == roleTypeId)
     )
+    return stmt
+
+async def resolveUserByRoleTypeAndGroup(session, groupId, roleTypeId):
+    stmt = UserByRoleTypeAndGroupStatement(groupId, roleTypeId)
+    
     dbSet = await session.execute(stmt)
     result = dbSet.scalars()
     return result
