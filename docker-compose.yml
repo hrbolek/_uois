@@ -63,6 +63,7 @@ services:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
     depends_on:
@@ -90,7 +91,7 @@ services:
       context: ./gql_preferences
     environment:
       # promenne, ktere lze cist v kontejneru
-      - POSTGRES_HOST=postgres
+      - POSTGRES_HOST=postgres:5432
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
@@ -117,6 +118,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
+      - POSTGRES_HOST=postgres:5432
       - DEMO=true
     depends_on:
       # kontejnery, kter musi byt spusteny drive
@@ -143,6 +145,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
+      - POSTGRES_HOST=postgres:5432
       - DEMO=true
     depends_on:
       # kontejnery, kter musi byt spusteny drive
@@ -169,6 +172,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
+      - POSTGRES_HOST=postgres:5432
       - DEMO=true
     depends_on:
       # kontejnery, kter musi byt spusteny drive
@@ -195,6 +199,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
+      - POSTGRES_HOST=postgres:5432
       - DEMO=true
     depends_on:
       # kontejnery, ktere musi byt spusteny drive
@@ -222,6 +227,7 @@ services:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
       # kontejnery, ktere musi byt spusteny drive
@@ -248,6 +254,7 @@ services:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
     depends_on:
@@ -273,6 +280,7 @@ services:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
     depends_on:
@@ -298,6 +306,7 @@ services:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
     healthcheck:
@@ -320,6 +329,7 @@ services:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
     healthcheck:
@@ -342,6 +352,7 @@ services:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
     healthcheck:
@@ -364,6 +375,7 @@ services:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
     healthcheck:
@@ -386,6 +398,7 @@ services:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
     healthcheck:
@@ -408,6 +421,7 @@ services:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
     healthcheck:
