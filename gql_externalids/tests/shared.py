@@ -2,15 +2,12 @@ import sqlalchemy
 import sys
 import asyncio
 
-# setting path
-sys.path.append("../gql_externalids")
-
 import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_externalids.DBDefinitions import BaseModel
-from gql_externalids.DBDefinitions import ExternalIdTypeModel, ExternalIdModel
+from gql_externalids.DBDefinitions import ExternalIdTypeModel, ExternalIdModel, ExternalIdCategoryModel
 
 
 async def prepare_in_memory_sqllite():
@@ -41,6 +38,7 @@ async def prepare_demodata(async_session_maker):
     await ImportModels(
         async_session_maker,
         [
+            ExternalIdCategoryModel,
             ExternalIdTypeModel, 
             ExternalIdModel
         ],
@@ -55,4 +53,5 @@ async def createContext(asyncSessionMaker):
     return {
         "asyncSessionMaker": asyncSessionMaker,
         "all": await createLoaders_3(asyncSessionMaker),
+        "user": {"id": "f8089aa6-2c4a-4746-9503-105fcc5d054c"}
     }

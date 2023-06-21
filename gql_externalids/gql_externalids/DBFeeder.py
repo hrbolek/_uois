@@ -91,13 +91,15 @@ async def initDB(asyncSessionMaker):
     defaultNoDemo = "False"
     if defaultNoDemo == os.environ.get("DEMO", defaultNoDemo):
         dbModels = [
-            ExternalIdTypeModel,
             ExternalIdCategoryModel,
+            ExternalIdTypeModel,
+            
         ]
     else:
         dbModels = [
-            ExternalIdTypeModel,
             ExternalIdCategoryModel,
+            ExternalIdTypeModel,
+            
             ExternalIdModel
         ]
 

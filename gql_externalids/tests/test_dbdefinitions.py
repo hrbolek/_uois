@@ -2,17 +2,14 @@ import sqlalchemy
 import sys
 import asyncio
 
-# setting path
-sys.path.append("../gql_externalids")
-
 import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
 
 from gql_externalids.DBDefinitions import BaseModel
-from gql_externalids.DBDefinitions import ExternalIdTypeModel, ExternalIdModel
+from gql_externalids.DBDefinitions import ExternalIdTypeModel, ExternalIdModel, ExternalIdCategoryModel
 
-from shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
+from .shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
 
 
 @pytest.mark.asyncio
@@ -33,7 +30,7 @@ def test_connection_string():
     assert "@" in connectionString
 
 
-from gql_externalids.DBDefinitions import UUIDColumn
+from gql_externalids.DBDefinitions.UUID import UUIDColumn
 
 
 def test_connection_uuidcolumn():

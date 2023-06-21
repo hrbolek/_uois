@@ -1,13 +1,26 @@
 import strawberry
 from typing import List
 
-from .externalIdTypeGQLModel import ExternalIdGQLModel
+from .externalIdGQLModel import ExternalIdGQLModel
 
 def getLoaders(info):
     return info.context["all"]
 
-def getUser(info):
-    return info.context["user"]
+###########################################################################################################################
+#
+# zde definujte sve rozsirene GQL modely,
+# ktere existuji nekde jinde a vy jim pridavate dalsi atributy
+#
+# venujte pozornost metode resolve reference, tato metoda je dulezita pro komunikaci mezi prvky federace,
+#
+# vsimnete si,
+# - jak je definovan dekorator tridy (extend=True)
+# - jaky dekorator je pouzit (federation.type)
+#
+# - venujte pozornost metode resolve reference, tato metoda je dulezita pro komunikaci mezi prvky federace,
+# - ma odlisnou implementaci v porovnani s modelem, za ktery jste odpovedni
+#
+###########################################################################################################################
 
 
 @strawberry.federation.type(extend=True, keys=["id"])
@@ -17,6 +30,8 @@ class UserGQLModel:
 
     @classmethod
     async def resolve_reference(cls, id: strawberry.ID):
+        if id is None:
+            return None
         return UserGQLModel(id=id)
 
     @strawberry.field(description="""All external ids related to the user""")

@@ -91,7 +91,7 @@ class MyGraphQL(GraphQL):
         asyncSessionMaker = await RunOnceAndReturnSessionMaker()
         async with asyncSessionMaker() as session:
             self._session = session
-            self._user = {"id": "?"}
+            self._user = {"id": "f8089aa6-2c4a-4746-9503-105fcc5d054c"}
             return await GraphQL.__call__(self, scope, receive, send)
 
     async def get_context(self, request, response):
