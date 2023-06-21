@@ -12,6 +12,19 @@ def AsyncSessionFromInfo(info):
 def UserFromInfo(info):
     return info.context["user"]
 
+import os
+async def getUserFromHeader(header):
+    user = {
+        "id": "f8089aa6-2c4a-4746-9503-105fcc5d054c"
+    }
+
+    if os.environ.get("MODE", None) == "debug":
+        
+
+
+    return 
+
+
 
 class BasePermission(strawberry.permission.BasePermission):
     message = "User is not authenticated"
