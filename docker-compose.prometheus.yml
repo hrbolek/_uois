@@ -65,6 +65,8 @@ services:
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
+      - GQL_PROXY=http://apollo:3000/api/gql/
     depends_on:
       # kontejnery, ktere musi byt spusteny drive
       - postgres
@@ -81,7 +83,6 @@ services:
     ports: #v deploymentu by nebylo zadne mapovani portu
     #   # vnejsi port : port, kde sluzbu poskytuje kontejner
       - 31120:8000
-
 
   gql_preferences:
     image: gql_preferences
@@ -195,6 +196,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
+      - POSTGRES_HOST=postgres:5432
       - DEMO=true
     depends_on:
       # kontejnery, ktere musi byt spusteny drive
@@ -249,6 +251,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
+      - POSTGRES_HOST=postgres:5432
       - DEMO=true
     depends_on:
       - postgres
@@ -513,8 +516,24 @@ services:
     # links:
     #   - cadvisor:cadvisor
     #   - alertmanager:alertmanager
+    # depends_on:
+    #   - cadvisor
+
+  grafana:
+    image: grafana/grafana
+    user: '472'
+    restart: always
+    environment:
+      GF_INSTALL_PLUGINS: 'grafana-clock-panel,grafana-simple-json-datasource'
+    # volumes:
+    #   - grafana_data:/var/lib/grafana
+    #   - ./grafana/provisioning/:/etc/grafana/provisioning/
+    # env_file:
+    #   - ./grafana/config.monitoring
+    ports:
+      - 8300:3000
     depends_on:
-      - cadvisor
+      - prometheus
 
   # node-exporter:
   #   image: prom/node-exporter
@@ -533,42 +552,26 @@ services:
   #   deploy:
   #     mode: global
 
-  alertmanager:
-    image: prom/alertmanager
-    restart: always
-    ports:
-      - 9093:9093
-    # volumes:
-    #   - ./alertmanager/:/etc/alertmanager/
-    command:
-      - '--config.file=/etc/alertmanager/config.yml'
-      - '--storage.path=/alertmanager'
+  # alertmanager:
+  #   image: prom/alertmanager
+  #   restart: always
+  #   ports:
+  #     - 9093:9093
+  #   # volumes:
+  #   #   - ./alertmanager/:/etc/alertmanager/
+  #   command:
+  #     - '--config.file=/etc/alertmanager/config.yml'
+  #     - '--storage.path=/alertmanager'
 
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor
-    # volumes:
-    #   - /:/rootfs:ro
-    #   - /var/run:/var/run:rw
-    #   - /sys:/sys:ro
-    #   - /var/lib/docker/:/var/lib/docker:ro
-    ports:
-      - 8080:8080
-    restart: always
-    deploy:
-      mode: global
-
-  grafana:
-    image: grafana/grafana
-    user: '472'
-    restart: always
-    environment:
-      GF_INSTALL_PLUGINS: 'grafana-clock-panel,grafana-simple-json-datasource'
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning/:/etc/grafana/provisioning/
-    env_file:
-      - ./grafana/config.monitoring
-    ports:
-      - 8300:3000
-    depends_on:
-      - prometheus
+  # cadvisor:
+  #   image: gcr.io/cadvisor/cadvisor
+  #   # volumes:
+  #   #   - /:/rootfs:ro
+  #   #   - /var/run:/var/run:rw
+  #   #   - /sys:/sys:ro
+  #   #   - /var/lib/docker/:/var/lib/docker:ro
+  #   ports:
+  #     - 8080:8080
+  #   restart: always
+  #   deploy:
+  #     mode: global

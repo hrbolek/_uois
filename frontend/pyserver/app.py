@@ -53,6 +53,7 @@ async def read_docs_file(file_path: str):
 # proxy = "http://10.0.2.27:31180/api/gql/"
 #proxy = os.environ.get("GQL_PROXY", "http://localhost:31180/api/gql/")
 proxy = os.environ.get("GQL_PROXY", "http://10.0.2.27:31180/api/gql/")
+print("using proxy", proxy)
 @app.get("/api/gql", response_class=FileResponse)
 async def apigql_get():
     realpath = os.path.realpath("./graphiql.html")
@@ -121,4 +122,4 @@ async def apigql_post(data: Item, request: Request):
 app.mount("/oauth", OAuthServer.createServer())
 from prometheus_fastapi_instrumentator import Instrumentator
 
-Instrumentator().instrument(app).expose(app, endpoint="/prometheus")
+Instrumentator().instrument(app).expose(app, endpoint="/metrics")

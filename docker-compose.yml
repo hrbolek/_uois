@@ -66,6 +66,7 @@ services:
       - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
+      - GQL_PROXY=http://apollo:3000/api/gql/
     depends_on:
       # kontejnery, ktere musi byt spusteny drive
       - postgres
