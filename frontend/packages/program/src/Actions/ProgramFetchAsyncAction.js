@@ -29,7 +29,7 @@ export const ProgramQueryJSON = (id) => ({
       }
     }
     `,
-  variables: {id: "2766fc9a-b095-11ed-9bd8-0242ac110002"}
+  variables: {id: id}
 })
 
 export const ProgramQuery = (id) =>

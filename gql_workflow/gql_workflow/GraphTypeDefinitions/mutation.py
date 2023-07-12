@@ -44,3 +44,14 @@ class Mutation:
     workflow_transition_update = workflow_transition_update
 
     # from .WorkflowStateUserGQLModel import *
+    from .workflowStateUserGQLModel import workflow_state_add_user
+    workflow_state_add_user = workflow_state_add_user
+
+    from .workflowStateUserGQLModel import workflow_state_remove_user
+    workflow_state_remove_user = workflow_state_remove_user
+
+    from .workflowStateRoleTypeGQLModel import workflow_state_add_role    
+    workflow_state_add_role = workflow_state_add_role
+
+    from .workflowStateRoleTypeGQLModel import workflow_state_remove_role
+    workflow_state_remove_role = workflow_state_remove_role

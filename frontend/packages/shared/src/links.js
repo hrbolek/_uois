@@ -12,13 +12,22 @@ export const linkmap = {
     "facilityedit": "/facilities/edit/",
     "project": "/projects/",
     "projectedit": "/projects/edit/",
+    
     "survey": "/surveys/",
     "surveyedit": "/surveys/edit/",
+    "surveyuser": "/surveys/user/",
+    "usersurvey": "/surveys/user/",
 
     "program": "/programs/",
     "programedit": "/programs/edit/",
     "subject": "/subjects/",
     "subjectedit": "/subjects/edit/",
+    "semester": "/semesters/",
+    "semesteredit": "/semesters/edit/",
+
+    "classificationuser": "/classification/user/",
+    "userclassification": "/classification/user/",
+
     "plan": "/plans/",
     "planedit": "/plans/edit/",
 

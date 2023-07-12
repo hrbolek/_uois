@@ -5,11 +5,11 @@ import { useDispatch } from "react-redux"
 export const LessonNameInputbox = ({plan, lesson}) => {
     const dispatch = useDispatch()
     const onChange = (value) => {
-        dispatch(PlanLessonUpdateAsyncAction({plan, lesson}))
+        dispatch(PlanLessonUpdateAsyncAction({plan, lesson: {...lesson, name: value}}))
         .then(
             CheckGQLError({
-                "ok": () => dispatch(MsgAddAction({title: "Změna názvu proběhla v pořádku"})),
-                "fail": (json) => dispatch(MsgFlashAction({title: "Změna názvu se nepovedla\n" + JSON.stringify(json)})),
+                "ok": () => dispatch(MsgFlashAction({title: "Změna názvu proběhla v pořádku"})),
+                "fail": (json) => dispatch(MsgAddAction({title: "Změna názvu se nepovedla\n" + JSON.stringify(json)})),
             })
         )
     }

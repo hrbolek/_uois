@@ -29,7 +29,8 @@
       "@graphiql/plugin-explorer": "^0.1.19",
       "@fullcalendar/react": "6.1.7",
       "@fullcalendar/daygrid": "6.1.7",
-      "@fullcalendar/timegrid": "6.1.7"
+      "@fullcalendar/timegrid": "6.1.7",
+      "jwt-decode": "3.1.2"
     },
     "scripts": {
       "start": "react-scripts start",

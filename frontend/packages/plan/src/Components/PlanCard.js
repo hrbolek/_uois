@@ -15,9 +15,13 @@ export const PlanCard = ({plan}) => {
                     <Col>
                         <span className="btn btn-sm btn-outline-success">
                         <Receipt />{" "}
-                            <Link id="ce250a68-b095-11ed-9bd8-0242ac110002" tag="subject">
-                                Programování 1. semestr
+                            <Link id={plan?.semester?.subject?.id} tag="subject">
+                                {plan?.semester?.subject?.name}
+                            </Link>{" "}[
+                            <Link id={plan?.semester?.id} tag="semester">
+                                {plan?.semester?.order}
                             </Link>
+                            ]
                         </span>
                     </Col>
                     <Col>
@@ -45,7 +49,7 @@ export const PlanCard = ({plan}) => {
             </Card.Body>
             <Card.Body>
                 
-                {JSON.stringify(plan)}
+                {/* {JSON.stringify(plan)} */}
             </Card.Body>
         </Card>
     )

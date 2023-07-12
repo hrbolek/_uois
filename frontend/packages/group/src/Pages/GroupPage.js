@@ -88,37 +88,26 @@ export const GroupPageNoUniversity = () => <GroupPage query={GroupMembersFetchAs
 export const GroupPage = ({query=GroupFetchAsyncAction}) => {
     const dispatch = useDispatch()
 
-    const id = useParams().id
+    const { id } = useParams()
     
-    console.log("GroupPage.id", id)
     const [group, updateDone] = useFreshItem({id: id}, 
         GroupFetchAsyncAction)
 
     updateDone
-    // .then(json => json)
     .then(
         CheckGQLError({
             "ok": (json) => dispatch(MsgFlashAction({ title: "Nahrání skupiny úspěšné" })),
             "fail": (json) => dispatch(MsgAddAction({ title: "Chyba " + JSON.stringify(json) })),
         })
     )
-    // .then(
-    //     json => {
-    //         const group = json?.data?.result
-    //         if (group?.grouptype?.id !=="cd49e152-610c-11ed-9f29-001a7dda7110") {
-    //             dispatch(GroupMembersFetchAsyncAction(group))
-    //             .then(
-    //                 CheckGQLError({
-    //                     "ok": (json) => dispatch(MsgFlashAction({title: "Nahrání členů skupiny úspěšné"})),
-    //                     "fail": (json) => dispatch(MsgAddAction({title: "Chyba " + JSON.stringify(json)})),
-    //                 })    
-    //             )
-    //         }
-    //         return json
-    //     }
-    // )
     
     if (group){
+        if (group?.grouptype.id === "cd49e153-610c-11ed-bf19-001a7dda7110") {
+            return (<Navigate to={"/ui/faculty/" + group.id} replace={true} />)
+        }
+        if (group?.grouptype.id === "cd49e155-610c-11ed-844e-001a7dda7110") {
+            return (<Navigate to={"/ui/department/" + group.id} replace={true} />)
+        }
         if (group?.grouptype.id !== "cd49e152-610c-11ed-9f29-001a7dda7110") {
             return (<Navigate to={"/ui/groups/nouni/" + group.id} replace={true} />)
         } else {

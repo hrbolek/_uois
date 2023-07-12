@@ -56,7 +56,8 @@ export const GroupTypeEditable = ({group}) => {
     return (
         <EditableAttributeSelect 
             item={group} 
-            onAttributeGet={(group) => group?.groupType?.id}
+            label="Typ"
+            onAttributeGet={(group) => group?.grouptype?.id}
             onAttributeSet={(group, value) => ({...group, grouptypeId: value})}
             asyncUpdater={GroupUpdateAsyncAction}>
             <GroupTypesOptions />

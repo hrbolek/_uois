@@ -1,12 +1,14 @@
 import { authorizedFetch } from "@uoisfrontend/shared"
 import All from "@uoisfrontend/shared/src/keyedreducers"
 
-export const PlanLessonInsertQueryJSON = ({plan_id, name, lessontype_id}) => ({
-    query: `mutation($plan_id: ID!, $lessontype_id: ID! $name: String!) {
+export const PlanLessonInsertQueryJSON = ({plan_id, name, lessontype_id, order, length}) => ({
+    query: `mutation($plan_id: ID!, $lessontype_id: ID! $name: String! $order: Int $length: Int) {
       result: plannedLessonInsert(lesson: {
           planId: $plan_id
           name: $name
           lessontypeId: $lessontype_id
+          order: $order
+          length: $length
         }) {
           id
           msg
@@ -19,6 +21,9 @@ export const PlanLessonInsertQueryJSON = ({plan_id, name, lessontype_id}) => ({
                     id
                     name
                     lastchange
+                    order
+                    length
+                    type { id name }
                     users { __typename id
                         name surname email
                     }
@@ -29,17 +34,17 @@ export const PlanLessonInsertQueryJSON = ({plan_id, name, lessontype_id}) => ({
           }
       }
     }`,
-    variables: { plan_id, name, lessontype_id }
+    variables: { plan_id, name, lessontype_id, order, length }
 })
 
-export const PlanLessonInsertQuery = ({plan_id, name, lessontype_id}) =>
+export const PlanLessonInsertQuery = ({plan_id, name, lessontype_id, order, length}) =>
     authorizedFetch('/gql', {
-        body: JSON.stringify(PlanLessonInsertQueryJSON({plan_id, name, lessontype_id})),
+        body: JSON.stringify(PlanLessonInsertQueryJSON({plan_id, name, lessontype_id, order, length})),
     })
 
-export const PlanLessonInsertAsyncAction = ({plan_id, name, lessontype_id}) => (dispatch, getState) => {
+export const PlanLessonInsertAsyncAction = ({plan_id, name, lessontype_id, order, length}) => (dispatch, getState) => {
     return (
-      PlanLessonInsertQuery({plan_id, name, lessontype_id})
+      PlanLessonInsertQuery({plan_id, name, lessontype_id, order, length})
         .then(response => response.json())
         .then(
             json => {

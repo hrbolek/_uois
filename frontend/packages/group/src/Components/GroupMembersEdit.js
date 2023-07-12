@@ -51,10 +51,10 @@ export const GroupEditMembersTableBody = ({group, members, children}) => {
     )
 }
 
-export const GroupMembersEdit = ({group, children, validOnly=true, invalidOnly=false}) => {
+export const GroupMembersEdit = ({group, children, onlyValid=true, onlyInvalid=false}) => {
     let memberships = group?.memberships || []
     let tableHeader = null
-    if (invalidOnly === true) {       
+    if (onlyInvalid === true) {       
         memberships = memberships.filter(
             (m) => m.valid === false
         )
@@ -62,7 +62,7 @@ export const GroupMembersEdit = ({group, children, validOnly=true, invalidOnly=f
 
         tableHeader = "Bývalí členové"
     } else {
-        if (validOnly === true) {
+        if (onlyValid === true) {
             memberships = memberships.filter(
                 (m) => m.valid === true
             )

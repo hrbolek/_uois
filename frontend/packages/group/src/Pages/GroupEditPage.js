@@ -11,22 +11,19 @@ import { GroupEditCard } from "../Components/GroupEditCard"
 export const GroupEditPage = () => {
     const dispatch = useDispatch()
 
-    const id = useParams().id
-    const items = useSelector(state => state.items)
-    const group = items[id]
+    const { id } = useParams()
     
-    useEffect(
-        () => {
-                dispatch(GroupMembersFetchAsyncAction({id}))
-                .then(
-                    CheckGQLError({
-                        "ok": (json) => dispatch(MsgFlashAction({title: "Nahrání členů skupiny úspěšné"})),
-                        "fail": (json) => dispatch(MsgAddAction({title: "Chyba " + JSON.stringify(json)})),
-                    })    
-                )            
-        }
-        ,[id]
+    const [group, updateDone] = useFreshItem({id: id}, 
+        GroupMembersFetchAsyncAction)
+
+    updateDone
+    .then(
+        CheckGQLError({
+            "ok": (json) => dispatch(MsgFlashAction({ title: "Nahrání skupiny úspěšné" })),
+            "fail": (json) => dispatch(MsgAddAction({ title: "Chyba " + JSON.stringify(json) })),
+        })
     )
+    
 
     if (group){        
         return (

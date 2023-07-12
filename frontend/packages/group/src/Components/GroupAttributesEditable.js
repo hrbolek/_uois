@@ -7,17 +7,17 @@ export const GroupAttributesEditable = ({group}) => {
     return (
         <>
             <Row>
-                <Col md={2}>
+                {/* <Col md={2}>
                     Název
-                </Col>
+                </Col> */}
                 <Col>
                     <GroupNameEditable group={group} />
                 </Col>
             </Row>
             <Row>
-                <Col md={2}>
+                {/* <Col md={2}>
                     Typ
-                </Col>
+                </Col> */}
                 <Col>
                     <GroupTypeEditable group={group} />
                 </Col>

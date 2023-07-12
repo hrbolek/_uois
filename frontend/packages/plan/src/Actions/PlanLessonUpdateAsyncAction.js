@@ -8,7 +8,6 @@ export const PlanLessonUpdateQueryJSON = ({lesson}) => ({
         $name: String 
         $order: Int
         $length: Int
-        $order: Int
         $lessontype_id: ID
         ) {
       result: plannedLessonUpdate(lesson: {
@@ -17,8 +16,7 @@ export const PlanLessonUpdateQueryJSON = ({lesson}) => ({
         name: $name
         order: $order
         length: $length
-        order: $order
-        lessontype_id: $lessontype_id
+        lessontypeId: $lessontype_id
       }) {
         id
         msg
@@ -28,10 +26,15 @@ export const PlanLessonUpdateQueryJSON = ({lesson}) => ({
                 id
                 lastchange
                 lessons {
-                    __typename 
                     id
-                    name
                     lastchange
+                    name
+                    order
+                    length
+                    type {
+                        id
+                        name
+                    }
                 }
             }
         }
@@ -44,17 +47,18 @@ export const PlanLessonUpdateQuery = ({lesson}) =>
     authorizedFetch('/gql', {
         body: JSON.stringify(PlanLessonUpdateQueryJSON({lesson})),
     })
+    .then(response => response.json())
 
 export const PlanLessonUpdateAsyncAction = ({plan_id, lesson}) => (dispatch, getState) => {
     return (
       PlanLessonUpdateQuery({lesson})
-        .then(response => response.json())
-        .then(
+      .then(
             json => {
                 const result = json?.data?.result
                 if (result) {
                     const plan = result.lesson.plan
-                    const action = All.ItemSliceActions.item_update(plan)
+                    // const action = All.ItemSliceActions.item_update(plan)
+                    const action = All.ItemSliceActions.item_updateAttributeVector({item: plan, vectorname: "lessons"})
                     dispatch(action)
                 }
                 return json

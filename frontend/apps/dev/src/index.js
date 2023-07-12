@@ -20,6 +20,7 @@ import { Pages as ProgramPages } from '@uoisfrontend/program';
 import { Pages as PlanPages } from '@uoisfrontend/plan';
 import { Pages as FormPages } from '@uoisfrontend/form';
 import { Pages as SpecialPages } from '@uoisfrontend/special';
+import { LoginButton, LoginPage } from '@uoisfrontend/shared';
 const App = () => {
     return (
         <AppProvider>
@@ -27,7 +28,7 @@ const App = () => {
                 <BrowserRouter >
                     <Routes>
                         <Route path={"/ui/api/"} element={<ApiPage />} />
-                        
+                        <Route path={"/ui/login/"} element={<LoginPage><LoginButton /></LoginPage>} />
                         {UserPages()}
                         {GroupPages()}
                         {EventPages()}

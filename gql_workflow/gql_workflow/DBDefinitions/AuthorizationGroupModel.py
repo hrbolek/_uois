@@ -23,7 +23,7 @@ class AuthorizationGroupModel(BaseModel):
     group_id = UUIDFKey(nullable=True)#Column(ForeignKey("groups.id"), index=True)
     accesslevel = Column(Integer)
 
-    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now(), comment="Fkey of user whi created this row")
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)

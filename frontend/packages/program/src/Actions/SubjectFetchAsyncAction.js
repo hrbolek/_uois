@@ -23,7 +23,7 @@ export const SubjectQueryJSON = (id) => ({
               name
               order
               lessons {
-                id lastchange
+                id lastchange count
                 type { id name }
               }
             }
@@ -31,7 +31,7 @@ export const SubjectQueryJSON = (id) => ({
         }
       }
       `,
-    variables: {id: "ce250a68-b095-11ed-9bd8-0242ac110002"}
+    variables: {id: id}
 })
 
 export const SubjectQuery = (id) =>
@@ -39,7 +39,7 @@ export const SubjectQuery = (id) =>
         body: JSON.stringify(SubjectQueryJSON(id)),
     })
 
-export const SubjectFetchAsyncAction = (id) => (dispatch, getState) => {
+export const SubjectFetchAsyncAction = ({id}) => (dispatch, getState) => {
     return (
         SubjectQuery(id)
         .then(response => response.json())
@@ -47,6 +47,8 @@ export const SubjectFetchAsyncAction = (id) => (dispatch, getState) => {
             json => {
                 const result = json?.data?.result
                 if (result) {
+                    // console.log("SubjectFetchAsyncAction", json)
+                    // console.log("SubjectFetchAsyncAction", result)
                     const action = All.ItemSliceActions.item_update(result)
                     dispatch(action)
                 }

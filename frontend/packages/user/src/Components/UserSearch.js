@@ -53,7 +53,7 @@ const Suggestions = ({userRecords, Suggestion, onSelect}) => {
  * 
  * @returns JSX.Element
  */
-export const UserSearch = ({label="Jméno uživatele", onSelect, user, clearOnClose=true}) => {
+export const UserSearch = ({label="Vyhledat uživatele", onSelect, user, clearOnClose=true, floating=true}) => {
     const [ userRecords, setUserRecords ] =  useState([])
     const [ currentLetters, setCurrentLetters ] =  useState(user?(user.name + " " + user.surname):"")
 
@@ -89,21 +89,36 @@ export const UserSearch = ({label="Jméno uživatele", onSelect, user, clearOnCl
         setUserRecords([])
     }
     
-    return (
-        <div style={{position: "relative"}}>
-            <div className="input-group mb-3">
-                <span className="input-group-text" id="basic-addon1"><Search /></span>
-
-                <div className="form-floating">
-                    <input className="form-control" id="usersearch" placeholder="Vyhledávání uživatelů" aria-label="Vyhledávání uživatelů" onChange={onChange} value={inputValue}/>
-                    <label htmlFor="usersearch">{label}</label>    
+    if (floating) {
+        return (
+            <div style={{position: "relative"}}>
+                <div className="input-group input-group-sm mb-3">
+                    <span className="input-group-text" id="basic-addon1"><Search /></span>
+    
+                    <div className="form-floating">
+                        <input className="form-control form-control-sm" id="usersearch" placeholder="Vyhledávání uživatelů" aria-label="Vyhledávání uživatelů" onChange={onChange} value={inputValue}/>
+                        <label htmlFor="usersearch">{label}</label>    
+                    </div>
+    
+                    <span className="input-group-text" id="basic-addon2" onClick={closeSearch}><XLg /></span>
+                    
                 </div>
-
-                <span className="input-group-text" id="basic-addon2" onClick={closeSearch}><XLg /></span>
-                
+                <Suggestions userRecords={userRecords} Suggestion={UserSugestion} onSelect={onSelect}/>
+    
             </div>
-            <Suggestions userRecords={userRecords} Suggestion={UserSugestion} onSelect={onSelect}/>
-
-        </div>
-    )
+        )
+    } else {
+        return (
+            <div style={{position: "relative"}}>
+                <div className="input-group mb-3">
+                    <span className="input-group-text" id="basic-addon1"><Search /></span>   
+                    <input className="form-control" id="usersearch" placeholder="Vyhledávání uživatelů" aria-label="Vyhledávání uživatelů" onChange={onChange} value={inputValue}/>
+                    <span className="input-group-text" id="basic-addon2" onClick={closeSearch}><XLg /></span>
+                </div>
+                <Suggestions userRecords={userRecords} Suggestion={UserSugestion} onSelect={onSelect}/>
+    
+            </div>
+        )
+    }
+    
 }

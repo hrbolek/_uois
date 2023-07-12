@@ -1,7 +1,7 @@
 import { authorizedFetch } from "./authorizedFetch"
+import { CreateFetchQuery } from "./creators"
 
-
-export const EventQueryJSON = (id) => ({
+export const EventQueryJSON = (event) => ({
     query: `query($id: ID!) {
         result: eventById(id: $id) {
           __typename
@@ -50,10 +50,11 @@ export const EventQueryJSON = (id) => ({
           }
         }
       }`,
-    variables: {id: id}
+    variables: event
 })
 
-export const EventQuery = (id) =>
+export const EventQuery = CreateFetchQuery(EventQueryJSON)
+export const EventQuery_ = (id) =>
     authorizedFetch('/gql', {
         body: JSON.stringify(EventQueryJSON(id)),
     })

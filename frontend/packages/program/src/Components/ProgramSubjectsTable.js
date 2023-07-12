@@ -7,6 +7,9 @@ export const ProgramSubjectsTableHeader = ({program}) => {
     return (
         <thead>
             <tr>
+                <th className="table-success" colSpan={3}>Akreditované předměty</th>
+            </tr>
+            <tr>
                 <th>#</th>
                 <th>Název</th>
                 <th></th>
@@ -38,7 +41,7 @@ export const ProgramSubjectsTableBody = ({program}) => {
 
 export const ProgramSubjectsTable = ({program}) => {
     return (
-        <Table>
+        <Table size="sm" striped bordered>
             <ProgramSubjectsTableHeader program={program} />
             <ProgramSubjectsTableBody program={program} />
         </Table>

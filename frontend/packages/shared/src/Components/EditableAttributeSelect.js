@@ -22,6 +22,7 @@ export const EditableAttributeSelect = ({item, label, children, onAttributeGet, 
     const onChange_ = (e) => {
         const value = e.target.value
         const newItem = onAttributeSet({...item}, value)
+        console.log("EditableAttributeText.oldItem", item)
         console.log("EditableAttributeText.newItem", newItem)
         const action = asyncUpdater({...newItem})
         // console.log("EditableAttributeText.action", action)

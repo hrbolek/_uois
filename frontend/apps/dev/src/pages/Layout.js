@@ -1,5 +1,7 @@
 import All from "@uoisfrontend/shared/src/keyedreducers"
 import { Alert, Button } from "react-bootstrap"
+import Container from 'react-bootstrap/Container';
+
 import { useDispatch } from "react-redux"
 import { useSelector } from "react-redux"
 import { Msgs } from "@uoisfrontend/shared/src/msgs"
@@ -79,10 +81,7 @@ export const Layout = ({children, actions}) => {
     const [visible, setVisible] = useState(false)
     const onClick = () => setVisible(!visible)
     return (
-        <div>
-            <div className="sticky-top">
-                <span className="" onClick={onClick}><ArrowLeftRight /></span>
-            </div>
+        <Container fluid>
             <Row>
                 {visible? <LeftMenu /> : ''}
                 <Col>
@@ -92,6 +91,17 @@ export const Layout = ({children, actions}) => {
                     {children}
                 </Col>
             </Row>
-        </div>
-    )
+        </Container>
+        
+        // <Row>
+        //     {visible? <LeftMenu /> : ''}
+        //     <Col>
+        //         <Menu />
+        //         <Spinner />
+        //         <Msgs actions={actions}/>
+        //         {children}
+        //     </Col>
+        // </Row>
+    
+)
 }

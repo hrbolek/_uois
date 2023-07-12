@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux"
 import { EditableText } from "./EditableText"
-import { CheckGQLError, MsgFlashAction } from "../.."
+import { CheckGQLError, MsgFlashAction, TextInput } from "../.."
 
 /**
  * shared module.
@@ -14,7 +14,7 @@ import { CheckGQLError, MsgFlashAction } from "../.."
  * @param {function} props.asyncUpdater async function which represents an async action for dispatch
  * @returns JSX.Element
  */
-export const EditableAttributeText = ({item, attributeName, asyncUpdater}) => {
+export const EditableAttributeText = ({item, attributeName, asyncUpdater, label}) => {
     const dispatch = useDispatch()
     const attributeValue = item[attributeName]
     const onChange_ = (value) => {
@@ -31,6 +31,13 @@ export const EditableAttributeText = ({item, attributeName, asyncUpdater}) => {
         )
     }
     return (
-        <EditableText id={item.id} value={attributeValue} onChange={onChange_} />
+        // <EditableText id={item.id} value={attributeValue} onChange={onChange_} />
+        // <TextInput id={item.id} value={attributeValue} onChange={onChange_} />
+
+        <div className="form-floating">
+            <TextInput id={item.id} value={attributeValue} onChange={onChange_} />
+            <label htmlFor={item.id}>{label}</label>
+        </div>
+
     )
 }

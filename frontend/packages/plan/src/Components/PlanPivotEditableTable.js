@@ -8,7 +8,7 @@ import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import { LessonAddTeacherAsyncAction } from "../Actions/LessonAddTeacherAsyncAction"
 import { useDispatch } from "react-redux"
-import { CheckGQLError, DeleteButton, Link, TextInput } from "@uoisfrontend/shared"
+import { CheckGQLError, DeleteButton, Link, MsgAddAction, MsgFlashAction, TextInput } from "@uoisfrontend/shared"
 import { LessonRemoveTeacherAsyncAction } from "../Actions/LessonRemoveTeacherAsyncAction"
 import { MsgAddAsyncAction, MsgFlashAsyncAction } from "reducers/msgsreducers"
 import { PlanLessonInsertAsyncAction } from "../Actions/PlanLessonInsertAsyncAction"
@@ -18,10 +18,16 @@ import { AddRemoveButton } from "./AddRemoveButton"
 import { LessonAddRemoveTeacherButton } from "./LessonAddRemoveTeacherButton"
 import { LessonNameInputbox } from "./LessonNameInputbox"
 import { LessonTypeSelect } from "./LessonTypeSelect"
+import { LessonAddGroupAsyncAction } from "../Actions/LessonAddGroupAsyncAction"
+import { LessonRemoveGroupAsyncAction } from "../Actions/LessonRemoveGroupAsyncAction"
+import { PlanLessonUpdateAsyncAction } from "../Actions/PlanLessonUpdateAsyncAction"
+import { LessonAddFacilityAsyncAction } from "../Actions/LessonAddFacilityAsyncAction"
+import { LessonRemoveFacilityAsyncAction } from "../Actions/LessonRemoveFacilityAsyncAction"
 
 export const LessonItemButton = ({id, name, linktag, children}) => (
     <span>
         <span key={id} className="btn btn-sm btn-outline-success">
+        {/* <span key={id} className=""> */}
             <Link id={id} tag={linktag}>{name}</Link>
         </span>
         {children}
@@ -38,27 +44,38 @@ export const FacilityButton = ({facility}) =>
     <LessonItemButton id={facility.id} linktag={"facility"} name={facility.name} />
 
 export const PlanPivotEditableTableHead = ({plan, users, groups, facilities, onSelectUser, onSelectGroup, onSelectFacility}) => {
+    const stickyStyle = {top: 0, position: "sticky", zIndex: 100}
     return (
         <thead>
             <tr>
-                <th colSpan={4} className="table-success">
-                    <h3>Programování 1. semester</h3>
+                <th colSpan={5} className="table-success" style={stickyStyle}>
+                    <h3>
+                        {plan?.semester?.subject?.name}
+                        &nbsp;{plan?.semester?.order}{". semestr"}
+                    </h3>
                 </th>
-                <th></th>
-                <th className="table-warning"></th>
-                <th colSpan={users.length}><UserSearch onSelect={onSelectUser}/></th>
-                <th className="table-warning"></th>
-                <th colSpan={groups.length}><GroupSearch onSelect={onSelectGroup}/></th>
-                <th className="table-warning"></th>
-                <th colSpan={facilities.length}><FacilitySearch onSelect={onSelectFacility}/></th>
-                <th></th>
+                {/* <th  style={stickyStyle}></th>
+                <th  style={stickyStyle}></th>
+                <th  style={stickyStyle}></th>
+                <th  style={stickyStyle}></th> */}
+
+                <th  style={stickyStyle}></th>
+                <th className="table-warning" style={stickyStyle}></th>
+                <th colSpan={users.length} style={stickyStyle}><UserSearch onSelect={onSelectUser}/></th>
+                <th className="table-warning" style={stickyStyle}></th>
+                <th colSpan={groups.length} style={stickyStyle}><GroupSearch onSelect={onSelectGroup}/></th>
+                <th className="table-warning" style={stickyStyle}></th>
+                <th colSpan={facilities.length} style={stickyStyle}><FacilitySearch onSelect={onSelectFacility}/></th>
+                <th style={stickyStyle}></th>
             </tr>
 
             <tr>
-                <th>#</th>
-                <th>Téma</th>
-                <th>Typ</th>
-                <th>Délka</th>
+                <th colSpan={5} className="table-light">
+                    <PlanAddLessonButton plan={plan} />
+                    <hr />
+                    <PlanAddLessonsFromAccreditationButton plan={plan} />
+                </th>
+                
                 <th></th>
                 <th className="table-warning"></th>
                 {users.map(
@@ -121,32 +138,6 @@ const keyedmap = (a, f) => {
     return result
 }
 
-// export const LessonAddRemoveTeacherButton = ({plan, lesson, user}) => {
-//     const present = lesson.users.find(u => u.id === user.id)? true: false
-//     const dispatch = useDispatch()
-//     const onChangeValue = (value) => {
-//         if (value) {
-//             dispatch(LessonAddTeacherAsyncAction({plan_id: plan.id, lesson_id: lesson.id, user_id: user.id}))
-//             .then(
-//                 CheckGQLError({
-//                     "ok": () => dispatch(MsgFlashAsyncAction({title: "Přiřazení vyučujícícho proběhlo úspěšně"})),
-//                     "fail": (json) => dispatch(MsgAddAsyncAction({title: "Přiřazení vyučujícícho se nepovedlo\n" + JSON.stringify(json)})),
-//                 })
-//             )
-//         } else {
-//             dispatch(LessonRemoveTeacherAsyncAction({plan_id: plan.id, lesson_id: lesson.id, user_id: user.id}))
-//             .then(
-//                 CheckGQLError({
-//                     "ok": () => dispatch(MsgFlashAsyncAction({title: "Odebrání vyučujícícho proběhlo úspěšně"})),
-//                     "fail": (json) => dispatch(MsgAddAsyncAction({title: "Odebrání vyučujícícho se nepovedlo\n" + JSON.stringify(json)})),
-//                 })
-//             )
-
-//         }
-//     }
-//     return <AddRemoveButton state={present} onChangeValue={onChangeValue}/>
-// }
-
 export const UsersSegment = ({plan, lesson, users}) => {
     return (
         <>
@@ -161,7 +152,29 @@ export const UsersSegment = ({plan, lesson, users}) => {
 
 export const LessonAddRemoveGroupButton = ({plan, lesson, group}) => {
     const present = lesson.groups.find(g => g.id === group.id)? true: false
-    return <AddRemoveButton state={present} />
+    const dispatch = useDispatch()
+    const onChangeValue = (value) => {
+        if (value) {
+            dispatch(LessonAddGroupAsyncAction({plan_id: plan.id, lesson_id: lesson.id, group_id: group.id}))   
+            .then(
+                CheckGQLError({
+                    "ok": () => dispatch(MsgFlashAsyncAction({title: "Přiřazení skupiny proběhlo úspěšně"})),
+                    "fail": (json) => dispatch(MsgAddAsyncAction({title: "Přiřazení skupiny se nepovedlo\n" + JSON.stringify(json)})),
+                })
+            )
+        } 
+        else {
+            dispatch(LessonRemoveGroupAsyncAction({plan_id: plan.id, lesson_id: lesson.id, group_id: group.id}))
+            .then(
+                CheckGQLError({
+                    "ok": () => dispatch(MsgFlashAsyncAction({title: "Odebrání skupiny proběhlo úspěšně"})),
+                    "fail": (json) => dispatch(MsgAddAsyncAction({title: "Odebrání skupiny se nepovedlo\n" + JSON.stringify(json)})),
+                })
+            )
+        }
+    }
+
+    return <AddRemoveButton state={present} onChangeValue={onChangeValue}/>
 }
 
 export const GroupsSegment = ({plan, lesson, groups}) => {
@@ -176,44 +189,31 @@ export const GroupsSegment = ({plan, lesson, groups}) => {
         </>
     )
 }
-// export const AddRemoveButton = ({state, onChangeValue}) => {
-//     const [_state, setState] = useState(state)
-//     const set0 = () => setState(0)
-//     const settrueCall = () => {
-//         setState(true)
-//         if (onChangeValue) {
-//             onChangeValue(true)
-//         }
-//     }
-//     const setfalse = () => setState(false)
-//     const setfalseCall = () => {
-//         setState(false)
-//         if (onChangeValue) {
-//             onChangeValue(false)
-//         }
-//     }
-//     switch(_state) {
-//         case true:
-//             return (
-//                 <span className="btn btn-sm btn-outline-success" onClick={setfalseCall}><CheckLg /></span>
-//             )  
-//         case false:
-//             return (
-//                 <span className="btn btn-sm btn-outline-light" onClick={set0}><PlusLg /></span>
-//             )
-//         default:
-//             return (
-//                 <>
-//                 <span className="btn btn-sm btn-outline-light" onClick={setfalse}><PlusLg /></span>
-//                 <span className="btn btn-sm btn-outline-danger" onClick={settrueCall}><PlusLg /></span>
-//                 </>
-//             )            
-//       } 
-// }
 
 export const LessonAddRemoveFacilityButton = ({plan, lesson, facility}) => {
     const present = lesson.facilities.find(f => f.id === facility.id)? true: false
-    return <AddRemoveButton state={present} />
+    const dispatch = useDispatch()
+    const onChangeValue = (value) => {
+        if (value) {
+            dispatch(LessonAddFacilityAsyncAction({plan_id: plan.id, lesson_id: lesson.id, facility_id: facility.id}))   
+            .then(
+                CheckGQLError({
+                    "ok": () => dispatch(MsgFlashAsyncAction({title: "Přiřazení učebny proběhlo úspěšně"})),
+                    "fail": (json) => dispatch(MsgAddAsyncAction({title: "Přiřazení učebny se nepovedlo\n" + JSON.stringify(json)})),
+                })
+            )
+        } 
+        else {
+            dispatch(LessonRemoveFacilityAsyncAction({plan_id: plan.id, lesson_id: lesson.id, facility_id: facility.id}))
+            .then(
+                CheckGQLError({
+                    "ok": () => dispatch(MsgFlashAsyncAction({title: "Odebrání učebny proběhlo úspěšně"})),
+                    "fail": (json) => dispatch(MsgAddAsyncAction({title: "Odebrání učebny se nepovedlo\n" + JSON.stringify(json)})),
+                })
+            )
+        }
+    }    
+    return <AddRemoveButton state={present} onChangeValue={onChangeValue}/>
 }
 
 export const FacilitiesSegment = ({plan, lesson, facilitites}) => {
@@ -228,23 +228,78 @@ export const FacilitiesSegment = ({plan, lesson, facilitites}) => {
     )
 }
 
+export const LessonOrderLess = ({plan, lesson}) => {
+    const dispatch = useDispatch()
+
+    const onClick = () => {
+        let newValue = (lesson?.order || 0) - 1
+        if (newValue < 1) {
+            newValue = 1
+        }
+        if (newValue !== lesson?.order) {
+            const updatedLesson = {...lesson, order: newValue}
+            console.log("LessonOrderLess", updatedLesson)
+            const action = PlanLessonUpdateAsyncAction({lesson: updatedLesson, plan_id: plan.id})
+            dispatch(action)
+            .then(
+                CheckGQLError({
+                    "ok": () => dispatch(MsgFlashAction({title: "Pořadí změněno"})),
+                    "fail": (json) => dispatch(MsgAddAction({title: "Nepodařilo se změnit pořadí\n"+JSON.stringify(json)})),
+                })
+            )
+        }
+    }
+    return (
+        <span className="btn btn-sm btn-outline-success" onClick={onClick}><ArrowUp /></span>
+    )
+}
+
+export const LessonOrderMore = ({lesson, plan}) => {
+    const dispatch = useDispatch()
+
+    const onClick = () => {
+        let newValue = (lesson?.order || 0) + 1
+        if (newValue !== lesson?.order) {
+            const updatedLesson = {...lesson, order: newValue}
+            console.log("LessonOrderLess", updatedLesson)
+            const action = PlanLessonUpdateAsyncAction({lesson: updatedLesson, plan_id: plan.id})
+            dispatch(action)
+            .then(
+                CheckGQLError({
+                    "ok": () => dispatch(MsgFlashAction({title: "Pořadí změněno"})),
+                    "fail": (json) => dispatch(MsgAddAction({title: "Nepodařilo se změnit pořadí\n"+JSON.stringify(json)})),
+                })
+            )
+        }
+    }
+    return (
+        <span className="btn btn-sm btn-outline-success" onClick={onClick}><ArrowDown /></span>
+    )
+}
+
 export const PlanPivotEditableTableRow = ({plan, lesson, users, groups, facilities}) => {
     
     return (
         <tr>
-            <td>
-                <LessonDeleteButton lesson={lesson} plan={plan}/>
-                <span className="btn btn-sm btn-outline-success"><ArrowUp /></span>
-                <span className="btn btn-sm btn-outline-success"><ArrowDown /></span>
-                <span className="btn btn-sm btn-outline-success"><ArrowsExpand /></span>
+            <td style={{left: 0, position: "sticky"}}>
+                <div className="input-group input-group-sm ">
+                    <span className="input-group-text" id="basic-addon1">{lesson?.order}{". "}</span>
+                    <LessonNameInputbox lesson={lesson} plan={plan}/>
+                </div>
+            </td>
+            <td className="mr-0 pr-0">
+                <LessonOrderLess lesson={lesson} plan={plan} />
+                <LessonOrderMore lesson={lesson} plan={plan} />
+                {/* {"."} */}
             </td>
             <td>
-                <LessonNameInputbox lesson={lesson} plan={plan}/>
+                <span className="btn btn-sm btn-outline-success"><ArrowsExpand /></span>
+                <LessonDeleteButton lesson={lesson} plan={plan} />
             </td>
             <td>
                 <LessonTypeSelect lesson={lesson} plan={plan}/> 
             </td>
-            <td>4</td>
+            <td>{lesson?.length}</td>
             <td></td>
             <td className="table-warning"></td>
             <UsersSegment plan={plan} lesson={lesson} users={users} />
@@ -256,22 +311,6 @@ export const PlanPivotEditableTableRow = ({plan, lesson, users, groups, faciliti
         </tr>
     )
 }
-
-// export const PlanAddLessonButton = ({plan, name="Nová lekce", lessontype_id="e2b7cbf6-95e1-11ed-a1eb-0242ac120002"}) => {
-//     const dispatch = useDispatch()
-//     const onClick = () => {
-//         dispatch(PlanLessonInsertAsyncAction({name, lessontype_id, plan_id: plan.id}))
-//         .then(
-//             CheckGQLError({
-//                 "ok": () => dispatch(MsgFlashAsyncAction({title: "Přidání lekce úspěšné"})),
-//                 "fail": (json) => dispatch(MsgAddAsyncAction({title: "Přidání lekce se nepovedlo\n" + JSON.stringify(json)})),
-//             })
-//         )
-//     }
-//     return (
-//         <button className="btn form-control btn-outline-success" onClick={onClick}><PlusLg /> Přidat lekci</button>
-//     )
-// }
 
 export const PlanAddLessonsFromAccreditationButton = ({plan}) => {
     const dispatch = useDispatch()
@@ -312,40 +351,88 @@ export const LessonDeleteButton = ({lesson, plan}) => {
     )
 }
 
-export const PlanPivotEditableTableSumRow = ({lessons, users, groups, facilities}) => {   
-    const userSums = pivotmap(users, user => {
-        const results = lessons.map(l => {
-            if (l.users.find(_u => _u.id === user.id)) {
-                return 4
-            } else {
-                return 0
-            }
-        })
-        return [user.id, results.reduce((a,b) => a+b)]
-    })
+const setandreturn = (acc, id, value) => {
+    // console.log("setandreturn", acc, id, value)
+    const cvalue = value? value: 0
+    acc[id] = id in acc? acc[id] + cvalue: cvalue
+    return acc
+}
+
+
+const Sum = ({lessons, userid=null, lessontypename=null, groupid=null, facilityid=null}) => {
+    let value = lessons
+    if (userid) {
+        value = value
+            .filter(lesson => lesson?.users?.find(u => u.id === userid))
+        // console.log("sum.u", value)
+    }        
+    if (groupid) {
+        value = value
+            .filter(lesson => lesson?.groups?.find(g => g.id === groupid))
+    }        
+    if (facilityid) {
+        value = value
+            .filter(lesson => lesson?.facilities?.find(f => f.id === facilityid))
+    }        
+    if (lessontypename) {
+        value = value
+            .filter(lesson => lesson?.type?.name === lessontypename)
+        // console.log("sum.l", lessontypename, value)
+    }
+    value = value    
+        .map(item => item.length? item.length: 0)
+        .reduce((acc, value) => acc + value, 0)
+
+    return (
+        <>{value}</>
+    )        
+}
+
+export const PlanPivotEditableTableLessonSumRow = ({lessons, users, lessontypename=null, groups, facilities}) => {  
+    let lessons_ = lessons
+    if (lessontypename) {
+        lessons_ = lessons_
+            .filter(lesson => lesson?.type?.name === lessontypename)
+    }
+        
     return (
         <tr>
-            <td colSpan={2}>
-                
-            </td>
+            <td colSpan={3}></td>
+            <td>{lessontypename}</td>
+            <td><Sum lessons={lessons_}/></td>
             <td></td>
-            <td></td>
-            <td></td>
-            
             <td className="table-warning"></td>
             {users.map(
-                u => <td key={u.id}>{userSums[u.id]}</td>
+                u => <td key={u.id}><Sum lessons={lessons_} userid={u.id} /></td>
             )}
             <td className="table-warning"></td>
             {groups.map(
-                g => <td key={g.id}></td>
+                g => <td key={g.id}><Sum lessons={lessons_} groupid={g.id} /></td>
             )}
             <td className="table-warning"></td>
             {facilities.map(
-                f => <td key={f.id}></td>
+                f => <td key={f.id}><Sum lessons={lessons_} facilityid={f.id} /></td>
             )}
             <td></td>
         </tr>
+    )
+
+}
+
+
+export const PlanPivotEditableTableSumRows = ({lessons, users, groups, facilities}) => {  
+    const lessonTypes = lessons
+        .map(lesson => [lesson?.type?.name, lesson?.length]) 
+        .reduce((acc, [typeid, length]) => setandreturn(acc, typeid, length), {})
+
+    console.log("lessonTypes", lessonTypes)
+    return (
+        <>
+            {Object.entries(lessonTypes).map(
+                ([name, value]) => <PlanPivotEditableTableLessonSumRow key={name} lessons={lessons} lessontypename={name} users={users} groups={groups} facilities={facilities}/>
+            )}
+            <PlanPivotEditableTableLessonSumRow key={"total"} lessons={lessons} users={users} groups={groups} facilities={facilities}/>
+        </>
     )
 
 }
@@ -353,10 +440,7 @@ export const PlanPivotEditableTableFoot = ({plan, users, groups, facilities}) =>
     return (
         <tfoot>
         <tr>           
-            <td colSpan={5}>
-                <PlanAddLessonButton plan={plan} />
-                <hr />
-                <PlanAddLessonsFromAccreditationButton plan={plan} />
+            <td colSpan={6} >
             </td>
             
             <td className="table-warning"></td>
@@ -373,27 +457,7 @@ export const PlanPivotEditableTableFoot = ({plan, users, groups, facilities}) =>
             )}
             <td></td>
         </tr>
-        <PlanPivotEditableTableSumRow lessons={plan.lessons} users={users} groups={groups} facilities={facilities} />
-        <tr>
-            <td colSpan={1}></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td className="table-warning"></td>
-            {users.map(
-                u => <td key={u.id}></td>
-            )}
-            <td className="table-warning"></td>
-            {groups.map(
-                g => <td key={g.id}></td>
-            )}
-            <td className="table-warning"></td>
-            {facilities.map(
-                f => <td key={f.id}></td>
-            )}
-            <td></td>
-        </tr>
+        <PlanPivotEditableTableSumRows lessons={plan.lessons} users={users} groups={groups} facilities={facilities} />
         </tfoot>
     )
 }
@@ -411,7 +475,11 @@ const makeUnique = (a) => {
 
 export const PlanPivotEditableTable = ({plan}) => {
     console.log("PlanPivotEditableTable.plan", plan)
-    const lessons = plan?.lessons || []
+    let lessons = plan?.lessons || []
+    lessons = [...lessons]
+    // lessons.sort((a, b) => (a?.order||0) - (b?.order||0))
+    lessons.sort((a, b) => (a?.order) - (b?.order))
+
     const users = makeUnique(lessons.flatMap(
         lesson => lesson?.users || []
     ))
@@ -448,8 +516,17 @@ export const PlanPivotEditableTable = ({plan}) => {
     }
 
     console.log(users)
+
+    const dynamicCols = _users.length + _groups.length + _facilities.length
+    let tableStyle = {}
+    if (dynamicCols > 15) {
+
+        tableStyle = {maxWidth: null, tableLayout: "auto", overflow: "visible", width: 100 + (dynamicCols - 15) * 3 + "%"}
+    }
+
     return (
-        <Table striped hover bordered>
+        // <Table striped hover bordered responsive>
+        <Table size="sm" striped hover bordered responsive style={tableStyle}>
             <PlanPivotEditableTableHead 
                 plan={plan} users={_users} groups={_groups} facilities={_facilities} 
                 onSelectUser={onSelectUser}

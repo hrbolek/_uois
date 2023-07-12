@@ -16,6 +16,9 @@ export const LessonAddTeacherQueryJSON = ({lesson_id, user_id}) => ({
                     id
                     name
                     lastchange
+                    order
+                    length
+                    type { id name }
                     users {
                         __typename
                         id

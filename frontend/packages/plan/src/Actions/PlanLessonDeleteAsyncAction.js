@@ -14,6 +14,7 @@ export const PlanLessonDeleteQueryJSON = ({plan_id, lesson_id, lastchange}) => (
                     id
                     name
                     lastchange
+                    type { id name }
                     users { __typename id
                         name surname email
                     }

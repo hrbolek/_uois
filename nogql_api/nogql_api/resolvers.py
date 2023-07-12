@@ -225,6 +225,7 @@ def CheckRelations(jsontable, masterkeyname):
 
     chunk = 1
     while len(toSolve) > 0 :
+        print("chunk", chunk, flush=True)
         for row in toSolve:
             masterid = row[masterkeyname]
             masterrow = index[masterid]
@@ -232,7 +233,7 @@ def CheckRelations(jsontable, masterkeyname):
             if (masterchunk < chunk):
                 row["_chunk"] = chunk
 
-        toSolve = list(filter(lambda item: item["_chunk"], toSolve))
+        toSolve = list(filter(lambda item: item["_chunk"] == 9999, toSolve))
         chunk = chunk + 1
 
     return jsontable
@@ -253,7 +254,7 @@ def ExportModels(sessionMaker, DBModels):
 
     result = {}
     for tableName, DBModel in DBModels.items():  # iterate over all models
-        
+        print("exporting", tableName, flush=True)
         cols = [col.name for col in DBModel.metadata.tables[tableName].columns]
 
         # query for all items in a table
@@ -266,10 +267,16 @@ def ExportModels(sessionMaker, DBModels):
             # insert it as a new key-value pair into result
             result[tableName] = [ToDict(row, cols) for row in dbData]
 
-    CheckRelations(result["groups"], "mastergroup_id")
-    CheckRelations(result["facilities"], "master_facility_id")
+    print("defining chunks for events", flush=True)
     CheckRelations(result["events"], "masterevent_id")
+    print("defining chunks for facilities", flush=True)
+    CheckRelations(result["facilities"], "master_facility_id")
+    print("defining chunks for group", flush=True)
+    CheckRelations(result["groups"], "mastergroup_id")
     
+    
+    
+    print("saving json", flush=True)
     import json
     with open("systemdata.json", "w") as outfile:
         json.dump(result, outfile, indent=4, default=json_serial)

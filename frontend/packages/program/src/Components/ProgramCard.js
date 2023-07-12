@@ -38,11 +38,6 @@ export const ProgramCard = ({program}) => {
             <Card.Body>
                 <Row>
                     <Col>
-                        <Demo />   
-                    </Col>
-                    <Col>
-                    </Col>
-                    <Col>
                         <ProgramSubjectsTable program={program} />
                     </Col>
                 </Row>

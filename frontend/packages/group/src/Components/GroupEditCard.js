@@ -12,6 +12,7 @@ import { GroupMembersEdit } from "./GroupMembersEdit"
 import { GroupMemberAddWithSearch } from "./GroupMemberRemoveButton"
 import { GroupRoleAddWithSearch } from "./GroupRoleAddWithSearch"
 import { GroupAttributesEditable } from "./GroupAttributesEditable"
+import { GroupSubgroupsTable } from "./GroupSubgroupsTable"
 
 export const GroupEditCard = ({group}) => {
     const mastergroup = group?.mastergroup
@@ -44,12 +45,19 @@ export const GroupEditCard = ({group}) => {
             </Card.Body> */}
             <Card.Body>
                 <GroupAttributesEditable group={group} />
+
+            </Card.Body>
+            <Card.Body>
+                <GroupSubgroupsTable group={group} />
+            </Card.Body>
+            <Card.Body>
+
                 <Row>
                     <Col md={6}>
-                        <GroupRolesEdit group={group} validOnly={true} />
+                        <GroupRolesEdit group={group} onlyValid={true} />
                     </Col>
                     <Col md={6}>
-                        <GroupRolesEdit group={group} invalidOnly={true} />
+                        <GroupRolesEdit group={group} onlyInvalid={true} />
                     </Col>
                 </Row>
                 <Row>
@@ -57,12 +65,15 @@ export const GroupEditCard = ({group}) => {
                         <GroupRoleAddWithSearch group={group}/>
                     </Col>
                 </Row>
+
+            </Card.Body>
+            <Card.Body>
                 <Row>
                     <Col md={6}>
-                        <GroupMembersEdit group={group} validOnly={true} />
+                        <GroupMembersEdit group={group} onlyValid={true} />
                     </Col>
                     <Col md={6}>
-                        <GroupMembersEdit group={group} invalidOnly={true} />
+                        <GroupMembersEdit group={group} onlyInvalid={true} />
                     </Col>
                 </Row>
                 <Row>

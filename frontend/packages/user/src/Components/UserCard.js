@@ -51,8 +51,10 @@ export const UserCard = ({user}) => {
                 </Row>
             </Card.Header>
             <Card.Body>
-                <UserClassification user={user} />
-                <UserClassificationEditable user={user} />
+                {/* <UserClassification user={user} />
+                <UserClassificationEditable user={user} /> */}
+                <span className="btn btn-outline-success"><Link tag="surveyuser" id={user.id}>Ankety</Link></span> <br />
+                <span className="btn btn-outline-success"><Link tag="classificationuser" id={user.id}>Klasifikace</Link></span> <br />
             </Card.Body>
             <Card.Body>
                 <hr />

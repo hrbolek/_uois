@@ -70,7 +70,7 @@ class WorkflowTransitionGQLModel:
 #####################################################################
 
 
-@strawberry.input
+@strawberry.input(description="""""")
 class WorkflowTransitionInsertGQLModel:
     workflow_id: strawberry.ID
     sourcestate_id: strawberry.ID
@@ -80,7 +80,7 @@ class WorkflowTransitionInsertGQLModel:
     valid: Optional[bool] = True
     id: Optional[strawberry.ID] = None
 
-@strawberry.input
+@strawberry.input(description="""""")
 class WorkflowTransitionUpdateGQLModel:
     lastchange: datetime.datetime
     id: strawberry.ID
@@ -90,7 +90,7 @@ class WorkflowTransitionUpdateGQLModel:
     name: Optional[str] = None
     name_en: Optional[str] = None
     
-@strawberry.type
+@strawberry.type(description="""""")
 class WorkflowTransitionResultGQLModel:
     id: strawberry.ID = None
     msg: str = None
@@ -101,7 +101,7 @@ class WorkflowTransitionResultGQLModel:
         return result
     
 
-@strawberry.mutation
+@strawberry.mutation(description="""""")
 async def workflow_transition_insert(self, info: strawberry.types.Info, state: WorkflowTransitionInsertGQLModel) -> WorkflowTransitionResultGQLModel:
     loader = getLoaders(info).workflowtransitions
     row = await loader.insert(state)
@@ -110,7 +110,7 @@ async def workflow_transition_insert(self, info: strawberry.types.Info, state: W
     result.id = row.id
     return result
 
-@strawberry.mutation
+@strawberry.mutation(description="""""")
 async def workflow_transition_update(self, info: strawberry.types.Info, state: WorkflowTransitionUpdateGQLModel) -> WorkflowTransitionResultGQLModel:
     loader = getLoaders(info).workflowtransitions
     row = await loader.update(state)

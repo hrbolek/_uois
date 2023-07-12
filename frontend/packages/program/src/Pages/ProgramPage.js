@@ -4,26 +4,18 @@ import { useSelector, useDispatch } from "react-redux/"
 
 import { ProgramCard } from "../Components/ProgramCard"
 import { ProgramFetchAsyncAction } from "../Actions/ProgramFetchAsyncAction"
-import { CheckGQLError, MsgAddAction, MsgFlashAction } from "@uoisfrontend/shared"
+import { CheckGQLError, MsgAddAction, MsgFlashAction, useFreshItem } from "@uoisfrontend/shared"
 
 export const ProgramPage = () => {
     const dispatch = useDispatch()
-
-    const id = useParams().id
-    const items = useSelector(state => state.items)
-    const program = items[id]
-
-    useEffect(
-        () => {
-            dispatch(ProgramFetchAsyncAction(id))
-            .then(
-                // CheckGQLError({
-                //     "ok": (json) => dispatch(MsgFlashAction({title: "Nahrání objektu úspěšné"})),
-                //     "fail": (json) => dispatch(MsgAddAction({title: "Chyba " + JSON.stringify(json)})),
-                // })
-            )
-        }
-        ,[]
+    const {id} = useParams()   
+    const [program, query] = useFreshItem({id}, ProgramFetchAsyncAction)
+    query
+    .then(
+        CheckGQLError({
+            "ok": (json) => dispatch(MsgFlashAction({title: "Nahrání objektu úspěšné"})),
+            "fail": (json) => dispatch(MsgAddAction({title: "Chyba " + JSON.stringify(json)})),
+        })
     )
 
     if (program){        

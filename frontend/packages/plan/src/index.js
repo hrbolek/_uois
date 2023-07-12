@@ -9,8 +9,8 @@ export * from "./Pages/PlanEditPage";
 export const Pages = () => {
     return (
         <>
-            <Route path={"/ui/facilities/edit/:id"} element={<PlanEditPage />} />
-            <Route path={"/ui/facilities/:id"} element={<PlanPage />} />      
+            <Route path={"/ui/plans/edit/:id"} element={<PlanEditPage />} />
+            <Route path={"/ui/plans/:id"} element={<PlanPage />} />      
         </>
     )
 }

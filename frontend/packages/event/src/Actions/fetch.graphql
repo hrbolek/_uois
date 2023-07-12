@@ -1,0 +1,6 @@
+query {
+    userPage {
+        id
+        email
+    }
+}

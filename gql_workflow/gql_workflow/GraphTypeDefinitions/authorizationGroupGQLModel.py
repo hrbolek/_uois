@@ -69,7 +69,6 @@ class AuthorizationRemoveGroupGQLModel:
     group_id: strawberry.ID
 
 
-
 @strawberry.mutation(description="""Adds or updates a group at the authorization""")
 async def authorization_add_group(self, info: strawberry.types.Info, authorization: AuthorizationAddGroupGQLModel) -> Optional["AuthorizationResultGQLModel"]:
     loader = getLoaders(info).authorizationgroups
@@ -89,7 +88,7 @@ async def authorization_add_group(self, info: strawberry.types.Info, authorizati
     return result
 
 @strawberry.mutation(description="""Remove the group from the authorization""")
-async def authorization_remove_group(self, info: strawberry.types.Info, authorization: AuthorizationAddGroupGQLModel) -> Optional["AuthorizationResultGQLModel"]:
+async def authorization_remove_group(self, info: strawberry.types.Info, authorization: AuthorizationRemoveGroupGQLModel) -> Optional["AuthorizationResultGQLModel"]:
     loader = getLoaders(info).authorizationgroups
     existing = await loader.filter_by(authorization_id=authorization.authorization_id, group_id=authorization.group_id)
     existing = next(existing, None)

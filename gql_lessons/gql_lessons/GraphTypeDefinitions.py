@@ -135,6 +135,12 @@ class AcSemesterGQLModel:
     @classmethod
     async def resolve_reference(cls, id: strawberryA.ID):
         return AcSemesterGQLModel(id=id)
+    
+    @strawberryA.field(description="""Plans""")
+    async def plans(self, info: strawberryA.types.Info) -> List["PlanGQLModel"]:
+        loader = getLoaders(info).psps
+        result = await loader.filter_by(semester_id=self.id)
+        return result
 
 
 @strawberryA.federation.type(extend=True, keys=["id"])
@@ -225,7 +231,7 @@ class PlannedLessonGQLModel:
 
     @strawberryA.field(description="""type of lesson (lecture, ...)""")
     async def type(self, info) -> Optional["AcLessonTypeGQLModel"]:
-        result = AcLessonTypeGQLModel.resolve_reference(id=self.lessontype_id)
+        result = await AcLessonTypeGQLModel.resolve_reference(id=self.lessontype_id)
         return result
 
     @strawberryA.field(

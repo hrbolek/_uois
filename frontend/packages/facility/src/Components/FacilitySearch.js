@@ -45,7 +45,7 @@ const Suggestions = ({facilityRecords, Suggestion, onSelect}) => {
     )
 }
 
-export const FacilitySearch = ({onSelect}) => {
+export const FacilitySearch = ({onSelect, label="Vyhledat místo", floating=true}) => {
     const [ facilityRecords, setFacilityRecords ] =  useState([])
     const [ currentLetters, setCurrentLetters ] =  useState('')
 
@@ -86,15 +86,28 @@ export const FacilitySearch = ({onSelect}) => {
         setInputValue('')
         setFacilityRecords([])
     }
-    
+
+    let Encapsulate = ({children}) => <>{children}</>
+    if (floating) {
+        Encapsulate = ({children}) => <div className="form-floating">
+                {children}
+                <label htmlFor="facilitysearch">{label}</label>    
+            </div>
+    }
+
     return (
         <div style={{position: "relative"}}>
             <div className="input-group mb-3">
                 <span className="input-group-text" id="basic-addon1"><i className="bi bi-search"></i></span>
-                <input className='form-control' placeholder="Vyhledávání prostor" aria-label="Vyhledávání prostor" onChange={onChange} value={inputValue}/>
+
+                <Encapsulate>
+                    <input className='form-control' id="facilitysearch" placeholder="Vyhledávání prostor" aria-label="Vyhledávání prostor" onChange={onChange} value={inputValue}/>                   
+                </Encapsulate>
+
                 <span className="input-group-text" id="basic-addon2" onClick={closeSearch}><i className="bi bi-x-lg"></i></span>
             </div>
             <Suggestions facilityRecords={facilityRecords} Suggestion={FacilitySugestion} onSelect={onSelect}/>
         </div>
     )
+   
 }

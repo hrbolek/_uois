@@ -194,7 +194,7 @@ export const GroupMemberAddWithSearch = ({group}) => {
 
     }
     return (
-        <UserSearch onSelect={onSelect} />
+        <UserSearch label="Přidat člena" onSelect={onSelect} />
     )
 }
 

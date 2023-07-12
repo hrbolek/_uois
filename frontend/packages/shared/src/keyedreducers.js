@@ -79,17 +79,21 @@ export const UpdateSubVector = (state, action) => {
     }
     console.log("UpdateSubVector", item)
     console.log("UpdateSubVector", item)
-    console.log("UpdateSubVector", item["events"])
+    console.log("UpdateSubVector", item[vectorname])
 
+    
     for(let i of item[vectorname]) {
         if (i?.__typename) {
             //je to polozka, ktera muze byt hlavni, napr. user.events, kazdy event muze byt ve store
+            //proved update
             state[i.id] = {...state[i.id], ...i}
         }
 
+        //poznamenej si
         const _ = indexedSubItems[i.id] || {}
         indexedSubItems[i.id] = {..._, ...i}
     }    
+    //proved update u hlavni polozky
     oldItem[vectorname] = Object.values(indexedSubItems)
     return state
 }

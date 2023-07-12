@@ -159,10 +159,10 @@ export const LessonFacilityListDeletable = ({plan, lesson}) => {
 export const PlanLessonsTableRow = ({plan, lesson}) => {
     return (
         <tr>
-            <td>{lesson.id}</td>
-            <td>{lesson.name}</td>
-            <td>Přednáška</td>
-            <td>4</td>
+            <td>{lesson?.order}</td>
+            <td>{lesson?.name}</td>
+            <td>{lesson?.type?.name}</td>
+            <td>{lesson?.length||0}</td>
             <td>
                 <LessonTeacherList plan={plan} lesson={lesson} />
             </td>
@@ -256,7 +256,7 @@ export const PlanLessonsTableHeader = ({plan, children}) => {
 export const PlanLessonsTableTempate = ({plan, children}) => {
     // console.log("PlanLessonsTable", plan)
     return (
-        <Table>
+        <Table striped bordered>
             <thead>
                 <tr>
                     <th>Pořadí</th>
@@ -277,7 +277,9 @@ export const PlanLessonsTableTempate = ({plan, children}) => {
 }
 
 export const PlanLessonsTable = ({plan, children}) => {
-    const lessons = plan?.lessons || []
+    let lessons = plan?.lessons || []
+    lessons = [...lessons]
+    lessons.sort((a, b) => (a?.order|| 0) - (b?.order||0))
     // console.log("lessons", lessons)
     // console.log("PlanLessonsTable", plan)
     return (

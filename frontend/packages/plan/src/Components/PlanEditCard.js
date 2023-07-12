@@ -2,13 +2,14 @@ import Card from "react-bootstrap/Card"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
 
-import { PencilSquare, Receipt } from "react-bootstrap-icons"
+import { EyeFill, PencilSquare, Receipt } from "react-bootstrap-icons"
 import { Link } from "@uoisfrontend/shared"
 import { PlanLessonsEditableTable } from "./PlanLessonsTable"
 import { PlanPivotEditableTable } from "./PlanPivotEditableTable"
 
 export const PlanEditCard = ({plan}) => {
     return (
+        <>
         <Card>
             <Card.Header>
                 <Row>
@@ -16,8 +17,10 @@ export const PlanEditCard = ({plan}) => {
                         <span className="btn btn-sm btn-outline-success">
                             <Receipt />{" "}
                             <Link id="ce250a68-b095-11ed-9bd8-0242ac110002" tag="subject">
-                                Programování 1. semestr
+                                {plan?.semester?.subject?.name}
+                                &nbsp;{plan?.semester?.order}{". semestr"}
                             </Link>
+                            
                         </span>
                     </Col>
                     <Col>
@@ -33,18 +36,19 @@ export const PlanEditCard = ({plan}) => {
                     </Col>
                     <Col>
                         <div className="d-flex justify-content-end">
-                            <Link id={plan.id} tag="plan"><PencilSquare /> </Link>
+                            <Link id={plan.id} tag="plan"><EyeFill /> </Link>
                         </div>
                     </Col>
                 </Row>
 
             </Card.Header>
-            <Card.Body>             
-                {/* <PlanLessonsEditableTable plan={plan} /> */}
-                <PlanPivotEditableTable plan={plan} />
+            {/* <Card.Body>             
+                               
 
-                {/* {JSON.stringify(plan)} */}
-            </Card.Body>
+                
+            </Card.Body> */}
         </Card>
+        <PlanPivotEditableTable plan={plan} />
+        </>
     )
 }

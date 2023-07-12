@@ -746,6 +746,7 @@ from .authorizationUserGQLModel import AuthorizationUserGQLModel
 
 from .workflowGQLModel import WorkflowGQLModel
 from .workflowStateGQLModel import WorkflowStateGQLModel
+from .workflowStateGQLModel import WorkflowStateResultGQLModel
 from .workflowStateUserGQLModel import WorkflowStateUserGQLModel
 from .workflowTransitionGQLModel import WorkflowTransitionGQLModel
 from .workflowStateRoleTypeGQLModel import WorkflowStateRoleTypeGQLModel

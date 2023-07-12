@@ -38,8 +38,8 @@ class WorkflowStateGQLModel:
     def name(self) -> str:
         return self.name
     
-    @strawberry.field(description="""if teh state is enabled""")
-    def valid(self) -> str:
+    @strawberry.field(description="""if the state is enabled""")
+    def valid(self) -> Optional[bool]:
         return self.valid
     
     @strawberry.field(description="""outcomming transitions""")

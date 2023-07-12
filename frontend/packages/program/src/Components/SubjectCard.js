@@ -4,17 +4,19 @@ import Row from "react-bootstrap/Row"
 
 import { PencilSquare, Receipt } from "react-bootstrap-icons"
 import { Demo, Link } from "@uoisfrontend/shared"
+import { SemesterCard } from "./SemesterCard"
 
 export const SubjectCard = ({subject}) => {
+    const semesters = subject?.semesters || []
     return (
         <Card>
             <Card.Header>
                 <Row>
                     <Col>
-                        <Receipt /> {subject.name}
+                        <Receipt /> Předmět {subject.name}
                     </Col>
                     <Col>
-                        <Link tag="program" id={subject?.program?.id}>{subject?.program?.name}</Link>
+                        Program <Link tag="program" id={subject?.program?.id}>{subject?.program?.name}</Link>
                     </Col>
                     <Col>
                         
@@ -30,14 +32,15 @@ export const SubjectCard = ({subject}) => {
             <Card.Body>
                 <Row>
                     <Col>
-                        <Demo />   
-                    </Col>
-                    <Col>
-                    </Col>
-                    <Col>
+                        {semesters.map(
+                            semester => <span key={semester.id} className="btn btn-outline-success"><Link tag="semester" id={semester.id}>Semestr {semester.order}</Link></span>
+                        )}        
+                        {semesters.map(
+                            semester => <SemesterCard key={semester.id} semester={{...semester, subject}} />
+                        )}        
                     </Col>
                 </Row>
-    
+
                 {JSON.stringify(subject)}
             </Card.Body>
         </Card>

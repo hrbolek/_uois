@@ -10,12 +10,23 @@ export const PlanQueryJSON = (id) => ({
           semester {
               __typename
               id
+              order
+              subject {
+                id
+                name
+              }
           }
           lessons {
             __typename
             id
             name
             lastchange
+            length
+            order
+            type {
+              id
+              name
+            }
             users {
               __typename
               id
@@ -46,7 +57,7 @@ export const PlanQuery = (id) =>
         body: JSON.stringify(PlanQueryJSON(id)),
     })
 
-export const PlanFetchAsyncAction = (id) => (dispatch, getState) => {
+export const PlanFetchAsyncAction = ({id}) => (dispatch, getState) => {
     return (
         PlanQuery(id)
         .then(response => response.json())

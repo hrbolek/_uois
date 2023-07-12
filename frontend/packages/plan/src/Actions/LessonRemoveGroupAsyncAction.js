@@ -1,9 +1,9 @@
 import { authorizedFetch } from "@uoisfrontend/shared"
 import All from "@uoisfrontend/shared/src/keyedreducers"
 
-export const LessonRemoveGroupQueryJSON = ({lesson_id, user_id}) => ({
-    query: `mutation($user_id: ID! $lesson_id: ID!) {
-      result: plannedLessonGroupDelete(userlesson: {userId: $user_id, planlessonId: $lesson_id }) {
+export const LessonRemoveGroupQueryJSON = ({lesson_id, group_id}) => ({
+    query: `mutation($group_id: ID! $lesson_id: ID!) {
+      result: plannedLessonGroupDelete(grouplesson: {groupId: $group_id, planlessonId: $lesson_id }) {
         id
         msg
         lesson {
@@ -16,6 +16,9 @@ export const LessonRemoveGroupQueryJSON = ({lesson_id, user_id}) => ({
                     id
                     name
                     lastchange
+                    order
+                    length
+                    type { id name }
                     users {
                         __typename
                         id
@@ -39,17 +42,17 @@ export const LessonRemoveGroupQueryJSON = ({lesson_id, user_id}) => ({
         }
       }
     }`,
-    variables: {lesson_id, user_id}
+    variables: {lesson_id, group_id}
 })
 
-export const LessonRemoveGroupQuery = ({user_id, lesson_id}) =>
+export const LessonRemoveGroupQuery = ({group_id, lesson_id}) =>
     authorizedFetch('/gql', {
-        body: JSON.stringify(LessonRemoveGroupQueryJSON({lesson_id, user_id})),
+        body: JSON.stringify(LessonRemoveGroupQueryJSON({lesson_id, group_id})),
     })
 
-export const LessonRemoveGroupAsyncAction = ({plan_id, user_id, lesson_id}) => (dispatch, getState) => {
+export const LessonRemoveGroupAsyncAction = ({plan_id, group_id, lesson_id}) => (dispatch, getState) => {
     return (
-      LessonRemoveGroupQuery({user_id, lesson_id})
+      LessonRemoveGroupQuery({group_id, lesson_id})
         .then(response => response.json())
         .then(
             json => {

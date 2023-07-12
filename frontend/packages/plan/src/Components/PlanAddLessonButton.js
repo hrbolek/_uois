@@ -6,8 +6,9 @@ import { PlusLg } from "react-bootstrap-icons"
 
 export const PlanAddLessonButton = ({plan, name="Nová lekce", lessontype_id="e2b7cbf6-95e1-11ed-a1eb-0242ac120002"}) => {
     const dispatch = useDispatch()
+    const lessons = plan?.lessons || []
     const onClick = () => {
-        dispatch(PlanLessonInsertAsyncAction({name, lessontype_id, plan_id: plan.id}))
+        dispatch(PlanLessonInsertAsyncAction({name, lessontype_id, plan_id: plan.id, order: lessons.length + 1, length: 2}))
         .then(
             CheckGQLError({
                 "ok": () => dispatch(MsgFlashAsyncAction({title: "Přidání lekce úspěšné"})),

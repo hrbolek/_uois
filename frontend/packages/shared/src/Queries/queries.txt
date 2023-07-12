@@ -1,0 +1,6 @@
+{
+    "userbyletters": {
+        "query": "query($letters: String!){ result: userbyletters(letters: $letters) { __typename id name surname email valid }}",
+        "variables": ""
+    }
+}

@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Optional
 import typing
 from unittest import result
 import strawberry as strawberryA
@@ -38,7 +38,33 @@ from gql_granting.GraphResolvers import (
     resolveSubjectsForProgram,
 )
 
+import asyncio
 import datetime
+
+
+@strawberryA.federation.type(
+    keys=["id"], description="""Entity representing acredited study programs"""
+)
+class AcProgramStudentGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        loader = getLoaders(info).programstudents
+        result = await loader.load(id)
+        if result is not None:
+            result._type_definition = cls._type_definition  # little hack :)
+        return result
+    
+    @strawberryA.field(description="""primary key""")
+    async def user(self, info: strawberryA.types.Info) -> Optional["UserGQLModel"]:
+        return await UserGQLModel.resolve_reference(id=self.student_id)
+    
+    @strawberryA.field(description="""primary key""")
+    async def messages(self, info: strawberryA.types.Info) -> Optional["UserGQLModel"]:
+        return await UserGQLModel.resolve_reference(id=self.student_id)
+    
+    
+
+
 @strawberryA.federation.type(
     keys=["id"], description="""Entity representing acredited study programs"""
 )
@@ -81,6 +107,15 @@ class AcProgramGQLModel:
         loader = getLoaders(info).subjects
         result = await loader.filter_by(program_id=self.id)
         return result
+
+    @strawberryA.field(description="""subjects in the program""")
+    async def students(self, info: strawberryA.types.Info) -> List["UserGQLModel"]:
+        loader = getLoaders(info).programstudents
+        rows = await loader.filter_by(program_id=self.id)
+        userawaitables = (UserGQLModel.resolve_reference(row.student_id) for row in rows)
+        result = await asyncio.gather(*userawaitables)
+        return result
+
 
     #################################################
 
@@ -759,6 +794,15 @@ class Query:
         result = await AcSubjectGQLModel.resolve_reference(info, id)
         return result
 
+    @strawberryA.field(description="""Finds a subject by its id""")
+    async def acsubject_page(
+        self, info: strawberryA.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10
+    ) -> Union["AcSubjectGQLModel", None]:
+        loader = getLoaders(info).subjects
+        result = await loader.page()
+        result = await AcSubjectGQLModel.resolve_reference(info, id)
+        return result
+
     @strawberryA.field(description="""Finds a subject semester by its id""")
     async def acsemester_by_id(
         self, info: strawberryA.types.Info, id: strawberryA.ID
@@ -768,7 +812,7 @@ class Query:
 
     @strawberryA.field(description="""Finds a subject semester by its id""")
     async def acsemester_page(
-        self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
+        self, info: strawberryA.types.Info, skip: Optional[int] = 0, limit: Optional[int] = 10
     ) -> List["AcSemesterGQLModel"]:
         loader = getLoaders(info).semesters
         result = await loader.page(skip=skip, limit=limit)
@@ -800,7 +844,7 @@ class Query:
         self, info: strawberryA.types.Info
     ) -> List["AcLessonTypeGQLModel"]:
         loader = getLoaders(info).lessontypes
-        rows = await loader.execute_select(loader.getStatement())
+        rows = await loader.execute_select(loader.getSelectStatement())
         return rows
 
     @strawberryA.field(description="""Lists classifications""")

@@ -1,9 +1,9 @@
 import { authorizedFetch } from "@uoisfrontend/shared"
 import All from "@uoisfrontend/shared/src/keyedreducers"
 
-export const LessonAddFacilityQueryJSON = ({lesson_id, user_id}) => ({
-    query: `mutation($user_id: ID! $lesson_id: ID!) {
-      result: plannedLessonFacilityAdd(userlesson: {userId: $user_id, planlessonId: $lesson_id }) {
+export const LessonAddFacilityQueryJSON = ({lesson_id, facility_id}) => ({
+    query: `mutation($facility_id: ID! $lesson_id: ID!) {
+      result: plannedLessonFacilityInsert(facilitylesson: {facilityId: $facility_id, planlessonId: $lesson_id }) {
         id
         msg
         lesson {
@@ -16,6 +16,9 @@ export const LessonAddFacilityQueryJSON = ({lesson_id, user_id}) => ({
                     id
                     name
                     lastchange
+                    order
+                    length
+                    type { id name }
                     users {
                         __typename
                         id
@@ -39,17 +42,17 @@ export const LessonAddFacilityQueryJSON = ({lesson_id, user_id}) => ({
         }
       }
     }`,
-    variables: {lesson_id, user_id}
+    variables: {lesson_id, facility_id}
 })
 
-export const LessonAddFacilityQuery = ({user_id, lesson_id}) =>
+export const LessonAddFacilityQuery = ({facility_id, lesson_id}) =>
     authorizedFetch('/gql', {
-        body: JSON.stringify(LessonAddFacilityQueryJSON({lesson_id, user_id})),
+        body: JSON.stringify(LessonAddFacilityQueryJSON({lesson_id, facility_id})),
     })
 
-export const LessonAddFacilityAsyncAction = ({plan_id, user_id, lesson_id}) => (dispatch, getState) => {
+export const LessonAddFacilityAsyncAction = ({plan_id, facility_id, lesson_id}) => (dispatch, getState) => {
     return (
-      LessonAddFacilityQuery({user_id, lesson_id})
+      LessonAddFacilityQuery({facility_id, lesson_id})
         .then(response => response.json())
         .then(
             json => {

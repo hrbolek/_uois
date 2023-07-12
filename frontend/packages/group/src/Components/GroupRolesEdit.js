@@ -61,6 +61,7 @@ const GroupEditRolesTableBody = ({group, roles}) => {
 export const GroupRolesEdit = ({group, onlyValid=true, onlyInvalid=false}) => {
     let roles = group?.roles || []
     let tableHeader = null
+    console.log("GroupRolesEdit", onlyValid, onlyInvalid)
     if (onlyInvalid === true) {       
         roles = roles.filter(
             (m) => m.valid === false

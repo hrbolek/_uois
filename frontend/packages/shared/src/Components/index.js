@@ -10,7 +10,7 @@ export { DatePicker } from "./DatePicker";
 export { DateTimePicker } from "./DateTimePicker";
 
 export { Dialog } from "./Dialog";
-
+export { LoginButton, LoginPage } from './LoginButton'
 
 // import { DroneAttributeList } from "./DroneAttributes";
 // import { DroneRemoveFromMission } from "./DroneRemoveFromMission";

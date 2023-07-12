@@ -12,6 +12,7 @@ GroupGQLModel = Annotated["GroupGQLModel", strawberry.lazy(".externals")]
 
 WorkflowGQLModel = Annotated["WorkflowGQLModel", strawberry.lazy(".workflowGQLModel")]
 WorkflowStateGQLModel = Annotated["WorkflowStateGQLModel", strawberry.lazy(".workflowStateGQLModel")]
+WorkflowStateResultGQLModel = Annotated["WorkflowStateResultGQLModel", strawberry.lazy(".workflowStateGQLModel")]
 
 @strawberry.federation.type(keys=["id"], description="""Entity defining users with some rights for the state in dataflow (node in graph)""")
 class WorkflowStateUserGQLModel:
@@ -62,3 +63,48 @@ class WorkflowStateUserGQLModel:
 # Mutation section
 #
 #####################################################################
+
+@strawberry.input(description="""""")
+class WorkflowStateAddUserGQLModel:
+    workflowstate_id: strawberry.ID = strawberry.field(default=None, description="Identification of workflow state")
+    user_id: strawberry.ID = strawberry.field(default=None, description="Identification of user")
+    group_id: strawberry.ID = strawberry.field(default=None, description="Identification of group for which the user has appropriate access level")
+    accesslevel: int
+
+@strawberry.input(description="""""")
+class WorkflowStateRemoveUserGQLModel:
+    workflowstate_id: strawberry.ID = strawberry.field(default=None, description="Identification of workflow state")
+    user_id: strawberry.ID = strawberry.field(default=None, description="Identification of user")
+    group_id: strawberry.ID = strawberry.field(default=None, description="Identification of group for which the user has appropriate access level")
+
+@strawberry.mutation(description="""Adds or updates a user & group at the workflow state""")
+async def workflow_state_add_user(self, info: strawberry.types.Info, payload: WorkflowStateAddUserGQLModel) -> Optional["WorkflowStateResultGQLModel"]:
+    loader = getLoaders(info).workflowstateusers
+    existing = await loader.filter_by(workflowstate_id=payload.workflowstate_id, user_id=payload.user_id, group_id=payload.group_id)
+    result = gql_workflow.GraphTypeDefinitions.WorkflowStateResultGQLModel()
+    result.msg = "ok"
+    row = next(existing, None)
+    if  row is None:
+        row = await loader.insert(payload)
+        result.id = payload.workflowstate_id
+    else:
+        row = await loader.update(row, {"accesslevel": payload.accesslevel})
+        if row is None:
+            result.id = None
+            result.msg = "fail"
+        result.id = payload.workflowstate_id
+    return result
+
+@strawberry.mutation(description="""Remove the user & group from the workflow state""")
+async def workflow_state_remove_user(self, info: strawberry.types.Info, payload: WorkflowStateRemoveUserGQLModel) -> Optional["WorkflowStateResultGQLModel"]:
+    loader = getLoaders(info).workflowstateusers
+    existing = await loader.filter_by(workflowstate_id=payload.workflowstate_id, user_id=payload.user_id, group_id=payload.group_id)
+    existing = next(existing, None)
+    result = gql_workflow.GraphTypeDefinitions.WorkflowStateResultGQLModel()
+    result.id = payload.workflowstate_id
+    if existing is None:
+        result.msg = "fail"
+    else:
+        await loader.delete(existing.id)
+        result.msg = "ok"
+    return result

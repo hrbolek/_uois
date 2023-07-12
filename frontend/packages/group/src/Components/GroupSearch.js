@@ -61,7 +61,7 @@ const Suggestions = ({groupRecords, Suggestion, onSelect}) => {
     )
 }
 
-export const GroupSearch = ({Suggestion=GroupSugestion, onSelect}) => {
+export const GroupSearch = ({Suggestion=GroupSugestion, onSelect, label="Vyhledat skupinu", floating=true}) => {
     const [ groupRecords, setGroupRecords ] =  useState([])
     const [ currentLetters, setCurrentLetters ] =  useState('')
 
@@ -102,15 +102,33 @@ export const GroupSearch = ({Suggestion=GroupSugestion, onSelect}) => {
         setGroupRecords([])
     }
     
-    return (
-        <div style={{position: "relative"}}>
-            <div className="input-group mb-3">
-                <span className="input-group-text" id="basic-addon1"><i className="bi bi-search"></i></span>
-                <input className='form-control' placeholder="Vyhledávání skupin" aria-label="Vyhledávání skupin" onChange={onChange} value={inputValue}/>
-                <span className="input-group-text" id="basic-addon2" onClick={closeSearch}><i className="bi bi-x-lg"></i></span>
+    if (floating) {
+        return (
+            <div style={{position: "relative"}}>
+                <div className="input-group mb-3">
+                    <span className="input-group-text" id="basic-addon1"><i className="bi bi-search"></i></span>
+                    <div className="form-floating">
+                        <input className='form-control' id="groupsearch" placeholder="Vyhledávání skupin" aria-label="Vyhledávání skupin" onChange={onChange} value={inputValue}/>
+                        <label htmlFor="groupsearch">{label}</label>    
+                    </div>
+                    <span className="input-group-text" id="basic-addon2" onClick={closeSearch}><i className="bi bi-x-lg"></i></span>
+                </div>
+                <Suggestions groupRecords={groupRecords} Suggestion={Suggestion} onSelect={onSelect}/>
+    
             </div>
-            <Suggestions groupRecords={groupRecords} Suggestion={Suggestion} onSelect={onSelect}/>
+        )
+    } else {
+        return (
+            <div style={{position: "relative"}}>
+                <div className="input-group mb-3">
+                    <span className="input-group-text" id="basic-addon1"><i className="bi bi-search"></i></span>
+                    <input className='form-control' placeholder="Vyhledávání skupin" aria-label="Vyhledávání skupin" onChange={onChange} value={inputValue}/>
+                    <span className="input-group-text" id="basic-addon2" onClick={closeSearch}><i className="bi bi-x-lg"></i></span>
+                </div>
+                <Suggestions groupRecords={groupRecords} Suggestion={Suggestion} onSelect={onSelect}/>
+    
+            </div>
+        )
+    }
 
-        </div>
-    )
 }
