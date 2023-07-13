@@ -305,7 +305,7 @@ import datetime
 def get_demodata():
     def datetime_parser(json_dict):
         for (key, value) in json_dict.items():
-            if key in ["startdate", "enddate", "lastchange", "created"]:
+            if key in ["startdate", "enddate", "lastchange", "created", "published_date"]:
                 if value is None:
                     dateValueWOtzinfo = None
                 else:
