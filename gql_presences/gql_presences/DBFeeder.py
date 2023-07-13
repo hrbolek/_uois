@@ -166,7 +166,7 @@ def get_demodata():
             try:
                 dateValue = datetime.datetime.fromisoformat(value)
                 result = dateValue.replace(tzinfo=None)
-            except ValueError as E:
+            except :
                 #print(key, value)
                 pass
             json_dict[key] = result
