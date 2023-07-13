@@ -162,21 +162,30 @@ import datetime
 def get_demodata():
     def datetime_parser(json_dict):
         for (key, value) in json_dict.items():
-            if key in ["startdate", "enddate", "lastchange", "created", 
-                       "date_of_entry",
-                        "date_of_fulfillment",
-                        "date_of_submission"]:
-                if value is None:
-                    dateValueWOtzinfo = None
-                else:
-                    try:
-                        dateValue = datetime.datetime.fromisoformat(value)
-                        dateValueWOtzinfo = dateValue.replace(tzinfo=None)
-                    except:
-                        print("jsonconvert Error", key, value, flush=True)
-                        dateValueWOtzinfo = None
+            result = value
+            try:
+                dateValue = datetime.datetime.fromisoformat(value)
+                result = dateValue.replace(tzinfo=None)
+            except ValueError as E:
+                #print(key, value)
+                pass
+            json_dict[key] = result
+
+            # if key in ["startdate", "enddate", "lastchange", "created", 
+            #            "date_of_entry",
+            #             "date_of_fulfillment",
+            #             "date_of_submission"]:
+            #     if value is None:
+            #         dateValueWOtzinfo = None
+            #     else:
+            #         try:
+            #             dateValue = datetime.datetime.fromisoformat(value)
+            #             dateValueWOtzinfo = dateValue.replace(tzinfo=None)
+            #         except:
+            #             print("jsonconvert Error", key, value, flush=True)
+            #             dateValueWOtzinfo = None
                 
-                json_dict[key] = dateValueWOtzinfo
+            #     json_dict[key] = dateValueWOtzinfo
         return json_dict
 
 

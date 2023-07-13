@@ -36,7 +36,7 @@ class WorkflowTransitionGQLModel:
         return self.name
 
     @strawberry.field(description="""if the transition is enabled""")
-    def valid(self) -> str:
+    def valid(self) -> Optional[bool]:
         return self.valid
     
     @strawberry.field(description="""name""")
