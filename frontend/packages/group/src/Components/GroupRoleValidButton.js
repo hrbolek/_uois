@@ -1,4 +1,5 @@
-import All from "@uoisfrontend/shared/src/keyedreducers"
+import { ItemActions } from "@uoisfrontend/shared/src/Store"
+
 import { DeleteButton, authorizedFetch } from "@uoisfrontend/shared"
 import { CheckSquare, PlusLg, TrashFill } from "react-bootstrap-icons"
 import { useDispatch } from "react-redux"
@@ -60,7 +61,7 @@ export const GroupRoleUpdateAsyncAction = ({group, role}) => (dispatch, getState
             if (result) {
                 const group = result.role.group
                 // console.log("GroupRoleUpdateAsyncAction.query", group)
-                const action = All.ItemSliceActions.item_update(group)
+                const action = ItemActions.item_update(group)
                 dispatch(action)
             }
             return json

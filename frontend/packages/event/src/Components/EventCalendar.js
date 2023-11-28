@@ -72,9 +72,6 @@ export const EventCalendar = ({events, onSelect}) => {
     }
     
     return (
-        <>
-        <hr/>
-        Kalendar
         <FullCalendar 
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, localPlugin]}
             initialView='timeGridWeek'
@@ -95,8 +92,5 @@ export const EventCalendar = ({events, onSelect}) => {
             eventChange={function(){}}
             eventRemove={function(){}}
         />
-        {JSON.stringify(events)}
-        <hr/>
-        </>
     )
 }

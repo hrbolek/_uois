@@ -1,6 +1,5 @@
-import All from "@uoisfrontend/shared/src/keyedreducers"
-import { DeleteButton, authorizedFetch } from "@uoisfrontend/shared"
-import { CheckSquare, PlusLg, TrashFill } from "react-bootstrap-icons"
+import { DeleteButton } from "@uoisfrontend/shared"
+import { PlusLg, TrashFill } from "react-bootstrap-icons"
 import { useDispatch } from "react-redux"
 import { GroupMembershipUpdateAsyncAction, GroupMembershipUpdateQuery } from "./GroupMemberRemoveButton"
 

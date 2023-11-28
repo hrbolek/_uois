@@ -42,7 +42,7 @@
       ).then((response) => response.json());
 
       // Render <Voyager /> into the body.
-      GraphQLVoyager.init(document.getElementById('voyager'), {
+      GraphQLVoyager.renderVoyager(document.getElementById('voyager'), {
         introspection,
       });
     </script>

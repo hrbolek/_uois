@@ -35,7 +35,7 @@ export const GroupRoles = ({group, children, onlyValid=true, onlyInvalid=false})
     return (
         <>
             {roles.map(
-                    (role, index) => role?.valid ? <GroupRole key={role.id} role={role} group={group}>< br/> </GroupRole>: ""
+                    (role, index) => <GroupRole key={role.id} role={role} group={group}>< br/> </GroupRole>
             )}
             {children}
         </>

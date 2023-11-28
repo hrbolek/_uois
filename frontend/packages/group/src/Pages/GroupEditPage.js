@@ -1,12 +1,9 @@
-import { useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux/"
 
-import { GroupCard } from "../Components/GroupCard"
-import { GroupFetchAsyncAction } from "../Actions/GroupFetchAsyncAction"
 import { CheckGQLError, MsgAddAction, MsgFlashAction, useFreshItem } from "@uoisfrontend/shared"
 import { GroupMembersFetchAsyncAction } from "../Actions/GroupMembersFetchAsyncAction"
-import { GroupEditCard } from "../Components/GroupEditCard"
+import { GroupEditCard } from "../Cards"
 
 export const GroupEditPage = () => {
     const dispatch = useDispatch()

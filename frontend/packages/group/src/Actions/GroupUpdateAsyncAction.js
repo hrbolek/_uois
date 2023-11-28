@@ -1,5 +1,6 @@
-import All from "@uoisfrontend/shared/src/keyedreducers"
 import { authorizedFetch } from "@uoisfrontend/shared"
+import { ItemActions } from "@uoisfrontend/shared/src/Store"
+
 
 export const GroupUpdateQueryJSON = ({group}) => ({
     query: `mutation(
@@ -48,7 +49,7 @@ export const GroupUpdateAsyncAction = (group) => (dispatch, getState) => {
                 const result = json?.data?.result
                 if (result) {
                     const group = result?.group
-                    const action = All.ItemSliceActions.item_update(group)
+                    const action = ItemActions.item_update(group)
                     dispatch(action)
                 }
                 return json

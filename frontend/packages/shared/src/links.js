@@ -1,4 +1,5 @@
 import { Link as RouterLink } from "react-router-dom";
+import { usePath } from "./usePath";
 
 export const root = "/ui"
 export const linkmap = {
@@ -38,8 +39,12 @@ export const linkmap = {
 }
 
 export const Link = ({id, tag="user", title, children}) => {
-    const uri = linkmap[tag] || linkmap["user"]
+    // const uri = linkmap[tag] || linkmap["user"]
+    const { linkto } = usePath()
+    const destination = linkto({name: tag+'s', id})
+    console.log('Link: -> ', destination)
     return (
-        <RouterLink to={root + uri + id}>{title}{children}</RouterLink>
+        // <RouterLink to={uri + id}>{title}{children}</RouterLink>
+        <RouterLink to={destination}>{title}{children}</RouterLink>
     )
 }

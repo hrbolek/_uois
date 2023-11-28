@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import { Navigate, useParams } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux/"
 
@@ -8,8 +7,6 @@ import { CheckGQLError, MsgAddAction, MsgFlashAction, useFreshItem } from "@uois
 import { GroupMembersFetchAsyncAction } from "../Actions/GroupMembersFetchAsyncAction"
 import { Col } from "react-bootstrap"
 import { Row } from "react-bootstrap"
-import { GroupSearch, GroupSugestionLink } from "../Components/GroupSearch"
-import { useMemo } from "react"
 
 // const fakePromise = {
 //     then: (json) => new Promise((resolve, reject) => resolve(json)),
@@ -83,7 +80,6 @@ import { useMemo } from "react"
 //     //     json => dispatch(extension(json))
 //     // )
 // }
-export const GroupPageNoUniversity = () => <GroupPage query={GroupMembersFetchAsyncAction} />
 
 export const GroupPage = ({query=GroupFetchAsyncAction}) => {
     const dispatch = useDispatch()

@@ -1,98 +1,10 @@
-import { authorizedFetch } from "@uoisfrontend/shared"
 import React, { useEffect } from "react"
 import Table from "react-bootstrap/Table"
 import { useDispatch } from "react-redux"
 
-import All from "@uoisfrontend/shared/src/keyedreducers"
 import Button from "react-bootstrap/Button"
-
-export const UserClassificationQueryJSON = (id) => ({
-    query: `
-    query ($id: ID!) {
-        result: userById(id: $id) {
-            id
-            classifications {
-                id
-                lastchange
-                semester { id}
-                level{id name}
-                order
-                date
-            }
-        }
-      }
-    `,
-    variables: {id}
-})
-
-export const UserClassificationMutationQueryJSON = ({id, lastchange, level_id}) => ({
-    query: `
-    mutation($id: ID! $lastchange: DateTime! $level_id: ID!) {
-        result: classificationUpdate(classification: {
-          id: $id,
-          lastchange: $lastchange,
-          classificationlevelId: $level_id
-        }) {
-          id
-          msg
-          classification {
-            user {
-              id
-              name
-              surname
-              email
-              classifications {
-                id
-                lastchange
-                order
-                semester { id }
-                level { id name }
-                date
-              }
-            }
-          }
-        }
-      }
-    `,
-    variables: {id, level_id, lastchange}
-})
-
-export const UserClassificationQuery = (id) => 
-    authorizedFetch('/gql', {
-        body: JSON.stringify(UserClassificationQueryJSON(id))
-    })
-
-export const UserClassificationMutationQuery = ({id, lastchange, level_id}) => 
-    authorizedFetch('/gql', {
-        body: JSON.stringify(UserClassificationMutationQueryJSON({id, lastchange, level_id}))
-    })
-
-export const UserClassificationFetchAsyncAction = (id) => (dispatch, getState) => {
-    UserClassificationQuery(id)
-    .then(response => response.json())
-    .then(json => {
-        const result = json?.data?.result
-        if (result) {
-            const action = All.ItemSliceActions.item_update(result)
-            dispatch(action)
-        }
-    })
-
-}
-
-export const UserClassificationUpdateAsyncAction = ({id, lastchange, level_id}) => (dispatch, getState) => {
-    UserClassificationMutationQuery({id, lastchange, level_id})
-    .then(response => response.json())
-    .then(json => {
-        const result = json?.data?.result
-        if (result) {
-            const user = result.classification.user
-            const action = All.ItemSliceActions.item_update(user)
-            dispatch(action)
-        }
-    })
-
-}
+import { UserClassificationFetchAsyncAction } from "../Actions"
+import { UserClassificationUpdateAsyncAction } from "../Actions"
 
 export const UserClassification = ({user}) => {
     const classifications = user?.classifications

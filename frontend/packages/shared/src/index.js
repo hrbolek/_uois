@@ -9,7 +9,8 @@ const Shared = { Queries, authorizedFetch, Link }
 export default Shared
 
 export { Queries, authorizedFetch, MsgReducer, MsgAddAction, MsgFlashAction, CheckGQLError, Link, useFreshItem }
-export * from "./Components"
-export * from "./store"
 
+export * from "./Components"
+export * from "./Store"
 export * from "./componentCreators"
+export * from "./usePath"

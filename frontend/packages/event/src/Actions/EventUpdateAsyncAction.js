@@ -1,5 +1,5 @@
 import { authorizedFetch } from "@uoisfrontend/shared"
-import All from "@uoisfrontend/shared/src/keyedreducers"
+import { ItemActions } from "@uoisfrontend/shared/src/Store"
 
 export const EventUpdateQueryJSON = (event) => ({
     query: `mutation(
@@ -63,7 +63,7 @@ export const EventUpdateAsyncAction = (event) => (dispatch, getState) => {
                 const msg = json?.data?.result?.msg
                 if (msg === "ok") {
                     const event = json?.data?.result?.event
-                    const action = All.ItemSliceActions.item_update(event)
+                    const action = ItemActions.item_update(event)
                     dispatch(action)
                 }
                 return json

@@ -1,5 +1,5 @@
 import { authorizedFetch } from "@uoisfrontend/shared"
-import All from "@uoisfrontend/shared/src/keyedreducers"
+import { ItemActions } from "@uoisfrontend/shared/src/Store"
 
 // import { authorizedFetch } from "queries/authorizedFetch"
 
@@ -40,7 +40,7 @@ export const UserUpdateAsyncAction = (user) => (dispatch, getState) => {
             const msg = json?.data?.result.msg
             if (msg === "ok") {
                 const newUser = json?.data?.result.user
-                dispatch(All.ItemSliceActions.item_update(newUser))
+                dispatch(ItemActions.item_update(newUser))
             }
             return json
         })

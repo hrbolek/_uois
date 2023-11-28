@@ -1,8 +1,10 @@
-import All from "@uoisfrontend/shared/src/keyedreducers"
+import { ItemActions } from "@uoisfrontend/shared/src/Store"
+
 import { DeleteButton, authorizedFetch } from "@uoisfrontend/shared"
 import { CheckSquare, PlusLg, TrashFill } from "react-bootstrap-icons"
 import { useDispatch } from "react-redux"
 import { UserSearch } from "@uoisfrontend/user"
+import { authorizedFetch2 } from "@uoisfrontend/shared/src/Queries/authorizedFetch"
 
 
 export const GroupMembershipUpdateQueryJSON = (membership) => ({
@@ -91,12 +93,12 @@ export const GroupMembershipInsertQueryJSON = (user, group) => ({
 })
 
 export const GroupMembershipUpdateQuery = (membership) => 
-    authorizedFetch('/gql', {
+    authorizedFetch2('/gql', {
         body: JSON.stringify(GroupMembershipUpdateQueryJSON(membership))
     })
 
 export const GroupMembershipInsertQuery = (user, group) => 
-    authorizedFetch('/gql', {
+    authorizedFetch2('/gql', {
         body: JSON.stringify(GroupMembershipInsertQueryJSON(user, group))
     })
 
@@ -104,13 +106,12 @@ export const GroupMembershipUpdateAsyncAction = ({group, membership}) => (dispat
     // console.log("GroupMembershipUpdateAsyncAction", membership)
     return (
         GroupMembershipUpdateQuery(membership)
-        .then(response => response.json())
         .then(json=> {
             const result = json?.data?.result
             if (result) {
                 const group = result.membership.group
                 // console.log("GroupMembershipUpdateAsyncAction.query", group)
-                const action = All.ItemSliceActions.item_update(group)
+                const action = ItemActions.item_update(group)
                 dispatch(action)
             }
             return json
@@ -121,13 +122,12 @@ export const GroupMembershipUpdateAsyncAction = ({group, membership}) => (dispat
 export const GroupMembershipInsertAsyncAction = ({group, user}) => (dispatch, getState) => {
     return (
         GroupMembershipInsertQuery(user, group)
-        .then(response => response.json())
         .then(json=> {
             const result = json?.data?.result
             if (result) {
                 const group = result?.membership?.group
                 if (group) {
-                    const action = All.ItemSliceActions.item_update(group)
+                    const action = ItemActions.item_update(group)
                     dispatch(action)
                 } else {
 

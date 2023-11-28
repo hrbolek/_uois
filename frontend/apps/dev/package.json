@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "homepage": "/ui",
-  "proxy": "http://localhost:31180/",
+  "proxy": "http://127.0.0.1:8000/",
   "devDependencies": {
     "@craco/craco": "^7.1.0",
     "craco-babel-loader": "^1.0.4"

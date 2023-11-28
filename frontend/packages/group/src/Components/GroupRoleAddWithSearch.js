@@ -3,10 +3,9 @@ import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
 
-import { GroupMembershipInsertAsyncAction } from "./GroupMemberRemoveButton"
 import { UserSearch } from "@uoisfrontend/user"
 import { authorizedFetch } from "@uoisfrontend/shared"
-import All from "@uoisfrontend/shared/src/keyedreducers"
+import { ItemActions } from "@uoisfrontend/shared/src/Store"
 import { RoleTypeSelect } from "./RoleTypeSelect"
 import { useState } from "react"
 
@@ -72,7 +71,7 @@ export const GroupRoleInsertAsyncAction = ({group, role}) => (dispatch, getState
             if (result) {
                 const group = result.role.group
                 // console.log("GroupRoleInsertAsyncAction.query", group)
-                const action = All.ItemSliceActions.item_update(group)
+                const action = ItemActions.item_update(group)
                 dispatch(action)
             }
             return json

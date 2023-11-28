@@ -13,7 +13,7 @@ const fakePromise = {
     finally: (json) => new Promise((resolve, reject) => null),
     catch: (json) => new Promise((resolve, reject) => null)
 }
-const fakePromise_ = Promise.resolve(null)
+// const fakePromise_ = Promise.resolve(null)
 
 /**
  * @function
@@ -30,6 +30,7 @@ export const useFreshItem = ({id}, AsyncAction) => {
         throw Error("bad use of store and useFreshItem hook, checks that store state has items attribute")
     }
     const result = items[id]
+    // console.log("useFreshItem", id)
     // console.log("useFreshItem", id, result)
     const [resultPromise, setPromise] = useState(fakePromise)
 

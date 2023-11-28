@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "homepage": "/ui",
-  "proxy": "http://localhost:31180/",
+  "proxy": "http://localhost:8000/gql/",
   "devDependencies": {
     "@babel/plugin-syntax-jsx": "^7.21.4",
     "@babel/preset-env": "7.21.5",

@@ -1,5 +1,5 @@
 import { Link, authorizedFetch } from "@uoisfrontend/shared"
-import All from "@uoisfrontend/shared/src/keyedreducers"
+import { ItemActions } from "@uoisfrontend/shared/src/Store"
 import { useEffect } from "react"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
@@ -38,10 +38,10 @@ export const GroupsTypeFetchAsyncAction = (id) => (dispatch, getState) => {
         .then(json => {
             const result = json?.data?.result
             if (result) {
-                const action = All.ItemSliceActions.item_update(result)
+                const action = ItemActions.item_update(result)
                 dispatch(action)
                 for(let group of result.groups) {
-                    const action = All.ItemSliceActions.item_update(group)
+                    const action = ItemActions.item_update(group)
                     dispatch(action)
                 }
             }

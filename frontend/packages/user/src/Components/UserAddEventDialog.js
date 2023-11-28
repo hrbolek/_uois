@@ -176,7 +176,6 @@ export const UserAddEventButton = ({user}) => {
 
     return (
         <>
-            ::::::::::::::
             <EventCalendar events={[]}
                 onSelect={handleDateSelect}
             />

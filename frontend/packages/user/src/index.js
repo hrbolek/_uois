@@ -1,29 +1,169 @@
-import { Route } from "react-router-dom";
-import { UserPage } from "./Pages/UserPage";
-import { UserEditPage } from "./Pages/UserEditPage";
+import { useRouteError } from "react-router-dom";
+import { UserEventsCard } from "./Cards";
+import { UserGeneralPage } from "./Pages";
+import { UserClassificationsCard, UserGroupsCard, UserRolesCard } from "./Cards";
+// import { UserPage } from "./Pages";
 
-export { UserPageS } from "./Pages/UserPageS";
-export { UserPage } from "./Pages/UserPage";
-export { UserEditPage } from "./Pages/UserEditPage";
-export { UserSearch } from "./Components/UserSearch";
-export { UserClassificationFetchAsyncAction } from "./Actions/UserClassificationFetchAsyncAction"
-export { UserClassificationInsertAsyncAction } from "./Actions/UserClassificationInsertAsyncAction"
-export { UserFetchAsyncAction } from "./Actions/UserFetchAsyncAction"
-export { UserNameEditable } from "./Components/UserNameEditable"
-export { UserAttributesEditable } from "./Components/UserAttributesEditable"
-export { UserRoles } from "./Components/UserRoles"
-export { UserGroups } from "./Components/UserGroups"
-export { UserCard } from "./Components/UserCard";
-//import "./Pages/UserPageS";
+export * from './Actions'
+export * from './Cards'
+export * from './Components'
+export * from './Pages'
 
-
-export const Pages = () => {
-    return (
-        <>
-            <Route path={"/ui/users/edit/:id"} element={<UserEditPage />} />
-            <Route path={"/ui/users/:id"} element={<UserPage />} />
-        </>
-    )
+function ErrorBoundary() {
+    const error = useRouteError();
+    console.error(error);
+    return <div>{error.message}</div>;
 }
 
-export default Pages
+export const UserRoutes = (dispatch) => {
+    return [
+        {
+            path: "/users/:id",
+            element: <UserGeneralPage Component={UserEventsCard} editable={false} />,
+        },
+        {
+            path: "/users/edit/:id",
+            element: <UserGeneralPage Component={UserEventsCard} editable={true} />,
+        },
+        {
+            path: "/users/calendar/:id",
+            element: <UserGeneralPage Component={UserEventsCard} editable={false} />,
+        },
+        {
+            path: "/users/calendar/edit/:id",
+            element: <UserGeneralPage Component={UserEventsCard} editable={true} />,
+        },
+        {
+            path: "/users/roles/:id",
+            element: <UserGeneralPage Component={UserRolesCard} editable={false} />,
+        },
+        {
+            path: "/users/roles/edit/:id",
+            element: <UserGeneralPage Component={UserRolesCard} editable={true} />,
+        },
+        {
+            path: "/users/classification/:id",
+            element: <UserGeneralPage Component={UserClassificationsCard} editable={false} />,
+        },
+        {
+            path: "/users/classification/edit/:id",
+            element: <UserGeneralPage Component={UserClassificationsCard} editable={true} />,
+        },
+        {
+            path: "/users/subgroups/:id",
+            element: <UserGeneralPage Component={UserGroupsCard} editable={false} />,
+        },
+        {
+            path: "/users/subgroups/edit/:id",
+            element: <UserGeneralPage Component={UserGroupsCard} editable={true} />,
+        },
+        {
+            path: "/users/members/:id",
+            element: <UserGeneralPage Component={UserGroupsCard} editable={false} />,
+        },
+        {
+            path: "/users/members/edit/:id",
+            element: <UserGeneralPage Component={UserGroupsCard} editable={true} />,
+        },
+        // {
+        //     path: "/users/",
+        //     element: <UserGeneralPage editable={false} />,
+        //     errorElement: <ErrorBoundary />,
+        //     children: [
+        //         // {
+        //         //     index: true,
+        //         //     element: <UserGeneralPage editable={false} />,
+        //         // },
+        //         {
+        //             path: "/users/:id",
+        //             element: <UserGeneralPage Component={UserEventsCard} editable={false} />,
+        //         },
+        //         {
+        //             path: "/users/edit/:id",
+        //             element: <UserGeneralPage Component={UserEventsCard} editable={true} />,
+        //         },
+        //         {
+        //             path: "/users/calendar/:id",
+        //             element: <UserGeneralPage Component={UserEventsCard} editable={false} />,
+        //         },
+        //         {
+        //             path: "/users/calendar/edit/:id",
+        //             element: <UserGeneralPage Component={UserEventsCard} editable={true} />,
+        //         },
+        //         {
+        //             path: "/users/roles/:id",
+        //             element: <UserGeneralPage Component={UserRolesCard} editable={false} />,
+        //         },
+        //         {
+        //             path: "/users/roles/edit/:id",
+        //             element: <UserGeneralPage Component={UserRolesCard} editable={true} />,
+        //         },
+        //         {
+        //             path: "/users/classification/:id",
+        //             element: <UserGeneralPage Component={UserClassificationsCard} editable={false} />,
+        //         },
+        //         {
+        //             path: "/users/classification/edit/:id",
+        //             element: <UserGeneralPage Component={UserClassificationsCard} editable={true} />,
+        //         },
+        //         {
+        //             path: "/users/subgroups/:id",
+        //             element: <UserGeneralPage Component={UserGroupsCard} editable={false} />,
+        //         },
+        //         {
+        //             path: "/users/subgroups/edit/:id",
+        //             element: <UserGeneralPage Component={UserGroupsCard} editable={true} />,
+        //         },
+        //         {
+        //             path: "/users/members/:id",
+        //             element: <UserGeneralPage Component={UserGroupsCard} editable={false} />,
+        //         },
+        //         {
+        //             path: "/users/members/edit/:id",
+        //             element: <UserGeneralPage Component={UserGroupsCard} editable={true} />,
+        //         },
+        
+        //     ]
+        // },
+        // {
+        //     path: "/users/:id",
+        //     element: <UserGeneralPage editable={false} />,
+        // },
+        // {
+        //     path: "/users/edit/:id",
+        //     element: <UserGeneralPage editable={true} />,
+        // },
+        // {
+        //     path: "/users/calendar/:id",
+        //     element: <UserGeneralPage Component={UserEventsCard} editable={false} />,
+        // },
+        // {
+        //     path: "/users/calendar/edit/:id",
+        //     element: <UserGeneralPage editable={true} />,
+        // },
+        // {
+        //     path: "/users/subgroups/:id",
+        //     element: <UserGeneralPage Component={UserEventsCard} editable={false} />,
+        // },
+        // {
+        //     path: "/users/subgroups/edit/:id",
+        //     element: <UserGeneralPage editable={true} />,
+        // },
+        // {
+        //     path: "/users/roles/:id",
+        //     element: <UserGeneralPage Component={UserEventsCard} editable={false} />,
+        // },
+        // {
+        //     path: "/users/roles/edit/:id",
+        //     element: <UserGeneralPage editable={true} />,
+        // },
+        // {
+        //     path: "/users/classifications/:id",
+        //     element: <UserGeneralPage editable={false} />,
+        // },
+        // {
+        //     path: "/users/classifications/edit/:id",
+        //     element: <UserGeneralPage editable={true} />,
+        // },
+    ]
+}

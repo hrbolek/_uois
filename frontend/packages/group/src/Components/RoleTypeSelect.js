@@ -1,5 +1,6 @@
 import { authorizedFetch } from "@uoisfrontend/shared"
-import All from "@uoisfrontend/shared/src/keyedreducers"
+import { ItemActions } from "@uoisfrontend/shared/src/Store"
+
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
@@ -28,7 +29,7 @@ export const RoleTypesFetchAsyncAction = () => (dispatch, getState) => {
         .then(json=> {
             const result = json?.data?.result
             if (result) {
-                const action = All.ItemSliceActions.item_update({id: RolesItemStoreId, roletypes: result})
+                const action = ItemActions.item_update({id: RolesItemStoreId, roletypes: result})
                 dispatch(action)
             }
             return json

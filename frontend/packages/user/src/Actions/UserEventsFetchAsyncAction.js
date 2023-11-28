@@ -1,4 +1,5 @@
-import All from "@uoisfrontend/shared/src/keyedreducers";
+import { ItemActions } from "@uoisfrontend/shared/src/Store"
+
 import { UserEventsQuery } from "../Queries/UserEventsQuery"
 import { UserFetchAsyncAction } from "./UserFetchAsyncAction";
 
@@ -23,7 +24,7 @@ export const UserEventsFetchAsyncAction = (user, startdate, enddate) => (dispatc
             if (result) {
                 // console.log("UserEventsFetchAsyncAction")
                 // console.log("UserEventsFetchAsyncAction", result["events"])
-                const action = All.ItemSliceActions.item_updateAttributeVector({item: result, vectorname: "events"})
+                const action = ItemActions.item_updateAttributeVector({item: result, vectorname: "events"})
                 dispatch(action)
             }
             return json

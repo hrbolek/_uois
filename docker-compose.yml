@@ -9,6 +9,9 @@ services:
     environment:
       # promenne, ktere lze cist v kontejneru
       - GQL_PROXY=http://apollo:3000/api/gql/
+    depends_on:
+      # kontejnery, ktere musi byt spusteny drive
+      - apollo
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu)
       test: "curl -f -X GET http://localhost:8000/ui/ || exit 1"
@@ -17,6 +20,9 @@ services:
       start_period: 60s
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    ports: #v deploymentu by nebylo zadne mapovani portu
+    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
+      - 31180:8000
 
   apollo:
     image: apollo
@@ -55,18 +61,14 @@ services:
     #   - 31121:3000
 
   gql_ug:
-    image: gql_ug
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_ug
+    image: hrbolek/gql_ug
     environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
-      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
-      - GQL_PROXY=http://apollo:3000/api/gql/
+      - POSTGRES_HOST=postgres:5432
     depends_on:
       # kontejnery, ktere musi byt spusteny drive
       - postgres
@@ -77,8 +79,6 @@ services:
       retries: 3
       start_period: 60s
       timeout: 10s
-    volumes:
-      - ./_extradata:/app/extradata
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
     ports: #v deploymentu by nebylo zadne mapovani portu
     #   # vnejsi port : port, kde sluzbu poskytuje kontejner
@@ -86,17 +86,14 @@ services:
 
 
   gql_preferences:
-    image: gql_preferences
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_preferences
+    image: hrbolek/gql_preferences
     environment:
       # promenne, ktere lze cist v kontejneru
-      - POSTGRES_HOST=postgres:5432
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
     depends_on:
       # kontejnery, ktere musi byt spusteny drive
       - postgres
@@ -110,17 +107,14 @@ services:
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
 
   gql_lessons:
-    image: gql_lessons
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_lessons
+    image: hrbolek/gql_lessons
     environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
-      - POSTGRES_HOST=postgres:5432
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
     depends_on:
       # kontejnery, kter musi byt spusteny drive
       - postgres
@@ -137,17 +131,14 @@ services:
       #- 31120:8000
 
   gql_granting:
-    image: gql_granting
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_granting
+    image: hrbolek/gql_granting
     environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
-      - POSTGRES_HOST=postgres:5432
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
     depends_on:
       # kontejnery, kter musi byt spusteny drive
       - postgres
@@ -164,17 +155,14 @@ services:
       #- 31120:8000
 
   gql_presences:
-    image: gql_presences
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_presences
+    image: hrbolek/gql_presences
     environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
-      - POSTGRES_HOST=postgres:5432
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
     depends_on:
       # kontejnery, kter musi byt spusteny drive
       - postgres
@@ -191,17 +179,14 @@ services:
       #- 31120:8000
 
   gql_externalids:
-    image: gql_externalids
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_externalids
+    image: hrbolek/gql_externalids
     environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DB=data
-      - POSTGRES_HOST=postgres:5432
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
     depends_on:
       # kontejnery, ktere musi byt spusteny drive
       postgres:
@@ -220,17 +205,14 @@ services:
     #   - 31125:8000
 
   gql_facilities:
-    image: gql_facilities
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_facilities
+    image: hrbolek/gql_facilities
     environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
-      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
       # kontejnery, ktere musi byt spusteny drive
     depends_on:
       - postgres
@@ -247,17 +229,14 @@ services:
     #   - 31125:8000
 
   gql_workflow:
-    image: gql_workflow
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_workflow
+    image: hrbolek/gql_workflows
     environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
-      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
     depends_on:
       - postgres
     healthcheck:
@@ -272,44 +251,15 @@ services:
     #   # vnejsi port : port, kde sluzbu poskytuje kontejner
       - 31123:8000
 
-  gql_empty:
-    image: gql_empty
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_empty
-    environment:
-      # promenne, ktere lze cist v kontejneru
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=example
-      - POSTGRES_HOST=postgres:5432
-      - POSTGRES_DB=data
-      - DEMO=true
-    depends_on:
-      - postgres
-    healthcheck:
-      # definice, umoznujici provest test, zda je kontejner v poradku
-      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
-      interval: 60s
-      retries: 3
-      start_period: 60s
-      timeout: 10s
-    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
-    # ports: #v deploymentu by nebylo zadne mapovani portu
-    #   # vnejsi port : port, kde sluzbu poskytuje kontejner
-    #   - 31128:8000
-
   gql_events:
-    image: gql_events
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_events
+    image: hrbolek/gql_events
     environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
-      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
@@ -322,17 +272,14 @@ services:
       - postgres
 
   gql_forms:
-    image: gql_forms
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_forms
+    image: hrbolek/gql_forms
     environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
-      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
@@ -345,17 +292,14 @@ services:
       - postgres
 
   gql_personalities:
-    image: gql_personalities
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_personalities
+    image: hrbolek/gql_personalities
     environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
-      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
@@ -368,17 +312,14 @@ services:
       - postgres
 
   gql_projects:
-    image: gql_projects
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_projects
+    image: hrbolek/gql_projects
     environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
-      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
@@ -391,17 +332,14 @@ services:
       - postgres
 
   gql_publications:
-    image: gql_publications
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_publications
+    image: hrbolek/gql_publications
     environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
-      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
@@ -414,17 +352,14 @@ services:
       - postgres
 
   gql_surveys:
-    image: gql_surveys
-    build:
-      # context definuje cestu k popisu
-      context: ./gql_surveys
+    image: hrbolek/gql_surveys
     environment:
       # promenne, ktere lze cist v kontejneru
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
-      - POSTGRES_HOST=postgres:5432
       - POSTGRES_DB=data
       - DEMO=true
+      - POSTGRES_HOST=postgres:5432
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
@@ -435,32 +370,6 @@ services:
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
     depends_on:
       - postgres
-
-  nogql:
-    image: nogql
-    build:
-      # context definuje cestu k popisu
-      context: ./nogql_api
-    environment:
-      # promenne, ktere lze cist v kontejneru
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=example
-      - POSTGRES_DB=data
-      - POSTGRES_HOST=postgres:5432
-      - DEMO=true
-    healthcheck:
-      # definice, umoznujici provest test, zda je kontejner v poradku
-      test: "curl -f -H 'Content-Type: application/json' -X GET http://localhost:8000/api/hello || exit 1"
-      interval: 60s
-      retries: 3
-      start_period: 60s
-      timeout: 10s
-    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
-    depends_on:
-      # kontejnery, kter musi byt spusteny drive
-      - postgres
-    volumes:
-      - ./_extradata:/app/extradata
 
   postgres:
     image: postgres
@@ -493,19 +402,40 @@ services:
     ports:
       - 31122:80
 
-  nginx: # funguje jako proxy mezi vnejskem a vnitrkem, tudy tece cela HTTP komunikace
-    build:
-      # context definuje cestu k popisu
-      context: ./nginx
+  prometheus:
+    image: prom/prometheus
     restart: always
+    volumes:
+      - ./prometheus:/etc/prometheus/
+      # - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
     ports:
-      # vnejsi port : port, kde sluzbu poskytuje kontejner
-      - 31180:80
-    depends_on:
-      # kontejnery, kter musi byt spusteny drive
-      - postgres
-      - apollo
+      - 9090:9090
+    # links:
+    #   - cadvisor:cadvisor
+    #   - alertmanager:alertmanager
+    # depends_on:
+    #   - cadvisor
 
+  grafana:
+    image: grafana/grafana
+    user: '472'
+    restart: always
+    environment:
+      GF_INSTALL_PLUGINS: 'grafana-clock-panel,grafana-simple-json-datasource'
+    # volumes:
+    #   - grafana_data:/var/lib/grafana
+    #   - ./grafana/provisioning/:/etc/grafana/provisioning/
+    # env_file:
+    #   - ./grafana/config.monitoring
+    ports:
+      - 8300:3000
+    depends_on:
+      - prometheus
 
   redis:
     image: redis/redis-stack:6.2.4-v4

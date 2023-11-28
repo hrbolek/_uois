@@ -1,6 +1,6 @@
 import { EditableAttributeSelect, authorizedFetch, useFreshItem } from "@uoisfrontend/shared"
 import { GroupUpdateAsyncAction } from "../Actions/GroupUpdateAsyncAction"
-import All from "@uoisfrontend/shared/src/keyedreducers"
+import { ItemActions } from "@uoisfrontend/shared/src/Store"
 
 export const GroupTypesItemStoreId = "baa957a4-3453-476f-ad88-e093f0dfa47b"
 
@@ -28,7 +28,7 @@ export const GroupTypesFetchAsyncAction = () => (dispatch, getState) => {
         .then(json=> {
             const result = json?.data?.result
             if (result) {
-                const action = All.ItemSliceActions.item_update({id: GroupTypesItemStoreId, grouptypes: result})
+                const action = ItemActions.item_update({id: GroupTypesItemStoreId, grouptypes: result})
                 dispatch(action)
             }
             return json

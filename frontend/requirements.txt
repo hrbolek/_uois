@@ -1,8 +1,8 @@
 # To ensure app dependencies are ported from your virtual environment/host machine into your container, run 'pip freeze > requirements.txt' in the terminal to overwrite this file
-fastapi[all]==0.97.0
-uvicorn[standard]==0.13.4
-gunicorn==20.0.4
-starlette==0.27.0
+fastapi[all]
+uvicorn[standard]
+gunicorn
+starlette
 aiohttp
 prometheus-client
 prometheus_fastapi_instrumentator

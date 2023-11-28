@@ -1,5 +1,5 @@
 import { authorizedFetch } from "@uoisfrontend/shared"
-import All from "@uoisfrontend/shared/src/keyedreducers"
+import { ItemActions } from "@uoisfrontend/shared/src/Store"
 
 export const EventFetchYearsQueryJSON = (id) => ({
     query: `query($id: ID!){
@@ -47,10 +47,10 @@ export const EventFetchYearsAsyncAction = (id) => (dispatch, getState) => {
             json => {
                 const result = json?.data?.result
                 if (result) {
-                    const action = All.ItemSliceActions.item_update(result)
+                    const action = ItemActions.item_update(result)
                     dispatch(action)
                     for(let se of result.events) {
-                        const action = All.ItemSliceActions.item_update(se)
+                        const action = ItemActions.item_update(se)
                         dispatch(action)
                     }
                 }

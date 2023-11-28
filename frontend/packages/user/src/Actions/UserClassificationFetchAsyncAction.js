@@ -1,10 +1,5 @@
 import { authorizedFetch } from "@uoisfrontend/shared"
-import React, { useEffect } from "react"
-import Table from "react-bootstrap/Table"
-import { useDispatch } from "react-redux"
-
-import All from "@uoisfrontend/shared/src/keyedreducers"
-import Button from "react-bootstrap/Button"
+import { ItemActions } from "@uoisfrontend/shared/src/Store"
 
 export const UserClassificationQueryJSON = (id) => ({
     query: `
@@ -36,7 +31,7 @@ export const UserClassificationFetchAsyncAction = ({id}) => (dispatch, getState)
     .then(json => {
         const result = json?.data?.result
         if (result) {
-            const action = All.ItemSliceActions.item_update(result)
+            const action = ItemActions.item_update(result)
             dispatch(action)
         }
     })

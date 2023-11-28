@@ -2,7 +2,8 @@
 
 
 import { CheckGQLError, MsgAddAction, MsgFlashAction, authorizedFetch } from "@uoisfrontend/shared"
-import All from "@uoisfrontend/shared/src/keyedreducers"
+import { ItemActions } from "@uoisfrontend/shared/src/Store"
+
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
@@ -31,7 +32,7 @@ export const PresenceTypesFetchAsyncAction = () => (dispatch, getState) => {
         .then(json=> {
             const result = json?.data?.result
             if (result) {
-                const action = All.ItemSliceActions.item_update({id: PresencesItemStoreId, presencetypes: result})
+                const action = ItemActions.item_update({id: PresencesItemStoreId, presencetypes: result})
                 dispatch(action)
                 // console.log("PresenceTypesFetchAsyncAction", result)
             }
@@ -134,7 +135,7 @@ export const PresenceUpdateAsyncAction = ({presence}) => (dispatch, getState) =>
                 // console.log("PresenceUpdateFetchAsyncAction", result)
                 const event = result?.presence?.event
                 if (event) {
-                    const action = All.ItemSliceActions.item_update({...event})
+                    const action = ItemActions.item_update({...event})
                 dispatch(action)
                 // console.log("PresenceUpdateFetchAsyncAction", result)
                 }
