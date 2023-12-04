@@ -8,3 +8,4 @@ prometheus-client
 prometheus_fastapi_instrumentator
 
 https://github.com/hrbolek/PyMockOAuthServer/archive/refs/heads/main.zip
+https://github.com/hrbolek/uoishelpers/archive/refs/heads/main.zip

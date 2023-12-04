@@ -5,3 +5,7 @@
     "react-organizational-chart": "2.2.0",
     "@graphiql/plugin-explorer": "^0.1.15",
     "jose": "^4.10.4"
+
+```
+uvicorn pyserver.app:app --port 8000 --env-file environment.txt
+```

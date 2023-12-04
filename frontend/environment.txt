@@ -1,0 +1,2 @@
+DEMO=true
+GQL_PROXY=http://localhost:8001/

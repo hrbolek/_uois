@@ -4,8 +4,7 @@ from fastapi.responses import JSONResponse, FileResponse
 from fastapi import Request
 from pydantic import BaseModel
 
-import prometheus
-collectTime = prometheus.collectTime
+from .prometheus import collectTime
 
 class Item(BaseModel):
     query: str
@@ -17,20 +16,20 @@ def connectProxy(app):
     proxy = os.environ.get("GQL_PROXY", "http://10.0.2.27:31180/api/gql/")
     print("using proxy", proxy)
 
-    @app.get("/api/gql", response_class=FileResponse)
+    @app.get("/gql", response_class=FileResponse)
     async def apigql_get():
         realpath = os.path.realpath("./graphiql.html")
         result = realpath
         return result
 
-    @app.get("/api/doc", response_class=FileResponse)
+    @app.get("/doc", response_class=FileResponse)
     async def apidoc_get():
         realpath = os.path.realpath("./voyager.html")
         result = realpath
         return result
 
     @collectTime("gqlquery")
-    @app.post("/api/gql", response_class=JSONResponse)
+    @app.post("/gql", response_class=JSONResponse)
     async def apigql_post(data: Item, request: Request):
         gqlQuery = {"query": data.query}
         if (data.variables) is not None:
