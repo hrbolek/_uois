@@ -13,7 +13,7 @@ It is also a model of an information systems which could be used for some admini
     - FastAPI for API definition and run
     - Uvicorn as executor of FastAPI
     - Strawberry for GraphQL endpoint (federated GraphQL)
-    - Appolo federation for GraphQL federation queries
+    - Apollo federation for GraphQL federation queries
 
 - Javascript
     - ReactJS as a library for building bricks of user interface
