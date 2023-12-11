@@ -208,3 +208,10 @@ All libraries are in directory packages.
 ## Multistage dockefile
 Frontend has multistage dockerfile with stages related to python server (serving frontend files) 
 and stages for build particular js applications.
+
+
+## Run project (just python server)
+```bash
+cd frontend
+uvicorn pyserver.app:app --port 8000 --env-file environment.txt
+```

@@ -9,6 +9,8 @@ const express = require('express')
 
 
 const getENV = (name, defaultValue) => {
+  console.log(process.env)
+
   const value = process.env[name];
 
   if (typeof value === "undefined") {
@@ -22,39 +24,18 @@ const getENV = (name, defaultValue) => {
 };
 
 (async function startApolloServer() {
+
+  const servicesstr = getENV("SERVICES", "[]");
+  const subgraphs = JSON.parse(servicesstr)
+  console.log(subgraphs)
+  if (subgraphs.length === 0) {
+      console.log("******************************************************")
+      console.log("**            Missing SERVICES env ??               **")
+      console.log("******************************************************")
+  }
+
   const gateway = new ApolloGateway({
-    supergraphSdl: new IntrospectAndCompose({
-      subgraphs: [
-       // { name: "workflows", url: "http://gql_workflow:8000/gql" },
-        { name: "usersAndGroups", url: "http://10.0.2.27:8001/gql" },
-        // { name: "forms", url: "http://gql_forms:8000/gql" },
-
-        // { name: "events", url: "http://gql_events:8000/gql" },
-        // { name: "granting", url: "http://gql_granting:8000/gql" },
-        // { name: "externalids", url: "http://gql_externalids:8000/gql" },
-        // { name: "facilities", url: "http://gql_facilities:8000/gql" },
-        // { name: "forms", url: "http://gql_forms:8000/gql" },
-        // { name: "lessons", url: "http://gql_lessons:8000/gql" },
-        // { name: "presences", url: "http://gql_presences:8000/gql" },
-        // { name: "preferences", url: "http://gql_preferences:8000/gql" },
-        // { name: "projects", url: "http://gql_projects:8000/gql" },
-        // { name: "publications", url: "http://gql_publications:8000/gql" },
-        // { name: "personalities", url: "http://gql_personalities:8000/gql" },
-        // { name: "surveys", url: "http://gql_surveys:8000/gql" },
-        // { name: "usersAndGroups", url: "http://gql_ug:8000/gql" },
-        // { name: "workflows", url: "http://gql_workflow:8000/gql" },
-
-        /*
-        * ###########################################################################################################################
-        *
-        * sem vlozte odkazy na svuj endpoint
-        *
-        * ###########################################################################################################################
-        */
-
-          // List of federation-capable GraphQL endpoints...
-      ],
-    }),
+    supergraphSdl: new IntrospectAndCompose({ subgraphs }),
     /*
     context: ({ req }) => {
       // toto zjevne neni volano v prubehu dotazu
@@ -126,6 +107,7 @@ const getENV = (name, defaultValue) => {
 
   const app = express();
   //const httpServer = http.createServer(app);
+  const PORT = getENV("PORT", "3000");
 
   const server = new ApolloServer({ gateway });
 
@@ -135,7 +117,6 @@ const getENV = (name, defaultValue) => {
 
   server.applyMiddleware({ app, path: '/api/gql' });
 
-  const PORT = getENV("PORT", "3000");
 
   app.listen(PORT, () => {
     console.log(`🚀 Server ready at ${PORT}`);

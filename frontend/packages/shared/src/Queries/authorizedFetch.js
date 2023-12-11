@@ -17,7 +17,7 @@ export const authorizedFetch = (path, params) => {
     console.log("fetch from shared")
     const newParams = {...globalFetchParams, ...params} // allow owerwrite default parameters (globalFetchParams)
     // const overridenPath = '/api/gql/'
-    const overridenPath = '/gql/'
+    const overridenPath = '/api/gql'
     return (
         fetch(overridenPath, newParams) //params.header should be extended with Authorization TOKEN
     )
@@ -44,7 +44,7 @@ export const authorizedFetch2 = (path, params) => {
     }
     
     // const overridenPath = '/api/gql/'
-    const overridenPath = '/gql/'
+    const overridenPath = '/api/gql'
 
     // const bodyIndex = newParams.body
     return fetch(overridenPath, newParams).then(response => response.json()) //params.header should be extended with Authorization TOKEN

@@ -13,18 +13,18 @@ class Item(BaseModel):
 
 def connectProxy(app):
 
-    proxy = os.environ.get("GQL_PROXY", "http://10.0.2.27:31180/api/gql/")
+    proxy = os.environ.get("GQL_PROXY", "http://10.0.2.27:33000/gql")
     print("using proxy", proxy)
 
     @app.get("/gql", response_class=FileResponse)
     async def apigql_get():
-        realpath = os.path.realpath("./graphiql.html")
+        realpath = os.path.realpath("./pyserver/graphiql.html")
         result = realpath
         return result
 
     @app.get("/doc", response_class=FileResponse)
     async def apidoc_get():
-        realpath = os.path.realpath("./voyager.html")
+        realpath = os.path.realpath("./pyserver/voyager.html")
         result = realpath
         return result
 
@@ -40,8 +40,11 @@ def connectProxy(app):
         # print(demoquery)
         headers = request.headers
         print(headers)
+        print(headers.items())
         print(headers.__dict__)
-        headers = {}
+        c = dict(headers.items())
+        headers = {"cookie": c["cookie"]}
+        print("outgoing:", headers)
         async with aiohttp.ClientSession() as session:
             async with session.post(proxy, json=gqlQuery, headers=headers) as resp:
                 # print(resp.status)
