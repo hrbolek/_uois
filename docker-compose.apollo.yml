@@ -47,9 +47,9 @@ services:
   frontend:
     image: frontend
     build:
-      context: ./frontend
+      context: .
     environment:
-      - DEMO=true
+      - DEMO=False
       - GQL_PROXY=http://apollo:3000/api/gql/
     ports:
       - 33001:8000

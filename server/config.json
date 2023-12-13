@@ -1,0 +1,8 @@
+{
+    "graphiql": { 
+        "file": "graphiql.html" 
+    },
+    "voyager": { 
+        "file": "voyager.html"
+    }
+}
