@@ -1,7 +1,9 @@
 import logging
 import os
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
 from mockoauthserver import server as OAuthServer
 
 logging.basicConfig(
@@ -33,6 +35,11 @@ if DEMO:
 # app = FastAPI(root_path="/apif")
 app = FastAPI()
 
+from .appindex import createIndexResponse
+# @app.exception_handler(StarletteHTTPException)
+# async def custom_http_exception_handler(request, exc):
+#     print(exc)
+#     return await createIndexResponse(request=request)
 
 from .authenticationMiddleware import BasicAuthenticationMiddleware302, BasicAuthBackend
 JWTPUBLICKEY = os.environ.get("JWTPUBLICKEY", "http://localhost:8000/oauth/publickey")
@@ -65,7 +72,11 @@ def createApp(key, setup):
     subApp = FastAPI()
     @subApp.get("/{file_path:path}")
     async def getFile(file_path: str):
-        return FileResponse(dirName + "/htmls/" + file)
+        filename = dirName + "/htmls/" + file
+        if os.path.isfile(filename):
+            return FileResponse(filename)
+        else:
+            return RedirectResponse("/")
     
     if not DEMO:
         subApp.add_middleware(BasicAuthenticationMiddleware302, backend=BasicAuthBackend(JWTPUBLICKEY=JWTPUBLICKEY, JWTRESOLVEUSERPATH=JWTRESOLVEUSERPATH))
@@ -155,3 +166,6 @@ if not DEMO:
 
 app.mount("/debug", debugApp)
 
+@app.get("/")
+async def index(request: Request):
+    return await createIndexResponse(request=request)

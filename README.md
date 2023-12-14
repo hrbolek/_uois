@@ -2,7 +2,7 @@
 
 ## What is going on
 
-This is a project for students. Students are cooperating on this project under suspicion of teacher.
+This is a project for students. Students are cooperating on this project under supervision of teacher.
 It is also a model of an information systems which could be used for some administrative task in university life.
 
 
@@ -24,7 +24,7 @@ It is also a model of an information systems which could be used for some admini
     - inner connection of containers
 
 - Postgres
-    - and its compatible replacements
+    - and its compatible replacements (Yugabyte, Cockroach)
 
 ## Base concept
 
@@ -32,7 +32,6 @@ The project has several docker containers
 - `apollo` master of federation
 - `frontend` provides static files = REACT compiled items (including GQL interface)
 - `gql_*` apollo federation member
-- `nginx` is hardwired router
 - `prostgres` is database server
 - `pgadmin` is an interface for database server administration
 
@@ -69,6 +68,24 @@ The project has several docker containers
 |        |       | frontend - surveys       | 2023/3 - 2023/6 |
 |        |       | frontend - workflow      | 2023/3 - 2023/6 |
 |        |       | frontend - authorizations| 2023/3 - 2023/6 |
+|        |       |                          |                 |
+| AS     |Teacher|                          | 2023/9 - 2024/1 |
+| AS     |Teacher| frontend                 | 2023/9 - 2024/1 |
+| AS     |Teacher| gql_forms                | 2023/9 - 2024/1 |
+|        |       | gql_events               | 2023/9 - 2024/1 |
+|        |       | gql_externalids          | 2023/9 - 2024/1 |
+|        |       | gql_facilities           | 2023/9 - 2024/1 |
+|        |       | gql_granting             | 2023/9 - 2024/1 |
+|        |       | gql_publications         | 2023/9 - 2024/1 |
+|        |       | gql_lessons              | 2023/9 - 2024/1 |
+|        |       | gql_preferences          | 2023/9 - 2024/1 |
+|        |       | gql_projects             | 2023/9 - 2024/1 |
+|        |       | gql_surveys              | 2023/9 - 2024/1 |
+|        |       | gql_ug                   | 2023/9 - 2024/1 |
+|        |       | gql_workflow             | 2023/9 - 2024/1 |
+|        |       | gql_presences            | 2023/9 - 2024/1 |
+|        |       | sql performace measuring | 2023/9 - 2024/1 |
+
 
 ## Current Notes
 To run this docker stack in some alpha mode you can run the docker-compose.yml. Be careful as it uses host volumes.
@@ -170,28 +187,14 @@ Dataloaders do not solve this problem. They can help only in some cases. Federat
 
 Top on this, creation of Dataloaders working with Redis would make a miracle regarding the server response time.
 
+It is usefull to create a file per entity. This file should contain also mutations and other specific resolvers.
+
 ## Monitoring
 There are some libraries, included in Strawberry. Also Prometheus would be taken into account.
 
 
 ## Proper initialization
-If the database is not initialized with SQL script, the containers should be run in this order:
-1. gql_ug
-2. gql_externalids
-3. gql_workflow
-4. gql_events
-5. gql_facilities
-6. gql_personalities
-7. gql_surveys
-8. gql_publications
-9. gql_forms
-10. gql_presences
-11. gql_lessons
-12. gql_projects
-
-some containers in the list can be run simultaneously
-
-latest versions introduced DB decoupling so all containers could run separate DB engines
+As the models are not share among gql_s', the order or initializations does not matter.
 
 ## UI Catalog
 Storybook in frontend is used

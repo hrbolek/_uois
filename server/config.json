@@ -1,8 +1,26 @@
 {
     "graphiql": { 
-        "file": "graphiql.html" 
+        "file": "graphiql.html",
+        "title": "Graphiql",
+        "markdownfile": "graphiql.md",
+        "authors": "Greg Hurrell & many others"
     },
     "voyager": { 
-        "file": "voyager.html"
-    }
+        "file": "voyager.html",
+        "title": "Voyager",
+        "authors": "Ivan Goncharov & many others",
+        "markdownfile": "voyager.md"
+    },
+    "exams": { 
+        "file": "",
+        "title": "Zkoušky",
+        "authors": "many",
+        "markdownfile": "zkousky.md"
+    },
+    "events": { 
+        "file": "",
+        "title": "Rozvrh",
+        "authors": "many",
+        "markdownfile": "rozvrh.md"
+    }    
 }
