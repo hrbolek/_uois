@@ -30,9 +30,10 @@ jobs:
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org/
-      - run: cd packages/shared
-      - run: npm install
-      - run: npm run buildlib
+      - run: |
+          cd packages/shared 
+          npm install
+          npm run buildlib
 #
 #      - run: npm publish
 # for "scoped" package
