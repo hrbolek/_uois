@@ -20,6 +20,10 @@ jobs:
       - run: npm install --package-lock-only
       - run: npm ci
 #      - run: npm test
+      - run: |
+          cd packages/shared 
+          npm install
+          npm run buildlib
 
   publish-npm:
     needs: build
@@ -30,10 +34,6 @@ jobs:
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org/
-      - run: |
-          cd packages/shared 
-          npm install
-          npm run buildlib
 #
 #      - run: npm publish
 # for "scoped" package
