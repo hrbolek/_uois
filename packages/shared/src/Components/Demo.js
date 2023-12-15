@@ -1,5 +1,5 @@
 import { CardCapsule } from "./CardCapsule"
-import { Link } from "../links"
+import { Link } from "./Link"
 
 export const Demo = () => {
     return (

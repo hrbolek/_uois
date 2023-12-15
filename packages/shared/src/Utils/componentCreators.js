@@ -1,5 +1,5 @@
 import { Col, Row } from "react-bootstrap"
-import { TextInput } from "./Components/TextInput"
+import { TextInput } from "../Components"
 import { useEffect, useState } from "react"
 
 export const createButton = ({asyncAction}) => {

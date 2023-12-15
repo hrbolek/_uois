@@ -10,6 +10,7 @@ export default All
 export { authorizedFetch } from "./authorizedFetch"
 export { UserQuery } from "./UserQuery"
 
+export * from './authorizedFetch'
 
 // const myJson = require('./queries.json');
 // const myString = require('./queries.txt?raw');
