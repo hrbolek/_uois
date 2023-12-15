@@ -1,7 +1,6 @@
 {
   "name": "uoisfrontend",
   "version": "0.2.0",
-  "private": true,
   "homepage": "/ui",
   "proxy": "http://localhost:8000/gql/",
   "devDependencies": {

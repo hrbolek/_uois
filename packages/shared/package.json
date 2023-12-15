@@ -1,7 +1,6 @@
 {
     "name": "@uoisfrontend/shared",
     "version": "0.2.0",
-    "private": true,
     "homepage": "/ui",
     "proxy": "http://localhost:31180/",
     "peerDependencies": {
