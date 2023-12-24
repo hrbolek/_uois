@@ -1,0 +1,1 @@
+Prostě jen demo app.

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Performance</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://unpkg.com/htm@2.2.1" crossorigin></script>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>  
+
+  <script src="https://unpkg.com/@reduxjs/toolkit@1.9.3/dist/redux-toolkit.umd.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/react-beautiful-dnd@13.1.1/dist/react-beautiful-dnd.js"></script>
+
+</head>
+
+<body>
+
+    <div class="container-fluid p-3 bg-primary text-white text-center">
+        <h1>Forms</h1>
+    </div>
+    
+    <div class="container-flex mt-5">
+        <div id="root"></div>
+    </div>
+
+    <script type="text/babel">
+        /*
+        const { useState } = React;
+        const { configureStore, createSlice } = RTK;
+
+        const counterSlice = createSlice({
+            name: 'counter',
+            initialState: { 
+                value: 0
+            },
+            reducers: {
+                increment: (state) => state.value + 1,
+                decrement: (state) => state.value - 1,
+            }
+        })
+
+        const { increment, decrement } = counterSlice.actions;
+        const store = configureStore({
+            reducer: {
+                counter: counterSlice.reducer
+            }
+        })
+        //*/
+
+        const queries = {
+            "rolecategories": {
+            "readp": `{ result: roleCategoryPage { __typename, id, name, nameEn}}`,
+            "read": `query ($id: UUID!) { result: roleCategoryById(id: $id) { __typename, id, name, nameEn }}`,
+            "create": `
+mutation($id: UUID!, $name: String!, $name_en: String) {
+  result: roleCategoryInsert(roleCategory: {id: $id, name: $name, nameEn: $name_en}) {
+    id
+    msg
+    result: roleCategory {
+      id
+      lastchange
+    }
+  }
+}
+`            
+        },
+        "roletypes": {
+            "readp": `{ result: roleTypePage { __typename, id, name, nameEn}}`,
+            "read": `query ($id: UUID!) { result: roleTypeById(id: $id) { __typename, id, name, nameEn }}`,
+            "create": `
+mutation($id: UUID!, $category_id: UUID!, $name: String!, $name_en: String) {
+  result: roleTypeInsert(roleType: {id: $id, categoryId: $category_id, name: $name, nameEn: $name_en}) {
+    id
+    msg
+    result: roleType {
+      id
+      lastchange
+    }
+  }
+}
+`
+},
+        "grouptypes": {
+            "readp": `{ result: groupTypePage { __typename, id, name, nameEn}}`,
+            "read": `query ($id: UUID!) { result: groupTypeById(id: $id) { __typename, id, name, nameEn}}`,
+            "create": `
+mutation($id: UUID!, $name: String!, $name_en: String) {
+  result: groupTypeInsert(groupType: {id: $id, name: $name, nameEn: $name_en}) {
+    id
+    msg
+    result: groupType {
+      id
+      lastchange
+    }
+  }
+}`
+        },
+        "groups": {
+            "readp": `{ result: groupPage { __typename, id, name, nameEn}}`,
+            "read": `query ($id: UUID!) { result: groupById(id: $id) { __typename, id, name, nameEn}}`,
+            "create": `
+mutation($id: UUID!, $grouptype_id: UUID!, $mastergroup_id: UUID, $name: String!, $name_en: String) {
+  result: groupInsert(group: {id: $id, name: $name, nameEn: $name_en, grouptypeId: $grouptype_id, mastergroupId: $mastergroup_id}) {
+    id
+    msg
+    result: group {
+      id
+      lastchange
+    }
+  }
+}`        },
+        "users": {
+            "readp": `{ result: userPage { __typename, id, name, surname, email }}`,
+            "read": `query ($id: UUID!) { result: userById(id: $id) { __typename, id, name, surname, email}}`,
+            "create": `
+mutation($id: UUID!, $name: String!, $surname: String!, $email: String!) {
+  result: userInsert(user: {id: $id, name: $name, surname: $surname, email: $email}) {
+    id
+    msg
+    result: user {
+      id
+      lastchange
+    }
+  }
+}`            
+        },
+
+        "memberships": {
+            "readp": `{ result: membershipPage { __typename, id, valid }}`,
+            "read": `query ($id: UUID!) { result: membershipById(id: $id) { __typename, id, valid}}`,
+            "create": `
+mutation($id: UUID!, $user_id: UUID!, $group_id: UUID!, $valid: Boolean) {
+  result: membershipInsert(membership: {id: $id, userId: $user_id, groupId: $group_id, valid: $valid}) {
+    id
+    msg
+    result: membership {
+      id
+      lastchange
+    }
+  }
+}`                        
+        },
+            
+        "formsections": {"create": `
+mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String!, $form_id: UUID!) {
+  formSectionInsert(
+    section: {id: $id, name: $name, order: $order, nameEn: $name_en, formId: $form_id}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formSectionById(id: $id) { id }}`,
+},
+        "formparts":{"create": `
+mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String!, $section_id: UUID!) {
+  formPartInsert(
+    part: {id: $id, name: $name, order: $order, nameEn: $name_en, sectionId: $section_id}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formPartById(id: $id) { id }}`,
+},
+        "formitems": {"create": `
+mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String!, $part_id: UUID!) {
+  formItemInsert(
+    item: {id: $id, name: $name, order: $order, nameEn: $name_en, partId: $part_id}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formItemById(id: $id) { id }}`,
+},
+        "formrequests": {"create": `
+mutation ($id: UUID!, $name: String!) {
+  formRequestInsert(
+    request: {id: $id, name:$name }
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: requestById(id: $id) { id }}`,
+},
+
+        "forms": {
+            "create": `
+mutation ($id: UUID!, $name: String!, $type_id: UUID!, $name_en: String!) {
+  formInsert(
+    form: {id: $id, name: $name, typeId: $type_id, nameEn: $name_en}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formById(id: $id) { id }}`,
+},
+        "formsections": {"create": `
+mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String, $form_id: UUID!) {
+  formSectionInsert(
+    section: {id: $id, name: $name, order: $order, nameEn: $name_en, formId: $form_id}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formSectionById(id: $id) { id }}`,
+},
+        "formparts":{"create": `
+mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String, $section_id: UUID!) {
+  formPartInsert(
+    part: {id: $id, name: $name, order: $order, nameEn: $name_en, sectionId: $section_id}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formPartById(id: $id) { id }}`,
+},
+        "formitems": {"create": `
+mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String, $part_id: UUID!) {
+  formItemInsert(
+    item: {id: $id, name: $name, order: $order, nameEn: $name_en, partId: $part_id}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formItemById(id: $id) { id }}`,
+},
+        "formrequests": {"create": `
+mutation ($id: UUID!, $name: String!) {
+  formRequestInsert(
+    request: {id: $id, name:$name }
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: requestById(id: $id) { id }}`,
+},
+        "formhistories": {"create": `
+mutation ($id: UUID!, $name: String!, $form_id: UUID!, $request_id: UUID!) {
+  formHistoryInsert(
+    history: {id: $id, name:$name, requestId: $request_id, formId: $form_id}
+  ) {
+    id
+    msg
+  }
+}`
+        }
+}
+
+const overridenPath = "/api/gql"
+const executeQuery = async (query, variables) => {
+    const body = {query: query, variables: variables}
+    const payload = {
+        body: JSON.stringify(body), 
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        redirect: 'follow', // manual, *follow, error
+    }
+    console.log("asking for", body)
+    const result = await fetch(overridenPath, payload).then(response => response.json())
+    return result
+}      
+
+// fake data generator
+const getItems = count => {
+    // console.log(crypto.randomUUID())
+    return (
+        Array.from({ length: count }, (v, k) => k).map(k => ({
+        //id: `item-${k}`,
+        id: `item - ${crypto.randomUUID()}`,
+        content: `item ${k}`
+      }))
+    )
+}
+    
+
+// a little function to help us with reordering the result
+const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+};
+
+const grid = 8;
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: "none",
+    padding: grid * 0,
+    margin: `0 0 ${grid}px 0`,
+
+    // change background colour if dragging
+    background: isDragging ? "lightgreen" : "grey",
+
+    // styles we need to apply on draggables
+    ...draggableStyle
+});
+
+const getListStyle = isDraggingOver => ({
+    background: isDraggingOver ? "lightblue" : "lightgrey",
+    padding: grid * 0,
+    width: "100%"
+});
+
+const {
+          DragDropContext,
+          Draggable,
+          Droppable,
+          resetServerContext,
+          useKeyboardSensor,
+          useMouseSensor,
+          useTouchSensor } = ReactBeautifulDnd 
+
+const Item = ({item}) => {
+    return (
+        <div className="card">
+          <div className="card-header">
+              {item.id}
+          </div>
+          <div className="card-body">
+              {item.content}
+          </div>
+
+        </div>
+    )
+}
+
+const DragableEnvelop = ({draggableId, index, children}) => {
+    return (
+        <Draggable draggableId={draggableId} index={index}>
+            {(provided, snapshot) => {
+                // console.log("DragableEnvelop", provided.draggableProps, provided.dragHandleProps)
+                return (
+                  <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      style={{...getItemStyle(
+                          snapshot.isDragging,
+                          provided.draggableProps.style,
+                          
+                      ), "borderRadius": "0.375rem"}}
+                  >
+                      {children}
+                  </div>
+            )}}
+        </Draggable>
+    )
+}
+
+
+
+const DroppableContainer = ({droppableId, children}) => {
+    const getListStyle = snapshot => {
+        let background = (snapshot.isDraggingOver) ? "lightgreen" : "lightgrey"
+        if (snapshot.isDraggingOver && snapshot.draggingFromThisWith) {
+            background = "lightcoral" //drop on source 
+        }
+        return({
+            background: background,
+            padding: grid * 0,
+            width: "100%"
+        })
+    };
+
+    const Content = (provided, snapshot) => {
+        console.log("DroppableContainer.Content", snapshot)
+        
+        return (
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              style={getListStyle(snapshot)}
+            >
+                {children}
+                {snapshot.isUsingPlaceholder? provided.placeholder: ""}
+            </div>
+          )
+    }
+    
+    return (
+      <Droppable droppableId={droppableId}>
+          {Content}
+      </Droppable>
+    )
+}
+
+class MyApp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: getItems(5)
+    };
+    this.onDragEnd = this.onDragEnd.bind(this);
+  }
+
+  onDragEnd(result) {
+      // dropped outside the list
+      if (!result.destination) {
+          return;
+      }
+      console.log("onDragEnd", result.source)
+      console.log("onDragEnd", result.destination)
+      const items = reorder(
+          this.state.items,
+          result.source.index,
+          result.destination.index
+      );
+
+      this.setState({
+         items
+      });
+  }
+  // Normally you would want to split things out into separate components.
+  // But in this example everything is just done in one place for simplicity
+  render() {
+      return (
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <div className="row">
+            <div className="col">
+                <DroppableContainer droppableId="droppableId1">
+                    {this.state.items.map((item, index) => (
+                        <DragableEnvelop key={item.id} index={index} draggableId={item.id} droppableId="droppableId2">
+                            <Item item={item} />
+                        </DragableEnvelop>
+                    ))}
+                </DroppableContainer>
+            </div>
+            <div className="col">
+              <DroppableContainer droppableId="droppableId2">
+                    {this.state.items.map((item, index) => (
+                        <DragableEnvelop key={item.id} index={index} draggableId={item.id} droppableId="droppableId1">
+                            <Item item={item} />
+                        </DragableEnvelop>
+                    ))}
+                </DroppableContainer>
+            </div>
+          </div>
+        </DragDropContext>
+      );
+  }
+}
+
+const { useState } = React;
+const DragApp = () => {
+    const [store, setStore] = useState({library: getItems(5), used: getItems(5)})
+    const onDragEnd = (result) => {
+        // dropped outside the list
+        if (!result.destination) {
+            return;
+        }
+        console.log("onDragEnd.source", result.source)
+        console.log("onDragEnd.destination", result.destination)
+
+        const sourceid = result.source.droppableId
+        const destinationid = result.destination.droppableId
+        const draggedItem = store[sourceid][result.source.index]
+        store[sourceid] = store[sourceid].filter((item, index) => index !== result.source.index)
+        store[destinationid] = store[destinationid].toSpliced(result.destination.index, 0, draggedItem)
+        
+        setStore({...store})
+        
+    }  
+
+    return (
+        <DragDropContext onDragEnd={onDragEnd}>
+            <div className="row">
+              <div className="col">
+                  <DroppableContainer droppableId="library">
+                      {store.library.map((item, index) => (
+                          <DragableEnvelop key={item.id} index={index} draggableId={item.id} >
+                              <Item item={item} />
+                          </DragableEnvelop>
+                      ))}
+                  </DroppableContainer>
+              </div>
+              <div className="col">
+                <DroppableContainer droppableId="used">
+                      {store.used.map((item, index) => (
+                          <DragableEnvelop key={item.id} index={index} draggableId={item.id} >
+                              <Item item={item} />
+                          </DragableEnvelop>
+                      ))}
+                  </DroppableContainer>
+              </div>
+            </div>
+          </DragDropContext>      
+    )
+}
+
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<DragApp />);
+
+        
+    </script>
+
+</body>
+</html>

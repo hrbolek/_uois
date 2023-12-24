@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Importer</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>  
+
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://unpkg.com/htm@2.2.1" crossorigin></script>
+
+  <script src="https://unpkg.com/@reduxjs/toolkit@1.9.3/dist/redux-toolkit.umd.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@textea/json-viewer@3"></script>
+</head>
+
+<body>
+
+    <div class="container-fluid p-3 bg-primary text-white text-center">
+        <h1>Importer 2</h1>
+    </div>
+    
+    <div class="container mt-5">
+        <div id="root"></div>
+    </div>
+
+    <script type="text/babel">
+        /*
+        const { useState } = React;
+        const { configureStore, createSlice } = RTK;
+
+        const counterSlice = createSlice({
+            name: 'counter',
+            initialState: { 
+                value: 0
+            },
+            reducers: {
+                increment: (state) => state.value + 1,
+                decrement: (state) => state.value - 1,
+            }
+        })
+
+        const { increment, decrement } = counterSlice.actions;
+        const store = configureStore({
+            reducer: {
+                counter: counterSlice.reducer
+            }
+        })
+        //*/
+
+        const queries = {
+            "rolecategories": {
+            "readp": `{ result: roleCategoryPage { __typename, id, name, nameEn}}`,
+            "read": `query ($id: UUID!) { result: roleCategoryById(id: $id) { __typename, id, name, nameEn }}`,
+            "create": `
+mutation($id: UUID!, $name: String!, $name_en: String) {
+  result: roleCategoryInsert(roleCategory: {id: $id, name: $name, nameEn: $name_en}) {
+    id
+    msg
+    result: roleCategory {
+      id
+      lastchange
+    }
+  }
+}
+`            
+        },
+        "roletypes": {
+            "readp": `{ result: roleTypePage { __typename, id, name, nameEn}}`,
+            "read": `query ($id: UUID!) { result: roleTypeById(id: $id) { __typename, id, name, nameEn }}`,
+            "create": `
+mutation($id: UUID!, $category_id: UUID!, $name: String!, $name_en: String) {
+  result: roleTypeInsert(roleType: {id: $id, categoryId: $category_id, name: $name, nameEn: $name_en}) {
+    id
+    msg
+    result: roleType {
+      id
+      lastchange
+    }
+  }
+}
+`
+},
+        "grouptypes": {
+            "readp": `{ result: groupTypePage { __typename, id, name, nameEn}}`,
+            "read": `query ($id: UUID!) { result: groupTypeById(id: $id) { __typename, id, name, nameEn}}`,
+            "create": `
+mutation($id: UUID!, $name: String!, $name_en: String) {
+  result: groupTypeInsert(groupType: {id: $id, name: $name, nameEn: $name_en}) {
+    id
+    msg
+    result: groupType {
+      id
+      lastchange
+    }
+  }
+}`
+        },
+        "groups": {
+            "readp": `{ result: groupPage { __typename, id, name, nameEn}}`,
+            "read": `query ($id: UUID!) { result: groupById(id: $id) { __typename, id, name, nameEn}}`,
+            "create": `
+mutation($id: UUID!, $grouptype_id: UUID!, $mastergroup_id: UUID, $name: String!, $name_en: String) {
+  result: groupInsert(group: {id: $id, name: $name, nameEn: $name_en, grouptypeId: $grouptype_id, mastergroupId: $mastergroup_id}) {
+    id
+    msg
+    result: group {
+      id
+      lastchange
+    }
+  }
+}`        },
+        "users": {
+            "readp": `{ result: userPage { __typename, id, name, surname, email }}`,
+            "read": `query ($id: UUID!) { result: userById(id: $id) { __typename, id, name, surname, email}}`,
+            "create": `
+mutation($id: UUID!, $name: String!, $surname: String!, $email: String!) {
+  result: userInsert(user: {id: $id, name: $name, surname: $surname, email: $email}) {
+    id
+    msg
+    result: user {
+      id
+      lastchange
+    }
+  }
+}`            
+        },
+
+        "memberships": {
+            "readp": `{ result: membershipPage { __typename, id, valid }}`,
+            "read": `query ($id: UUID!) { result: membershipById(id: $id) { __typename, id, valid}}`,
+            "create": `
+mutation($id: UUID!, $user_id: UUID!, $group_id: UUID!, $valid: Boolean) {
+  result: membershipInsert(membership: {id: $id, userId: $user_id, groupId: $group_id, valid: $valid}) {
+    id
+    msg
+    result: membership {
+      id
+      lastchange
+    }
+  }
+}`                        
+        },
+            
+        "formsections": {"create": `
+mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String!, $form_id: UUID!) {
+  formSectionInsert(
+    section: {id: $id, name: $name, order: $order, nameEn: $name_en, formId: $form_id}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formSectionById(id: $id) { id }}`,
+},
+        "formparts":{"create": `
+mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String!, $section_id: UUID!) {
+  formPartInsert(
+    part: {id: $id, name: $name, order: $order, nameEn: $name_en, sectionId: $section_id}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formPartById(id: $id) { id }}`,
+},
+        "formitems": {"create": `
+mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String!, $part_id: UUID!) {
+  formItemInsert(
+    item: {id: $id, name: $name, order: $order, nameEn: $name_en, partId: $part_id}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formItemById(id: $id) { id }}`,
+},
+        "formrequests": {"create": `
+mutation ($id: UUID!, $name: String!) {
+  formRequestInsert(
+    request: {id: $id, name:$name }
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: requestById(id: $id) { id }}`,
+},
+
+        "forms": {
+            "create": `
+mutation ($id: UUID!, $name: String!, $type_id: UUID!, $name_en: String!) {
+  formInsert(
+    form: {id: $id, name: $name, typeId: $type_id, nameEn: $name_en}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formById(id: $id) { id }}`,
+},
+        "formsections": {"create": `
+mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String, $form_id: UUID!) {
+  formSectionInsert(
+    section: {id: $id, name: $name, order: $order, nameEn: $name_en, formId: $form_id}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formSectionById(id: $id) { id }}`,
+},
+        "formparts":{"create": `
+mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String, $section_id: UUID!) {
+  formPartInsert(
+    part: {id: $id, name: $name, order: $order, nameEn: $name_en, sectionId: $section_id}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formPartById(id: $id) { id }}`,
+},
+        "formitems": {"create": `
+mutation ($id: UUID!, $name: String!, $order: Int!, $name_en: String, $part_id: UUID!) {
+  formItemInsert(
+    item: {id: $id, name: $name, order: $order, nameEn: $name_en, partId: $part_id}
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: formItemById(id: $id) { id }}`,
+},
+        "formrequests": {"create": `
+mutation ($id: UUID!, $name: String!) {
+  formRequestInsert(
+    request: {id: $id, name:$name }
+  ) {
+    id
+    msg
+  }
+}`,
+            "read": `query($id: UUID!){ result: requestById(id: $id) { id }}`,
+},
+        "formhistories": {"create": `
+mutation ($id: UUID!, $name: String!, $form_id: UUID!, $request_id: UUID!) {
+  formHistoryInsert(
+    history: {id: $id, name:$name, requestId: $request_id, formId: $form_id}
+  ) {
+    id
+    msg
+  }
+}`
+        }
+}
+
+        const overridenPath = "/api/gql"
+        const executeQuery = async (query, variables) => {
+            const body = {query: query, variables: variables}
+            const payload = {
+                body: JSON.stringify(body), 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                redirect: 'follow', // manual, *follow, error
+            }
+            console.log("asking for", body)
+            const result = await fetch(overridenPath, payload).then(response => response.json())
+            return result
+        }
+
+        const runImport = async (data, onProgress) => {
+            if (Object.keys(data).length == 0) {
+                return
+            }
+            for(const tablename in queries) {
+                const queryset = queries[tablename]
+                const table = data[tablename]
+                if (table) {
+                    onProgress(`Importing data ${tablename}`)
+                    const { read, create } = queries[tablename]
+                    for(const row of table) {
+                        if (read) {
+                            console.log("asking with row", row)
+                            const readresponse = await executeQuery(read, row)
+                            onProgress("got response:" + JSON.stringify(readresponse))
+                            
+                            const data = readresponse["data"]
+                            const errors = readresponse["errors"]
+                            if (errors && errors.length > 0) {
+                                onProgress(JSON.stringify(errors))
+                                continue
+                            }
+                            if (data & data.result) {
+                                onProgress(`${row.id} already exists at ${table}`)
+                                continue
+                            }
+                            const createresponse = await executeQuery(create, row)
+                            const {data: datac, errors: errorsc} = createresponse
+                            if (errorsc & errorsc.length > 0) {
+                                onProgress(`Error during write ${row.id} in ${table} : ${JSON.stringify(errors)}`)
+                                continue
+                            }
+                        }
+                    }
+                } else {
+                    onProgress(`Skipping data ${tablename}`)
+                }
+                
+            }
+        }
+
+        const { useState, useEffect } = React;
+        const ConsoleLine = ({line}) => {
+            console.log("ConsoleLine")
+            return (
+                <span className="text-monospace">{line} <br /></span>
+            )
+        }
+
+
+        const Console = ({data}) => {
+            // const dataKeys = Object.keys(data)
+            // console.log(dataKeys)
+            // const [log, setLog] = useState(["done1", "done2"])
+            const [log, setLog] = useState([])
+            const onProgress = (line) => {
+                setLog(oldlog => [line, ...oldlog])
+            }
+            useEffect(() => {
+                // setLog(dataKeys)
+                setLog([])
+                runImport(data, onProgress)
+            }, [data])
+            return (
+                <div>
+                    {
+                        log.map(line => <ConsoleLine key={line} line={line} />)
+                    }                   
+                </div>
+            )
+        }
+
+        const MyApp = (props) => {
+            const [data, setData] = useState({})
+            const _onChange = (e) => {
+                var file = e.target.files[0];
+                if (!file) {
+                    return;
+                }
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var contents = JSON.parse(e.target.result);
+                    // Display file content
+                    setData(olddata => contents)
+                    console.log(contents)
+                    //displayContents(contents);
+                };
+                reader.readAsText(file);
+            }
+
+            return (
+                <div>
+                    <div className="row">
+                        <div className="col">
+                            <div className="card bg-secondary">
+                                <input className="btn btn-outlone-primary" type="file" id="file-input" onChange={_onChange} />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col">
+                            <Console data={data}/>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+        const data = {
+            students: [
+                {'id': 1, name: "John", surname: "Newbie", email: "email@serveer.com"},
+                {'id': 2, name: "Julia", surname: "Sun", email: "email@serveer.com"},
+                {'id': 3, name: "Peter", surname: "Walker", email: "email@serveer.com"},
+            ]
+        }
+
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<MyApp data={data}/>);
+
+    </script>
+
+</body>
+</html>

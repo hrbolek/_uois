@@ -31,7 +31,7 @@ async def createIndexResponse(request: Request):
     with open(configFile, "r", encoding="utf-8") as f:
         config = json.load(f)
         for key, value in config.items():
-            body = body + f'<div class="col md-3">{createCard(key, value)}</div>'
+            body = body + f'<div class="col col-md-3">{createCard(key, value)}</div>'
 
     result = f"""<!doctype html>
 <html lang="en">

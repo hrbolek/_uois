@@ -11,6 +11,24 @@
         "authors": "Ivan Goncharov & many others",
         "markdownfile": "voyager.md"
     },
+    "importer": { 
+        "file": "importer.html",
+        "title": "Importer",
+        "authors": "Hrbolek",
+        "markdownfile": "importer.md"
+    },
+    "performance": { 
+        "file": "performance.html",
+        "title": "Performance test",
+        "authors": "Hrbolek",
+        "markdownfile": "performance.md"
+    },
+    "forms": { 
+        "file": "form.html",
+        "title": "DEMO",
+        "authors": ":)",
+        "markdownfile": "form.md"
+    },
     "exams": { 
         "file": "",
         "title": "Zkoušky",
