@@ -69,10 +69,12 @@ print("executing in", dirName)
 configFile = dirName + "/" + configFile
 def createApp(key, setup):
     file = setup["file"]
+    print(f"creating sub app {key} with setup {setup}")
     subApp = FastAPI()
     @subApp.get("/{file_path:path}")
     async def getFile(file_path: str):
         filename = dirName + "/htmls/" + file
+        print(f"serving app {file} from `{filename}`")
         if os.path.isfile(filename):
             return FileResponse(filename)
         else:
@@ -84,6 +86,7 @@ def createApp(key, setup):
 
 with open(configFile, "r", encoding="utf-8") as f:
     config = json.load(f)
+    print(f"app config set to\n{config}")
     for key, setup in config.items():
         createApp(key, setup)
 
