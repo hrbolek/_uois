@@ -5,26 +5,27 @@
 This is a project for students. Students are cooperating on this project under supervision of teacher.
 It is also a model of an information systems which could be used for some administrative task in university life.
 
-
 ## Used technologies
 
-- Python
-    - SQLAlchemy for modelling the database entitied (async queries)
-    - FastAPI for API definition and run
-    - Uvicorn as executor of FastAPI
-    - Strawberry for GraphQL endpoint (federated GraphQL)
-    - Appolo federation for GraphQL federation queries
+- Python (see https://www.python.org/)
+    - SQLAlchemy for modelling the database entitied (async queries) (see https://www.sqlalchemy.org/)
+    - FastAPI for API definition and run (see https://fastapi.tiangolo.com/)
+    - Uvicorn as executor of FastAPI (see https://www.uvicorn.org/)
+    - Strawberry for GraphQL endpoint (federated GraphQL) (see https://strawberry.rocks/)
+    - Appolo federation for GraphQL federation queries (see https://www.apollographql.com/docs/federation/)
 
-- Javascript
-    - ReactJS as a library for building bricks of user interface
+- Javascript (see https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+    - ReactJS as a library for building bricks of user interface (see https://react.dev/)
     - fetch for fetching the data from endpoints
 
-- Docker
+- Docker (see https://www.docker.com/)
     - containerization of applications
     - inner connection of containers
+    - deployment of service stacks (see https://docs.docker.com/compose/)
 
-- Postgres
-    - and its compatible replacements (Yugabyte, Cockroach)
+- Postgres (see https://www.postgresql.org/)
+    - and its compatible replacements (Yugabyte - https://www.yugabyte.com/, Cockroach - https://www.cockroachlabs.com/)
+    - can be also used, with small refactoring (thanks to SQLalchemy), different SQL engine such MSSQL, MariaDB, etc.
 
 ## Base concept
 
@@ -33,7 +34,255 @@ The project has several docker containers
 - `frontend` provides static files = REACT compiled items (including GQL interface)
 - `gql_*` apollo federation member
 - `prostgres` is database server
-- `pgadmin` is an interface for database server administration
+- `pgadmin` is an interface for database server administration (see https://www.pgadmin.org/)
+
+## Security
+
+There should be a authority which create jwt (json web token see https://jwt.io/introduction) by standard rfc7519 (see https://datatracker.ietf.org/doc/html/rfc7519).
+Authority must expose http endpoint providing (via GET verb) public key (signing algorithm RS256, see https://crypto.stackexchange.com/questions/104184/is-this-how-rs256-works-in-jwt) and also http endpoint (via GET verb with token) user info based on included token.
+User is authenticated if its cookie authorization has valid jwt. This jwt is validated to authority.
+
+Because whole deployment has several parts, each part receives a http request with token and this token is always validated.
+
+
+    --> Frontend --> Authority (key)
+        Frontend <-- Authority (key)
+        Frontend ----------------------> Federation
+                                         Federation --> MemberA --> Authority (key)
+                                         Federation --> MemberB --> Authority (key)
+                                                        MemberA <-- Authority (key)
+                                                        MemberB <-- Authority (key)
+                                         Federation <-- MemberA
+                                         Federation <-- MemberB
+        Frontend <---------------------- Federation
+
+The public key is cached. 
+If the incomming jwt is not valid, public key is refreshed. 
+If jwt is not valid even with new public key, the http request is handled as unathenticated.
+For frontend server (html pages) the appropriate response is redirect (to login).
+For GQL server (apollo federation) response holds a code.
+
+Authority is integrated in frontend. The design allows to refactor it for Keycloack (see https://www.keycloak.org/) as an example.
+
+## Frontend applications
+
+As there is strong API (GQL based), frontend can decoupled into simple SPA (Single page application see https://developer.mozilla.org/en-US/docs/Glossary/SPA) htmls.
+The frontend server manages catalog of such pages (see `/server/htmls` and `/server/config.json`). 
+According this catalog the landing page is generated.
+Entry points are guarded for unathenticated users.
+Such attemps are redirected to login page.
+
+It is expected that frontend applications are developed with ReactJS library (see https://react.dev/).
+To share forged application segments - components there should be catalog of components (see https://storybook.js.org/).
+If the application is a bit more complex there are accomodated conceps of central storage (see https://react-redux.js.org/) working with state functions and immutable state (see https://immerjs.github.io/immer/ and https://redux-toolkit.js.org/).
+
+### Special applications
+
+The deployment structure allows to accomodate applications from foreign sources.
+Currently there are two of them.
+- GraphiQL, which allows to send queries in raw mode (see https://www.gatsbyjs.com/docs/how-to/querying-data/running-queries-with-graphiql/)
+- Voyager, which displays the ERD (Entity relation diagram) for GraphQL endpoint (see https://graphql-kit.com/graphql-voyager/)
+
+## Backend containers
+
+As has been introduced earlier, there are several containerized applications which are GraphQL federation members.
+Each of them should provide set of entities and sometimes extend external entities behaviour.
+To provide entities itself, there is somep point at which the row in database table is retrieved and server.
+To fulfill this, row must be identified. For such identification uuid is used - primary key is uuid (see https://en.wikipedia.org/wiki/Universally_unique_identifier).
+Such approach allows to generate primary keys in distributed way which helps in several ways (even in testing phase).
+For reading from database the SQLAlchemy library is used. Also to improve concurency, there are asynchronous dataloaders (see https://github.com/syrusakbary/aiodataloader).
+This concept solves the N+1 problem (see https://planetscale.com/blog/what-is-n-1-query-problem-and-how-to-solve-it).
+It also allows to use Redis (see https://redis.io/) to improve data throughtput.
+
+To decide which entities and its attributes are allowed to operate on, the strawberry introduced permission classes (see https://strawberry.rocks/docs/guides/permissions).
+This is high granularity tool which perfectly fits the needs. 
+It is commond that entities have their rbacobject (uuid key) from which is possible to derive who can work with entity or/and its attributes. 
+
+rbacobject can be an user id or group id.
+In both casese there are users in roles for the group (rbacobject) and its mastergoups or in groups and its mastergroups where an user (rbacobject) is member.
+For a point (entity or/and its attributes) there can be enlisted needed roles (reading and writing rights for queries and mutations).
+Only if logged user (identified by the token), has appropriate roles towards rbacobject, then operation is allowed.
+
+## Deployment
+
+As minimal configuration there are
+  - frontend (authority, html page provider, proxy to api)
+  - apollo (covers all federation members thus it is also indirectly proxies them)
+  - gql_ug provides roles so must be in every deployment
+  - gql_forms (standard federation member)
+
+Database is deployed outside of this stack (see `host.docker.internal:5432`)
+
+```yaml
+version: "3.9"
+
+services:
+  apollo:
+    image: hrbolek/apollo_federation
+    # image: apollofederation:latest
+    environment:
+      # promenne, ktere lze cist v kontejneru
+      - PORT=3000
+      - |
+        SERVICES=
+        [
+          {"name": "ug", "url": "http://gql_ug:8000/gql"},
+          {"name": "forms", "url": "http://gql_forms:8000/gql"}
+        ]
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu a srovnejte s portem v environment)
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    # ports: #v deploymentu by nebylo zadne mapovani portu
+      # vnejsi port : port, kde sluzbu poskytuje kontejner
+      # - 33000:3000
+    depends_on:
+      - gql_ug
+      - gql_forms
+
+  gql_ug:
+    image: hrbolek/gql_ug
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_DB=data
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    ports:
+      - 33012:8000
+    depends_on:
+      - frontend
+
+  gql_forms:
+    image: hrbolek/gql_forms
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_DB=data
+      - GQLUG_ENDPOINT_URL=http://gql_ug:8000/gql
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    ports:
+      - 33013:8000
+    depends_on:
+      - gql_ug
+
+  frontend:
+    image: frontend
+    build:
+      context: .
+    environment:
+      - DEMO=False
+      - GQL_PROXY=http://apollo:3000/api/gql/
+    ports:
+      - 33001:8000
+    volumes:
+    # for development
+      - ./server/htmls:/app/server/htmls
+```
+
+
+## Monitoring
+
+Each container emits logs during its life. The logs will be configurable throught `logging.conf` file (see https://docs.python.org/3.10/howto/logging.html).
+It is expected that configuration is set to pass log entries into syslon-ng (see https://www.syslog-ng.com/community/b/blog/posts/central-log-server-docker).
+
+Also frontend has measurement of SLA () for prometheus (see https://prometheus.io/). Prometheus is often configured with grafana (see https://grafana.com/).
+
+The proper stack could be (begin of file is missing)
+
+```yaml
+  prometheus:
+    image: prom/prometheus
+    restart: always
+    volumes:
+      - ./prometheus:/etc/prometheus/
+      # - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - 9090:9090
+    # links:
+    #   - cadvisor:cadvisor
+    #   - alertmanager:alertmanager
+    # depends_on:
+    #   - cadvisor
+
+  grafana:
+    image: grafana/grafana
+    user: '472'
+    restart: always
+    environment:
+      GF_INSTALL_PLUGINS: 'grafana-clock-panel,grafana-simple-json-datasource'
+    # volumes:
+    #   - grafana_data:/var/lib/grafana
+    #   - ./grafana/provisioning/:/etc/grafana/provisioning/
+    # env_file:
+    #   - ./grafana/config.monitoring
+    ports:
+      - 8300:3000
+    depends_on:
+      - prometheus
+```
+
+And content of `/etc/prometheus/prometheus.yml` is
+
+```yaml
+global:
+  scrape_interval:     15s # By default, scrape targets every 15 seconds.
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+    monitor: 'codelab-monitor'
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'uois'
+
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+
+    static_configs:
+      - targets: ['frontend:8000']
+      # - metrics_path: ['/prometheus']
+```
 
 ## Who participated on this project
 
