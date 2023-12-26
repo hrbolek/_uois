@@ -208,7 +208,23 @@ services:
 ## Monitoring
 
 Each container emits logs during its life. The logs will be configurable throught `logging.conf` file (see https://docs.python.org/3.10/howto/logging.html).
-It is expected that configuration is set to pass log entries into syslon-ng (see https://www.syslog-ng.com/community/b/blog/posts/central-log-server-docker).
+It is expected that configuration is set to pass log entries into syslog-ng (see https://www.syslog-ng.com/community/b/blog/posts/central-log-server-docker).
+
+syslog-ng usually listen at UDP port 514.
+Python applications 
+```python
+import logging
+import logging.handlers
+import socket
+logging.basicConfig(
+    level=logging.INFO, 
+    format='%(asctime)s.%(msecs)03d\t%(levelname)s:\t%(message)s', 
+    datefmt='%Y-%m-%dT%I:%M:%S')
+my_logger = logging.getLogger()
+my_logger.setLevel(logging.INFO)
+handler = logging.handlers.SysLogHandler(address=('host.docker.internal', 514), socktype=socket.SOCK_DGRAM)
+my_logger.addHandler(handler)
+```
 
 Also frontend has measurement of SLA () for prometheus (see https://prometheus.io/). Prometheus is often configured with grafana (see https://grafana.com/).
 
