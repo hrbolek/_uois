@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Users</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>  
+
+  <script src="https://unpkg.com/@reduxjs/toolkit@1.9.3/dist/redux-toolkit.umd.js"></script>
+  
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@textea/json-viewer@3"></script>
+
+  <script>
+    // to avoid error
+    process={env:{Node_ENV: ""}}
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@hrbolek/uoisfrontend-shared@0.4.2/dist/umd/index.js"></script>
+
+  <script>
+    process={env:{Node_ENV: ""}}
+    console.log("hi")
+    console.log(Object.keys(Shared))
+    
+    const { App } = Shared
+    console.log("Shared", JSON.stringify(Shared))
+    console.log("App", JSON.stringify(App))
+
+    console.log(Object.keys(window))
+    console.log(Object.keys(window.Shared))
+
+
+  </script>  
+
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script src="https://unpkg.com/htm@2.2.1" crossorigin></script>
+
+</head>
+
+<body>
+
+    <div class="container-fluid p-3 bg-primary text-white text-center">
+        <h1>Users</h1>
+    </div>
+    
+    <div class="container-fluid mt-5">
+        <div id="root"></div>
+    </div>
+
+
+
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { configureStore, createSlice } = RTK;
+
+        console.log("React", JSON.stringify(React))
+        console.log("RTK", JSON.stringify(RTK))
+
+        const usersQuery = {
+            "readp": `{ result: userPage { __typename, id, name, surname, email }}`,
+            "read": `query ($id: UUID!) { result: userById(id: $id) { __typename, id, name, surname, email}}`,
+            "create": `
+mutation($id: UUID!, $name: String!, $surname: String!, $email: String!) {
+  result: userInsert(user: {id: $id, name: $name, surname: $surname, email: $email}) {
+    id
+    msg
+    result: user {
+      id
+      lastchange
+    }
+  }
+}`}
+
+        const overridenPath = "/api/gql"
+        const executeQuery = async (query, variables) => {
+            const body = {query: query, variables: variables}
+            const payload = {body: JSON.stringify(body)}
+            const result = await fetch(overridenPath, newParams).then(response => response.json())
+            return result
+        }
+
+        const UserByIdAsyncAction = Shared.CreateAsyncActionFromQuery(usersQuery.read)
+        const CardCapsule = Shared.CardCapsule
+        const useDispatch = Shared.useDispatch
+        const useFreshItem = Shared.useFreshItem
+
+        const MyApp = (props) => {
+            const [user, thenable] = useFreshItem({id: "2d9dc5ca-a4a2-11ed-b9df-0242ac120003"}, UserByIdAsyncAction)
+
+            return (
+              <CardCapsule title="Moje app">
+                  <div className="row">
+                      <div className="col">
+                          Sloupec 1<br />
+                          {user?JSON.stringify(user):""}
+                      </div>
+                      <div className="col">
+                          Sloupec 2<br />
+                          <button className="btn btn-outline-success">Load</button>
+                      </div>
+                  </div>
+              </CardCapsule>
+            )
+        }
+
+        
+        const AppCanvas = Shared.AppCanvas
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<AppCanvas><MyApp/></AppCanvas>);
+
+    </script>
+
+</body>
+</html>

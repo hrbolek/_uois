@@ -23,6 +23,12 @@
         "authors": "Hrbolek",
         "markdownfile": "performance.md"
     },
+    "users": { 
+        "file": "users.html",
+        "title": "Uživatelé",
+        "authors": "Hrbolek",
+        "markdownfile": "users.md"
+    },
     "forms": { 
         "file": "form.html",
         "title": "DEMO",
