@@ -201,7 +201,7 @@ services:
       - 33001:8000
     volumes:
     # for development
-      - ./server/htmls:/app/server/htmls
+    #  - ./server/htmls:/app/server/htmls
 ```
 
 
