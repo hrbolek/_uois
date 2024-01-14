@@ -10,8 +10,12 @@ services:
       - |
         SERVICES=
         [
-          {"name": "ug", "url": "http://gql_ug:8000/gql"}
-        ]
+          {"name": "ug", "url": "http://gql_ug:8000/gql"},
+          {"name": "forms", "url": "http://gql_forms:8000/gql"},
+          {"name": "events", "url": "http://gql_events:8000/gql"},
+          {"name": "facilities", "url": "http://gql_facilities:8000/gql"},
+          {"name": "granting", "url": "http://gql_granting:8000/gql"}
+        ]       
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu a srovnejte s portem v environment)
       interval: 60s
@@ -24,40 +28,206 @@ services:
       # - 33000:3000
     depends_on:
       - gql_ug
+      - gql_forms
+      - gql_events
+      - gql_facilities
+      - gql_externalids
+      - gql_granting
+      # - gql_lessons
+      # - gql_projects
+      # - gql_presences
+      # - gql_publications
+      # - gql_workflows
+      # - gql_documents
 
   gql_ug:
-    image: hrbolek/gql_ug
+    image: hrbolek/gql_ug #   image: kavic/ug
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_HOST=host.docker.internal:5432
       - POSTGRES_DB=data
-      - DEMO=true
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
-      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql/ || exit 1"
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"
       interval: 60s
       retries: 3
       start_period: 60s
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
     ports:
-      - 33002:8000
+      - 33012:8000
+
+  gql_events:
+    image: nafreju2/gql_events:main
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_DB=data
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
+    ports:
+      - 33331:8000
+
+  gql_externalids:
+    image: gjia/gql_externalids:main
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_DB=data
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
+    ports:
+      - 33332:8000
+
+  gql_facilities:
+    image: hrbolek/gql_facilities
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_DB=data
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
+    ports:
+      - 33334:8000
+
+  gql_granting:
+    image: oklement/gql_granting
+    # image: hieuductran231/gql_granting:main
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_DB=data
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
+    ports:
+      - 33335:8000
+
+  # gql_lessons:
+  #   image: luknowo/gql_lessons
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=example
+  #     - POSTGRES_HOST=host.docker.internal:5432
+  #     - POSTGRES_DB=data
+  #     - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+  #     - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+  #     - DEMO=True
+  #   ports:
+  #     - 33336:8000
+      
+  # gql_projects: 
+  #   image: hrbolek/gql_projects
+  #   # image: johnysmidy/gql_projects
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=example
+  #     - POSTGRES_HOST=host.docker.internal:5432
+  #     - POSTGRES_DB=data
+  #     - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+  #     - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+  #     - DEMO=True
+  #   ports:
+  #     - 33337:8000
+
+
+  gql_presences:
+    image: davidnemecek4227/gql_presences      
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_DB=data
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
+    ports:
+      - 33339:8000    
+
+  gql_publications:
+    image: kozmycz/gql_publications_a
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_DB=data
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
+    ports:
+      - 33338:8000      
+
+  # gql_documents:
+  #   image: tadblack/gql_documents
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=example
+  #     - POSTGRES_HOST=host.docker.internal:5432
+  #     - POSTGRES_DB=data
+  #     - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+  #     - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+  #     - DEMO=True
+  #   ports:
+  #     - 33330:8000      
+
+
+  gql_workflows:
+    image: taido028/gql_workflow
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_DB=data
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
+    ports:
+      - 33340:8000
+
+  gql_forms:
+    image: hrbolek/gql_forms
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_DB=data
+      - GQLUG_ENDPOINT_URL=http://gql_ug:8000/gql
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    ports:
+      - 33013:8000
 
   frontend:
-    image: frontend
-    build:
-      context: .
+    image: hrbolek/frontend
     environment:
       - DEMO=False
       - GQL_PROXY=http://apollo:3000/api/gql/
     ports:
       - 33001:8000
-
-  redis:
-    image: redis/redis-stack:6.2.4-v4
-    ports:
-      - 31188:8001
+    volumes:
+    # for development
+      - ./server/htmls:/app/server/htmls
+      - ./server/config.json:/app/server/config.json
 
   prometheus:
     image: prom/prometheus

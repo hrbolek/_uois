@@ -1,0 +1,1 @@
+Základní informace o užovatelích a skupinách

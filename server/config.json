@@ -29,6 +29,12 @@
         "authors": "Hrbolek",
         "markdownfile": "users.md"
     },
+    "ug": { 
+        "file": "ug.html",
+        "title": "Uživatelé",
+        "authors": "Hrbolek",
+        "markdownfile": "ug.md"
+    },
     "forms": { 
         "file": "form.html",
         "title": "DEMO",
