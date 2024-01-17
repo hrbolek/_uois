@@ -14,7 +14,7 @@ services:
           {"name": "forms", "url": "http://gql_forms:8000/gql"},
           {"name": "events", "url": "http://gql_events:8000/gql"},
           {"name": "facilities", "url": "http://gql_facilities:8000/gql"},
-          {"name": "granting", "url": "http://gql_granting:8000/gql"}
+          {"name": "surveys", "url": "http://gql_surveys:8000/gql"}
         ]       
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu a srovnejte s portem v environment)
@@ -62,7 +62,7 @@ services:
       - 33012:8000
 
   gql_events:
-    image: nafreju2/gql_events:main
+    image: nafreju2/gql_events # where u user.events
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -88,7 +88,8 @@ services:
       - 33332:8000
 
   gql_facilities:
-    image: hrbolek/gql_facilities
+    image: hrbolek/gql_facilities 
+    #image: vitekr/gql_facilities
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -127,6 +128,17 @@ services:
   #   ports:
   #     - 33336:8000
       
+  # gql_preferences:
+  #   image: haki22/gql-preferences
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=example
+  #     - POSTGRES_HOST=host.docker.internal:5432
+  #     - POSTGRES_DB=data
+  #     - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+  #     - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+  #     - DEMO=True
+
   # gql_projects: 
   #   image: hrbolek/gql_projects
   #   # image: johnysmidy/gql_projects
@@ -142,8 +154,34 @@ services:
   #     - 33337:8000
 
 
+  gql_documents:
+    image: tadblack/gql_documents
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_DB=data
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
+    ports:
+      - 33330:8000      
+
+  gql_surveys:
+    image: komandosscz/surveys
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_DB=data
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
+    # ports:
+    #   - 33330:8000      
+
   gql_presences:
-    image: davidnemecek4227/gql_presences      
+    image: davidnemecek4227/gql_presences:0.8.1
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -154,33 +192,6 @@ services:
       - DEMO=True
     ports:
       - 33339:8000    
-
-  gql_publications:
-    image: kozmycz/gql_publications_a
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=example
-      - POSTGRES_HOST=host.docker.internal:5432
-      - POSTGRES_DB=data
-      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
-      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
-      - DEMO=True
-    ports:
-      - 33338:8000      
-
-  # gql_documents:
-  #   image: tadblack/gql_documents
-  #   environment:
-  #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=example
-  #     - POSTGRES_HOST=host.docker.internal:5432
-  #     - POSTGRES_DB=data
-  #     - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
-  #     - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
-  #     - DEMO=True
-  #   ports:
-  #     - 33330:8000      
-
 
   gql_workflows:
     image: taido028/gql_workflow
@@ -194,6 +205,21 @@ services:
       - DEMO=True
     ports:
       - 33340:8000
+
+
+  gql_publications:
+    image: kozmycz/gql_publications_a #porad ID :(
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_DB=data
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=True
+    ports:
+      - 33338:8000      
+
 
   gql_forms:
     image: hrbolek/gql_forms
