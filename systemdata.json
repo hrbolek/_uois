@@ -1,0 +1,90 @@
+{
+    "users": [
+        {
+            "id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+            "name": "John",
+            "surname": "Newbie",
+            "email": "john.newbie@world.com"
+        },
+        {
+            "id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
+            "name": "Julia",
+            "surname": "Newbie",
+            "email": "julia.newbie@world.com"
+        },
+        {
+            "id": "2d9dc9a8-a4a2-11ed-b9df-0242ac120003",
+            "name": "Johnson",
+            "surname": "Newbie",
+            "email": "johnson.newbie@world.com"
+        },
+        {
+            "id": "2d9dcbec-a4a2-11ed-b9df-0242ac120003",
+            "name": "Jepeto",
+            "surname": "Newbie",
+            "email": "jepeto.newbie@world.com"
+        },
+
+        {
+            "id": "89d1e724-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Jana",
+            "surname": "Newbie",
+            "email": "jana.newbie@world.com"
+        },
+        {
+            "id": "89d1f34a-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Jolana",
+            "surname": "Newbie",
+            "email": "jolana.newbie@world.com"
+        },
+        {
+            "id": "89d1f3cc-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Jitka",
+            "surname": "Newbie",
+            "email": "jitka.newbie@world.com"
+        },
+        {
+            "id": "89d1f430-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Jaroslava",
+            "surname": "Newbie",
+            "email": "jaroslava.newbie@world.com"
+        },
+        {
+            "id": "89d1f48a-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Lada",
+            "surname": "Newbie",
+            "email": "lada.newbie@world.com"
+        },
+        {
+            "id": "89d1f4e4-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Ludmila",
+            "surname": "Newbie",
+            "email": "ludmila.newbie@world.com"
+        },
+        { 
+            "id": "89d1f534-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Lucie",
+            "surname": "Newbie",
+            "email": "lucie.newbie@world.com"
+        },
+        {
+            "id": "89d1f58e-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Nola",
+            "surname": "Newbie",
+            "email": "nola.newbie@world.com"
+        },
+        {
+            "id": "89d1f5de-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Neva",
+            "surname": "Newbie",
+            "email": "neva.newbie@world.com"
+        },
+        {
+            "id": "89d1f638-ae0f-11ed-9bd8-0242ac110002",
+            "name": "Nora",
+            "surname": "Newbie",
+            "email": "nora.newbie@world.com"
+        }
+
+    ]
+}

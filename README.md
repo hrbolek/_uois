@@ -111,10 +111,13 @@ As minimal configuration there are
   - gql_ug provides roles so must be in every deployment
   - gql_forms (standard federation member)
 
-Database is deployed outside of this stack (see `host.docker.internal:5432`)
+Database can be deployed outside of this stack (see `host.docker.internal:5432`)
+
+Latest (and nearly minimal) configuration is defined by `docker-compose.yaml`
+
 
 ```yaml
-version: "3.9"
+version: "3.8"
 
 services:
   apollo:

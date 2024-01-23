@@ -3,13 +3,70 @@ import os
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, RedirectResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from contextlib import asynccontextmanager
 
 from mockoauthserver import server as OAuthServer
+
+from .users import (
+    ComposeConnectionString, 
+    startEngine, initDB, 
+    getDemoData, passwordValidator, emailMapper
+)
 
 logging.basicConfig(
     level=logging.INFO, 
     format='%(asctime)s.%(msecs)03d\t%(levelname)s:\t%(message)s', 
     datefmt='%Y-%m-%dT%I:%M:%S')
+
+
+# region DB setup
+
+## Definice GraphQL typu (pomoci strawberry https://strawberry.rocks/)
+## Strawberry zvoleno kvuli moznosti mit federovane GraphQL API (https://strawberry.rocks/docs/guides/federation, https://www.apollographql.com/docs/federation/)
+## Definice DB typu (pomoci SQLAlchemy https://www.sqlalchemy.org/)
+## SQLAlchemy zvoleno kvuli moznost komunikovat s DB asynchronne
+## https://docs.sqlalchemy.org/en/14/core/future.html?highlight=select#sqlalchemy.future.select
+
+
+## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
+# from gql_workflow.DBFeeder import createSystemDataStructureRoleTypes, createSystemDataStructureGroupTypes
+
+connectionString = ComposeConnectionString()
+
+def singleCall(asyncFunc):
+    """Dekorator, ktery dovoli, aby dekorovana funkce byla volana (vycislena) jen jednou. Navratova hodnota je zapamatovana a pri dalsich volanich vracena.
+    Dekorovana funkce je asynchronni.
+    """
+    resultCache = {}
+
+    async def result():
+        if resultCache.get("result", None) is None:
+            resultCache["result"] = await asyncFunc()
+        return resultCache["result"]
+
+    return result
+
+@singleCall
+async def RunOnceAndReturnSessionMaker():
+    """Provadi inicializaci asynchronniho db engine, inicializaci databaze a vraci asynchronni SessionMaker.
+    Protoze je dekorovana, volani teto funkce se provede jen jednou a vystup se zapamatuje a vraci se pri dalsich volanich.
+    """
+
+    makeDrop = os.getenv("DEMO", None) in ["True", True]
+    logging.info(f'starting engine for "{connectionString} makeDrop={makeDrop}"')
+
+    asyncSessionMaker = await startEngine(
+        connectionstring=connectionString, makeDrop=makeDrop, makeUp=True
+    )
+
+    logging.info(f"initializing system structures")
+
+    await initDB(asyncSessionMaker)
+
+    logging.info(f"all done")
+    return asyncSessionMaker
+
+# endregion
 
 
 DEMO = os.getenv("DEMO", None)
@@ -33,7 +90,12 @@ if DEMO:
 
 
 # app = FastAPI(root_path="/apif")
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    initizalizedEngine = await RunOnceAndReturnSessionMaker()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 from .appindex import createIndexResponse
 # @app.exception_handler(StarletteHTTPException)
@@ -98,34 +160,26 @@ with open(configFile, "r", encoding="utf-8") as f:
 # ma volny pristup
 #
 #######################################################################
-users= [
-        {
-            "id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
-            "name": "John",
-            "surname": "Newbie",
-            "email": "john.newbie@world.com"
-        },
-        {
-            "id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
-            "name": "Julia",
-            "surname": "Newbie",
-            "email": "julia.newbie@world.com"
-        },
-        {
-            "id": "2d9dc9a8-a4a2-11ed-b9df-0242ac120003",
-            "name": "Johnson",
-            "surname": "Newbie",
-            "email": "johnson.newbie@world.com"
-        },
-        {
-            "id": "2d9dcbec-a4a2-11ed-b9df-0242ac120003",
-            "name": "Jepeto",
-            "surname": "Newbie",
-            "email": "jepeto.newbie@world.com"
-        }]
+demoData = getDemoData()
+users = demoData.get("users", [])
+
+async def bindedPasswordValidator(email, password):
+    asyncSessionMaker = await RunOnceAndReturnSessionMaker()
+    print(f"check for {email} & {password}")
+    result = await passwordValidator(asyncSessionMaker, email, password)
+    return result
+
+async def bindedEmailMapper(email):
+    asyncSessionMaker = await RunOnceAndReturnSessionMaker()
+    result = await emailMapper(asyncSessionMaker, email)
+    return result
 
 db_users = [{"id": user["id"], "email": user["email"]} for user in users]
-app.mount("/oauth", OAuthServer.createServer(db_users=db_users))
+app.mount("/oauth", OAuthServer.createServer(
+    db_users=db_users,
+    passwordValidator=bindedPasswordValidator,
+    emailMapper=bindedEmailMapper
+    ))
 
 #######################################################################
 #

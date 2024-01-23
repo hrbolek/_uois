@@ -7,5 +7,10 @@ aiohttp
 prometheus-client
 prometheus_fastapi_instrumentator
 
+sqlalchemy
+asyncpg
+aiodataloader
+strawberry-graphql
+
 https://github.com/hrbolek/uoishelpers/archive/refs/heads/main.zip
 https://github.com/hrbolek/PyMockOAuthServer/archive/refs/heads/main.zip

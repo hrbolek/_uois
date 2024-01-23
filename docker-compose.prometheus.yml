@@ -62,7 +62,8 @@ services:
       - 33012:8000
 
   gql_events:
-    image: nafreju2/gql_events # where u user.events
+    # image: nafreju2/gql_events # where u user.events
+    image: hrbolek/gql_events # where u user.events
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -248,6 +249,7 @@ services:
     environment:
       - DEMO=False
       - GQL_PROXY=http://apollo:3000/api/gql/
+      - SALT=fe1c71b2-74c0-41e5-978f-eecbffac7418
     ports:
       - 33001:8000
     volumes:
