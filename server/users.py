@@ -109,5 +109,10 @@ async def initDB(asyncSessionMaker):
             id = row.get("id", None)
             assert id is not None, f"user {row} has no id"
             user = UserModel(id=id, email=email, password=passwordh)
-            await loader.insert(user)
+            # row = await loader.load(id)
+            # if row is None:
+            try:
+                await loader.insert(user)
+            except:
+                pass
 

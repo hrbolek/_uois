@@ -5,6 +5,7 @@ services:
     image: hrbolek/frontend
     environment:
       - DEMO=False
+      - DEMODATA=True
       # link na db mimo stack
       # - POSTGRES_HOST=host.docker.internal:5432
       - POSTGRES_HOST=postgres_credentials:5432
@@ -71,7 +72,8 @@ services:
       - POSTGRES_DB=data
       - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
       - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
-      - DEMO=True
+      - DEMO=False
+      - DEMODATA=True
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"
@@ -98,7 +100,8 @@ services:
       - GQLUG_ENDPOINT_URL=http://gql_ug:8000/gql
       - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
       - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
-      - DEMO=True
+      - DEMO=False
+      - DEMODATA=True
     # ports:
     #   - 33331:8000
     depends_on:
@@ -116,7 +119,8 @@ services:
       - GQLUG_ENDPOINT_URL=http://gql_ug:8000/gql
       - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
       - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
-      - DEMO=True
+      - DEMO=False
+      - DEMODATA=True
     healthcheck:
       # definice, umoznujici provest test, zda je kontejner v poradku
       test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"

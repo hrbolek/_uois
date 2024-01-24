@@ -3,7 +3,8 @@
 # Zero phase
 #
 ###############################################################
-FROM python:3.9-slim-buster as pythonbase
+FROM python:3.10.13-slim as pythonbase
+
 
 # instalace curl, aby bylo mozne zprovoznit standardni healthcheck
 RUN apt update && apt install curl -y && rm -rf /var/cache/apk/*
