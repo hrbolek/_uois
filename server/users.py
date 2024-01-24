@@ -95,7 +95,7 @@ def getDemoData():
 async def initDB(asyncSessionMaker):
     DEMO = os.environ.get("DEMO", None)
     assert DEMO is not None, "DEMO environment variable must be explicitly defined"
-    if DEMO in ["True", True]:
+    if DEMO in ["True", True, "False", False]:
     # if True:
         jsonData = getDemoData()
 
