@@ -105,6 +105,10 @@ Only if logged user (identified by the token), has appropriate roles towards rba
 
 ## Deployment
 
+```bash
+docker compose pull
+```
+
 As minimal configuration there are
   - frontend (authority, html page provider, proxy to api)
   - apollo (covers all federation members thus it is also indirectly proxies them)

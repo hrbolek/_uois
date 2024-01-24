@@ -24,10 +24,10 @@ services:
 
     ports:
       - 33001:8000
-    volumes:
-    # for development
-      - ./server/htmls:/app/server/htmls
-      - ./server/config.json:/app/server/config.json
+    # volumes:
+    # # for development
+    #   - ./server/htmls:/app/server/htmls
+    #   - ./server/config.json:/app/server/config.json
     depends_on:
       - postgres_credentials
 
