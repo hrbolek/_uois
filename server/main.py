@@ -152,6 +152,11 @@ with open(configFile, "r", encoding="utf-8") as f:
     for key, setup in config.items():
         createApp(key, setup)
 
+@app.get("/logout")
+def logout():
+    result = RedirectResponse("/oauth/login2?redirect_uri=/", status_code=303)
+    result.delete_cookie("authorization")
+    return result
 
 #######################################################################
 #

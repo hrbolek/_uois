@@ -44,6 +44,16 @@ async def createIndexResponse(request: Request):
     <script type="module" src="https://md-block.verou.me/md-block.js"></script>
   </head>
   <body>
+    <div class="container-fluid p-5 bg-light text-end">
+    	<div class="row">
+          <div class="col col-md-10 text-center">
+    	        <h1>Laboratory IS</h1>
+          </div>
+          <div class="col col-md-2 text-end">
+                <a href="/logout" class="btn btn-outline-primary">Logout</a>
+          </div>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row">
             {body}
