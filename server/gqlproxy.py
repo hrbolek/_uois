@@ -44,6 +44,9 @@ def connectProxy(app):
         print(headers.__dict__)
         c = dict(headers.items())
         headers = {"cookie": c.get("cookie", None)}
+        authorizationHeader = c.get("authorization", None)
+        if authorizationHeader is not None:
+            headers["authorization"] = authorizationHeader
         print("outgoing:", headers)
         async with aiohttp.ClientSession() as session:
             async with session.post(proxy, json=gqlQuery, headers=headers) as resp:
