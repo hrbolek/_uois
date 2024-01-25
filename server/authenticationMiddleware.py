@@ -118,10 +118,14 @@ class BasicAuthenticationMiddleware302(AuthenticationMiddleware):
     @staticmethod
     def default_on_error(conn: HTTPConnection, exc: Exception) -> Response:
         where = conn.url.path
-        return RedirectResponse(f"/oauth/login2?redirect_uri={where}", status_code=302)
+        result = RedirectResponse(f"/oauth/login2?redirect_uri={where}", status_code=302)
+        result.delete_cookie("authorization")
+        return result
 
 class BasicAuthenticationMiddleware404(AuthenticationMiddleware):
     @staticmethod
     def default_on_error(conn: HTTPConnection, exc: Exception) -> Response:
         where = conn.url.path
-        return PlainTextResponse(f"Unauthorized for {where}", status_code=404)
+        result = PlainTextResponse(f"Unauthorized for {where}", status_code=404)
+        result.delete_cookie("authorization")
+        return result
