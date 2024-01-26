@@ -103,7 +103,8 @@ from .appindex import createIndexResponse
 #     print(exc)
 #     return await createIndexResponse(request=request)
 
-from .authenticationMiddleware import BasicAuthenticationMiddleware302, BasicAuthBackend
+# from .authenticationMiddleware import BasicAuthenticationMiddleware302, BasicAuthBackend
+from uoishelpers.authenticationMiddleware import BasicAuthenticationMiddleware302, BasicAuthBackend
 JWTPUBLICKEY = os.environ.get("JWTPUBLICKEY", "http://localhost:8000/oauth/publickey")
 JWTRESOLVEUSERPATH = os.environ.get("JWTRESOLVEUSERPATH", "http://localhost:8000/oauth/userinfo")
 
@@ -170,12 +171,14 @@ users = demoData.get("users", [])
 
 async def bindedPasswordValidator(email, password):
     asyncSessionMaker = await RunOnceAndReturnSessionMaker()
-    print(f"check for {email} & {password}")
     result = await passwordValidator(asyncSessionMaker, email, password)
+    logging.info(f"check for {email} & {password} -> {result}")
     return result
 
 async def bindedEmailMapper(email):
     asyncSessionMaker = await RunOnceAndReturnSessionMaker()
+    logging.info(f"bindedEmailMapper {email}")
+
     result = await emailMapper(asyncSessionMaker, email)
     return result
 

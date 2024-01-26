@@ -3,6 +3,7 @@ import uuid
 import hashlib
 import json
 import sqlalchemy
+import logging
 from functools import cache
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy import Column, Uuid, String, select
@@ -14,7 +15,8 @@ BaseModel = declarative_base()
 
 class UserModel(BaseModel):
     __tablename__ = "user_credentials"
-    id = Column(Uuid, primary_key=True, comment="primary key", default=uuid.uuid1)
+    # id = Column(Uuid, primary_key=True, comment="primary key", default=uuid.uuid1)
+    id = Column(String, primary_key=True, comment="primary key")
     email = Column(String)
     password = Column(String)
 
@@ -63,9 +65,7 @@ def getsalt():
     assert result is not None, "SALT environment variable must be explicitly defined"
     return result.encode(encoding="utf-8")
 
-def hashfunction(value):
-    if value is None:
-        value = " "
+def hashfunction(value= " "):
     result = hashlib.pbkdf2_hmac('sha256', value.encode('utf-8'), getsalt(), 100000)    
     return result.hex()
 
@@ -74,18 +74,14 @@ async def passwordValidator(asyncSessionMaker, email, rawpassword):
     hashedpassword = hashfunction(rawpassword)
     rows = await loader.filter_by(email=email)
     row = next(rows, None)
-    print(f"passwordValidator loader returns {row}")
-    if row is None:
-        return False
-    return row.password == hashedpassword
+    logging.info(f"passwordValidator loader returns {row} for email {email}")
+    return False if row is None else row.password == hashedpassword
 
 async def emailMapper(asyncSessionMaker, email):
     loader = createLoader(asyncSessionMaker)
     rows = await loader.filter_by(email=email)
     row = next(rows, None)
-    if row is None:
-        return None
-    return row.id
+    return None if row is None else row.id
 
 def getDemoData():
     with open("./systemdata.json", "r", encoding="utf-8") as f:
@@ -96,6 +92,8 @@ async def initDB(asyncSessionMaker):
     DEMO = os.environ.get("DEMO", None)
     assert DEMO is not None, "DEMO environment variable must be explicitly defined"
     if DEMO in ["True", True, "False", False]:
+        logging.info(f"Inserting users into DB")
+
     # if True:
         jsonData = getDemoData()
 
@@ -105,14 +103,16 @@ async def initDB(asyncSessionMaker):
             email = row.get("email", None)
             assert email is not None, f"user {row} has no email"
             password = row.get("password", email)
-            passwordh = hashfunction(password)
+            hashedpassword = hashfunction(password)
             id = row.get("id", None)
             assert id is not None, f"user {row} has no id"
-            user = UserModel(id=id, email=email, password=passwordh)
-            # row = await loader.load(id)
-            # if row is None:
+            user = UserModel(id=id, email=email, password=hashedpassword)
+            row = await loader.load(id)
+            logging.info(f"got {row}")
             try:
+                logging.info(f"{user} [{user.email}] inserting in DB")
                 await loader.insert(user)
+                logging.info(f"{user} inserted in DB")
             except:
                 pass
 
