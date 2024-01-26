@@ -218,12 +218,37 @@ async def hello(requets: Request):
     client = requets.client
     headers = requets.headers
     cookies = requets.cookies
+    import aiohttp
+    import jwt
+    bearer = cookies.get("authorization")
+    token = bearer.replace("Bearer ", "")
 
+    JWTPUBLICKEYURL="http://locahost:8000/oauth/publickey"
+    JWTPUBLICKEYURL="http://127.0.0.1:8000/oauth/publickey"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(JWTPUBLICKEYURL) as resp:
+            assert resp.status == 200, resp
+            pktext = await resp.text() 
+    print(f"have pktext={pktext}")
+    logging.info(f"have pktext={pktext}")
+    pkey = pktext.replace('"', "").replace("\\n", "\n")
+    jwtdecoded = jwt.decode(jwt=token, key=pkey, algorithms=["RS256"])
+    print(f"jwtdecoded = {jwtdecoded}")
+    logging.info(f"jwtdecoded = {jwtdecoded}")
+    userid = jwtdecoded["user_id"]
+    print(f"userid = {userid}")
+    logging.info(f"userid = {userid}")
+    print(f"SUCCESS")
+    logging.info(f"SUCCESS")
     return {
         "hello": "world",
         "client": client,
         "headers": headers,
-        "cookies": cookies
+        "cookies": cookies,
+        "token": token,
+        "publickey": pkey,
+        "jwtdecoded": jwtdecoded,
+        "userid": userid
         }
 
 if not DEMO:
