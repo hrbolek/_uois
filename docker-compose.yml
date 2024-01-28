@@ -44,6 +44,8 @@ services:
         [
           {"name": "ug", "url": "http://gql_ug:8000/gql"},
           {"name": "forms", "url": "http://gql_forms:8000/gql"},
+          {"name": "granting", "url": "http://gql_granting:8000/gql"},
+          {"name": "facilities", "url": "http://gql_facilities:8000/gql"},
           {"name": "events", "url": "http://gql_events:8000/gql"}
         ]       
     healthcheck:
@@ -60,6 +62,8 @@ services:
       - gql_ug
       - gql_forms
       - gql_events
+      - gql_granting
+      - gql_facilities
 
   gql_ug:
     image: hrbolek/gql_ug #   image: kavic/ug
@@ -104,6 +108,42 @@ services:
       - DEMODATA=True
     # ports:
     #   - 33331:8000
+    depends_on:
+      - postgres_gql
+
+  gql_facilities:
+    image: hrbolek/gql_facilities 
+    environment:
+      # link na db mimo stack
+      # - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_HOST=postgres_gql:5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      - GQLUG_ENDPOINT_URL=http://gql_ug:8000/gql
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=False
+      - DEMODATA=True
+    # ports:
+    #   - 33331:8000
+    depends_on:
+      - postgres_gql
+
+  gql_granting:
+    image: hrbolek/gql_granting # where u user.events
+    environment:
+      # link na db mimo stack
+      # - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_HOST=postgres_gql:5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      - GQLUG_ENDPOINT_URL=http://gql_ug:8000/gql
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=False
+      - DEMODATA=True
     depends_on:
       - postgres_gql
 
