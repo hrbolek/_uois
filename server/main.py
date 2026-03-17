@@ -264,22 +264,6 @@ if not DEMO:
 
 app.mount("/debug", debugApp)
 
-#######################################################################
-#
-# tato cast je pro index - portal
-# je dostupna jen s autentizaci
-#
-#######################################################################
-
-indexApp = FastAPI()
-@indexApp.get("/")
-async def index(request: Request):
-    return await createIndexResponse(request=request)
-app.mount("/index", indexApp)
-
-if not DEMO:
-    indexApp.add_middleware(BasicAuthenticationMiddleware302, backend=BasicAuthBackend(JWTPUBLICKEY=JWTPUBLICKEY, JWTRESOLVEUSERPATH=JWTRESOLVEUSERPATH))
-
 genericsApp = FastAPI()
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent  # adresář kde leží tento .py soubor
@@ -300,6 +284,22 @@ app.mount("/generic", genericsApp)
 if not DEMO:
     genericsApp.add_middleware(BasicAuthenticationMiddleware302, backend=BasicAuthBackend(JWTPUBLICKEY=JWTPUBLICKEY, JWTRESOLVEUSERPATH=JWTRESOLVEUSERPATH))
 
+
+#######################################################################
+#
+# tato cast je pro index - portal
+# je dostupna jen s autentizaci
+#
+#######################################################################
+
+indexApp = FastAPI()
+@indexApp.get("/")
+async def index(request: Request):
+    return await createIndexResponse(request=request)
+app.mount("/index", indexApp)
+
+if not DEMO:
+    indexApp.add_middleware(BasicAuthenticationMiddleware302, backend=BasicAuthBackend(JWTPUBLICKEY=JWTPUBLICKEY, JWTRESOLVEUSERPATH=JWTRESOLVEUSERPATH))
 
 #######################################################################
 #

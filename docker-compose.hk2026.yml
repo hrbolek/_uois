@@ -72,7 +72,7 @@ services:
       # vnejsi port : port, kde sluzbu poskytuje kontejner
       # - 33000:3000
     deploy:
-      replicas: 3
+      replicas: 1
     depends_on:
       - gql_ug
       - gql_office

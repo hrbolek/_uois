@@ -1,9 +1,9 @@
 {
-    "generic": { 
+    "generic_": { 
         "file": "generic.html",
         "title": "UI z metadat GraphQL API",
         "authors": "Hrbolek",
-        "markdownfile": "generic.md"
+        "markdownfile": "generic_.md"
     },
     "babel": { 
         "file": "babel.html",
