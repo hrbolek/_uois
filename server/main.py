@@ -280,6 +280,27 @@ app.mount("/index", indexApp)
 if not DEMO:
     indexApp.add_middleware(BasicAuthenticationMiddleware302, backend=BasicAuthBackend(JWTPUBLICKEY=JWTPUBLICKEY, JWTRESOLVEUSERPATH=JWTRESOLVEUSERPATH))
 
+genericsApp = FastAPI()
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent  # adresář kde leží tento .py soubor
+DIST_DIR = BASE_DIR / "htmls/dyn"                # např. vedle app.py
+print("DIST_DIR", DIST_DIR)
+INDEX_HTML = DIST_DIR / "index.html"
+@genericsApp.get("/{full_path:path}")
+async def so(full_path: str):
+    # pokud ten soubor reálně existuje, nech ho obsloužit statikou
+    candidate = (DIST_DIR / full_path)
+    if candidate.exists() and candidate.is_file():
+        return FileResponse(candidate)
+
+    # jinak vrať index.html (React Router si to převezme)
+    return FileResponse(INDEX_HTML)
+app.mount("/generic", genericsApp)
+
+if not DEMO:
+    genericsApp.add_middleware(BasicAuthenticationMiddleware302, backend=BasicAuthBackend(JWTPUBLICKEY=JWTPUBLICKEY, JWTRESOLVEUSERPATH=JWTRESOLVEUSERPATH))
+
+
 #######################################################################
 #
 # tato cast je pro index - portal

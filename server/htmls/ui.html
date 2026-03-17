@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>GQL Model Viewer</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>  
+
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/htm@2.2.1" crossorigin></script>
+
+  <script src="https://unpkg.com/@reduxjs/toolkit@1.9.3/dist/redux-toolkit.umd.js"></script>
+</head>
+
+<body>
+
+    <!-- <div class="container-fluid p-3 bg-success bg-opacity-10 text-center">
+        <h1>Přijímací řízení 2025/26</h1>
+    </div> -->
+    
+    <div id="root"></div>
+
+    <script>
+        const introspectionQuery = `
+query IntrospectionQuery {
+  __schema {
+    queryType { name }
+    mutationType { name }
+    types {
+      name
+      description
+      kind
+      fields {
+        name
+        description
+        args {
+          name
+          description
+          type {
+            kind
+            name
+            ofType {
+              kind
+              name
+              ofType {
+                kind
+                name
+                ofType {
+                  kind
+                  name
+                }
+              }
+            }
+          }
+        }
+        type {
+          kind
+          name
+          ofType {
+            kind
+            name
+            ofType {
+              kind
+              name
+              ofType {
+                kind
+                name
+              }
+            }
+          }
+        }
+      }
+      inputFields {
+        name
+        description
+        type {
+          kind
+          name
+          ofType {
+            kind
+            name
+            ofType {
+              kind
+              name
+            }
+          }
+        }
+      }
+      possibleTypes {
+        name
+        kind
+      }
+    }
+  }
+}
+`;        
+        const gqlUri = '/api/gql';
+        let instrospection = "";
+        fetch(gqlUri, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: introspectionQuery })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            introspection = data.data
+        })
+        .catch(error => {
+            introspection = "ERROR"
+            // document.getElementById('content').innerHTML = 'Error loading markdown: ' + error;
+        });        
+    </script>
+    
+    <script>
+    function formatType(typeRef) {
+      if (!typeRef) return "";
+      const kind = typeRef.kind;
+      if (kind === "NON_NULL") {
+        return formatType(typeRef.ofType) + "!";
+      } else if (kind === "LIST") {
+        return "[" + formatType(typeRef.ofType) + "]";
+      } else {
+        const typeName = typeRef.name || "";
+        if (typeName) {
+          const builtInScalars = new Set(["String", "Int", "Float", "Boolean", "ID"]);
+          if (builtInScalars.has(typeName)) {
+            return typeName;
+          }
+          const anchor = typeName.toLowerCase();
+          return `[${typeName}](#${anchor})`;
+        }
+        return "";
+      }
+    }
+
+    // Generate markdown for a field.
+    function markdownForField(field) {
+      let s = `- **${field.name}**: ${formatType(field.type)}`;
+      if (field.description) {
+        s += ` – ${field.description}`;
+      }
+      if (field.args && field.args.length > 0) {
+        s += "\n  - **Arguments:**";
+        field.args.forEach(arg => {
+          s += `\n    - **${arg.name}**: ${formatType(arg.type)}`;
+          if (arg.description) {
+            s += ` – ${arg.description}`;
+          }
+        });
+      }
+      return s;
+    }
+
+    function markdownForInputField(field) {
+      let s = `- **${field.name}**: ${formatType(field.type)}`;
+      if (field.description) {
+        s += ` – ${field.description}`;
+      }
+      return s;
+    }
+
+    function markdownForObjectType(typeObj) {
+      let s = `#### ${typeObj.name}\n\n`;
+      if (typeObj.description) s += `${typeObj.description}\n\n`;
+      if (typeObj.fields) {
+        s += "Fields:\n";
+        typeObj.fields.forEach(field => {
+          s += markdownForField(field) + "\n";
+        });
+        s += "\n";
+      }
+      return s;
+    }
+    
+    function markdownForInputObjectType(typeObj) {
+      let s = `#### ${typeObj.name}\n\n`;
+      if (typeObj.description) s += `${typeObj.description}\n\n`;
+      if (typeObj.inputFields) {
+        s += "Input Fields:\n";
+        typeObj.inputFields.forEach(field => {
+          s += markdownForInputField(field) + "\n";
+        });
+        s += "\n";
+      }
+      return s;
+    }
+    
+    function markdownForScalarType(typeObj) {
+      let s = `#### ${typeObj.name}\n\n`;
+      if (typeObj.description) s += `${typeObj.description}\n\n`;
+      return s;
+    }
+
+    // Unwrap nested types to get the named type.
+    function getNamedType(typeRef) {
+      while (typeRef && typeRef.ofType) {
+        typeRef = typeRef.ofType;
+      }
+      return typeRef;
+    }
+
+    function variableTypeString(typeRef) {
+      if (!typeRef) return "";
+      const kind = typeRef.kind;
+      if (kind === "NON_NULL") {
+        return variableTypeString(typeRef.ofType) + "!";
+      } else if (kind === "LIST") {
+        return "[" + variableTypeString(typeRef.ofType) + "]";
+      } else {
+        return typeRef.name || "";
+      }
+    }
+
+    function generateVariableDefinitions(args, typesByName) {
+      let varDefs = [];
+      args.forEach(arg => {
+        if (arg.name === "where") {
+          varDefs.push(`$${arg.name}: ${variableTypeString(arg.type)}`);
+        } else {
+          let named = getNamedType(arg.type);
+          if (named.kind === "INPUT_OBJECT") {
+            let inputDef = typesByName[named.name];
+            if (inputDef && inputDef.inputFields) {
+              inputDef.inputFields.forEach(field => {
+                varDefs.push(`$${arg.name}_${field.name}: ${variableTypeString(field.type)}`);
+              });
+            } else {
+              varDefs.push(`$${arg.name}: ${variableTypeString(arg.type)}`);
+            }
+          } else {
+            varDefs.push(`$${arg.name}: ${variableTypeString(arg.type)}`);
+          }
+        }
+      });
+      return varDefs;
+    }
+
+    function generateFieldArguments(args, typesByName) {
+      let parts = [];
+      args.forEach(arg => {
+        if (arg.name === "where") {
+          parts.push(`${arg.name}: $${arg.name}`);
+        } else {
+          let named = getNamedType(arg.type);
+          if (named.kind === "INPUT_OBJECT") {
+            let inputDef = typesByName[named.name];
+            if (inputDef && inputDef.inputFields) {
+              let fields = [];
+              inputDef.inputFields.forEach(field => {
+                fields.push(`${field.name}: $${arg.name}_${field.name}`);
+              });
+              let objStr = "{" + fields.join(", ") + "}";
+              parts.push(`${arg.name}: ${objStr}`);
+            } else {
+              parts.push(`${arg.name}: $${arg.name}`);
+            }
+          } else {
+            parts.push(`${arg.name}: $${arg.name}`);
+          }
+        }
+      });
+      return parts.length > 0 ? "(" + parts.join(", ") + ")" : "";
+    }
+
+    function getFragmentName(typeName) {
+      if (typeName.endsWith("GQLModelUpdateError")) {
+        return "Error";
+      } else if (typeName.endsWith("GQLModel")) {
+        return typeName.slice(0, -"GQLModel".length);
+      } else {
+        return typeName;
+      }
+    }
+
+    // Helper: recursively check if a type (or its nested ofType) is NON_NULL.
+    function isMandatory(typeRef) {
+      if (!typeRef) return false;
+      if (typeRef.kind === "NON_NULL") return true;
+      return typeRef.ofType ? isMandatory(typeRef.ofType) : false;
+    }
+
+    // Returns true if any argument of the field is mandatory.
+    function hasMandatoryArgs(field) {
+      return field.args && field.args.some(arg => isMandatory(arg.type));
+    }
+
+    // Updated fragment generator: for fields within a fragment,
+    // if the field's fragment would be the same as the current fragment, output just "field { id }".
+    function generateSelectionSetWithFragments(typeRef, typesByName, fragments, depth = 0, maxDepth = 2, indentLevel = 1, indentStr = "  ") {
+      const base = getNamedType(typeRef);
+      if (base.kind === "UNION") {
+        let possibleTypes = base.possibleTypes;
+        if (!possibleTypes) {
+          const unionDef = typesByName[base.name];
+          possibleTypes = unionDef ? (unionDef.possibleTypes || []) : [];
+        }
+        let unionLines = [];
+        possibleTypes.forEach(possible => {
+          const possibleName = possible.name;
+          if (!fragments[possibleName]) {
+            generateSelectionSetWithFragments(possible, typesByName, fragments, depth + 1, maxDepth, indentLevel + 1, indentStr);
+          }
+          const inlineFragment = `... on ${possibleName} { ...${getFragmentName(possibleName)} }`;
+          unionLines.push(indentStr.repeat(indentLevel) + inlineFragment);
+        });
+        if (unionLines.length > 0) {
+          const unionBlock = "{\n" + unionLines.join("\n") + "\n" + indentStr.repeat(indentLevel - 1) + "}";
+          return unionBlock;
+        } else {
+          return "";
+        }
+      } else if (base.kind !== "OBJECT") {
+        return "";
+      }
+      if (depth >= maxDepth) {
+        return "{ __typename, id }";
+      }
+      const typeName = base.name;
+      if (!fragments[typeName]) {
+        const typeDef = typesByName[typeName];
+        let fragmentBody = "";
+        if (!typeDef || !typeDef.fields) {
+          fragmentBody = "{ __typename, id }";
+        } else {
+          let fragmentLines = [];
+          // Always include __typename first.
+          fragmentLines.push(indentStr.repeat(indentLevel) + "__typename");
+          typeDef.fields.forEach(f => {
+            let line = indentStr.repeat(indentLevel);
+            // Check if field has arguments and mandatory ones should be commented.
+            if (f.args && hasMandatoryArgs(f)) {
+              line += "# " + f.name;
+            } else {
+              const fNamed = getNamedType(f.type);
+              const fragName = getFragmentName(fNamed.name || "");
+              const currentFrag = getFragmentName(typeName);
+              // If the field's fragment would be the same as the current fragment, output field { id }.
+              if (["OBJECT", "UNION"].includes(fNamed.kind)) {
+                if (fragName === currentFrag) {
+                  const fragmentLinesCpy = [...fragmentLines]
+
+                  if (!fragmentLinesCpy.includes("__typename")) {
+                      fragmentLinesCpy.unshift("__typename");
+                  }
+                  if (!fragmentLinesCpy.includes("id")) {
+                      fragmentLinesCpy.push("id");
+                  }                  
+                  line += `${f.name} { ${fragmentLinesCpy.join("\n")} }`;
+                } else if (depth + 1 < maxDepth) {
+                  const subSelection = generateSelectionSetWithFragments(f.type, typesByName, fragments, depth + 1, maxDepth, indentLevel + 1, indentStr);
+                  line += `${f.name} ${subSelection}`;
+                } else {
+                  line += `${f.name} { __typename id }`;
+                }
+              } else {
+                line += f.name;
+              }
+            }
+            fragmentLines.push(line);
+          });
+          fragmentBody = "{\n" + fragmentLines.join("\n") + "\n" + indentStr.repeat(indentLevel - 1) + "}";
+        }
+        const fragmentDef = `fragment ${getFragmentName(typeName)} on ${typeName} ${fragmentBody}`;
+        fragments[typeName] = fragmentDef;
+      }
+      return "{\n" + indentStr + `...${getFragmentName(typeName)}\n}`;
+    }
+
+    // Generate Query/Mutation example usage.
+    // Top-level examples use the field name in the header.
+    function generateQueryExample(field, typesByName, operationType = "query", maxDepth = 2) {
+      if (operationType === "mutation") {
+        maxDepth = 3;
+      }
+      const args = field.args || [];
+      const varDefs = generateVariableDefinitions(args, typesByName);
+      let varDefsStr = "";
+      if (varDefs.length > 0) {
+        varDefsStr = "(" + varDefs.join(", ") + ")";
+      }
+      const fieldArgs = generateFieldArguments(args, typesByName);
+      let fragments = {};
+      let selectionSet = "";
+      const base = getNamedType(field.type);
+      if (["OBJECT", "UNION"].includes(base.kind)) {
+        selectionSet = generateSelectionSetWithFragments(field.type, typesByName, fragments, 0, maxDepth, 1, "  ");
+        if (!selectionSet.trim().startsWith("{")) {
+          selectionSet = "{\n    " + selectionSet.trim() + "\n  }";
+        }
+      }
+      if (operationType === "mutation" && !selectionSet) {
+        selectionSet = "{ __typename, id }";
+      }
+      let lines = [];
+      lines.push(`${operationType} ${field.name}${varDefsStr} {`);
+      lines.push(`  ${field.name}${fieldArgs} ${selectionSet}`);
+      lines.push("}");
+      let query = lines.join("\n");
+      if (Object.keys(fragments).length > 0) {
+        const fragmentsText = Object.keys(fragments)
+          .map(frag => fragments[frag])
+          .join("\n\n");
+        query += "\n\n" + fragmentsText;
+      }
+      return query;
+    }
+
+    function generateEntityQueryExample(typeName, typesByName, maxDepth = 2) {
+      let fragments = {};
+      let selectionSet = generateSelectionSetWithFragments(
+        { kind: "OBJECT", name: typeName }, // obalíme typ jako field.type
+        typesByName,
+        fragments,
+        0,
+        maxDepth,
+        1,
+        "  "
+      );
+
+      if (!selectionSet.trim().startsWith("{")) {
+        selectionSet = "{\n    " + selectionSet.trim() + "\n  }";
+      }
+
+      const lines = [];
+      lines.push(`query($representations: [_Any!]!) {`);
+      lines.push(`  _entities(representations: $representations) {`);
+      lines.push(`    ... on ${typeName} ${selectionSet}`);
+      lines.push(`  }`);
+      lines.push(`}`);
+
+      let query = lines.join("\n");
+
+      if (Object.keys(fragments).length > 0) {
+        const fragmentsText = Object.values(fragments).join("\n\n");
+        query += "\n\n" + fragmentsText;
+      }
+
+      return query;
+    }
+
+    </script>
+    <script>
+        function generateQuery(typeName) {
+            const schemaData = introspection.__schema;
+            // console.log("generateQuery.schemaData", schemaData)
+            const types = schemaData.types;
+            const typesByName = {};
+            for (const t of types) {
+                if (t.name.startsWith("__")) continue;
+                typesByName[t.name] = t;
+            }
+            
+            const queryTypeName = schemaData.queryType ? schemaData.queryType.name : null;
+            const mutationTypeName = schemaData.mutationType ? schemaData.mutationType.name : null;
+            const queryType = typesByName[queryTypeName]
+            // najdeme pole, která vracejí požadovaný typ (a nejsou NON_NULL na vrcholu)
+            const matchingField = queryType.fields.find(field => {
+                const topLevelKind = field.type.kind;
+                const namedType = getNamedType(field.type);
+                const hasReturnType = topLevelKind !== "NON_NULL" && namedType.name === typeName;
+                return hasReturnType && field.name.endsWith("ById")
+            });
+
+            if (matchingField) {
+                const result = generateQueryExample(matchingField, typesByName)
+                return result
+            }
+            return null
+        }
+
+        function generateEntityQuery(typeName) {
+            const schemaData = introspection.__schema;
+            // console.log("generateQuery.schemaData", schemaData)
+            const types = schemaData.types;
+            const typesByName = {};
+            for (const t of types) {
+                if (t.name.startsWith("__")) continue;
+                typesByName[t.name] = t;
+            }
+            
+            const result = generateEntityQueryExample(typeName, typesByName)
+            return result
+            
+        }
+
+    </script>
+    <script type="text/babel">
+
+        const firstItem = {
+            __typename: "UserGQLModel",
+            id: "51d101a0-81f1-44ca-8366-6cf51432e8d6",
+            user: {
+                __typename: "UserGQLModel",
+                id: "9af964f0-778c-4e07-aa4a-9fe4f36b9ac2"
+            },
+            group: {
+                __typename: "GroupGQLModel",
+                id: "f2f2d33c-38ee-4f31-9426-f364bc488032"
+            },
+            program: {
+                __typename: "ProgramGQLModel",
+                id: "0ac1761b-0ec7-4fc2-b4d7-127e79a316eb"
+            }
+        }
+
+        const { useState, useRef } = React;
+        const { configureStore, createSlice } = RTK;
+        console.log("React", JSON.stringify(React))
+        
+        const Row = ({children, className, ...props}) => {
+            return (
+                <div {...props} className={className?className+" row": "row"}>
+                    {children}
+                </div>
+            )
+        }
+
+        const Col = ({children, className, ...props}) => {
+            return (
+                <div {...props} className={className?className+" col": "col"}>
+                    {children}
+                </div>
+            )
+        }
+        const CardCapsule = ({children}) => <div className="card"><div className="card-body">{children}</div></div>
+        const Table = ({data}) => {
+            if (data.length == 0) {
+                return null
+            }
+            const row = data[0] || {}
+            const priority_attributes = ["__typename", "id", "name"];
+            const attribute_names = Object.keys(row).filter( attribute_name => {
+                const attribute_value = row[attribute_name]
+                if (Array.isArray(attribute_value)) return false;
+                if (typeof attribute_value === "object" && attribute_value !== null) return false
+                return true
+            })
+            const sorted_attributes = [
+                // nejdřív položky podle priority (ve správném pořadí)
+                ...priority_attributes.filter(attr => attribute_names.includes(attr)),
+                // pak ostatní, které v prioritách nejsou
+                ...attribute_names.filter(attr => !priority_attributes.includes(attr))
+            ];
+            // console.log("Table.attribute_names", attribute_names)
+            /* attribute_names.push("link") */ 
+            
+            return (
+            <div className="table-responsive">
+                <table className="table table-stripped">
+                    <thead>
+                    <tr>
+                        {sorted_attributes.map(name => <th key={name}>{name}</th>)}
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {data.map(row => <TableRow key={row?.id} datarow={row} attributes={sorted_attributes} />)}
+                    </tbody>
+                </table>
+            </div>
+            )
+        }
+        const Link = ({item}) => {
+             /* <a href={f`../${item?.__typename?.toLowerCase()}/${item?.id}`}>
+                  {item?.name || item?.id}
+              </a>*/
+            const { fetchEntityByTypeAndId } = React.useContext(GQLEntityContext);
+            const onClick = async (e) => {
+                e.preventDefault();
+                // setLoading(true);
+                const entity = await fetchEntityByTypeAndId(item.__typename, item.id);
+                // setLoading(false);                
+            }
+            return (
+                <a href="#" onClick={onClick}>
+                    {item?.fullname || item?.name || item?.id || "Data Error"} 
+                </a>
+            )
+        }
+        const LinkId = ({item}) => {
+             /* <a href={f`../${item?.__typename?.toLowerCase()}/${item?.id}`}>
+                  {item?.name || item?.id}
+              </a>*/
+            const { fetchEntityByTypeAndId } = React.useContext(GQLEntityContext);
+            const onClick = async (e) => {
+                e.preventDefault();
+                // setLoading(true);
+                const entity = await fetchEntityByTypeAndId(item.__typename, item.id);
+                // setLoading(false);                
+            }
+            return (
+                <a href="#" onClick={onClick}>
+                    {item?.id || "Data Error"} 
+                </a>
+            )
+        }
+
+        const MediumCard = ({item}) => {
+            return (
+                <CardCapsule>
+                    {Object.entries(item).map(([attribute_name, attribute_value]) => {
+                        // if (attribute_name !== "id") return null
+                        if (Array.isArray(attribute_value)) return null
+                        if (typeof attribute_value === "object" && attribute_value !== null) return null
+                        let attribute_value_result = attribute_value
+                        // let attribute_value_result = attribute_value
+                        if (Array.isArray(attribute_value))
+                            // attribute_value_result = <CardCapsule><Table data={attribute_value} /></CardCapsule>
+                            return null
+                        else if (typeof attribute_value === "object" && attribute_value !== null) 
+                            // attribute_value_result = <MediumCard item={attribute_value} />
+                            return null
+                        else if (attribute_name === "__typename") {
+                            /*attribute_value_result = <Link item={attribute_value} />*/
+                            console.log("else1", attribute_name, attribute_value)
+                        }
+                        if (attribute_name === "id")
+                            attribute_value_result = <LinkId item={item} />
+                        if (attribute_name === "name")
+                            attribute_value_result = <Link item={item} />
+                        // else return null
+                        if (attribute_value)
+                            return (
+                                <Row key={attribute_name}>
+                                    <Col className="col-4"><b>{attribute_name}</b></Col>
+                                    <Col className="col-8">{attribute_value_result}</Col>
+                                </Row>
+                            )
+                        else return null
+                    })}
+                    {Object.entries(item).map(([attribute_name, attribute_value]) => {
+                        if (attribute_value !== null) return null
+                        let attribute_value_result = JSON.stringify(attribute_value)
+                        if (Array.isArray(attribute_value))
+                            // attribute_value_result = <CardCapsule><Table data={attribute_value} /></CardCapsule>
+                            return null
+                        else if (typeof attribute_value === "object" && attribute_value !== null) 
+                            // attribute_value_result = <MediumCard item={attribute_value} />
+                            return null
+                        else if (attribute_name === "__typename") {
+                            /*attribute_value_result = <Link item={attribute_value} />*/
+                            console.log("else2", attribute_name, attribute_value)
+                        }
+                        if (attribute_value)
+                            return null
+                        else
+                            return (
+                                <Row key={attribute_name}>
+                                    <Col className="col-4"><b>{attribute_name}</b></Col>
+                                    <Col className="col-8">{attribute_value_result}</Col>
+                                </Row>
+                            )
+                    })}
+                </CardCapsule>
+            )
+        }
+
+        const MiddleCardVectors = ({item}) => {
+            return (
+                <CardCapsule>
+                    {Object.entries(item).map(([attribute_name, attribute_value]) => {
+                        if (Array.isArray(attribute_value)) {
+                            return (
+                              <Row key={attribute_name}>
+                                  <Col className="col-2"><b>{attribute_name}</b></Col>
+                                  <Col className="col-10">
+                                      <CardCapsule>
+                                          <Table data={attribute_value} />
+                                      </CardCapsule>
+                                  </Col>
+                              </Row>
+                            )
+                        } else {
+                          return null
+                        }
+                    })}
+                </CardCapsule>
+            )
+        }
+
+        const MiddleCardScalars = ({item}) => {
+            return (
+                <CardCapsule>
+                    {Object.entries(item).map(([attribute_name, attribute_value]) => {
+                        if (Array.isArray(attribute_value)) return null
+                        if (typeof attribute_value === "object" && attribute_value !== null) {
+                            return (
+                              <Row key={attribute_name}>
+                                  <Col className="col-2"><b>{attribute_name}</b></Col>
+                                  <Col className="col-10">
+                                      <MediumCard item={attribute_value} />
+                                  </Col>
+                              </Row>
+                            )
+                        }   
+                        else {
+                           return null
+                        }
+                    }
+                )}
+                </CardCapsule>
+            )
+        }
+
+        const TableRow = ({datarow={}, attributes=[]}) => {
+            // datarow["link"] = <Link item={datarow} />
+            const priority_atributes = ["__typename", "id", "name"]
+            return (
+                <tr>
+                    {attributes.map(name => {
+                        if (name === "id")
+                            return <td key={name}><LinkId item={datarow} /></td>
+                        if (name === "name")
+                            return <td key={name}><Link item={datarow} /></td>
+                        if (typeof datarow[name] === "object")
+                            return <td key={name}>{`${datarow[name]}`}</td>
+                        else
+                            return <td key={name}>{datarow[name] || ""}</td>
+                    })}
+                </tr>
+            )
+        }
+        // <MiddleCardScalars item={data} />
+        // <MiddleCardVectors item={data} />
+        const GQLEntityContext = React.createContext(null);
+
+        const GQLEntityProvider = ({ children }) => {
+            const [data, setData] = React.useState(firstItem);
+            const [error, setError] = React.useState(null);
+            const [query, setQuery] = React.useState("");
+
+            const fetchEntityByTypeAndId = async (typeName, id) => {
+                if (!introspection) {
+                    console.warn("Introspection not ready");
+                    setError("Introspection not ready");
+                    return null;
+                }
+
+                const gqlQuery = generateQuery(typeName); // využívá generateQueryExample
+                const variables = { id }
+                // const gqlQuery = generateEntityQuery(typeName)
+                // const variables = {"representations": [
+                //     {
+                //       "__typename": typeName,
+                //       "id": id
+                //     }
+                // ]}
+                if (!gqlQuery) {
+                    setError("No matching query for type: " + typeName);
+                    return null;
+                }
+                setQuery(()=> gqlQuery)
+                try {
+                    const res = await fetch(gqlUri, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ query: gqlQuery, variables: variables}),
+                    });
+
+                    const json = await res.json();
+                    if (json.errors) {
+                        setError(json.errors[0]?.message || "GraphQL error");
+                        return null;
+                    }
+
+                    const data = json.data;
+                    let value = data[Object.keys(data)[0]];
+                    if (Array.isArray(value) && value.length !== 0) {
+                        value = value[0]
+                    } 
+                      
+                    setData(() => value);
+                    return value;
+                } catch (err) {
+                    console.error("Fetch failed", err);
+                    setError(err.message);
+                    return null;
+                }
+            };
+
+            return (
+                <GQLEntityContext.Provider value={{ fetchEntityByTypeAndId, query, data, error }}>
+                    {children}
+                </GQLEntityContext.Provider>
+            );
+        };
+
+        const Visualiser = () => {
+            const { data, query } = React.useContext(GQLEntityContext);
+            const context = React.useContext(GQLEntityContext);
+            // console.log("Visualiser.data", data)
+            // console.log("Visualiser.context", context)
+            return (
+                <div className="container-fluid mt-5">
+                    <Row>
+                        <Col className="col-4">
+                            <MediumCard item={data} />
+                        </Col>
+                        <Col className="col-8">
+                            <MiddleCardScalars item={data} />
+                            <MiddleCardVectors item={data} />
+                        </Col>
+                    </Row>
+
+                    
+                    <pre>{query}</pre>
+                    <pre>{JSON.stringify(data, null, 4)}</pre>
+                </div>
+            );
+        }
+
+        const App = () => {
+            return (
+                <GQLEntityProvider>
+                    <Visualiser />
+                </GQLEntityProvider>
+            )
+        };
+
+
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+
+    </script>
+
+</body>
+</html>

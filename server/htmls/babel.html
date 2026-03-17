@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap 5 & ReactJS Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- React -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+
+  <!-- Babel (modern verze) -->
+  <script src="https://unpkg.com/@babel/standalone@7.25.0/babel.min.js"></script>
+
+  <!-- HTM (React JSX alternativa) -->
+  <script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js" crossorigin></script>
+
+  <!-- Redux Toolkit -->
+  <!-- <script src="https://unpkg.com/@reduxjs/toolkit@2.2.7/dist/redux-toolkit.umd.js"></script> -->
+  <!-- <script src="https://unpkg.com/@reduxjs/toolkit@2.11.2/dist/redux-toolkit.browser.mjs"></script> -->
+
+</head>
+
+<body>
+
+    <div class="container-fluid p-5 bg-primary text-white text-center">
+        <h1>Bootstrap with ReactJS Page</h1>
+    </div>
+    
+    <div class="container mt-5">
+        <div id="root"></div>
+    </div>
+
+    <script type="text/babel">
+        
+        const { useState } = React;
+        // const { configureStore, createSlice } = RTK;
+        console.log("React", JSON.stringify(React))
+        /*
+        const counterSlice = createSlice({
+            name: 'counter',
+            initialState: { 
+                value: 0
+            },
+            reducers: {
+                increment: (state) => state.value + 1,
+                decrement: (state) => state.value - 1,
+            }
+        })
+
+        const { increment, decrement } = counterSlice.actions;
+        const store = configureStore({
+            reducer: {
+                counter: counterSlice.reducer
+            }
+        })
+        //*/
+
+        const StudentTableRow = ({student, onStudentSelect}) => {
+            const studentSelectionChange = (value) => {
+                onStudentSelect(student.id, value)
+            }
+            return (
+                <tr>
+                    <td><CheckBox label={student.id} onChange={studentSelectionChange}/></td>
+                    <td>{student.name}</td>
+                    <td>{student.surname}</td>
+                    <td>{student.email}</td>
+                    <td><Counter /></td>
+                </tr>
+            )
+        }
+
+        const GroupTable = ({students, onStudentSelect}) => {
+            return (
+                <table className="table table-striped table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Email</th>
+                            <th>Tools</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            students.map(item => <StudentTableRow key={item.id} student={item} onStudentSelect={onStudentSelect}/>)
+                        }
+                    </tbody>
+                </table>
+            )
+        }
+       
+        const GroupCard = ({students, onStudentSelect, onAddStudent}) => {
+            const onclick = (e) => {
+                console.log('clicked')
+                const newStudent = {name: 'Paul', surname: 'Newmann', email: 'paul.newmann@whoknows.com'}
+                onAddStudent(newStudent)
+            }
+            return (
+                <div className="card">
+                    <div className="card-header">
+                        Hlavicka
+                    </div>
+                    <div className="card-body">
+                        Telicko
+                        <GroupTable students={students} onStudentSelect={onStudentSelect}/>
+                        <button className="btn btn-success" onClick={onclick}>Přidej</button>
+                    </div>
+                    <div className="card-footer">
+                        Paticka
+                        <button className="btn btn-success" onClick={onclick}>Přidej</button>
+                    </div>
+                </div>
+            )
+                
+        }
+
+        const Counter = (props) => {
+            const [value, setValue] = React.useState(0)
+            const increment = (e) => {
+                setValue(value + 1)
+            }
+            //
+            return (
+                <button className="btn btn-primary" onClick={increment}>{value}</button>
+            )
+        }
+
+
+        const CheckBox = ({label, onChange}) => {
+            const checkboxchange = (e) => {
+                if (onChange) {
+                    onChange(e.target.checked)
+                    //console.log(e.target.checked)
+                }
+            }
+            return (
+                <div className="form-check">
+                    <input 
+                        className="form-check-input" 
+                        type="checkbox" value="" id="flexCheckDefault" 
+                        onClick={checkboxchange} />
+                    <label className="form-check-label" htmlFor="flexCheckDefault">
+                        {label}
+                    </label>
+                </div>                
+            )
+        }
+
+        const GroupDataHolder = (props) => {
+            //const {students} = props
+            const [students, setStudents] = React.useState(props.students)
+            const onAdd = (student) => {
+                console.log('adding student')
+                console.log(student)
+                //students.push(student)
+                const ids = students.map(item => item.id)
+                console.log(ids)
+                student.id = Math.max(...ids) + 1
+                setStudents([...students, student])
+                //const newStudents = []
+
+                console.log(students)
+            }
+            const onStudentSelect = (studentId, selected) => {
+                console.log("studentId, selected")
+                console.log(studentId, selected)
+                const newStudents = students.map(
+                    (item) => item.id === studentId ? {...item, selected: selected} : item
+                )
+                setStudents(newStudents)
+            }
+
+            return (
+                <GroupCard students={students} onAddStudent={onAdd} onStudentSelect={onStudentSelect}/>
+            )
+        }
+
+        const MyApp = (props) => {
+            const {data} = props
+            return (
+                <div>
+                    <GroupDataHolder students={data.students}/>
+                </div>
+            )
+        }
+
+        const data = {
+            students: [
+                {'id': 1, name: "John", surname: "Newbie", email: "email@serveer.com"},
+                {'id': 2, name: "Julia", surname: "Sun", email: "email@serveer.com"},
+                {'id': 3, name: "Peter", surname: "Walker", email: "email@serveer.com"},
+            ]
+        }
+
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<MyApp data={data}/>);
+
+    </script>
+
+</body>
+</html>

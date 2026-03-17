@@ -1,4 +1,40 @@
 {
+    "generic": { 
+        "file": "generic.html",
+        "title": "UI z metadat GraphQL API",
+        "authors": "Hrbolek",
+        "markdownfile": "generic.md"
+    },
+    "babel": { 
+        "file": "babel.html",
+        "title": "Babel aplikace",
+        "authors": "Hrbolek",
+        "markdownfile": "babel.md"
+    },
+    "ui": { 
+        "file": "ui.html",
+        "title": "UI z metadat",
+        "authors": "Hrbolek",
+        "markdownfile": "ui.md"
+    },
+    "graphiql": { 
+        "file": "graphiql.html",
+        "title": "Graphiql",
+        "markdownfile": "graphiql.md",
+        "authors": "Greg Hurrell & many others"
+    },
+    "voyager": { 
+        "file": "voyager.html",
+        "title": "Voyager",
+        "authors": "Ivan Goncharov & many others",
+        "markdownfile": "voyager.md"
+    },
+    "doc": { 
+        "file": "doc.html",
+        "title": "Dokumentace",
+        "authors": "Hrbolek",
+        "markdownfile": "doc.md"
+    },
     "ug": { 
         "file": "ug.html",
         "title": "Uživatelé",
@@ -64,24 +100,6 @@
         "title": "Žádosti",
         "authors": "nikdo3",
         "markdownfile": "forms.md"
-    },
-    "graphiql": { 
-        "file": "graphiql.html",
-        "title": "Graphiql",
-        "markdownfile": "graphiql.md",
-        "authors": "Greg Hurrell & many others"
-    },
-    "voyager": { 
-        "file": "voyager.html",
-        "title": "Voyager",
-        "authors": "Ivan Goncharov & many others",
-        "markdownfile": "voyager.md"
-    },
-    "doc": { 
-        "file": "doc.html",
-        "title": "Dokumentace",
-        "authors": "Hrbolek",
-        "markdownfile": "doc.md"
     },
     "importer": { 
         "file": "importer.html",
