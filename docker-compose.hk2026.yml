@@ -1,0 +1,247 @@
+version: "3.8"
+
+x-services-volume:
+  &system-data-volume
+  type: bind
+  source: ./systemdata.hk2025.json
+  target: /app/systemdata.json
+
+services:
+  frontend:
+    image: hrbolek/frontend:0.11.0
+    environment:
+      - DEMO=True
+      - DEMODATA=True
+      # link na db mimo stack
+      # - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_HOST=postgres_credentials:5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      - GQL_PROXY=http://apollo:3000/api/gql/
+      - SALT=fe1c71b2-74c0-41e5-978f-eecbffac7418
+      - ADMIN_DEFAULT_EMAIL=john.newbie@world.com
+      - ADMIN_DEFAULT_PASSWORD=john.newbie@world.com
+
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu)
+      test: "curl -f -X GET http://localhost:8000/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+
+    ports:
+      - 33001:8000
+    volumes:
+      - <<: *system-data-volume
+    # volumes:
+    # # for development
+    #   - ./server/htmls:/app/server/htmls
+    #   - ./server/config.json:/app/server/config.json
+    depends_on:
+      - postgres_credentials
+
+
+#          {"name": "projects", "url": "http://gql_projects:8000/gql"}
+
+  apollo:
+    image: hrbolek/apollo_federation
+    # image: apollofederation:latest
+    environment:
+      # promenne, ktere lze cist v kontejneru
+      # SERVICES je json array popisujici jednotlive dostupne sluzby
+      - PORT=3000
+      - |
+        SERVICES=
+        [
+          {"name": "ug", "url": "http://gql_ug:8000/gql"},
+          {"name": "office", "url": "http://gql_office:8000/gql"},
+          {"name": "granting", "url": "http://gql_granting:8000/gql"},
+          {"name": "projects", "url": "http://gql_projects:8000/gql"}
+        ]       
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu a srovnejte s portem v environment)
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    # ports: #v deploymentu by nebylo zadne mapovani portu
+      # vnejsi port : port, kde sluzbu poskytuje kontejner
+      # - 33000:3000
+    deploy:
+      replicas: 3
+    depends_on:
+      - gql_ug
+      - gql_office
+      - gql_granting
+      - gql_projects
+
+  gql_ug:
+    image: hrbolek/gql_ug:0.11.0 #   image: kavic/ug
+    environment:
+      # link na db mimo stack
+      # - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_HOST=postgres_gql:5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=False
+      - DEMODATA=True
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    # deploy:
+    #   replicas: 3
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    # ports:
+    #   - 33012:8000
+    volumes:
+      - <<: *system-data-volume
+    depends_on:
+      - postgres_gql
+
+  gql_granting:
+    image: hrbolek/gql_granting:0.11.0 # where u user.events
+    environment:
+      # link na db mimo stack
+      # - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_HOST=postgres_gql:5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      - GQLUG_ENDPOINT_URL=http://gql_ug:8000/gql
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=False
+      - DEMODATA=True
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    volumes:
+      - <<: *system-data-volume
+    depends_on:
+      - postgres_gql
+
+  gql_office:
+    image: hrbolek/gql_office:0.11.0
+    environment:
+      # link na db mimo stack
+      # - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_HOST=postgres_gql:5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      - GQLUG_ENDPOINT_URL=http://gql_ug:8000/gql
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=False
+      - DEMODATA=True
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    # ports:
+    #   - 33013:8000
+    volumes:
+      - <<: *system-data-volume
+    depends_on:
+      - postgres_gql
+
+  gql_projects:
+    image: hrbolek/gql_projects:0.11.0 # frajxd/gql_projects # hrbolek/gql_projects
+    environment:
+      # link na db mimo stack
+      # - POSTGRES_HOST=host.docker.internal:5432
+      - POSTGRES_HOST=postgres_gql:5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      - GQLUG_ENDPOINT_URL=http://gql_ug:8000/gql
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=False
+      - DEMODATA=True
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    # ports:
+    #   - 33013:8000
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - <<: *system-data-volume
+    depends_on:
+      - postgres_gql
+
+
+
+  postgres_gql:
+    image: postgres
+    environment:
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    ports:
+      - 5432:5432
+
+  postgres_credentials:
+    image: postgres
+    environment:
+      # promenne, ktere lze cist v kontejneru
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    ports:
+      - 5433:5432
+
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      # promenne, ktere lze cist v kontejneru
+      - PGADMIN_DEFAULT_EMAIL=anoyne@anywhere.com
+      - PGADMIN_DEFAULT_PASSWORD=example
+    healthcheck:
+      test: ["CMD", "wget", "-O", "-", "http://localhost:80/misc/ping"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    ports:
+      - 31122:80
+
