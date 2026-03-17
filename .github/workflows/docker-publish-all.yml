@@ -34,7 +34,7 @@ jobs:
       - name: Define repository list
         id: define_repos
         run: |
-          echo "REPO_LIST=_uois,gql_ug,gql_office,gql_facilities,gql_events,gql_lessons,gql_admissions,gql_granting,gql_surveys,gql_publications,gql_externalids,gql_projects" >> $GITHUB_ENV
+          echo "REPO_LIST=_uois,gql_ug,gql_office,gql_facilities,gql_events,gql_lessons,gql_admissions,gql_granting,gql_externalids,gql_projects" >> $GITHUB_ENV
 
       - name: Authenticate Docker Hub
         run: |
