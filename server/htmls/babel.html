@@ -60,7 +60,13 @@
         })
         //*/
 
-        const StudentTableRow = ({student, onStudentSelect}) => {
+        const Note = ({ student, children, ...rest }) => {
+            return (
+                <p>Poznámka {student?.note} {children} <b>{children}</b>{rest?.extra}</p>
+            )
+        }
+
+        const StudentTableRow = ({student, onStudentSelect, ...rest}) => {
             const studentSelectionChange = (value) => {
                 onStudentSelect(student.id, value)
             }
@@ -70,12 +76,13 @@
                     <td>{student.name}</td>
                     <td>{student.surname}</td>
                     <td>{student.email}</td>
+                    <td><Note student={student} {...rest}> ! </Note></td>
                     <td><Counter /></td>
                 </tr>
             )
         }
 
-        const GroupTable = ({students, onStudentSelect}) => {
+        const GroupTable = ({students, onStudentSelect, ...rest}) => {
             return (
                 <table className="table table-striped table-hover table-sm">
                     <thead>
@@ -84,12 +91,13 @@
                             <th>Name</th>
                             <th>Surname</th>
                             <th>Email</th>
+                            <th>Note</th>
                             <th>Tools</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            students.map(item => <StudentTableRow key={item.id} student={item} onStudentSelect={onStudentSelect}/>)
+                            students.map(item => <StudentTableRow key={item.id} student={item} onStudentSelect={onStudentSelect} {...rest}/>)
                         }
                     </tbody>
                 </table>
@@ -109,7 +117,7 @@
                     </div>
                     <div className="card-body">
                         Telicko
-                        <GroupTable students={students} onStudentSelect={onStudentSelect}/>
+                        <GroupTable students={students} onStudentSelect={onStudentSelect} extra={"EX"}/>
                         <button className="btn btn-success" onClick={onclick}>Přidej</button>
                     </div>
                     <div className="card-footer">
@@ -193,7 +201,7 @@
 
         const data = {
             students: [
-                {'id': 1, name: "John", surname: "Newbie", email: "email@serveer.com"},
+                {'id': 1, name: "John", surname: "Newbie", email: "email@serveer.com", note:"Prvni"},
                 {'id': 2, name: "Julia", surname: "Sun", email: "email@serveer.com"},
                 {'id': 3, name: "Peter", surname: "Walker", email: "email@serveer.com"},
             ]

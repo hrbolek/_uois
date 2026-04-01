@@ -3,7 +3,7 @@ version: "3.8"
 x-services-volume:
   &system-data-volume
   type: bind
-  source: ./systemdata.hk2025.json
+  source: ./systemdata.hk2026.json
   target: /app/systemdata.json
 
 services:
@@ -80,7 +80,8 @@ services:
       - gql_projects
 
   gql_ug:
-    image: hrbolek/gql_ug:0.11.0 #   image: kavic/ug
+    # image: hrbolek/gql_ug:0.11.0 #   image: kavic/ug
+    image: hrbolek/gql_ug:latest
     environment:
       # link na db mimo stack
       # - POSTGRES_HOST=host.docker.internal:5432
