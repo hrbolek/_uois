@@ -28,6 +28,7 @@ def new_id():
     return str(uuid.uuid4())
 
 def createRbacObjectId(data, **props):
+    # c1803533-fdab-46a3-a45c-f2caaff8d24f
     groups = data.get("groups", [])
     rbacobject_id = new_id
     rbac = {
@@ -270,13 +271,57 @@ def patch_data(data):
     return data
 
 
+def update_chunks(data):
+    result_data = {}
+    dbModels = list(data.keys())
+    for model in dbModels:
+        rows = data.get(model, [])
+        # vsechny radky do dict
+        rowsdict = {}
+        for asdict in rows:
+            # print(row)
+            id = asdict.get("id", None)
+            if id is None: continue
+            rowsdict[id] = asdict
+        # vsechny primarní klice do ids
+        ids = set(rowsdict.keys())
+        todo = set()
+        done = set()
+        chunk_id = 0
+        while len(done) < len(ids):
+            for row in rowsdict.values():
+                id = row.get("id", None)
+                if id in done: continue
+                skip_this_id = False
+                for key, value in row.items():
+                    if key == "id": continue
+                    # if not isinstance(value, IDType): continue
+                    if value is None: continue
+                    if value not in ids: continue
+                    if value not in done: 
+                        # print(row, key, value)
+                        skip_this_id = True
+                        break
+                        # primarni klic je zpracovatelny, nemame zavislost na nezpracovanych klicich
+                if skip_this_id: continue
+                row["_chunk"] = chunk_id
+                todo.add(id)
+            print(f"{model} chunk {chunk_id} todo/done/all {len(todo)}/{len(done)}/{len(ids)}")
+            if len(todo) == 0: break
+            done = done.union(todo)
+            todo = set()
+            chunk_id += 1
+        result_data[model] = list(rowsdict.values())
+        
+    return result_data
+
 def main():
     with open(filename, "r", encoding="utf-8") as file:
         data = json.load(file)
 
     data = patch_data(data)
-
+    result_data = update_chunks(data)
     with open(f"{filename}.txt", "w", encoding="utf-8") as file:
-        json.dump(data, file, indent=4, ensure_ascii=False)
+        json.dump(result_data, file, indent=4, ensure_ascii=False)
 
 main()
