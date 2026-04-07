@@ -68,9 +68,9 @@ services:
       start_period: 60s
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
-    # ports: #v deploymentu by nebylo zadne mapovani portu
+    ports: #v deploymentu by nebylo zadne mapovani portu
       # vnejsi port : port, kde sluzbu poskytuje kontejner
-      # - 33000:3000
+      - 33002:3000
     deploy:
       replicas: 1
     depends_on:
@@ -103,8 +103,8 @@ services:
     # deploy:
     #   replicas: 3
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
-    # ports:
-    #   - 33012:8000
+    ports:
+      - 33003:8000
     volumes:
       - <<: *system-data-volume
     depends_on:
@@ -132,6 +132,8 @@ services:
       start_period: 60s
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+    ports:
+      - 33005:8000
     volumes:
       - <<: *system-data-volume
     depends_on:
@@ -159,15 +161,16 @@ services:
       start_period: 60s
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
-    # ports:
-    #   - 33013:8000
+    ports:
+      - 33004:8000
     volumes:
       - <<: *system-data-volume
     depends_on:
       - postgres_gql
 
   gql_projects:
-    image: hrbolek/gql_projects:0.11.0 # frajxd/gql_projects # hrbolek/gql_projects
+    image: hrbolek/gql_projects:0.11.0 
+    # image: hrbolek/gql_projects
     environment:
       # link na db mimo stack
       # - POSTGRES_HOST=host.docker.internal:5432
@@ -188,8 +191,8 @@ services:
       start_period: 60s
       timeout: 10s
     restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
-    # ports:
-    #   - 33013:8000
+    ports:
+      - 33006:8000
     command: uvicorn main:app --host 0.0.0.0 --port 8000
     volumes:
       - <<: *system-data-volume
