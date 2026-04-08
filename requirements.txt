@@ -10,6 +10,7 @@ prometheus_fastapi_instrumentator
 sqlalchemy
 asyncpg
 sqlalchemy-cockroachdb
+psycopg[binary]
 
 aiodataloader
 strawberry-graphql

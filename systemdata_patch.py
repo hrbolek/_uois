@@ -1,9 +1,14 @@
+import argparse
 from functools import cache
 import json
 from pathlib import Path
 import uuid
 
+import base64
+import decimal
+import datetime
 
+from sqlalchemy import create_engine, inspect, MetaData, Table, select
 
 filename = "systemdata.hk2025.json"
 filename = Path(__file__).parent / "systemdata.hk2025.json"
@@ -429,6 +434,7 @@ def update_chunks(data):
             todo = set()
 
             for row in rowsdict.values():
+                # print(".", end="")
                 row_id = row.get("id", None)
                 if row_id in done:
                     continue
@@ -439,14 +445,18 @@ def update_chunks(data):
                         continue
                     if key == "rbacobject_id":
                         continue
-
+                    
                     if value is None:
                         continue
-                    if not isinstance(value, str):
-                        continue
+                    # if not isinstance(value, str):
+                    #     continue
                     if value not in ids:
                         continue
                     if value not in done:
+                        id = row.get('id')
+                        if value == id:
+                            continue
+                        print(f'dependency\t{model}["{key}"]={id}')
                         skip_this_id = True
                         break
 
@@ -471,13 +481,129 @@ def update_chunks(data):
 
     return result_data
 
-def main():
-    with open(filename, "r", encoding="utf-8") as file:
-        data = json.load(file)
 
-    data = patch_data(data)
+def _json_safe_value(value):
+    if value is None:
+        return None
+
+    if isinstance(value, (str, int, float, bool)):
+        return value
+
+    if isinstance(value, decimal.Decimal):
+        return float(value)
+
+    if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
+        return value.isoformat()
+
+    if isinstance(value, uuid.UUID):
+        return str(value)
+
+    if isinstance(value, bytes):
+        return base64.b64encode(value).decode("ascii")
+
+    return str(value)
+
+
+def _row_to_dict(row):
+    return {key: _json_safe_value(value) for key, value in row.items()}
+
+
+def export_database_to_json(connection_string, output_json_path, schema=None):
+    """
+    Načte všechny tabulky z databáze, převede je do dict struktury:
+        {
+            "table1": [ {...}, {...} ],
+            "table2": [ {...}, {...} ]
+        }
+    následně zavolá update_chunks(data) a uloží výsledek do JSON.
+
+    Parametry:
+        connection_string: SQLAlchemy connection string
+        output_json_path: cílový JSON soubor
+        schema: volitelně schema
+
+    Vrací:
+        result_data
+    """
+    engine = create_engine(connection_string)
+    inspector = inspect(engine)
+
+    table_names = inspector.get_table_names(schema=schema)
+    metadata = MetaData(schema=schema)
+
+    data = {}
+
+    with engine.connect() as conn:
+        for table_name in table_names:
+            table = Table(table_name, metadata, autoload_with=engine)
+            result = conn.execute(select(table))
+            rows = result.mappings().all()
+            data[table_name] = [_row_to_dict(dict(row)) for row in rows]
+
     result_data = update_chunks(data)
-    with open(f"{filename}.txt", "w", encoding="utf-8") as file:
-        json.dump(result_data, file, indent=4, ensure_ascii=False)
+
+    output_path = Path(output_json_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with output_path.open("w", encoding="utf-8") as f:
+        json.dump(result_data, f, ensure_ascii=False, indent=2)
+
+    return result_data
+
+def main():
+
+    parser = argparse.ArgumentParser(
+        description="DB export / backup tool"
+    )
+
+    connectionstring = "postgresql+psycopg://postgres:example@localhost:5432/data"
+
+    parser.add_argument(
+        "--connection",
+        required=False,
+        help="SQLAlchemy connection string",
+        default=connectionstring
+    )
+
+    parser.add_argument(
+        "--action",
+        required=False,
+        choices=["patch", "export"],
+        help="Co se má provést",
+        default="patch"
+    )
+
+    parser.add_argument(
+        "--output",
+        required=False,
+        help="Cesta k výstupnímu JSON (pro export)",
+        default="./systemdata.backup.json"
+    )
+
+    args = parser.parse_args()
+
+    if args.action == "export":
+        if not args.output:
+            raise ValueError("--output je povinný pro export")
+
+        print("Spouštím export...")
+        connection_string = args.connection
+        export_database_to_json(
+            connection_string=connection_string,
+            output_json_path=args.output,
+            # schema=args.schema
+        )
+        print("Export hotov")
+
+    elif args.action == "patch":
+        print("Spouštím patch...")
+
+        with open(filename, "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        data = patch_data(data)
+        result_data = update_chunks(data)
+        with open(f"{filename}.txt", "w", encoding="utf-8") as file:
+            json.dump(result_data, file, indent=4, ensure_ascii=False)
 
 main()
