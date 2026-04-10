@@ -227,12 +227,28 @@ def patch_lessons(data, lessons):
         item["rbacobject_id"] = topic_rbacobject_id        
     return lessons
 
+ZdenkaRBAC_id = "558077c0-64b1-4015-8f44-8e8618c14a2b"
+ZdenkaRBAC = {
+    "id": ZdenkaRBAC_id,
+    "_chunk": 10,
+    "name": "rbacobject",
+    "description": "rbacobject",
+    "grouptype_id": "3ffbc624-fe29-4486-9a56-3bc6a4e5b576"
+}
+
 def patch_groups(data, groups):
+    has_ZdenkaRBAC = False
     for item in groups:
         id = item.get("id", None)
+        if id == ZdenkaRBAC_id:
+            has_ZdenkaRBAC = True
         rbacobject_id = item.get("rbacobject_id", None)
         if rbacobject_id is None:
             item["rbacobject_id"] = id
+        
+
+    if not has_ZdenkaRBAC:
+        groups.append(ZdenkaRBAC)
     return groups
 
 def patch_users(data, users):
@@ -390,11 +406,11 @@ def patch_data(data):
     lessons = patch_lessons(data, lessons)
     data["aclessons"] = lessons
 
-    plans = data.get("plans", [])
+    plans = data.get("acplans", [])
     plans = patch_plans(data, plans)
     data["plans"] = plans
 
-    plan_lessons = data.get("plan_lessons", [])
+    plan_lessons = data.get("acplanitems", []) # acplanitems
     plan_lessons = patch_plan_lessons(data, plan_lessons)
     data["plan_lessons"] = plan_lessons
 
@@ -481,6 +497,19 @@ def update_chunks(data):
 
     return result_data
 
+def patch_system_ids(data):
+    for key, rows in data.items():
+        for row in rows:
+            rbacobject_id = row.get("rbacobject_id")
+            if rbacobject_id is None:
+                row["rbacobject_id"] = ZdenkaRBAC_id
+            createdby = row.get("createdby_id")
+            if createdby is None:
+                row["createdby_id"] = "51d101a0-81f1-44ca-8366-6cf51432e8d6"
+            changedby = row.get("changedby_id")
+            if changedby is None:
+                row["changedby_id"] = "51d101a0-81f1-44ca-8366-6cf51432e8d6"
+    return data
 
 def _json_safe_value(value):
     if value is None:
@@ -602,6 +631,7 @@ def main():
             data = json.load(file)
 
         data = patch_data(data)
+        data = patch_system_ids(data)
         result_data = update_chunks(data)
         with open(f"{filename}.txt", "w", encoding="utf-8") as file:
             json.dump(result_data, file, indent=4, ensure_ascii=False)
