@@ -1,4 +1,46 @@
 {
+    "ug": { 
+        "file": "ug3.html",
+        "title": "Uživatelé",
+        "authors": "Hrbolek",
+        "markdownfile": "ug3.md"
+    },
+    "program": { 
+        "file": "program.html",
+        "title": "Program",
+        "authors": "TomasR04 & ",
+        "markdownfile": "program.md"
+    },
+    "subject": { 
+        "file": "subject.html",
+        "title": "Předmět",
+        "authors": "velkayolanda & ",
+        "markdownfile": "subject.md"
+    },
+    "semestr": { 
+        "file": "semestr.html",
+        "title": "Semestr",
+        "authors": "Maya0552 & ",
+        "markdownfile": "semestr.md"
+    },
+    "studyplan": { 
+        "file": "studyplan.html",
+        "title": "Studijní plán",
+        "authors": "lukaskalensky & ",
+        "markdownfile": "studyplan.md"
+    },
+    "exam": { 
+        "file": "exam.html",
+        "title": "Podmínky klasifikace",
+        "authors": "NikiHal013 & ",
+        "markdownfile": "exam.md"
+    },
+    "evaluation": { 
+        "file": "evaluation.html",
+        "title": "Klasifikace",
+        "authors": "speron & ",
+        "markdownfile": "evaluation.md"
+    },
     "generic_": { 
         "file": "generic.html",
         "title": "UI z metadat GraphQL API",
@@ -35,12 +77,7 @@
         "authors": "Hrbolek",
         "markdownfile": "doc.md"
     },
-    "ug": { 
-        "file": "ug.html",
-        "title": "Uživatelé",
-        "authors": "Hrbolek",
-        "markdownfile": "ug.md"
-    },
+    
     "auto": { 
         "file": "auto.html",
         "title": "Automat",
