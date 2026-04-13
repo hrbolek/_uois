@@ -511,6 +511,53 @@ def patch_system_ids(data):
                 row["changedby_id"] = "51d101a0-81f1-44ca-8366-6cf51432e8d6"
     return data
 
+def is_valid_uuid(value: str) -> bool:
+    try:
+        uuid_obj = uuid.UUID(value)
+        return True
+    except:
+        return False
+    
+def check_ids(data) -> bool:
+    ids = set()
+    wanted = set()
+    references = {}
+    for tablename, rows in data.items():
+        for row in rows:
+            id = row.get("id")
+            for key, value in row.items():
+                if is_valid_uuid(value):
+                    if key == "id":
+                        ids.add(value)
+                    else:
+                        references[value] = (tablename, id, key)
+                        wanted.add(value)
+
+    missing = wanted - ids
+
+    RED = "\033[91m"
+    RESET = "\033[0m"
+
+    if missing:
+        result = {}
+        print(f"{RED}Warning: some referenced IDs are missing:{RESET}")
+        for value in sorted(missing):
+            (tablename, id, key) = references[value]
+            id_dict = result.get(key, {})
+            result[key] = id_dict
+            id_dict[value] = tablename
+            print(f"{tablename}['id={id}']['{key}']={value}") # , end=""
+        print()
+        for key, ids in result.items():
+            print(f"missed {key}")
+            for id, tablename in ids.items():
+                print(f"\t{id}\t{tablename}['{key}']='{id}'")
+    else:
+        print(f"{RED}Referenced IDs are OK:{RESET}")
+
+    return not missing
+
+
 def _json_safe_value(value):
     if value is None:
         return None
@@ -632,7 +679,9 @@ def main():
 
         data = patch_data(data)
         data = patch_system_ids(data)
+        
         result_data = update_chunks(data)
+        check_ids(result_data)
         with open(f"{filename}.txt", "w", encoding="utf-8") as file:
             json.dump(result_data, file, indent=4, ensure_ascii=False)
 
