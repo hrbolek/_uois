@@ -29,6 +29,12 @@
         "authors": "lukaskalensky & ",
         "markdownfile": "studyplan.md"
     },
+    "student": { 
+        "file": "student.html",
+        "title": "Student",
+        "authors": "pajapaja & ",
+        "markdownfile": "student.md"
+    },
     "exam": { 
         "file": "exam.html",
         "title": "Podmínky klasifikace",
@@ -40,6 +46,36 @@
         "title": "Klasifikace",
         "authors": "speron & ",
         "markdownfile": "evaluation.md"
+    },
+    "event": { 
+        "file": "event.html",
+        "title": "Událost",
+        "authors": " & ",
+        "markdownfile": "event.md"
+    },
+    "kalendar": { 
+        "file": "kalendar.html",
+        "title": "Kalendář",
+        "authors": " & ",
+        "markdownfile": "kalendar.md"
+    },
+    "dochazka": { 
+        "file": "dochazka.html",
+        "title": "Docházka",
+        "authors": "Svejkys & ",
+        "markdownfile": "dochazka.md"
+    },    
+    "finance": { 
+        "file": "finance.html",
+        "title": "Finance",
+        "authors": "vojta19 & ",
+        "markdownfile": "finance.md"
+    },
+    "projekt": { 
+        "file": "projekt.html",
+        "title": "Projekt",
+        "authors": "lukylinek    & ",
+        "markdownfile": "projekt.md"
     },
     "generic_": { 
         "file": "generic.html",
