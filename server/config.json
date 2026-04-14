@@ -83,18 +83,6 @@
         "authors": "Hrbolek",
         "markdownfile": "generic_.md"
     },
-    "babel": { 
-        "file": "babel.html",
-        "title": "Babel aplikace",
-        "authors": "Hrbolek",
-        "markdownfile": "babel.md"
-    },
-    "ui": { 
-        "file": "ui.html",
-        "title": "UI z metadat",
-        "authors": "Hrbolek",
-        "markdownfile": "ui.md"
-    },
     "graphiql": { 
         "file": "graphiql.html",
         "title": "Graphiql",
@@ -113,7 +101,18 @@
         "authors": "Hrbolek",
         "markdownfile": "doc.md"
     },
-    
+    "babel": { 
+        "file": "babel.html",
+        "title": "Babel aplikace",
+        "authors": "Hrbolek",
+        "markdownfile": "babel.md"
+    },
+    "ui": { 
+        "file": "ui.html",
+        "title": "UI z metadat",
+        "authors": "Hrbolek",
+        "markdownfile": "ui.md"
+    },    
     "auto": { 
         "file": "auto.html",
         "title": "Automat",
