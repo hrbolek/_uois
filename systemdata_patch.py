@@ -82,6 +82,7 @@ def patch_students(data, students):
         rbacobject_id = program.get("rbacobject_id", None)
         item["rbacobject_id"] = rbacobject_id
         item["semester_number"] = item.get("semester_number", 1)
+        item["startdate"] = item.get("startdate", "2024-09-01T00:00:00")
     return students
 
 
