@@ -249,3 +249,16 @@ services:
     ports:
       - 31122:80
 
+  valkey:
+    image: valkey/valkey:9.0.3-alpine
+    restart: always
+    # environment:
+      # promenne, ktere lze cist v kontejneru
+      # - VALKEY_ADMIN_PASSWORD=example
+    # healthcheck:
+    #   test: ["CMD", "wget", "-O", "-", "http://localhost:8080/valkey/ping"]
+    #   interval: 60s
+    #   timeout: 10s
+    #   retries: 5
+    ports:
+      - 31123:6379
