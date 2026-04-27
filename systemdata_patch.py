@@ -234,6 +234,7 @@ ZdenkaRBAC = {
     "_chunk": 10,
     "name": "rbacobject",
     "description": "rbacobject",
+    "mastergroup_id": "d75d64a4-bf5f-43c5-9c14-8fda7aff6c09",
     "grouptype_id": "3ffbc624-fe29-4486-9a56-3bc6a4e5b576"
 }
 
