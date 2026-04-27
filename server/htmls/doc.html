@@ -1,623 +1,580 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>GraphQL Schema Documentation</title>
-  <!-- Load Bootstrap CSS from CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Load markdown-it and markdown-it-anchor -->
-  <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/markdown-it-anchor@9.2.0/dist/markdownItAnchor.umd.js"></script>
-  <style>
-    body {
-      font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
-      padding: 20px;
-    }
-    /* Content styling */
-    #content {
-      border: 1px solid #ccc;
-      padding: 10px;
-      height: 95vh;
-      overflow-y: auto;
-    }
-    pre {
-      position: relative;
-    }
-    h5 {
-      background-color: aliceblue;
-      padding: 10px;
-      border: 1px solid #a3d9a5;
-      border-radius: 4px;
-      overflow-x: auto;
-    }
-    code.language-graphql {
-      display: block;
-      background-color: #e0fbe0;
-      border: 1px solid #a3d9a5;
-      padding: 10px;
-      border-radius: 4px;
-      overflow-x: auto;
-      font-family: monospace;
-    }
-    /* Sidebar styling */
-    #sidebar {
-      border-right: 1px solid #ccc;
-      padding-right: 10px;
-      max-height: 95vh;
-      overflow-y: auto;
-    }
-    #sidebar a {
-      text-decoration: none;
-      display: block;
-      padding: 4px 8px;
-      color: #007BFF;
-    }
-    #sidebar a.active {
-      background-color: #007BFF;
-      color: #fff;
-      border-radius: 4px;
-    }
-    /* Button group styles for copy/test */
-    .btn-group-custom {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-    }
-    .btn-group-custom button {
-      font-size: 12px;
-      padding: 4px 8px;
-      opacity: 0.85;
-      transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
-    }
-    .btn-group-custom button:hover {
-      opacity: 1;
-    }
+    <meta charset="UTF-8">
+    <title>GraphQL Schema Documentation</title>
+    <!-- Load Bootstrap CSS from CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Load markdown-it and markdown-it-anchor -->
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it-anchor@9.2.0/dist/markdownItAnchor.umd.js"></script>
+    <style>
+        body {
+            font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+            padding: 20px;
+        }
 
-    @media print {
-      /* Hide the sidebar during printing */
-      #sidebar {
-        display: none;
-      }
+        /* Content styling */
+        #content {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 95vh;
+            overflow-y: auto;
+        }
 
-      /* Make the content area take full width and adjust styling for print */
-      #content {
-        width: 100%;
-        border: none;
-        padding: 0;
-        height: auto;
-        overflow: visible;
-      }
+        pre {
+            position: relative;
+        }
 
-      /* Optionally hide other elements not needed in print view */
-      .btn-group-custom {
-        display: none;
-      }
-    }    
-  </style>
+        h5 {
+            background-color: aliceblue;
+            padding: 10px;
+            border: 1px solid #a3d9a5;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        code.language-graphql {
+            display: block;
+            background-color: #e0fbe0;
+            border: 1px solid #a3d9a5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+
+        /* Sidebar styling */
+        #sidebar {
+            border-right: 1px solid #ccc;
+            padding-right: 10px;
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+
+        #sidebar a {
+            text-decoration: none;
+            display: block;
+            padding: 4px 8px;
+            color: #007BFF;
+        }
+
+        #sidebar a.active {
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        /* Button group styles for copy/test */
+        .btn-group-custom {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+
+        .btn-group-custom button {
+            font-size: 12px;
+            padding: 4px 8px;
+            opacity: 0.85;
+            transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
+        }
+
+        .btn-group-custom button:hover {
+            opacity: 1;
+        }
+    </style>
 </head>
+
 <body data-bs-spy="scroll" data-bs-target="#sidebar" data-bs-offset="20">
-  <div class="container-fluid">
-    <div class="row">
-      <!-- Sidebar column -->
-      <nav id="sidebar" class="col-md-3 mb-3">
-        <h5>Navigation</h5>
-        <div id="nav-links"></div>
-      </nav>
-      <!-- Content column -->
-      <div class="col-md-9">
-        <div id="content">Loading markdown...</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bootstrap Modal for testing queries -->
-  <div class="modal fade" id="testModal" tabindex="-1" aria-labelledby="testModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="testModalLabel">Test GraphQL Query</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="testForm">
-            <div class="mb-3">
-              <label for="queryText" class="form-label">Query</label>
-              <textarea class="form-control" id="queryText" rows="8" readonly></textarea>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar column -->
+            <nav id="sidebar" class="col-md-3 mb-3">
+                <h5>Navigation</h5>
+                <div id="nav-links"></div>
+            </nav>
+            <!-- Content column -->
+            <div class="col-md-9">
+                <div id="content">Loading markdown...</div>
             </div>
-            <div class="mb-3">
-              <label for="variablesText" class="form-label">Variables (JSON)</label>
-              <textarea class="form-control" id="variablesText" rows="4" placeholder='{"var1": "value1", ...}'></textarea>
-            </div>
-          </form>
-          <div id="testResponse" class="mt-3" style="white-space: pre-wrap; font-family: monospace;"></div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" id="sendTestBtn" class="btn btn-primary">Send</button>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <!-- Load Bootstrap JS (and its dependency Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"></script>
-  <script>
-    
-    const fetchURL = "/api/gql";
+    <!-- Bootstrap Modal for testing queries -->
+    <div class="modal fade" id="testModal" tabindex="-1" aria-labelledby="testModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="testModalLabel">Test GraphQL Query</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="testForm">
+                        <div class="mb-3">
+                            <label for="queryText" class="form-label">Query</label>
+                            <textarea class="form-control" id="queryText" rows="8" readonly></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="variablesText" class="form-label">Variables (JSON)</label>
+                            <textarea class="form-control" id="variablesText" rows="4"
+                                placeholder='{"var1": "value1", ...}'></textarea>
+                        </div>
+                    </form>
+                    <div id="testResponse" class="mt-3" style="white-space: pre-wrap; font-family: monospace;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="sendTestBtn" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    // Custom slugify that ensures non‑empty id
-    let headingIndex = 0;
-    function customSlugify(s) {
-      let slug = s.trim().toLowerCase().replace(/\s+/g, '-');
-      if (!slug) {
-        slug = 'heading-' + (headingIndex++);
-      }
-      return slug;
-    }
+    <!-- Load Bootstrap JS (and its dependency Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"></script>
+    <script>
 
-    // --- Markdown Generation Functions (same as before) ---
-    function formatType(typeRef) {
-      if (!typeRef) return "";
-      if (typeRef.kind === "NON_NULL") {
-        return formatType(typeRef.ofType) + "!";
-      } else if (typeRef.kind === "LIST") {
-        return "[" + formatType(typeRef.ofType) + "]";
-      } else {
-        return typeRef.name || "";
-      }
-    }
-    function typeCore(typeRef) {
-      if (!typeRef) return "";
-      if (typeRef.kind === "NON_NULL") {
-        return typeCore(typeRef.ofType);
-      } else if (typeRef.kind === "LIST") {
-        return typeCore(typeRef.ofType);
-      } else {
-        return typeRef.name || "";
-      }
-    }
-    function markdownForField(field) {
-      let s = `- **${field.name}**: [${formatType(field.type)}](#${typeCore(field.type).toLowerCase()})`;
-      // s += `# ${JSON.stringify(field.type)}\n\n`
-      if (field.description) {
-        s += ` – ${field.description}`;
-      }
-      if (field.args && field.args.length > 0) {
-        s += "\n  - **Arguments:**";
-        field.args.forEach(arg => {
-          s += `\n    - **${arg.name}**: [${formatType(arg.type)}](#${typeCore(arg.type).toLowerCase()})`;
-          if (arg.description) {
-            s += ` – ${arg.description}`;
-          }
-        });
-      }
-      return s;
-    }
-    function markdownForInputField(field) {
-      let s = `- **${field.name}**: [${formatType(field.type)}](#${typeCore(field.type).toLowerCase()})`;
-      if (field.description) {
-        s += ` – ${field.description}`;
-      }
-      return s;
-    }
-    function markdownForUnion(typeObj) {
-      let s = `#### ${typeObj.name}\n\n`;
-      
-      if (typeObj.description) s += `${typeObj.description}\n\n`;
-      if (typeObj.possibleTypes) {
-        s += "Possible types:\n\n";
-        typeObj.possibleTypes.forEach(pType => {
-          s += `- [${pType.name}](#${pType.name.toLowerCase()}) \n`;
-        });
-        s += "\n";
-      }
-      return s;
-    }
-    function markdownForObjectType(typeObj) {
-      let s = `#### ${typeObj.name}\n\n`;
-      if (typeObj.description) s += `${typeObj.description}\n\n`;
-      if (typeObj.fields) {
-        s += "Fields:\n";
-        typeObj.fields.forEach(field => {
-          s += markdownForField(field) + "\n";
-        });
-        s += "\n";
-      }
-      return s;
-    }
-    function markdownForInputObjectType(typeObj) {
-      let s = `#### ${typeObj.name}\n\n`;
-      if (typeObj.description) s += `${typeObj.description}\n\n`;
-      if (typeObj.inputFields) {
-        s += "Input Fields:\n";
-        typeObj.inputFields.forEach(field => {
-          s += markdownForInputField(field) + "\n";
-        });
-        s += "\n";
-      }
-      return s;
-    }
-    function markdownForScalarType(typeObj) {
-      let s = `#### ${typeObj.name}\n\n`;
-      if (typeObj.description) s += `${typeObj.description}\n\n`;
-      return s;
-    }
-    function getNamedType(typeRef) {
-      while (typeRef && typeRef.ofType) {
-        typeRef = typeRef.ofType;
-      }
-      return typeRef;
-    }
-    function variableTypeString(typeRef) {
-      if (!typeRef) return "";
-      const kind = typeRef.kind;
-      if (kind === "NON_NULL") {
-        return variableTypeString(typeRef.ofType) + "!";
-      } else if (kind === "LIST") {
-        return "[" + variableTypeString(typeRef.ofType) + "]";
-      } else {
-        // return `[${typeRef.name}](#${typeRef.name.toLowerCase()})` || "";
-        return typeRef.name || "";
-      }
-    }
-    function generateVariableDefinitions(args, typesByName) {
-      let varDefs = [];
-      args.forEach(arg => {
-        if (arg.name === "where") {
-          varDefs.push(`$${arg.name}: ${variableTypeString(arg.type)}`);
-        } else {
-          let named = getNamedType(arg.type);
-          if (named.kind === "INPUT_OBJECT") {
-            let inputDef = typesByName[named.name];
-            if (inputDef && inputDef.inputFields) {
-              inputDef.inputFields.forEach(field => {
-                // varDefs.push(`$${arg.name}_${field.name}: ${variableTypeString(field.type)}`);
-                varDefs.push(`$${field.name}: ${variableTypeString(field.type)}`);
-              });
-            } else {
-              varDefs.push(`$${arg.name}: ${variableTypeString(arg.type)}`);
+        const fetchURL = "/gql";
+
+        // Custom slugify that ensures non‑empty id
+        let headingIndex = 0;
+        function customSlugify(s) {
+            let slug = s.trim().toLowerCase().replace(/\s+/g, '-');
+            if (!slug) {
+                slug = 'heading-' + (headingIndex++);
             }
-          } else {
-            varDefs.push(`$${arg.name}: ${variableTypeString(arg.type)}`);
-          }
+            return slug;
         }
-      });
-      return varDefs;
-    }
-    function generateFieldArguments(args, typesByName) {
-      let parts = [];
-      args.forEach(arg => {
-        if (arg.name === "where") {
-          parts.push(`${arg.name}: $${arg.name}`);
-        } else {
-          let named = getNamedType(arg.type);
-          if (named.kind === "INPUT_OBJECT") {
-            let inputDef = typesByName[named.name];
-            if (inputDef && inputDef.inputFields) {
-              let fields = [];
-              inputDef.inputFields.forEach(field => {
-                fields.push(`${field.name}: $${field.name}`);
-              });
-              let objStr = "{" + fields.join(", ") + "}";
-              parts.push(`${arg.name}: ${objStr}`);
+
+        // --- Markdown Generation Functions (same as before) ---
+        function formatType(typeRef) {
+            if (!typeRef) return "";
+            if (typeRef.kind === "NON_NULL") {
+                return formatType(typeRef.ofType) + "!";
+            } else if (typeRef.kind === "LIST") {
+                return "[" + formatType(typeRef.ofType) + "]";
             } else {
-              parts.push(`${arg.name}: $${arg.name}`);
+                return typeRef.name || "";
             }
-          } else {
-            parts.push(`${arg.name}: $${arg.name}`);
-          }
         }
-      });
-      return parts.length > 0 ? "(" + parts.join(", ") + ")" : "";
-    }
-    function getFragmentName(typeName) {
-      if (typeName.endsWith("GQLModelUpdateError")) {
-        return "Error";
-      } else if (typeName.endsWith("GQLModel")) {
-        return typeName.slice(0, -"GQLModel".length);
-      } else {
-        return typeName;
-      }
-    }
-    function isMandatory(typeRef) {
-      if (!typeRef) return false;
-      if (typeRef.kind === "NON_NULL") return true;
-      return typeRef.ofType ? isMandatory(typeRef.ofType) : false;
-    }
-    function hasMandatoryArgs(field) {
-      return field.args && field.args.some(arg => isMandatory(arg.type));
-    }
-    function generateSelectionSetWithFragments(typeRef, typesByName, fragments, depth = 0, maxDepth = 2, indentLevel = 1, indentStr = "  ") {
-      const base = getNamedType(typeRef);
-      if (base.kind === "UNION") {
-        let possibleTypes = base.possibleTypes;
-        if (!possibleTypes) {
-          const unionDef = typesByName[base.name];
-          possibleTypes = unionDef ? (unionDef.possibleTypes || []) : [];
+        function markdownForField(field) {
+            let s = `- **${field.name}**: ${formatType(field.type)}`;
+            if (field.description) {
+                s += ` – ${field.description}`;
+            }
+            if (field.args && field.args.length > 0) {
+                s += "\n  - **Arguments:**";
+                field.args.forEach(arg => {
+                    s += `\n    - **${arg.name}**: ${formatType(arg.type)}`;
+                    if (arg.description) {
+                        s += ` – ${arg.description}`;
+                    }
+                });
+            }
+            return s;
         }
-        let unionLines = [];
-        possibleTypes.forEach(possible => {
-          const possibleName = possible.name;
-          if (!fragments[possibleName]) {
-            generateSelectionSetWithFragments(possible, typesByName, fragments, depth + 1, maxDepth, indentLevel + 1, indentStr);
-          }
-          const fragName = getFragmentName(base.name || "");
-          const currentFrag = getFragmentName(possibleName);
-
-          let inlineFragment = `... on ${possibleName} { ...${getFragmentName(possibleName)} }`;
-
-          console.log(currentFrag, fragName)
-          // console.log(base?.name, possibleName)
-          if (`${typeRef.name}` != 'null') {
-          // if (base?.name == possibleName) {
-            inlineFragment = `... on ${possibleName} { __typename id } # ${inlineFragment}`;
-          }
-          // inlineFragment = `... on ${possibleName} { __typename }`;
-
-          unionLines.push(indentStr.repeat(indentLevel + 1) + inlineFragment);
-        });
-        if (unionLines.length > 0) {
-          const unionBlock = "{\n" + unionLines.join("\n") + "\n" + indentStr.repeat(indentLevel) + "}";
-          return unionBlock;
-        } else {
-          return "";
+        function markdownForInputField(field) {
+            let s = `- **${field.name}**: ${formatType(field.type)}`;
+            if (field.description) {
+                s += ` – ${field.description}`;
+            }
+            return s;
         }
-      } else if (base.kind !== "OBJECT") {
-        return "";
-      }
-      if (depth >= maxDepth) {
-        return "{ __typename, id }";
-      }
-      const typeName = base.name;
-      if (!fragments[typeName]) {
-        const typeDef = typesByName[typeName];
-        let fragmentBody = "";
-        if (!typeDef || !typeDef.fields) {
-          fragmentBody = "{ __typename, id }";
-        } else {
-          let fragmentLines = [];
-          fragmentLines.push(indentStr.repeat(indentLevel - 1) + "__typename");
-          typeDef.fields.forEach(f => {
-            let line = indentStr.repeat(indentLevel - 1);
-            if (f.args && hasMandatoryArgs(f)) {
-              line += "# " + f.name;
+        function markdownForObjectType(typeObj) {
+            let s = `#### ${typeObj.name}\n\n`;
+            if (typeObj.description) s += `${typeObj.description}\n\n`;
+            if (typeObj.fields) {
+                s += "Fields:\n";
+                typeObj.fields.forEach(field => {
+                    s += markdownForField(field) + "\n";
+                });
+                s += "\n";
+            }
+            return s;
+        }
+        function markdownForInputObjectType(typeObj) {
+            let s = `#### ${typeObj.name}\n\n`;
+            if (typeObj.description) s += `${typeObj.description}\n\n`;
+            if (typeObj.inputFields) {
+                s += "Input Fields:\n";
+                typeObj.inputFields.forEach(field => {
+                    s += markdownForInputField(field) + "\n";
+                });
+                s += "\n";
+            }
+            return s;
+        }
+        function markdownForScalarType(typeObj) {
+            let s = `#### ${typeObj.name}\n\n`;
+            if (typeObj.description) s += `${typeObj.description}\n\n`;
+            return s;
+        }
+        function getNamedType(typeRef) {
+            while (typeRef && typeRef.ofType) {
+                typeRef = typeRef.ofType;
+            }
+            return typeRef;
+        }
+        function variableTypeString(typeRef) {
+            if (!typeRef) return "";
+            const kind = typeRef.kind;
+            if (kind === "NON_NULL") {
+                return variableTypeString(typeRef.ofType) + "!";
+            } else if (kind === "LIST") {
+                return "[" + variableTypeString(typeRef.ofType) + "]";
             } else {
-              const fNamed = getNamedType(f.type);
-              const fragName = getFragmentName(fNamed.name || "");
-              const currentFrag = getFragmentName(typeName);
-              if (["OBJECT", "UNION"].includes(fNamed.kind)) {
-                if (fragName === currentFrag) {
-                  line += `${f.name} { __typename }`;
-                } else if (depth + 1 < maxDepth) {
-                  const subSelection = generateSelectionSetWithFragments(f.type, typesByName, fragments, depth + 1, maxDepth, indentLevel + 1, indentStr);
-                  line += `${f.name} ${subSelection}`;
-                  // line += `${f.name} { __typename }`;
+                return typeRef.name || "";
+            }
+        }
+        function generateVariableDefinitions(args, typesByName) {
+            let varDefs = [];
+            args.forEach(arg => {
+                if (arg.name === "where") {
+                    varDefs.push(`$${arg.name}: ${variableTypeString(arg.type)}`);
                 } else {
-                  line += `${f.name} { __typename }`;
+                    let named = getNamedType(arg.type);
+                    if (named.kind === "INPUT_OBJECT") {
+                        let inputDef = typesByName[named.name];
+                        if (inputDef && inputDef.inputFields) {
+                            inputDef.inputFields.forEach(field => {
+                                varDefs.push(`$${arg.name}_${field.name}: ${variableTypeString(field.type)}`);
+                            });
+                        } else {
+                            varDefs.push(`$${arg.name}: ${variableTypeString(arg.type)}`);
+                        }
+                    } else {
+                        varDefs.push(`$${arg.name}: ${variableTypeString(arg.type)}`);
+                    }
                 }
-              } else {
-                line += f.name;
-              }
+            });
+            return varDefs;
+        }
+        function generateFieldArguments(args, typesByName) {
+            let parts = [];
+            args.forEach(arg => {
+                if (arg.name === "where") {
+                    parts.push(`${arg.name}: $${arg.name}`);
+                } else {
+                    let named = getNamedType(arg.type);
+                    if (named.kind === "INPUT_OBJECT") {
+                        let inputDef = typesByName[named.name];
+                        if (inputDef && inputDef.inputFields) {
+                            let fields = [];
+                            inputDef.inputFields.forEach(field => {
+                                fields.push(`${field.name}: $${arg.name}_${field.name}`);
+                            });
+                            let objStr = "{" + fields.join(", ") + "}";
+                            parts.push(`${arg.name}: ${objStr}`);
+                        } else {
+                            parts.push(`${arg.name}: $${arg.name}`);
+                        }
+                    } else {
+                        parts.push(`${arg.name}: $${arg.name}`);
+                    }
+                }
+            });
+            return parts.length > 0 ? "(" + parts.join(", ") + ")" : "";
+        }
+        function getFragmentName(typeName) {
+            if (typeName.endsWith("GQLModelUpdateError")) {
+                return "Error";
+            } else if (typeName.endsWith("GQLModel")) {
+                return typeName.slice(0, -"GQLModel".length);
+            } else {
+                return typeName;
             }
-            fragmentLines.push(line);
-          });
-          fragmentBody = "{\n" + fragmentLines.join("\n") + "\n" + indentStr.repeat(indentLevel - 1) + "}";
         }
-        const fragmentDef = `fragment ${getFragmentName(typeName)} on ${typeName} ${fragmentBody}`;
-        fragments[typeName] = fragmentDef;
-      }
-      return "{\n" + indentStr + `...${getFragmentName(typeName)}\n}`;
-    }
-    function generateQueryExample(field, typesByName, operationType = "query", maxDepth = 2) {
-      if (operationType === "mutation") {
-        maxDepth = 3;
-      }
-      const args = field.args || [];
-      const varDefs = generateVariableDefinitions(args, typesByName);
-      let varDefsStr = "";
-      if (varDefs.length > 0) {
-        varDefsStr = "(" + varDefs.join(", ") + ")";
-      }
-      const fieldArgs = generateFieldArguments(args, typesByName);
-      let fragments = {};
-      let selectionSet = "";
-      const base = getNamedType(field.type);
-      if (["OBJECT", "UNION"].includes(base.kind)) {
-        selectionSet = generateSelectionSetWithFragments(field.type, typesByName, fragments, 0, maxDepth, 1, "  ");
-        if (!selectionSet.trim().startsWith("{")) {
-          selectionSet = "{\n    " + selectionSet.trim() + "\n  }";
+        function isMandatory(typeRef) {
+            if (!typeRef) return false;
+            if (typeRef.kind === "NON_NULL") return true;
+            return typeRef.ofType ? isMandatory(typeRef.ofType) : false;
         }
-      }
-      if (operationType === "mutation" && !selectionSet) {
-        selectionSet = "{ __typename, id }";
-      }
-      let lines = [];
-      lines.push(`${operationType} ${field.name}${varDefsStr} {`);
-      lines.push(`  ${field.name}${fieldArgs} ${selectionSet}`);
-      lines.push("}");
-      let query = lines.join("\n");
-      if (Object.keys(fragments).length > 0) {
-        const fragmentsText = Object.keys(fragments)
-          .map(frag => fragments[frag])
-          .join("\n\n");
-        query += "\n\n" + fragmentsText;
-      }
-      return query;
-    }
-    function generateMarkdownFromSchema(introspection) {
-      const schemaData = introspection.__schema;
-      const types = schemaData.types;
-      const typesByName = {};
-      for (const t of types) {
-        if (t.name.startsWith("__")) continue;
-        typesByName[t.name] = t;
-      }
-      const queryTypeName = schemaData.queryType ? schemaData.queryType.name : null;
-      const mutationTypeName = schemaData.mutationType ? schemaData.mutationType.name : null;
-      let markdown = "# GraphQL Schema Documentation\n\n";
-      markdown += "## Regular Types\n\n";
-      Object.values(typesByName).forEach(t => {
-        if (t.kind === "OBJECT" && t.name !== queryTypeName && t.name !== mutationTypeName) {
-          markdown += markdownForObjectType(t);
+        function hasMandatoryArgs(field) {
+            return field.args && field.args.some(arg => isMandatory(arg.type));
         }
-      });
-      markdown += "## Unions\n\n";
-      Object.values(typesByName).forEach(t => {
-        if (t.kind === "UNION" && t.name !== queryTypeName && t.name !== mutationTypeName) {
-          markdown += markdownForUnion(t);
+        function generateSelectionSetWithFragments(typeRef, typesByName, fragments, depth = 0, maxDepth = 2, indentLevel = 1, indentStr = "  ") {
+            const base = getNamedType(typeRef);
+            if (base.kind === "UNION") {
+                let possibleTypes = base.possibleTypes;
+                if (!possibleTypes) {
+                    const unionDef = typesByName[base.name];
+                    possibleTypes = unionDef ? (unionDef.possibleTypes || []) : [];
+                }
+                let unionLines = [];
+                possibleTypes.forEach(possible => {
+                    const possibleName = possible.name;
+                    if (!fragments[possibleName]) {
+                        generateSelectionSetWithFragments(possible, typesByName, fragments, depth + 1, maxDepth, indentLevel + 1, indentStr);
+                    }
+                    const inlineFragment = `... on ${possibleName} { ...${getFragmentName(possibleName)} }`;
+                    unionLines.push(indentStr.repeat(indentLevel) + inlineFragment);
+                });
+                if (unionLines.length > 0) {
+                    const unionBlock = "{\n" + unionLines.join("\n") + "\n" + indentStr.repeat(indentLevel - 1) + "}";
+                    return unionBlock;
+                } else {
+                    return "";
+                }
+            } else if (base.kind !== "OBJECT") {
+                return "";
+            }
+            if (depth >= maxDepth) {
+                return "{ __typename, id }";
+            }
+            const typeName = base.name;
+            if (!fragments[typeName]) {
+                const typeDef = typesByName[typeName];
+                let fragmentBody = "";
+                if (!typeDef || !typeDef.fields) {
+                    fragmentBody = "{ __typename, id }";
+                } else {
+                    let fragmentLines = [];
+                    fragmentLines.push(indentStr.repeat(indentLevel) + "__typename");
+                    typeDef.fields.forEach(f => {
+                        let line = indentStr.repeat(indentLevel);
+                        if (f.args && hasMandatoryArgs(f)) {
+                            line += "# " + f.name;
+                        } else {
+                            const fNamed = getNamedType(f.type);
+                            const fragName = getFragmentName(fNamed.name || "");
+                            const currentFrag = getFragmentName(typeName);
+                            if (["OBJECT", "UNION"].includes(fNamed.kind)) {
+                                if (fragName === currentFrag) {
+                                    line += `${f.name} { id }`;
+                                } else if (depth + 1 < maxDepth) {
+                                    const subSelection = generateSelectionSetWithFragments(f.type, typesByName, fragments, depth + 1, maxDepth, indentLevel + 1, indentStr);
+                                    line += `${f.name} ${subSelection}`;
+                                } else {
+                                    line += `${f.name} { id }`;
+                                }
+                            } else {
+                                line += f.name;
+                            }
+                        }
+                        fragmentLines.push(line);
+                    });
+                    fragmentBody = "{\n" + fragmentLines.join("\n") + "\n" + indentStr.repeat(indentLevel - 1) + "}";
+                }
+                const fragmentDef = `fragment ${getFragmentName(typeName)} on ${typeName} ${fragmentBody}`;
+                fragments[typeName] = fragmentDef;
+            }
+            return "{\n" + indentStr + `...${getFragmentName(typeName)}\n}`;
         }
-      });
-      markdown += "## Input Types\n\n";
-      Object.values(typesByName).forEach(t => {
-        if (t.kind === "INPUT_OBJECT") {
-          markdown += markdownForInputObjectType(t);
+        function generateQueryExample(field, typesByName, operationType = "query", maxDepth = 2) {
+            if (operationType === "mutation") {
+                maxDepth = 3;
+            }
+            const args = field.args || [];
+            const varDefs = generateVariableDefinitions(args, typesByName);
+            let varDefsStr = "";
+            if (varDefs.length > 0) {
+                varDefsStr = "(" + varDefs.join(", ") + ")";
+            }
+            const fieldArgs = generateFieldArguments(args, typesByName);
+            let fragments = {};
+            let selectionSet = "";
+            const base = getNamedType(field.type);
+            if (["OBJECT", "UNION"].includes(base.kind)) {
+                selectionSet = generateSelectionSetWithFragments(field.type, typesByName, fragments, 0, maxDepth, 1, "  ");
+                if (!selectionSet.trim().startsWith("{")) {
+                    selectionSet = "{\n    " + selectionSet.trim() + "\n  }";
+                }
+            }
+            if (operationType === "mutation" && !selectionSet) {
+                selectionSet = "{ __typename, id }";
+            }
+            let lines = [];
+            lines.push(`${operationType} ${field.name}${varDefsStr} {`);
+            lines.push(`  ${field.name}${fieldArgs} ${selectionSet}`);
+            lines.push("}");
+            let query = lines.join("\n");
+            if (Object.keys(fragments).length > 0) {
+                const fragmentsText = Object.keys(fragments)
+                    .map(frag => fragments[frag])
+                    .join("\n\n");
+                query += "\n\n" + fragmentsText;
+            }
+            return query;
         }
-      });
-      markdown += "## Scalars\n\n";
-      Object.values(typesByName).forEach(t => {
-        if (t.kind === "SCALAR") {
-          markdown += markdownForScalarType(t);
+        function generateMarkdownFromSchema(introspection, extractPermissionDirective=(t)=> null) {
+            const schemaData = introspection.__schema;
+            const types = schemaData.types;
+            const typesByName = {};
+            for (const t of types) {
+                if (t.name.startsWith("__")) continue;
+                typesByName[t.name] = t;
+            }
+            const queryTypeName = schemaData.queryType ? schemaData.queryType.name : null;
+            const mutationTypeName = schemaData.mutationType ? schemaData.mutationType.name : null;
+            let markdown = "# GraphQL Schema Documentation\n\n";
+            markdown += "## Query and Mutation\n\n";
+            if (typesByName[queryTypeName]) {
+                let queryType = typesByName[queryTypeName];
+                markdown += `### Query: ${queryType.name}\n\n`;
+                if (queryType.description) {
+                    markdown += `${queryType.description}\n\n`;
+                }
+                if (queryType.fields) {
+                    markdown += "#### Fields\n\n";
+                    queryType.fields.forEach(field => {
+                        markdown += `##### query.${field.name}\n\n`;
+                        markdown += markdownForField(field) + "\n\n";
+                        const example = generateQueryExample(field, typesByName, "query");
+                        markdown += "Example usage:\n\n```graphql\n" + example + "\n```\n\n";
+                    });
+                }
+            }
+            if (typesByName[mutationTypeName]) {
+                let mutationType = typesByName[mutationTypeName];
+                markdown += `### Mutation: ${mutationType.name}\n\n`;
+                if (mutationType.description) {
+                    markdown += `${mutationType.description}\n\n`;
+                }
+                if (mutationType.fields) {
+                    markdown += "#### Fields\n\n";
+                    mutationType.fields.forEach(field => {
+                        markdown += `##### mutation.${field.name}\n\n`;
+                        // markdown += "```js\n"
+                        // markdown += `${extractPermissionDirective(field.name)}\n`
+                        // markdown += "```\n"
+                        // markdown += "```js\n"
+                        // markdown += `${extractPermissionDirective(field.name)}\n`
+                        // markdown += "```\n"
+                        markdown += `${extractPermissionDirective(field.name)}\n\n`
+                        
+                        markdown += markdownForField(field) + "\n\n";
+                        const example = generateQueryExample(field, typesByName, "mutation");
+                        markdown += "Example usage:\n\n```graphql\n" + example + "\n```\n\n";
+                    });
+                }
+            }
+            markdown += "## Scalars\n\n";
+            Object.values(typesByName).forEach(t => {
+                if (t.kind === "SCALAR") {
+                    markdown += markdownForScalarType(t);
+                }
+            });
+            markdown += "## Input Types\n\n";
+            Object.values(typesByName).forEach(t => {
+                if (t.kind === "INPUT_OBJECT") {
+                    markdown += markdownForInputObjectType(t);
+                }
+            });
+            markdown += "## Regular Types\n\n";
+            Object.values(typesByName).forEach(t => {
+                if (t.kind === "OBJECT" && t.name !== queryTypeName && t.name !== mutationTypeName) {
+                    markdown += markdownForObjectType(t);
+                }
+            });
+            return markdown;
         }
-      });
+        // --- Sidebar Generation ---
+        function generateSidebar() {
+            const navDiv = document.getElementById("nav-links");
+            navDiv.innerHTML = "";
+            const headings = Array.from(document.querySelectorAll("#content h5[id]"))
+                .sort((a, b) =>
+                    a.textContent.localeCompare(b.textContent, "cs")
+                );
+            headings.forEach(h => {
+                const link = document.createElement("a");
+                link.href = "#" + h.id;
+                link.textContent = h.textContent;
+                navDiv.appendChild(link);
+            });
+        }
+        // --- Button Group: Add Copy, Test, and Store buttons to pre>code blocks ---
+        function addButtonGroups() {
+            document.querySelectorAll('pre code').forEach((codeBlock) => {
+                const btnGroup = document.createElement('div');
+                btnGroup.classList.add('btn-group', 'btn-group-sm', 'btn-group-custom');
 
-      markdown += "## Query and Mutation\n\n";
-      if (typesByName[queryTypeName]) {
-        let queryType = typesByName[queryTypeName];
-        markdown += `### Query: ${queryType.name}\n\n`;
-        if (queryType.description) {
-          markdown += `${queryType.description}\n\n`;
+                // Copy Button
+                const copyBtn = document.createElement('button');
+                copyBtn.type = "button";
+                copyBtn.classList.add('btn', 'btn-primary');
+                copyBtn.innerText = 'Copy';
+                copyBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+                        copyBtn.innerText = 'Copied!';
+                        setTimeout(() => copyBtn.innerText = 'Copy', 2000);
+                    }).catch(err => console.error('Failed to copy!', err));
+                });
+                btnGroup.appendChild(copyBtn);
+
+                // Test Button
+                const testBtn = document.createElement('button');
+                testBtn.type = "button";
+                testBtn.classList.add('btn', 'btn-secondary');
+                testBtn.innerText = 'Test';
+                testBtn.addEventListener('click', () => {
+                    // Open modal and populate it with the query from this code block.
+                    const queryText = codeBlock.innerText;
+                    document.getElementById("queryText").value = queryText;
+                    document.getElementById("variablesText").value = "{}";
+                    document.getElementById("testResponse").innerText = "";
+                    const testModal = new bootstrap.Modal(document.getElementById("testModal"));
+                    testModal.show();
+
+                    // When Send is clicked, send POST request with the query and variables.
+                    document.getElementById("sendTestBtn").onclick = () => {
+                        let variables;
+                        try {
+                            variables = JSON.parse(document.getElementById("variablesText").value);
+                        } catch (e) {
+                            document.getElementById("testResponse").innerText = "Invalid JSON in variables.";
+                            return;
+                        }
+                        fetch(fetchURL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ query: queryText, variables })
+                        })
+                            .then(response => response.json())
+                            .then(respData => {
+                                document.getElementById("testResponse").innerText = JSON.stringify(respData, null, 2);
+                            })
+                            .catch(err => {
+                                document.getElementById("testResponse").innerText = "Error: " + err;
+                            });
+                    };
+                });
+                btnGroup.appendChild(testBtn);
+
+                // Store Button - Save the GraphQL query to localStorage in a GraphiQL-compatible way
+                const storeBtn = document.createElement('button');
+                storeBtn.type = "button";
+                storeBtn.classList.add('btn', 'btn-info');
+                storeBtn.innerText = 'Store';
+                storeBtn.addEventListener('click', () => {
+                    const queryText = codeBlock.innerText;
+                    try {
+                        // Save the query using the same key that GraphiQL uses.
+                        localStorage.setItem('graphiql:query', queryText);
+                        storeBtn.innerText = 'Stored!';
+                        setTimeout(() => storeBtn.innerText = 'Store', 2000);
+                    } catch (e) {
+                        console.error('Error storing query: ', e);
+                    }
+                });
+                btnGroup.appendChild(storeBtn);
+
+                // Append button group to the parent of the code block
+                codeBlock.parentElement.style.position = 'relative';
+                codeBlock.parentElement.appendChild(btnGroup);
+            });
         }
-        if (queryType.fields) {
-          markdown += "#### Fields\n\n";
-          queryType.fields.forEach(field => {
-            markdown += `##### query.${field.name}\n\n`;
-            markdown += markdownForField(field) + "\n\n";
-            const example = generateQueryExample(field, typesByName, "query");
-            markdown += "Example usage:\n\n```graphql\n" + example + "\n```\n\n";
-          });
+
+        // --- Wrap h5 headings (h5 are handled by markdown-it-anchor) ---
+        function wrapH5Sections(md) {
+            md.core.ruler.after('block', 'wrap_h5_sections', function (state) {
+                // No extra wrapping is needed for h5 headers.
+            });
         }
-      }
-      if (typesByName[mutationTypeName]) {
-        let mutationType = typesByName[mutationTypeName];
-        markdown += `### Mutation: ${mutationType.name}\n\n`;
-        if (mutationType.description) {
-          markdown += `${mutationType.description}\n\n`;
-        }
-        if (mutationType.fields) {
-          markdown += "#### Fields\n\n";
-          mutationType.fields.forEach(field => {
-            markdown += `##### mutation.${field.name}\n\n`;
-            markdown += markdownForField(field) + "\n\n";
-            const example = generateQueryExample(field, typesByName, "mutation");
-            markdown += "Example usage:\n\n```graphql\n" + example + "\n```\n\n";
-          });
-        }
-      }
-      return markdown;
-    }
-    // --- Sidebar Generation ---
-    function generateSidebar() {
-      const navDiv = document.getElementById("nav-links");
-      navDiv.innerHTML = "";
-      const headings = document.querySelectorAll("#content h5[id]");
-      headings.forEach(h => {
-        const link = document.createElement("a");
-        link.href = "#" + h.id;
-        link.textContent = h.textContent;
-        navDiv.appendChild(link);
-      });
-    }
-// --- Button Group: Add Copy, Test, and Store buttons to pre>code blocks ---
-function addButtonGroups() {
-  document.querySelectorAll('pre code').forEach((codeBlock) => {
-    const btnGroup = document.createElement('div');
-    btnGroup.classList.add('btn-group', 'btn-group-sm', 'btn-group-custom');
-
-    // Copy Button
-    const copyBtn = document.createElement('button');
-    copyBtn.type = "button";
-    copyBtn.classList.add('btn', 'btn-primary');
-    copyBtn.innerText = 'Copy';
-    copyBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(codeBlock.innerText).then(() => {
-        copyBtn.innerText = 'Copied!';
-        setTimeout(() => copyBtn.innerText = 'Copy', 2000);
-      }).catch(err => console.error('Failed to copy!', err));
-    });
-    btnGroup.appendChild(copyBtn);
-
-    // Test Button
-    const testBtn = document.createElement('button');
-    testBtn.type = "button";
-    testBtn.classList.add('btn', 'btn-secondary');
-    testBtn.innerText = 'Test';
-    testBtn.addEventListener('click', () => {
-      // Open modal and populate it with the query from this code block.
-      const queryText = codeBlock.innerText;
-      document.getElementById("queryText").value = queryText;
-      document.getElementById("variablesText").value = "{}";
-      document.getElementById("testResponse").innerText = "";
-      const testModal = new bootstrap.Modal(document.getElementById("testModal"));
-      testModal.show();
-
-      // When Send is clicked, send POST request with the query and variables.
-      document.getElementById("sendTestBtn").onclick = () => {
-        let variables;
-        try {
-          variables = JSON.parse(document.getElementById("variablesText").value);
-        } catch (e) {
-          document.getElementById("testResponse").innerText = "Invalid JSON in variables.";
-          return;
-        }
-        fetch(fetchURL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: queryText, variables })
-        })
-        .then(response => response.json())
-        .then(respData => {
-          document.getElementById("testResponse").innerText = JSON.stringify(respData, null, 2);
-        })
-        .catch(err => {
-          document.getElementById("testResponse").innerText = "Error: " + err;
-        });
-      };
-    });
-    btnGroup.appendChild(testBtn);
-
-    // Store Button - Save the GraphQL query to localStorage in a GraphiQL-compatible way
-    const storeBtn = document.createElement('button');
-    storeBtn.type = "button";
-    storeBtn.classList.add('btn', 'btn-info');
-    storeBtn.innerText = 'Store';
-    storeBtn.addEventListener('click', () => {
-      const queryText = codeBlock.innerText;
-      try {
-        // Save the query using the same key that GraphiQL uses.
-        localStorage.setItem('graphiql:query', queryText);
-        storeBtn.innerText = 'Stored!';
-        setTimeout(() => storeBtn.innerText = 'Store', 2000);
-      } catch (e) {
-        console.error('Error storing query: ', e);
-      }
-    });
-    btnGroup.appendChild(storeBtn);
-
-    // Append button group to the parent of the code block
-    codeBlock.parentElement.style.position = 'relative';
-    codeBlock.parentElement.appendChild(btnGroup);
-  });
-}
-
-    // --- Wrap h5 headings (h5 are handled by markdown-it-anchor) ---
-    function wrapH5Sections(md) {
-      md.core.ruler.after('block', 'wrap_h5_sections', function (state) {
-        // No extra wrapping is needed for h5 headers.
-      });
-    }
-    // --- Fetch Introspection and Render Markdown ---
-    const introspectionQuery = `
+        // --- Fetch Introspection and Render Markdown ---
+        const introspectionQuery = `
 query IntrospectionQuery {
   __schema {
     queryType { name }
@@ -690,39 +647,107 @@ query IntrospectionQuery {
   }
 }
 `;
-    fetch(fetchURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: introspectionQuery })
-    })
-    .then(response => {
-      if (!response.ok) throw new Error('Network error: ' + response.statusText);
-      return response.json();
-    })
-    .then(data => {
-      const markdownText = generateMarkdownFromSchema(data.data);
-      const md = window.markdownit({
-        html: true,
-        linkify: true,
-        typographer: true
-      }).use(window.markdownItAnchor, {
-        slugify: customSlugify,
-        level: [4, 5]
-      }).use(wrapH5Sections);
-      document.getElementById("content").innerHTML = md.render(markdownText);
-      addButtonGroups();
-      generateSidebar();
-    })
-    .catch(err => {
-      document.getElementById("content").innerHTML = "Error loading schema: " + err;
-    });
-    // Activate Bootstrap scrollspy.
-    window.addEventListener('load', () => {
-      new bootstrap.ScrollSpy(document.body, {
-        target: '#sidebar',
-        offset: 100
-      });
-    });
-  </script>
+        // fetch(fetchURL, {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({ query: introspectionQuery })
+        // })
+        // .then(response => {
+        //   if (!response.ok) throw new Error('Network error: ' + response.statusText);
+        //   return response.json();
+        // })
+        // .then(data => {
+        //   const markdownText = generateMarkdownFromSchema(data.data);
+        //   const md = window.markdownit({
+        //     html: true,
+        //     linkify: true,
+        //     typographer: true
+        //   }).use(window.markdownItAnchor, {
+        //     slugify: customSlugify,
+        //     level: [4, 5]
+        //   }).use(wrapH5Sections);
+        //   document.getElementById("content").innerHTML = md.render(markdownText);
+        //   addButtonGroups();
+        //   generateSidebar();
+        // })
+        // .catch(err => {
+        //   document.getElementById("content").innerHTML = "Error loading schema: " + err;
+        // });
+
+
+        async function loadSchemaAndRender() {
+            try {
+                const response = await fetch(fetchURL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: introspectionQuery })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network error: ' + response.statusText);
+                }
+                const responsesdl = await fetch(fetchURL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: '{ _service { sdl } }' })
+                })
+                let sdl = ''
+                if (responsesdl.ok) {
+                    const data = await responsesdl.json();
+                    sdl = data.data._service.sdl
+                }
+
+                const lines = sdl.split(/\r?\n/);
+                function extractPermissionDirective(value) {
+
+                    const line = lines.find(l => l.includes(value));
+                    if (!line) return null;
+
+                    const match = line.match(/@permissionCheckRoleDirective\([^)]*\)/);
+                    return match ? match[0] : null;
+                }
+
+
+
+                const data = await response.json();
+
+                let markdownText = generateMarkdownFromSchema(data.data, extractPermissionDirective);
+                markdownText = markdownText + '\n\n' + sdl
+
+                const md = window.markdownit({
+                    html: true,
+                    linkify: true,
+                    typographer: true
+                })
+                    .use(window.markdownItAnchor, {
+                        slugify: customSlugify,
+                        level: [4, 5]
+                    })
+                    .use(wrapH5Sections);
+
+                document.getElementById("content").innerHTML =
+                    md.render(markdownText);
+
+                addButtonGroups();
+                generateSidebar();
+
+            } catch (err) {
+                document.getElementById("content").innerHTML =
+                    "Error loading schema: " + err;
+            }
+        }
+
+        // zavolání
+        loadSchemaAndRender();
+
+        // Activate Bootstrap scrollspy.
+        window.addEventListener('load', () => {
+            new bootstrap.ScrollSpy(document.body, {
+                target: '#sidebar',
+                offset: 100
+            });
+        });
+    </script>
 </body>
+
 </html>
