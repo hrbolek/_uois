@@ -81,7 +81,7 @@ services:
 
   gql_ug:
     # image: hrbolek/gql_ug:0.11.0 #   image: kavic/ug
-    image: hrbolek/gql_ug:latest
+    image: hrbolek/gql_ug:0.11.0
     environment:
       # link na db mimo stack
       # - POSTGRES_HOST=host.docker.internal:5432
