@@ -239,7 +239,8 @@
                         let inputDef = typesByName[named.name];
                         if (inputDef && inputDef.inputFields) {
                             inputDef.inputFields.forEach(field => {
-                                varDefs.push(`$${arg.name}_${field.name}: ${variableTypeString(field.type)}`);
+                                // varDefs.push(`$${arg.name}_${field.name}: ${variableTypeString(field.type)}`);
+                                varDefs.push(`$${field.name}: ${variableTypeString(field.type)}`);
                             });
                         } else {
                             varDefs.push(`$${arg.name}: ${variableTypeString(arg.type)}`);

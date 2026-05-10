@@ -10,6 +10,14 @@ import datetime
 
 from sqlalchemy import create_engine, inspect, MetaData, Table, select
 
+
+from collections import defaultdict, deque
+import json
+from pathlib import Path
+
+from sqlalchemy import create_engine, inspect, MetaData, Table
+from sqlalchemy.dialects.postgresql import insert as pg_insert
+
 filename = "systemdata.hk2025.json"
 filename = Path(__file__).parent / "systemdata.hk2025.json"
 
@@ -628,6 +636,169 @@ def export_database_to_json(connection_string, output_json_path, schema=None):
 
     return result_data
 
+
+
+
+def get_table_dependencies(engine, schema=None):
+    inspector = inspect(engine)
+    table_names = inspector.get_table_names(schema=schema)
+
+    deps = {table: set() for table in table_names}
+
+    for table in table_names:
+        for fk in inspector.get_foreign_keys(table, schema=schema):
+            referred_table = fk["referred_table"]
+            if referred_table in deps and referred_table != table:
+                deps[table].add(referred_table)
+
+    return deps
+
+
+def topological_sort_tables(deps):
+    """
+    deps:
+      {
+        "child_table": {"parent_table1", "parent_table2"}
+      }
+
+    Vrací pořadí:
+      parent_table před child_table
+    """
+    reverse = defaultdict(set)
+    indegree = {}
+
+    for table, parents in deps.items():
+        indegree[table] = len(parents)
+        for parent in parents:
+            reverse[parent].add(table)
+
+    queue = deque([table for table, degree in indegree.items() if degree == 0])
+    result = []
+
+    while queue:
+        table = queue.popleft()
+        result.append(table)
+
+        for child in reverse[table]:
+            indegree[child] -= 1
+            if indegree[child] == 0:
+                queue.append(child)
+
+    if len(result) != len(deps):
+        cyclic = [table for table, degree in indegree.items() if degree > 0]
+        raise ValueError(f"Cyklické nebo nevyřešitelné FK závislosti: {cyclic}")
+
+    return result
+
+
+def filter_row_for_table(row, table):
+    """
+    JSON může obsahovat pomocné klíče jako _chunk.
+    Do INSERTu pustíme jen skutečné sloupce tabulky.
+    """
+    columns = set(table.columns.keys())
+    return {
+        key: value
+        for key, value in row.items()
+        if key in columns
+    }
+
+
+def import_json_to_database(
+    connection_string,
+    input_json_path,
+    schema=None,
+    truncate=False,
+    upsert=True,
+):
+    engine = create_engine(connection_string)
+    metadata = MetaData(schema=schema)
+
+    with open(input_json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    deps = get_table_dependencies(engine, schema=schema)
+    table_order = topological_sort_tables(deps)
+
+    print("Pořadí plnění tabulek:")
+    for index, table_name in enumerate(table_order, start=1):
+        if table_name in data:
+            print(f"{index:03d}. {table_name}")
+
+    tables = {
+        table_name: Table(
+            table_name,
+            metadata,
+            autoload_with=engine,
+            schema=schema,
+        )
+        for table_name in table_order
+        if table_name in data
+    }
+
+    with engine.begin() as conn:
+        if truncate:
+            # mazání musí jít opačným pořadím než insert
+            for table_name in reversed(table_order):
+                if table_name not in tables:
+                    continue
+                table = tables[table_name]
+                conn.execute(table.delete())
+                print(f"Vymazáno: {table_name}")
+
+        for table_name in table_order:
+            rows = data.get(table_name)
+            if not rows:
+                continue
+
+            table = tables.get(table_name)
+            if table is None:
+                continue
+
+            clean_rows = [
+                filter_row_for_table(row, table)
+                for row in rows
+            ]
+
+            clean_rows = [
+                row for row in clean_rows
+                if row
+            ]
+
+            if not clean_rows:
+                continue
+
+            if upsert:
+                stmt = pg_insert(table).values(clean_rows)
+
+                pk_columns = [col.name for col in table.primary_key.columns]
+
+                if pk_columns:
+                    update_columns = {
+                        col.name: stmt.excluded[col.name]
+                        for col in table.columns
+                        if col.name not in pk_columns
+                    }
+
+                    if update_columns:
+                        stmt = stmt.on_conflict_do_update(
+                            index_elements=pk_columns,
+                            set_=update_columns,
+                        )
+                    else:
+                        stmt = stmt.on_conflict_do_nothing(
+                            index_elements=pk_columns
+                        )
+                else:
+                    stmt = table.insert().values(clean_rows)
+            else:
+                stmt = table.insert().values(clean_rows)
+
+            conn.execute(stmt)
+            print(f"Importováno: {table_name}, řádků: {len(clean_rows)}")
+
+    print("Import hotov.")
+
 def main():
 
     parser = argparse.ArgumentParser(
@@ -646,7 +817,7 @@ def main():
     parser.add_argument(
         "--action",
         required=False,
-        choices=["patch", "export"],
+        choices=["patch", "export", "import"],
         help="Co se má provést",
         default="patch"
     )
@@ -656,6 +827,19 @@ def main():
         required=False,
         help="Cesta k výstupnímu JSON (pro export)",
         default="./systemdata.backup.json"
+    )
+
+    parser.add_argument(
+        "--input",
+        required=False,
+        help="Cesta ke vstupnímu JSON pro import",
+        default="./systemdata.backup.json",
+    )
+
+    parser.add_argument(
+        "--truncate",
+        action="store_true",
+        help="Před importem vymaže tabulky v opačném pořadí FK závislostí",
     )
 
     args = parser.parse_args()
@@ -686,5 +870,15 @@ def main():
         check_ids(result_data)
         with open(f"{filename}.txt", "w", encoding="utf-8") as file:
             json.dump(result_data, file, indent=4, ensure_ascii=False)
+
+    elif args.action == "import":
+        print("Spouštím import...")
+
+        import_json_to_database(
+            connection_string=args.connection,
+            input_json_path=args.input,
+            truncate=args.truncate,
+            upsert=True,
+        )
 
 main()
