@@ -64,6 +64,55 @@ For GQL server (apollo federation) response holds a code.
 
 Authority is integrated in frontend. The design allows to refactor it for Keycloack (see https://www.keycloak.org/) as an example.
 
+## Roles
+
+```gql
+query uni{
+  me {
+    id
+    email
+  }
+  groupPage(where: {name: {_ilike: "Uni%"}}) {
+    __typename
+    id
+    name
+    ...RBAC
+  }
+  roleTypePage(where: {name: {_ilike: "%admi%"}}) {
+    id
+    name
+  }
+}
+
+fragment RBAC on BaseGQLModel {
+  rbacobjectId
+  rbacobject {
+    currentUserRoles {
+      startdate
+      enddate
+      valid
+      roletype {
+        id
+        name
+      }
+    }
+  }
+}
+
+
+mutation roleInsert{
+  roleInsert(role: {
+    userId: "51d101a0-81f1-44ca-8366-6cf51432e8d6",
+    groupId: "d75d64a4-bf5f-43c5-9c14-8fda7aff6c09",
+    roletypeId: "994ce107-685d-481d-b9a7-f0151cc4d5b3",
+    startdate: "2026-01-01T01:01:01"
+  }) {
+    __typename
+
+  }
+}
+```
+
 ## Frontend applications
 
 As there is strong API (GQL based), frontend can decoupled into simple SPA (Single page application see https://developer.mozilla.org/en-US/docs/Glossary/SPA) htmls.
