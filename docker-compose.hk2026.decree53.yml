@@ -1,0 +1,117 @@
+# docker-compose.hk2026.decree53.yml
+# =====================================
+# Override file - integrates Decree 53 into the hk2026 stack.
+# Original docker-compose.hk2026.yml is NOT modified.
+#
+# Usage:
+#   # Stop any existing stack first (avoids port conflicts)
+#   docker compose -f docker-compose.hk2026.yml down
+#
+#   # Run hk2026 + Decree 53
+#   docker compose -f docker-compose.hk2026.yml -f docker-compose.hk2026.decree53.yml up --build
+#
+# What this file does:
+#   1. Replaces the pre-built frontend image with a local build (Dockerfile.decree53)
+#      so that aiomysql and main_localized.py are available
+#   2. Adds local_mysql service (MySQL 8.0) - the Local_DB
+#   3. Adds mysql_init service - applies schema_local_db.sql once on startup
+#   4. All other services (apollo, gql_*, postgres, pgadmin, valkey) remain unchanged
+
+version: "3.8"
+
+x-services-volume:
+  &system-data-volume
+  type: bind
+  source: ./systemdata.hk2026.json
+  target: /app/systemdata.json
+
+services:
+
+  # Override frontend: build from Dockerfile.decree53 instead of hrbolek/frontend:0.11.0
+  # Note: do NOT set image: here — Docker Compose will use the base image name
+  # (hrbolek/frontend:0.11.0) as the tag for the locally-built image, which is fine.
+  # Setting image: "" causes empty-name weirdness that can break container DNS resolution.
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.decree53
+    environment:
+      - DEMO=True
+      - DEMODATA=True
+      - POSTGRES_HOST=postgres_credentials:5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      # Bypass apollo federation (hrbolek/apollo_federation image is Federation v1,
+      # all gql_* subgraphs use Federation v2 @composeDirective → incompatible).
+      # Point directly to gql_ug which is healthy and contains user/group/role data.
+      # Decree 53 classification is keyword-based so routing headers are still correct
+      # even when gql_ug returns "field not found" errors for non-ug queries.
+      - GQL_PROXY=http://gql_ug:8000/gql
+      - SALT=fe1c71b2-74c0-41e5-978f-eecbffac7418
+      - ADMIN_DEFAULT_EMAIL=john.newbie@world.com
+      - ADMIN_DEFAULT_PASSWORD=john.newbie@world.com
+      # Decree 53 - Local_DB connection
+      - LOCAL_DB_HOST=local_mysql
+      - LOCAL_DB_PORT=3306
+      - LOCAL_DB_USER=root
+      - LOCAL_DB_PASSWORD=localpass
+      - LOCAL_DB_NAME=local_db
+    volumes:
+      - <<: *system-data-volume
+    depends_on:
+      - postgres_credentials
+      - apollo        # wait for apollo container to exist before frontend starts
+      - mysql_init
+
+  # Local_DB - MySQL stored in Vietnam (Decree 53 §17)
+  local_mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: localpass
+      MYSQL_DATABASE: local_db
+    ports:
+      - "3307:3306"   # exposed on 3307 to avoid conflicts with any local MySQL
+    volumes:
+      - local_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-plocalpass"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: on-failure:3
+
+  # One-shot: apply schema to MySQL before frontend starts
+  mysql_init:
+    image: mysql:8.0
+    environment:
+      MYSQL_PWD: localpass
+    volumes:
+      - ./server/schema_local_db.sql:/schema.sql:ro
+    command: >
+      bash -c "
+        until mysqladmin ping -h local_mysql -u root -plocalpass --silent; do sleep 2; done;
+        mysql -h local_mysql -u root -plocalpass local_db < /schema.sql;
+        echo '[Decree53] Schema applied.'
+      "
+    depends_on:
+      local_mysql:
+        condition: service_healthy
+    restart: on-failure
+
+  # Override apollo: exclude gql_granting and gql_projects which use
+  # Apollo Federation v2 @composeDirective that the gateway image doesn't support.
+  # gql_ug + gql_office are healthy and sufficient for Decree 53 routing tests.
+  apollo:
+    environment:
+      - PORT=3000
+      - |
+        SERVICES=
+        [
+          {"name": "ug", "url": "http://gql_ug:8000/gql"},
+          {"name": "office", "url": "http://gql_office:8000/gql"}
+        ]
+
+volumes:
+  local_mysql_data:

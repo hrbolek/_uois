@@ -1,0 +1,21 @@
+FROM python:3.10.13-slim as pythonbase
+
+RUN apt update && apt install curl -y && rm -rf /var/cache/apk/*
+
+COPY ./requirements_localized.txt .
+RUN python -m pip install -r requirements_localized.txt
+
+FROM pythonbase as executepython
+
+EXPOSE 8000
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+COPY . /app
+
+RUN useradd appuser && chown -R appuser /app
+USER appuser
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "-k", "uvicorn.workers.UvicornWorker", "server.main_localized:app"]

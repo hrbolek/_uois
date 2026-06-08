@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ER Diagram – Decree 53 Data Localization Map</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #1a1a2e; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 24px; }
+  h1 { text-align: center; font-size: 1.4rem; margin-bottom: 6px; color: #fff; }
+  .subtitle { text-align: center; font-size: 0.85rem; color: #aaa; margin-bottom: 24px; }
+
+  .legend { display: flex; gap: 24px; justify-content: center; margin-bottom: 28px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+  .dot { width: 14px; height: 14px; border-radius: 3px; }
+  .dot-local   { background: #e05252; }
+  .dot-global  { background: #4caf50; }
+  .dot-active  { background: #ffd700; }
+  .dot-schema  { background: #888; }
+
+  .layout { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; align-items: flex-start; }
+
+  .db-box { border-radius: 10px; padding: 16px; width: 400px; }
+  .db-local  { border: 2px solid #e05252; background: #2a1a1a; }
+  .db-global { border: 2px solid #4caf50; background: #1a2a1a; }
+
+  .db-title { font-size: 1rem; font-weight: bold; margin-bottom: 4px; }
+  .db-local  .db-title { color: #e05252; }
+  .db-global .db-title { color: #4caf50; }
+  .db-law { font-size: 0.75rem; color: #999; margin-bottom: 14px; }
+
+  .section-label { font-size: 0.72rem; color: #888; text-transform: uppercase;
+                   letter-spacing: 1px; margin: 12px 0 6px; padding-left: 2px; }
+
+  .table-card { background: #2c2c3e; border-radius: 6px; margin-bottom: 10px; overflow: hidden; }
+  .table-card.local-active { border-left: 4px solid #ffd700; }
+  .table-card.local-schema { border-left: 4px solid #e05252; opacity: 0.75; }
+  .table-card.global-table { border-left: 4px solid #4caf50; }
+
+  .table-name { padding: 7px 12px; font-weight: bold; font-size: 0.85rem;
+                background: #3a3a50; letter-spacing: 0.5px; display: flex;
+                align-items: center; justify-content: space-between; }
+  .local-active .table-name { color: #ffd700; }
+  .local-schema .table-name { color: #f08080; }
+  .global-table .table-name { color: #81c784; }
+  .badge { font-size: 0.65rem; padding: 2px 7px; border-radius: 10px; font-weight: normal; }
+  .badge-active { background: #3a3000; color: #ffd700; border: 1px solid #ffd700; }
+  .badge-schema { background: #2a1a1a; color: #888; border: 1px solid #555; }
+  .badge-global { background: #1a2e1a; color: #81c784; border: 1px solid #4caf50; }
+
+  .fields { padding: 8px 12px; }
+  .field { display: flex; align-items: center; gap: 6px; font-size: 0.78rem;
+           padding: 2px 0; border-bottom: 1px solid #3a3a50; }
+  .field:last-child { border-bottom: none; }
+  .field-icon { font-size: 0.7rem; width: 14px; text-align: center; }
+  .pk { color: #ffd700; }
+  .fk { color: #87ceeb; }
+  .field-name { color: #ddd; flex: 1; }
+  .field-type { color: #888; font-size: 0.72rem; }
+
+  .flow-box { margin-top: 20px; padding: 12px; background: #1e1e30; border-radius: 6px;
+              font-size: 0.78rem; color: #aaa; line-height: 1.8; border: 1px solid #3a3a50; }
+  .flow-box strong { color: #87ceeb; }
+  .flow-step { margin: 2px 0; }
+  .flow-step .arrow { color: #555; margin-right: 4px; }
+  .highlight-local  { color: #ffd700; font-weight: bold; }
+  .highlight-global { color: #81c784; font-weight: bold; }
+  code { background: #2c2c3e; padding: 1px 5px; border-radius: 3px; font-size: 0.75rem; color: #87ceeb; }
+</style>
+</head>
+<body>
+
+<h1>ER Diagram – Decree 53/2022/ND-CP §17 — Data Localization Map</h1>
+<p class="subtitle">
+  University Information System (UOIS hk2026) &nbsp;·&nbsp;
+  Field names verified against <code>systemdata.hk2026.json</code>
+</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot dot-active"></div> Actively written (implemented)</div>
+  <div class="legend-item"><div class="dot dot-local"></div> Schema defined – Local_DB (MySQL, Vietnam)</div>
+  <div class="legend-item"><div class="dot dot-global"></div> Global_DB (PostgreSQL – no restriction)</div>
+</div>
+
+<div class="layout">
+
+  <!-- LOCAL DB -->
+  <div class="db-box db-local">
+    <div class="db-title">🔴 Local_DB — MySQL (Vietnam)</div>
+    <div class="db-law">Decree 53/2022/ND-CP §17 — Mandatory storage within Vietnamese territory.<br>
+      Applies to: user account names, user relationships, IP access logs.</div>
+
+    <div class="section-label">▶ Active tables (written on every GQL request)</div>
+
+    <div class="table-card local-active">
+      <div class="table-name">ip_logs <span class="badge badge-active">ACTIVE</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon pk">🔑</span><span class="field-name">id</span><span class="field-type">CHAR(36) PK</span></div>
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">user_id</span><span class="field-type">CHAR(36) → users</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">ip_address</span><span class="field-type">VARCHAR(45)</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">endpoint</span><span class="field-type">VARCHAR(512)</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">method</span><span class="field-type">VARCHAR(10)</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">user_agent</span><span class="field-type">VARCHAR(512)</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">gql_operation</span><span class="field-type">VARCHAR(255)</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">status_code</span><span class="field-type">SMALLINT</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">data_category</span><span class="field-type">VARCHAR(50) — user_profile | app_metadata | image_cache</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">ts</span><span class="field-type">DATETIME</span></div>
+      </div>
+    </div>
+
+    <div class="table-card local-active">
+      <div class="table-name">user_profile_audit <span class="badge badge-active">ACTIVE</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon pk">🔑</span><span class="field-name">id</span><span class="field-type">CHAR(36) PK</span></div>
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">user_id</span><span class="field-type">CHAR(36) → users</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">operation_name</span><span class="field-type">VARCHAR(255)</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">payload</span><span class="field-type">MEDIUMTEXT (JSON: query + variables)</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">recorded_at</span><span class="field-type">DATETIME</span></div>
+      </div>
+    </div>
+
+    <div class="section-label">▶ Mirror tables (schema defined — user relationship data legally bound to Vietnam)</div>
+
+    <div class="table-card local-schema">
+      <div class="table-name">users_mirror <span class="badge badge-schema">SCHEMA</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon pk">🔑</span><span class="field-name">id</span><span class="field-type">CHAR(36) PK</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">name</span><span class="field-type">VARCHAR(255)</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">firstname</span><span class="field-type">VARCHAR(255)</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">surname</span><span class="field-type">VARCHAR(255)</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">email</span><span class="field-type">VARCHAR(255)</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">created / lastchange</span><span class="field-type">DATETIME</span></div>
+      </div>
+    </div>
+
+    <div class="table-card local-schema">
+      <div class="table-name">groups_mirror <span class="badge badge-schema">SCHEMA</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon pk">🔑</span><span class="field-name">id</span><span class="field-type">CHAR(36) PK</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">name</span><span class="field-type">VARCHAR(255)</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">abbr</span><span class="field-type">VARCHAR(64) — e.g. "FIT", "FME"</span></div>
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">grouptype_id</span><span class="field-type">CHAR(36) FK → grouptypes_mirror</span></div>
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">mastergroup_id</span><span class="field-type">CHAR(36) FK self-ref</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">created / lastchange</span><span class="field-type">DATETIME</span></div>
+      </div>
+    </div>
+
+    <div class="table-card local-schema">
+      <div class="table-name">memberships_mirror <span class="badge badge-schema">SCHEMA</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon pk">🔑</span><span class="field-name">id</span><span class="field-type">CHAR(36) PK</span></div>
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">user_id</span><span class="field-type">CHAR(36) FK → users_mirror</span></div>
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">group_id</span><span class="field-type">CHAR(36) FK → groups_mirror</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">valid</span><span class="field-type">TINYINT</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">created / lastchange</span><span class="field-type">DATETIME</span></div>
+      </div>
+    </div>
+
+    <div class="table-card local-schema">
+      <div class="table-name">roles_mirror <span class="badge badge-schema">SCHEMA</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon pk">🔑</span><span class="field-name">id</span><span class="field-type">CHAR(36) PK</span></div>
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">user_id / group_id / roletype_id</span><span class="field-type">CHAR(36) FK</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">valid</span><span class="field-type">TINYINT</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">startdate / enddate</span><span class="field-type">DATETIME</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">created / lastchange</span><span class="field-type">DATETIME</span></div>
+      </div>
+    </div>
+
+    <div class="table-card local-schema">
+      <div class="table-name">roletypes_mirror <span class="badge badge-schema">SCHEMA</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon pk">🔑</span><span class="field-name">id</span><span class="field-type">CHAR(36) PK</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">name / name_en</span><span class="field-type">VARCHAR(255)</span></div>
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">category_id</span><span class="field-type">CHAR(36) FK</span></div>
+      </div>
+    </div>
+
+    <div class="table-card local-schema">
+      <div class="table-name">grouptypes_mirror <span class="badge badge-schema">SCHEMA</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon pk">🔑</span><span class="field-name">id</span><span class="field-type">CHAR(36) PK</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">name / name_en</span><span class="field-type">VARCHAR(255)</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">ex_type</span><span class="field-type">VARCHAR(64)</span></div>
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">category_id</span><span class="field-type">CHAR(36) FK</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GLOBAL DB -->
+  <div class="db-box db-global">
+    <div class="db-title">🟢 Global_DB — PostgreSQL (Apollo Federation)</div>
+    <div class="db-law">Not restricted by Decree 53 — may be stored in any cloud region.<br>
+      Applies to: academic operations, scheduling, media, and institutional data.</div>
+
+    <div class="section-label">▶ User &amp; Group services — gql_ug (user_profile category)</div>
+
+    <div class="table-card global-table">
+      <div class="table-name">users <span class="badge badge-global">user_profile</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon pk">🔑</span><span class="field-name">id</span><span class="field-type">UUID PK</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">name / firstname / surname</span><span class="field-type">VARCHAR</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">email</span><span class="field-type">VARCHAR</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">created / lastchange</span><span class="field-type">DATETIME</span></div>
+      </div>
+    </div>
+
+    <div class="table-card global-table">
+      <div class="table-name">groups <span class="badge badge-global">user_profile</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon pk">🔑</span><span class="field-name">id</span><span class="field-type">UUID PK</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">name / abbr</span><span class="field-type">VARCHAR — e.g. Faculty, Department</span></div>
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">grouptype_id / mastergroup_id</span><span class="field-type">UUID FK</span></div>
+      </div>
+    </div>
+
+    <div class="table-card global-table">
+      <div class="table-name">memberships <span class="badge badge-global">user_profile</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">user_id → users</span><span class="field-type">UUID FK</span></div>
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">group_id → groups</span><span class="field-type">UUID FK</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">valid</span><span class="field-type">BOOLEAN</span></div>
+      </div>
+    </div>
+
+    <div class="table-card global-table">
+      <div class="table-name">roles / roletypes / grouptypes <span class="badge badge-global">user_profile</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon"> </span><span class="field-name">User role assignments within university groups</span><span class="field-type">UUID PK/FK</span></div>
+      </div>
+    </div>
+
+    <div class="section-label">▶ Academic operations — gql_event / gql_facility (app_metadata category)</div>
+
+    <div class="table-card global-table">
+      <div class="table-name">events / event_invitations <span class="badge badge-global">app_metadata</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon pk">🔑</span><span class="field-name">id</span><span class="field-type">UUID PK</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">name / description</span><span class="field-type">VARCHAR</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">startdate / enddate</span><span class="field-type">DATETIME</span></div>
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">organizer_id → groups</span><span class="field-type">UUID FK</span></div>
+      </div>
+    </div>
+
+    <div class="table-card global-table">
+      <div class="table-name">facilities / facility_types <span class="badge badge-global">app_metadata</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon pk">🔑</span><span class="field-name">id</span><span class="field-type">UUID PK</span></div>
+        <div class="field"><span class="field-icon"> </span><span class="field-name">name / capacity / label</span><span class="field-type">VARCHAR / INT</span></div>
+        <div class="field"><span class="field-icon fk">🔗</span><span class="field-name">facilitytype_id / mastergroup_id</span><span class="field-type">UUID FK</span></div>
+      </div>
+    </div>
+
+    <div class="table-card global-table">
+      <div class="table-name">plans / lessons / subjects <span class="badge badge-global">app_metadata</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon"> </span><span class="field-name">Study plans, lesson schedules, academic subjects</span><span class="field-type">app_metadata</span></div>
+      </div>
+    </div>
+
+    <div class="table-card global-table">
+      <div class="table-name">projects / publications <span class="badge badge-global">app_metadata</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon"> </span><span class="field-name">Research projects, academic publications</span><span class="field-type">app_metadata</span></div>
+      </div>
+    </div>
+
+    <div class="table-card global-table">
+      <div class="table-name">images / avatars / files <span class="badge badge-global">image_cache</span></div>
+      <div class="fields">
+        <div class="field"><span class="field-icon"> </span><span class="field-name">Profile photos, document attachments, cached media</span><span class="field-type">image_cache</span></div>
+      </div>
+    </div>
+
+    <div class="flow-box">
+      <strong>Decree 53 Routing Flow (per GQL request):</strong><br>
+      <div class="flow-step"><span class="arrow">1.</span> Client sends <code>POST /api/gql</code> to FastAPI frontend</div>
+      <div class="flow-step"><span class="arrow">2.</span> <code>gqlproxy_localized</code> classifies query keywords</div>
+      <div class="flow-step"><span class="arrow">3.</span> Forwards request to <code>GQL_PROXY</code> (gql_ug / Apollo)</div>
+      <div class="flow-step"><span class="arrow">4.</span> <code>DataRouter.process()</code> called after upstream responds</div>
+      <div class="flow-step"><span class="arrow">5.</span> <span class="highlight-local">Every request</span> → writes <code>ip_logs</code> to Local_DB (MySQL)</div>
+      <div class="flow-step"><span class="arrow">6.</span> <span class="highlight-local">user_profile mutation</span> → additionally writes <code>user_profile_audit</code></div>
+      <div class="flow-step"><span class="arrow">7.</span> <span class="highlight-global">app_metadata / image_cache</span> → forwarded only, no local write</div>
+      <div class="flow-step"><span class="arrow">8.</span> Response headers: <code>X-Data-Category</code> and <code>X-Decree53-Routed: local | global</code></div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>
