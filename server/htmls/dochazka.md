@@ -2,7 +2,7 @@ Informace o
 - události
 
 HL Demo Data
-- [event](/dochazka/EventGQLModel/view/a64871f8-2308-48ff-adb2-33fb0b0741f1)
+- [event](/dochazka/StudyPlanGQLModel/view/28c25266-daa4-4579-a32a-7a4394ee463d)
 
 [kod](https://github.com/Svejkys/frontendui)
 
