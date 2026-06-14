@@ -1,0 +1,304 @@
+version: "3.8"
+
+x-services-volume:
+  &system-data-volume
+  type: bind
+  source: ./systemdata.hk2026.json
+  target: /app/systemdata.json
+
+services:
+  entra:
+    image: hrbolek/easy_entra_id_fake
+    environment:
+      - TARGET_SERVER=http://frontend:8000
+      - FAKE_USERS_JSON=/app/fake_users.json
+      - FAKE_LOGIN_HTML_PATH=/app/index.html
+      - FAKE_AUTH_COOKIE=fake_easy_entra_user
+    ports:
+      - 33007:8000
+    networks:
+      - net_entra_frontend
+
+  frontend:
+    image: hrbolek/frontend_entra
+    environment:
+      - DEMO=True
+      - DEMODATA=True
+      - POSTGRES_HOST=postgres_credentials:5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      - GQL_PROXY=http://apollo:3000/api/gql/
+      - SALT=fe1c71b2-74c0-41e5-978f-eecbffac7418
+      - ADMIN_DEFAULT_EMAIL=john.newbie@world.com
+      - ADMIN_DEFAULT_PASSWORD=john.newbie@world.com
+      - |
+        LOCAL_USER_MAP_JSON={
+          "97c80a87-8206-4845-98df-2af25ed33916": "51d101a0-81f1-44ca-8366-6cf51432e8d6"
+        }
+    healthcheck:
+      test: "curl -f -X GET http://localhost:8000/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3
+    ports:
+      - 33001:8000
+    volumes:
+      - <<: *system-data-volume
+      - source: ./server_entra/index.html
+        target: /app/index.html
+        type: bind
+    depends_on:
+      - postgres_credentials
+    networks:
+      - net_entra_frontend
+      - net_frontend_apollo
+      - net_frontend_postgres_credentials
+
+  apollo:
+    image: hrbolek/apollo_federation
+    environment:
+      - PORT=3000
+      - |
+        SERVICES=
+        [
+          {"name": "ug", "url": "http://gql_ug:8000/gql"},
+          {"name": "office", "url": "http://gql_office:8000/gql"},
+          {"name": "granting", "url": "http://gql_granting:8000/gql"},
+          {"name": "projects", "url": "http://gql_projects:8000/gql"}
+        ]
+    healthcheck:
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3
+    ports:
+      - 33002:3000
+    deploy:
+      replicas: 1
+    depends_on:
+      - gql_ug
+      - gql_office
+      - gql_granting
+      - gql_projects
+    networks:
+      - net_frontend_apollo
+      - net_apollo_gql
+
+  gql_ug:
+    image: hrbolek/gql_ug:0.11.0
+    environment:
+      - POSTGRES_HOST=postgres_gql:5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=False
+      - DEMODATA=True
+    healthcheck:
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3
+    ports:
+      - 33003:8000
+    volumes:
+      - <<: *system-data-volume
+    depends_on:
+      - postgres_gql
+    networks:
+      - net_apollo_gql
+      - net_gql_postgres_gql
+      - net_gql_ug
+      - net_valkey
+
+  gql_granting:
+    image: hrbolek/gql_granting:0.11.0
+    environment:
+      - POSTGRES_HOST=postgres_gql:5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      - GQLUG_ENDPOINT_URL=http://gql_ug:8000/gql
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=False
+      - DEMODATA=True
+    healthcheck:
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3
+    ports:
+      - 33005:8000
+    volumes:
+      - <<: *system-data-volume
+    depends_on:
+      - postgres_gql
+      - gql_ug
+    networks:
+      - net_apollo_gql
+      - net_gql_postgres_gql
+      - net_gql_ug
+      - net_valkey
+
+  gql_office:
+    image: hrbolek/gql_office:0.11.0
+    environment:
+      - POSTGRES_HOST=postgres_gql:5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      - GQLUG_ENDPOINT_URL=http://gql_ug:8000/gql
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=False
+      - DEMODATA=True
+    healthcheck:
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3
+    ports:
+      - 33004:8000
+    volumes:
+      - <<: *system-data-volume
+    depends_on:
+      - postgres_gql
+      - gql_ug
+    networks:
+      - net_apollo_gql
+      - net_gql_postgres_gql
+      - net_gql_ug
+      - net_valkey
+  gql_projects:
+    image: hrbolek/gql_projects:0.11.0
+    environment:
+      - POSTGRES_HOST=postgres_gql:5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+      - GQLUG_ENDPOINT_URL=http://gql_ug:8000/gql
+      - JWTPUBLICKEYURL=http://frontend:8000/oauth/publickey
+      - JWTRESOLVEUSERPATHURL=http://frontend:8000/oauth/userinfo
+      - DEMO=False
+      - DEMODATA=True
+    healthcheck:
+      test: "curl -f -H 'Content-Type: application/json' -X POST -d '{\"query\":\"query{__schema{types{name}}}\"}' http://localhost:8000/gql || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3
+    ports:
+      - 33006:8000
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - <<: *system-data-volume
+    depends_on:
+      - postgres_gql
+      - gql_ug
+    networks:
+      - net_apollo_gql
+      - net_gql_postgres_gql
+      - net_gql_ug
+      - net_valkey
+
+  postgres_gql:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    restart: on-failure:3
+    ports:
+      - 5432:5432
+    networks:
+      - net_gql_postgres_gql
+      - net_pgadmin_postgres_gql
+
+  postgres_credentials:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    restart: on-failure:3
+    ports:
+      - 5433:5432
+    networks:
+      - net_frontend_postgres_credentials
+      - net_pgadmin_postgres_credentials
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=anoyne@anywhere.com
+      - PGADMIN_DEFAULT_PASSWORD=example
+    healthcheck:
+      test: ["CMD", "wget", "-O", "-", "http://localhost:80/misc/ping"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    ports:
+      - 31122:80
+    networks:
+      - net_pgadmin_postgres_credentials
+      - net_pgadmin_postgres_gql
+
+  valkey:
+    image: valkey/valkey:9.0.3-alpine
+    restart: always
+    ports:
+      - 31123:6379
+    networks:
+      - net_valkey
+
+networks:
+  net_entra_frontend:
+    internal: true
+
+  net_frontend_apollo:
+    internal: true
+
+  net_frontend_postgres_credentials:
+    internal: true
+
+  net_pgadmin_postgres_credentials:
+    internal: true
+
+  net_pgadmin_postgres_gql:
+    internal: true
+
+  net_apollo_gql:
+    internal: true
+
+  net_gql_postgres_gql:
+    internal: true
+
+  net_gql_ug:
+    internal: true
+
+  net_valkey:
+    internal: true

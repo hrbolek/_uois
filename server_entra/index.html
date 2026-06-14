@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="cs">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Easy Entra ID → Apollo Bridge Debug</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+
+    <style>
+        body {
+            background: #0b1020;
+            color: #e8eefc;
+        }
+
+        .card {
+            background: #121a33;
+            border: 1px solid #24345f;
+        }
+
+        .text-muted {
+            color: #93a4c7 !important;
+        }
+
+        pre {
+            background: #050816;
+            color: #d8e6ff;
+            border: 1px solid #1e2a4d;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            max-height: 55vh;
+            overflow: auto;
+        }
+
+        textarea {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        code {
+            color: #8bd3ff;
+        }
+
+        a {
+            color: #8bd3ff;
+        }
+
+        a:hover {
+            color: #b9e7ff;
+        }
+
+        .nested-app-container {
+            background: #ffffff;
+            color: #000000;
+            /* border-radius: 0.5rem;
+            padding: 1rem; */
+            min-height: 60vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script id="debug-data" type="application/json">"__DEBUG_DATA_PLACEHOLDER__"</script>
+
+    <script>
+        globalThis.process = globalThis.process || { env: {} };
+        globalThis.process.env = globalThis.process.env || {};
+        globalThis.process.env.NODE_ENV = globalThis.process.env.NODE_ENV || "development";
+    </script>
+
+    <script>
+        globalThis.nestedApps = {
+            ug: {
+                title: "Uživatelé a skupiny",
+                navTitle: "UG",
+                basePath: "/ug",
+                firstLink: "/ug/UserGQLModel/view/51d101a0-81f1-44ca-8366-6cf51432e8d6",
+                css: [
+                    "https://cdn.jsdelivr.net/npm/@hrbolek/app_ug3/dist/app_ug3.css"
+                ],
+                script: "https://cdn.jsdelivr.net/npm/@hrbolek/app_ug3/dist/es/StandaloneEntry.js",
+                mountExport: "mount",
+                unmountExport: "unmount",
+                mountOptions: {
+                    GQLENDPOINT: "/api/gql"
+                },
+                md: `Informace o
+- uživatelích
+- skupinách
+- členství a rolích
+
+Pracovní stůl.
+
+HL Demo Data
+- [uživatel](/ug/user/view/51d101a0-81f1-44ca-8366-6cf51432e8d6)
+- [skupina](/ug/group/departments/be0e6b0b-7e5f-4b7a-9d9b-daf3f23bcd7a)
+
+HL
+- [uživatel](/ug/user/view/2d9dc5ca-a4a2-11ed-b9df-0242ac120003)
+- [skupina](/ug/group/view/2d9dcd22-a4a2-11ed-b9df-0242ac120003)`
+            },
+
+            semestr: {
+                title: "Semestr",
+                navTitle: "Semestr",
+                basePath: "/semestr",
+                firstLink: "/semestr/SemesterGQLModel/view/5486f84e-2d3a-47c1-87ab-1a54590950db",
+                css: [
+                    "https://cdn.jsdelivr.net/npm/@maya0552/app_semestr/dist/app_ug3.css"
+                ],
+                script: "https://cdn.jsdelivr.net/npm/@maya0552/app_semestr/dist/es/StandaloneEntry.js",
+                mountExport: "mount",
+                unmountExport: "unmount",
+                mountOptions: {
+                    GQLENDPOINT: "/api/gql"
+                },
+                md: `Informace o
+- semestru studijního předmětu
+
+HL Demo Data
+- [semestr](/semestr/SemesterGQLModel/view/5486f84e-2d3a-47c1-87ab-1a54590950db)
+
+[kod](https://github.com/Maya0552/frontendui)`
+            },
+
+            dochazka: {
+                title: "Docházka",
+                navTitle: "Docházka",
+                basePath: "/dochazka",
+                firstLink: "/dochazka/StudyPlanGQLModel/view/28c25266-daa4-4579-a32a-7a4394ee463d",
+                css: [
+                    "https://cdn.jsdelivr.net/npm/@vitas_84/app_dochazka/dist/app_dochazka.css"
+                ],
+                script: "https://cdn.jsdelivr.net/npm/@vitas_84/app_dochazka/dist/es/StandaloneEntry.js",
+                mountExport: "mount",
+                unmountExport: "unmount",
+                mountOptions: {
+                    GQLENDPOINT: "/api/gql"
+                },
+                md: `Informace o
+- události
+
+HL Demo Data
+- [study plan](/dochazka/StudyPlanGQLModel/view/28c25266-daa4-4579-a32a-7a4394ee463d)
+
+[kod](https://github.com/Svejkys/frontendui)`
+            },
+
+            evaluation: {
+                title: "Evaluation app",
+                navTitle: "Evaluation",
+                basePath: "/evaluation",
+                firstLink: "/evaluation/EvaluationGQLModel/view/33d3fadd-b6cb-4252-a5d9-93ba9f2ed7c5",
+                css: [
+                    "https://cdn.jsdelivr.net/npm/@speron/app_evaluation/dist/app_evaluation.css"
+                ],
+                script: "https://cdn.jsdelivr.net/npm/@speron/app_evaluation/dist/es/StandaloneEntry.js",
+                mountExport: "mount",
+                unmountExport: "unmount",
+                mountOptions: {
+                    GQLENDPOINT: "/api/gql"
+                },
+                md: `Informace o
+- hodnocení / zkoušce
+
+HL Demo Data
+- [hodnocení](/evaluation/EvaluationGQLModel/view/33d3fadd-b6cb-4252-a5d9-93ba9f2ed7c5)
+
+[kod](https://github.com/Speron4/frontendui)`
+            },
+
+            event: {
+                title: "Event app",
+                navTitle: "Event",
+                basePath: "/event",
+                firstLink: "/event/EventGQLModel/view/a64871f8-2308-48ff-adb2-33fb0b0741f1",
+                css: [
+                    "https://cdn.jsdelivr.net/npm/@smerovacdusan/app_event/dist/app_event.css"
+                ],
+                script: "https://cdn.jsdelivr.net/npm/@smerovacdusan/app_event/dist/es/StandaloneEntry.js",
+                mountExport: "mount",
+                unmountExport: "unmount",
+                mountOptions: {
+                    GQLENDPOINT: "/api/gql"
+                },
+                md: `Informace o
+- události
+
+HL Demo Data
+- [event](/event/EventGQLModel/view/a64871f8-2308-48ff-adb2-33fb0b0741f1)
+
+[kod](https://github.com/SmerovacDusan/frontendui)`
+            },
+
+            exam: {
+                title: "Exam",
+                navTitle: "Exam",
+                basePath: "/exam",
+                firstLink: "/exam/ExamGQLModel/view/784af054-917e-49b1-b8d2-5bf94d4ac47d",
+                css: [
+                    "https://cdn.jsdelivr.net/npm/@nik-kb-sp/app_exam/dist/app_exam.css"
+                ],
+                script: "https://cdn.jsdelivr.net/npm/@nik-kb-sp/app_exam/dist/es/StandaloneEntry.js",
+                mountExport: "mount",
+                unmountExport: "unmount",
+                mountOptions: {
+                    GQLENDPOINT: "/api/gql"
+                },
+                md: `Informace o
+- podmínkách klasifikace v daném semestru
+
+HL Demo Data
+- [podmínky klasifikace](/exam/ExamGQLModel/view/784af054-917e-49b1-b8d2-5bf94d4ac47d)
+
+[kod](https://github.com/NikiHal013/frontendui-Exam)`
+            },
+
+            finance: {
+                title: "Finance",
+                navTitle: "Finance",
+                basePath: "/finance",
+                firstLink: "/finance/FinanceGQLModel/view/30000000-0000-0000-0000-000000000001",
+                css: [
+                    "https://cdn.jsdelivr.net/npm/@vojta19/app_finance/dist/app_finance.css"
+                ],
+                script: "https://cdn.jsdelivr.net/npm/@vojta19/app_finance/dist/es/StandaloneEntry.js",
+                mountExport: "mount",
+                unmountExport: "unmount",
+                mountOptions: {
+                    GQLENDPOINT: "/api/gql"
+                },
+                md: `Informace o
+- financích
+
+HL Demo Data
+- [finance](/finance/FinanceGQLModel/view/30000000-0000-0000-0000-000000000001)
+
+[kod](https://github.com/vojta19/frontendui)`
+            },
+
+            kalendar: {
+                title: "Kalendář",
+                navTitle: "Kalendář",
+                basePath: "/kalendar",
+                firstLink: "/kalendar/EventGQLModel/view/a64871f8-2308-48ff-adb2-33fb0b0741f1",
+                css: [
+                    "https://cdn.jsdelivr.net/npm/@kopec211/app_kalendar/dist/app_kalendar.css"
+                ],
+                script: "https://cdn.jsdelivr.net/npm/@kopec211/app_kalendar/dist/es/StandaloneEntry.js",
+                mountExport: "mount",
+                unmountExport: "unmount",
+                mountOptions: {
+                    GQLENDPOINT: "/api/gql"
+                },
+                md: `Informace o
+- události
+
+HL Demo Data
+- [event](/kalendar/EventGQLModel/view/a64871f8-2308-48ff-adb2-33fb0b0741f1)
+
+[kod](https://github.com/kopec-221/frontendui)`
+            },
+
+            program: {
+                title: "Program",
+                navTitle: "Program",
+                basePath: "/program",
+                firstLink: "/program/ProgramGQLModel/view/77bb4a23-1003-4dd4-af62-4511fc013e6d",
+                css: [
+                    "https://cdn.jsdelivr.net/npm/@tomasr04/app_program/dist/app_program.css"
+                ],
+                script: "https://cdn.jsdelivr.net/npm/@tomasr04/app_program/dist/es/StandaloneEntry.js",
+                mountExport: "mount",
+                unmountExport: "unmount",
+                mountOptions: {
+                    GQLENDPOINT: "/api/gql"
+                },
+                md: `Informace o
+- programu
+
+HL Demo Data
+- [program](/program/ProgramGQLModel/view/77bb4a23-1003-4dd4-af62-4511fc013e6d)
+
+[kod](https://github.com/TomasR04/frontendui)`
+            },
+
+            projekt: {
+                title: "Projekt",
+                navTitle: "Projekt",
+                basePath: "/projekt",
+                firstLink: "/projekt/ProjectGQLModel/view/30000000-0000-0000-0000-000000000001",
+                css: [
+                    "https://cdn.jsdelivr.net/npm/@lukylinek/app_projekt/dist/app_projekt.css"
+                ],
+                script: "https://cdn.jsdelivr.net/npm/@lukylinek/app_projekt/dist/es/StandaloneEntry.js",
+                mountExport: "mount",
+                unmountExport: "unmount",
+                mountOptions: {
+                    GQLENDPOINT: "/api/gql"
+                },
+                md: `Informace o
+- projektu
+
+HL Demo Data
+- [projekt](/projekt/ProjectGQLModel/view/30000000-0000-0000-0000-000000000001)
+
+[kod](https://github.com/lukylinek/frontendui)`
+            },
+
+            student: {
+                title: "Student",
+                navTitle: "Student",
+                basePath: "/student",
+                firstLink: "/student/StudentGQLModel/view/4a539cd4-b265-471a-9f53-04c31c5253c3",
+                css: [
+                    "https://cdn.jsdelivr.net/npm/@pajapaja/app_student/dist/app_student.css"
+                ],
+                script: "https://cdn.jsdelivr.net/npm/@pajapaja/app_student/dist/es/StandaloneEntry.js",
+                mountExport: "mount",
+                unmountExport: "unmount",
+                mountOptions: {
+                    GQLENDPOINT: "/api/gql"
+                },
+                md: `Informace o
+- studentovi
+
+HL Demo Data
+- [student](/student/StudentGQLModel/view/4a539cd4-b265-471a-9f53-04c31c5253c3)
+
+[kod](https://github.com/pajanekkk/frontendui)`
+            },
+
+            studyplan: {
+                title: "Study plan",
+                navTitle: "Study plan",
+                basePath: "/studyplan",
+                firstLink: "/studyplan/StudyPlanGQLModel/view/28c25266-daa4-4579-a32a-7a4394ee463d",
+                css: [
+                    "https://cdn.jsdelivr.net/npm/@lukas.kalensky/app_studyplan/dist/app_studyplan.css"
+                ],
+                script: "https://cdn.jsdelivr.net/npm/@lukas.kalensky/app_studyplan/dist/es/StandaloneEntry.js",
+                mountExport: "mount",
+                unmountExport: "unmount",
+                mountOptions: {
+                    GQLENDPOINT: "/api/gql"
+                },
+                md: `Informace o
+- studijním plánu (plán studia předmětu v daném semestru)
+
+HL Demo Data
+- [plán studia předmětu](/studyplan/StudyPlanGQLModel/view/28c25266-daa4-4579-a32a-7a4394ee463d)
+
+[kod](https://github.com/lukaskalensky/Kalensky_frontendui)`
+            },
+
+            subject: {
+                title: "Subject",
+                navTitle: "Subject",
+                basePath: "/subject",
+                firstLink: "/subject/SubjectGQLModel/view/266e652e-fa90-4f4e-b7f9-fcfffb038332",
+                css: [
+                    "https://cdn.jsdelivr.net/npm/@velkayolanda/app_subjects/dist/app_subjects.css"
+                ],
+                script: "https://cdn.jsdelivr.net/npm/@velkayolanda/app_subjects/dist/es/StandaloneEntry.js",
+                mountExport: "mount",
+                unmountExport: "unmount",
+                mountOptions: {
+                    GQLENDPOINT: "/api/gql"
+                },
+                md: `Informace o
+- předmětu ve studijním programu
+
+HL Demo Data
+- [předmět](/subject/SubjectGQLModel/view/266e652e-fa90-4f4e-b7f9-fcfffb038332)
+
+[kod](https://github.com/velkayolanda/frontendui)`
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.25.6/babel.min.js"></script>
+
+    <script type="text/babel" data-type="module" data-presets="react">
+        import React, {
+            useEffect,
+            useMemo,
+            useRef,
+            useState
+        } from "https://cdn.jsdelivr.net/npm/react@18.3.1/+esm";
+
+        import { createRoot } from "https://cdn.jsdelivr.net/npm/react-dom@18.3.1/client/+esm";
+
+        import {
+            BrowserRouter,
+            Link,
+            Routes,
+            Route,
+            useParams
+        } from "https://cdn.jsdelivr.net/npm/react-router-dom@6.26.2/+esm";
+
+        import { marked } from "https://cdn.jsdelivr.net/npm/marked@14.1.2/+esm";
+        import DOMPurify from "https://cdn.jsdelivr.net/npm/dompurify@3.1.6/+esm";
+
+        const debugData = JSON.parse(
+            document.getElementById("debug-data").textContent
+        );
+
+        const nestedApps = globalThis.nestedApps || {};
+
+        function MarkdownBlock({ md }) {
+            const html = useMemo(() => {
+                const rawHtml = marked.parse(md || "");
+                return DOMPurify.sanitize(rawHtml);
+            }, [md]);
+
+            return (
+                <div
+                    className="markdown-content"
+                    dangerouslySetInnerHTML={{ __html: html }}
+                />
+            );
+        }
+
+        function ensureStylesheet(href) {
+            if (!href) return;
+
+            const existing = document.querySelector(
+                `link[data-dynamic-css="${CSS.escape(href)}"]`
+            );
+
+            if (existing) return;
+
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.crossOrigin = "anonymous";
+            link.href = href;
+            link.dataset.dynamicCss = href;
+
+            document.head.appendChild(link);
+        }
+
+        function ensureStylesheets(hrefs) {
+            if (!hrefs) return;
+
+            const list = Array.isArray(hrefs) ? hrefs : [hrefs];
+
+            for (const href of list) {
+                ensureStylesheet(href);
+            }
+        }
+
+        function getNestedAppEntries() {
+            return Object.entries(nestedApps).map(([appKey, config]) => ({
+                appKey,
+                ...config,
+                basePath: config.basePath || `/${appKey}`
+            }));
+        }
+
+        function LayoutDescription() {
+            return (<div>
+                <h1 className="display-6">
+                    {debugData.appTitle || "Easy Entra ID → Apollo Bridge"}
+                </h1>
+
+                <p className="text-muted mb-2">
+                    Single-page debug UI. Backend obsluhuje pouze <code>POST /api/gql</code> jako bridge do Apollo.
+
+                </p>
+            </div>
+            );
+        }
+
+        function Layout({ children }) {
+            const appEntries = getNestedAppEntries();
+
+            return (
+                <main className="container-fluid">
+                    <header>
+                        <nav className="d-flex gap-3 flex-wrap">
+                            <Link to="/Debug">Debug</Link>
+                            <Link to="/graphql-test">GraphQL test</Link>
+                            <Link to="/index">Aplikace</Link>
+
+                            {appEntries.map(app => (
+                                <Link key={app.appKey} to={app.firstLink || `${app.basePath}/`}>
+                                    {app.navTitle || app.title || app.appKey}
+                                </Link>
+                            ))}
+
+                            <a href="/health">Health JSON</a>
+                            <a href="/oauth/publickey">OAuth public key</a>
+                            <Link to="/About">About</Link>
+                        </nav>
+                    </header>
+
+                    {children}
+                </main>
+            );
+        }
+
+        function NestedAppsOverviewPage() {
+            const appEntries = getNestedAppEntries();
+
+            return (
+                <Layout>
+                    <div className="mb-3">
+                        <h2 className="h4">Vnořené aplikace</h2>
+                        <p className="text-muted">
+                            Přehled aplikací registrovaných v centrální konfiguraci <code>nestedApps</code>.
+                        </p>
+                    </div>
+
+                    <div className="row g-3">
+                        {appEntries.map(app => (
+                            <div key={app.appKey} className="col-12 col-md-6 col-xl-4">
+                                <div className="card p-3 h-100">
+                                    <div className="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                        <h3 className="h5 mb-0">
+                                            {app.title || app.appKey}
+                                        </h3>
+
+                                        <Link className="btn btn-sm btn-primary" to={app.firstLink || `${app.basePath}/`}>
+                                            Otevřít
+                                        </Link>
+                                    </div>
+
+                                    <p className="text-muted small mb-3">
+                                        Route: <code>{app.basePath}</code>
+                                    </p>
+
+                                    <MarkdownBlock md={app.md || `## ${app.title || app.appKey}\n\nBez popisu.`} />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </Layout>
+            );
+        }
+
+        function DebugPage() {
+            const pretty = useMemo(() => JSON.stringify(debugData, null, 2), []);
+
+            return (
+                <Layout>
+                    <div className="row g-3">
+                        <div className="col-lg-4">
+                            <div className="card p-3 h-100">
+                                <h2 className="h5">Stav</h2>
+
+                                <dl>
+                                    <dt>Autentizace</dt>
+                                    <dd>{debugData.authState}</dd>
+
+                                    <dt>Lokální uživatel</dt>
+                                    <dd>{debugData.localUser?.email || debugData.localUser?.id || "—"}</dd>
+
+                                    <dt>Apollo endpoint</dt>
+                                    <dd><code>{debugData.apolloGqlUrl}</code></dd>
+
+                                    <dt>Cookie</dt>
+                                    <dd><code>{debugData.cookieName}</code></dd>
+                                </dl>
+                            </div>
+                        </div>
+
+                        <div className="col-lg-8">
+                            <div className="card p-3">
+                                <h2 className="h5">Debug payload</h2>
+                                <pre>{pretty}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </Layout>
+            );
+        }
+
+        function GraphQLTestPage() {
+            const [query, setQuery] = useState(`query {\n  userPage { __typename id email }\n}`);
+            const [result, setResult] = useState("");
+            const [loading, setLoading] = useState(false);
+
+            async function runQuery() {
+                setLoading(true);
+                setResult("");
+
+                try {
+                    const response = await fetch("/api/gql", {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "content-type": "application/json"
+                        },
+                        body: JSON.stringify({ query })
+                    });
+
+                    const data = await response.json();
+                    setResult(`HTTP ${response.status}\n\n${JSON.stringify(data, null, 2)}`);
+                } catch (e) {
+                    setResult(String(e));
+                } finally {
+                    setLoading(false);
+                }
+            }
+
+            return (
+                <Layout>
+                    <div className="card p-3">
+                        <h2 className="h5">GraphQL test</h2>
+
+                        <p className="text-muted">
+                            Tento formulář volá <code>POST /api/gql</code>. Bridge z Entra hlaviček vytvoří interní JWT
+                            a požadavek předá do Apollo.
+                        </p>
+
+                        <textarea
+                            className="form-control bg-dark text-light border-secondary"
+                            rows="8"
+                            value={query}
+                            onChange={e => setQuery(e.target.value)}
+                        />
+
+                        <div className="mt-3">
+                            <button className="btn btn-primary" onClick={runQuery} disabled={loading}>
+                                {loading ? "Volám Apollo..." : "Spustit query"}
+                            </button>
+                        </div>
+
+                        {result && <pre className="mt-3">{result}</pre>}
+                    </div>
+                </Layout>
+            );
+        }
+
+        function NestedAppDescription() {
+            const appConfig = nestedApps[appKey];
+            return (
+                <div>
+                    <h2 className="h5 mb-1">{appConfig.title || appKey}</h2>
+                    <p className="text-muted mb-0">
+                        Zdroj: <code>{appConfig.script}</code>
+                    </p>
+                </div>
+            )
+        }
+
+        function AboutPage() {
+            return (
+                <Layout>
+                    <div className="card p-3">
+                        <h2 className="h5">About</h2>
+                        <p className="text-muted">
+                            Tento debug UI je jednoduchá React aplikace načítaná z jednoho HTML souboru. Backend neposkytuje žádné API kromě GraphQL endpointu, který slouží jako bridge do Apollo serveru.
+                        </p>
+
+                        <p className="text-muted">
+                            Cílem je mít snadno dostupný nástroj pro testování a ladění integrace Entra ID → Apollo Bridge bez nutnosti spouštět komplexní frontendové frameworky nebo build procesy.
+                        </p>
+                    </div>
+                </Layout>
+            );
+        }
+
+        function NestedAppPage({ appKey = "ug" }) {
+
+            const mountRef = useRef(null);
+            const moduleRef = useRef(null);
+
+            const [error, setError] = useState("");
+            const [loading, setLoading] = useState(true);
+
+            const appConfig = nestedApps[appKey];
+
+            useEffect(() => {
+                let cancelled = false;
+
+                async function loadAndMount() {
+                    setLoading(true);
+                    setError("");
+
+                    if (!appConfig) {
+                        setLoading(false);
+                        setError(`Neznámá vnořená aplikace: ${appKey || "—"}`);
+                        return;
+                    }
+
+                    try {
+                        ensureStylesheets(appConfig.css);
+
+                        const module = await import(appConfig.script);
+
+                        if (cancelled) return;
+
+                        moduleRef.current = module;
+
+                        const mountExportName = appConfig.mountExport || "mount";
+                        const mount = module[mountExportName];
+
+                        if (typeof mount !== "function") {
+                            throw new Error(
+                                `Modul ${appConfig.script} neexportuje funkci ${mountExportName}(...).`
+                            );
+                        }
+
+                        const mountOptions = {
+                            GQLENDPOINT: "/api/gql",
+                            ...(appConfig.mountOptions || {}),
+                            debugData
+                        };
+
+                        mount(mountRef.current, mountOptions);
+                    } catch (e) {
+                        console.error(e);
+                        setError(String(e));
+                    } finally {
+                        if (!cancelled) {
+                            setLoading(false);
+                        }
+                    }
+                }
+
+                loadAndMount();
+
+                return () => {
+                    cancelled = true;
+
+                    const module = moduleRef.current;
+
+                    if (module && appConfig) {
+                        const unmountExportName = appConfig.unmountExport || "unmount";
+                        const unmount = module[unmountExportName];
+
+                        if (typeof unmount === "function" && mountRef.current) {
+                            try {
+                                unmount(mountRef.current);
+                            } catch (e) {
+                                console.warn("Unmount vnořené aplikace selhal:", e);
+                            }
+                        }
+                    }
+
+                    if (mountRef.current) {
+                        mountRef.current.innerHTML = "";
+                    }
+
+                    moduleRef.current = null;
+                };
+            }, [appKey]);
+
+
+
+            if (!appConfig) {
+                return (
+                    <Layout>
+                        <div className="card p-3">
+                            <h2 className="h5">Neznámá aplikace {appKey} XX</h2>
+                            <pre>{error || `Nenalezena konfigurace pro: ${appKey || "—"}`}</pre>
+                        </div>
+                    </Layout>
+                );
+            }
+
+            return (
+                <Layout>
+                    <div>
+                        <div className="d-flex justify-content-between align-items-start gap-3 mb-3">
+
+
+                            {loading && (
+                                <span className="badge text-bg-primary">
+                                    Načítám...
+                                </span>
+                            )}
+                        </div>
+
+                        {error && (
+                            <pre className="mt-3 text-danger">{error}</pre>
+                        )}
+
+                        <div className="nested-app-container">
+                            <div ref={mountRef}></div>
+                        </div>
+                    </div>
+                </Layout>
+            );
+        }
+
+        function App() {
+            const appEntries = getNestedAppEntries();
+
+            return (
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/Debug" element={<DebugPage />} />
+                        <Route path="/graphql-test" element={<GraphQLTestPage />} />
+                        <Route path="/apps" element={<NestedAppsOverviewPage />} />
+                        <Route path="/index" element={<NestedAppsOverviewPage />} />
+                        <Route path="/About" element={<AboutPage />} />
+                        {appEntries.map(app => (
+                            <Route
+                                key={app.appKey}
+                                path={`${app.basePath}/*`}
+                                element={<NestedAppPage appKey={app.appKey} />}
+                            />
+                        ))}
+
+                        <Route path="/:appKey/*" element={<NestedAppPage />} />
+
+                        <Route path="*" element={<DebugPage />} />
+                    </Routes>
+                </BrowserRouter>
+            );
+        }
+
+        createRoot(document.getElementById("root")).render(<App />);
+    </script>
+</body>
+
+</html>
