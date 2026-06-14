@@ -3,7 +3,7 @@
 # Zero phase
 #
 ###############################################################
-FROM python:3.10.13-slim as pythonbase
+FROM python:3.13-slim AS pythonbase
 
 
 # instalace curl, aby bylo mozne zprovoznit standardni healthcheck
@@ -18,7 +18,7 @@ RUN python -m pip install -r requirements.txt
 # Last phase
 #
 ###############################################################
-FROM pythonbase as executepython
+FROM pythonbase AS executepython
 
 EXPOSE 8000
 
