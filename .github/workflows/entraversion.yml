@@ -1,0 +1,128 @@
+name: Build and publish Docker images
+
+on:
+  push:
+    branches:
+      - latest
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_MAIN: ghcr.io/${{ github.repository }}
+  IMAGE_FAKE: ghcr.io/${{ github.repository }}-fake
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - name: frontend
+            image: ghcr.io/hrbolek/frontend
+            context: .
+            dockerfile: ./Dockerfile
+
+          - name: frontend-entra
+            image: ghcr.io/hrbolek/frontend-entra
+            context: ./server_entra
+            dockerfile: ./server_entra/Dockerfile
+
+        base:
+          - id: py3.12-bookworm
+            python_image: python:3.12-slim-bookworm
+            default: false
+            experimental: false
+
+          - id: py3.13-bookworm
+            python_image: python:3.13-slim-bookworm
+            default: true
+            experimental: false
+
+          - id: py3.14-bookworm
+            python_image: python:3.14-slim-bookworm
+            default: false
+            experimental: false
+
+          - id: py3.14-trixie
+            python_image: python:3.14-slim-trixie
+            default: false
+            experimental: false            
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Extract base metadata
+        id: vars
+        shell: bash
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+          echo "short_sha=${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            VERSION="${GITHUB_REF_NAME}"
+          else
+            VERSION="${GITHUB_REF_NAME}"
+          fi
+
+          SAFE_VERSION="${VERSION//\//-}"
+          echo "version=${SAFE_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Compose tags
+        id: tags
+        shell: bash
+        run: |
+          IMAGE="${{ matrix.app.image }}"
+          BASE_ID="${{ matrix.base.id }}"
+          VERSION="${{ steps.vars.outputs.version }}"
+          SHORT_SHA="${{ steps.vars.outputs.short_sha }}"
+
+          TAGS="${IMAGE}:${VERSION}-${BASE_ID}"
+
+          if [[ "${{ matrix.base.default }}" == "true" ]]; then
+            TAGS="${TAGS}"$'\n'"${IMAGE}:${VERSION}"
+
+            if [[ "${GITHUB_REF_NAME}" == "latest" ]]; then
+              TAGS="${TAGS}"$'\n'"${IMAGE}:latest"
+            fi
+          fi
+
+          {
+            echo "tags<<EOF"
+            echo "${TAGS}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build and push ${{ matrix.app.name }} on ${{ matrix.base.id }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.app.context }}
+          file: ${{ matrix.app.dockerfile }}
+          push: true
+          build-args: |
+            PYTHON_IMAGE=${{ matrix.base.python_image }}
+          tags: ${{ steps.tags.outputs.tags }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.base.name=${{ matrix.base.python_image }}
