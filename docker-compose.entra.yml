@@ -120,6 +120,8 @@ services:
       - net_gql_postgres_gql
       - net_gql_ug
       - net_valkey
+      - net_visible
+
 
   gql_office:
     image: hrbolek/gql_office:0.11.0
