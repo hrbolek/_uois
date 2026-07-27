@@ -222,10 +222,10 @@ connectProxy(apiApp)
 debugApp = FastAPI()
 
 @debugApp.get("/")
-async def hello(requets: Request):
-    client = requets.client
-    headers = requets.headers
-    cookies = requets.cookies
+async def hello(request: Request):
+    client = request.client
+    headers = request.headers
+    cookies = request.cookies
     import aiohttp
     import jwt
     bearer = cookies.get("authorization")
